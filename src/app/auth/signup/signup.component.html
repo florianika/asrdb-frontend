@@ -1,1 +1,50 @@
-<p>signup works!</p>
+<section class="signup-container">
+  <mat-card class="signup-card">
+    <img class="signup-card-logo" src="assets/images/logo_instat.png" alt="logo">
+    <mat-card-title class="signup-card-title">
+      Create your new account
+    </mat-card-title>
+    <mat-card-content class="signup-card-content">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Full name</mat-label>
+        <input matInput placeholder="Enter your full name">
+        <mat-icon matPrefix>account_circle</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" placeholder="Enter your email">
+        <mat-icon matPrefix>email</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hiddenPassword ? 'password' : 'text'" placeholder="Enter your password">
+        <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
+          'visibility' : 'visibility_off'}}</mat-icon>
+        <mat-icon matPrefix>lock</mat-icon>
+      </mat-form-field>
+      <span class="signup-card-password-hint">
+        Password must contain:
+        <ul style="padding-inline-start: 25px; margin: 0;">
+          <li>at least 8 characters</li>
+          <li>one uppercase character</li>
+          <li>one number</li>
+          <li>and one special character</li>
+        </ul>
+      </span>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Retype password</mat-label>
+        <input matInput [type]="hiddenRetypePassword ? 'password' : 'text'" placeholder="Retype your password">
+        <mat-icon matSuffix style="cursor: pointer;"
+          (click)="hiddenRetypePassword = !hiddenRetypePassword">{{hiddenRetypePassword ?
+          'visibility' : 'visibility_off'}}</mat-icon>
+        <mat-icon matPrefix>lock</mat-icon>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="full-width" style="height: 52px;">Continue</button>
+      <p class="signup-card-create-account" routerLink="/auth/signin">Already have an account? Sign in!</p>
+    </mat-card-content>
+  </mat-card>
+</section>
