@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NotAuthorizedComponent } from './common/not-authorized/not-authorized.component';
-import { NotFoundComponent } from './common/not-found/not-found.component';
+import { NotAuthorizedComponent } from './common/components/not-authorized/not-authorized.component';
+import { NotFoundComponent } from './common/components/not-found/not-found.component';
 
 const routes: Routes = [
   {path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
