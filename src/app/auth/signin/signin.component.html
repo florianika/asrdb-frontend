@@ -5,21 +5,25 @@
       Sign in to continue
     </mat-card-title>
     <mat-card-content class="login-card-content">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Email</mat-label>
-        <input matInput placeholder="Enter your email">
-        <mat-icon matPrefix>email</mat-icon>
-      </mat-form-field>
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Password</mat-label>
-        <input matInput [type]="hiddenPassword ? 'password' : 'text'" placeholder="Enter your password">
-        <mat-icon matPrefix>lock</mat-icon>
-        <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
-          'visibility' : 'visibility_off'}}</mat-icon>
-      </mat-form-field>
-      <p class="login-card-forgot-password">Forgot password?</p>
+      <form [formGroup]="signinFormGroup">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="Enter your email" formControlName="email">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="signinFormGroup.controls.email.invalid">Please provide a valid email</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hiddenPassword ? 'password' : 'text'" placeholder="Enter your password" formControlName="password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
+            'visibility' : 'visibility_off'}}</mat-icon>
+          <mat-error *ngIf="signinFormGroup.controls.email.invalid">Please provide a valid password. Should contain at least 8 characters</mat-error>
+        </mat-form-field>
+        <p class="login-card-forgot-password">Forgot password?</p>
+      </form>
 
-      <button mat-flat-button color="primary" class="full-width" style="height: 52px;">Continue</button>
+      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" (click)="signin()" [disabled]="loading">Continue</button>
       <p class="login-card-create-account" routerLink="/auth/signup">Create an accoun</p>
     </mat-card-content>
   </mat-card>

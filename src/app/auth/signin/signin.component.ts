@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SigninService } from './signin.service';
+import { FormGroup, FormControl } from '@angular/forms';
+import { AuthStateService } from 'src/app/common/services/auth-state.service';
+import { Router } from '@angular/router';
+import { Subscriber, Subscription } from 'rxjs';
 
 @Component({
   selector: 'asrdb-signin',
@@ -66,6 +71,35 @@ import { Component } from '@angular/core';
     }
   `]
 })
-export class SigninComponent {
+export class SigninComponent implements OnInit, OnDestroy {
+  loading = false;
   hiddenPassword = true;
+  signinFormGroup: FormGroup<{
+    email: FormControl<string | null>;
+    password: FormControl<string | null>;
+  }>;
+
+  private loginStateSubscriber?: Subscription;
+
+  constructor(private signinService: SigninService, private authStateService: AuthStateService, private router: Router) {
+    this.signinFormGroup = this.signinService.createSigninForm();
+  }
+
+  ngOnDestroy(): void {
+    this.loginStateSubscriber?.unsubscribe();
+  }
+
+  ngOnInit(): void {
+    this.loginStateSubscriber = this.authStateService.getLoginStateAsObservable().subscribe(state => {
+      this.loading = false;
+      if (state) {
+        this.router.navigateByUrl('/dashboard');
+      }
+    })
+  }
+
+  signin() {
+    this.loading = true;
+    this.signinService.signin(this.signinFormGroup.value);
+  }
 }
