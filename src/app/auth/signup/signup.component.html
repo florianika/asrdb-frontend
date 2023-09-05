@@ -5,45 +5,43 @@
       Create your new account
     </mat-card-title>
     <mat-card-content class="signup-card-content">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Full name</mat-label>
-        <input matInput placeholder="Enter your full name">
-        <mat-icon matPrefix>account_circle</mat-icon>
-      </mat-form-field>
+      <form [formGroup]="signupFormGroup">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Full name</mat-label>
+          <input matInput placeholder="Enter your full name" formControlName="fullName">
+          <mat-icon matPrefix>account_circle</mat-icon>
+          <mat-error *ngIf="signupFormGroup.controls.fullName.invalid">Please provide your full name</mat-error>
+        </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" placeholder="Enter your email">
-        <mat-icon matPrefix>email</mat-icon>
-      </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" placeholder="Enter your email" formControlName="email">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="signupFormGroup.controls.email.invalid">Please provide a valid email</mat-error>
+        </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Password</mat-label>
-        <input matInput [type]="hiddenPassword ? 'password' : 'text'" placeholder="Enter your password">
-        <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
-          'visibility' : 'visibility_off'}}</mat-icon>
-        <mat-icon matPrefix>lock</mat-icon>
-      </mat-form-field>
-      <span class="signup-card-password-hint">
-        Password must contain:
-        <ul style="padding-inline-start: 25px; margin: 0;">
-          <li>at least 8 characters</li>
-          <li>one uppercase character</li>
-          <li>one number</li>
-          <li>and one special character</li>
-        </ul>
-      </span>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hiddenPassword ? 'password' : 'text'" placeholder="Enter your password" formControlName="password">
+          <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
+            'visibility' : 'visibility_off'}}</mat-icon>
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-error *ngIf="signupFormGroup.controls.password.errors?.['required']">Please provide a valid password</mat-error>
+          <mat-error *ngIf="signupFormGroup.controls.password.errors?.['minlength']">Password should be at least 8 characters long</mat-error>
+        </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Retype password</mat-label>
-        <input matInput [type]="hiddenRetypePassword ? 'password' : 'text'" placeholder="Retype your password">
-        <mat-icon matSuffix style="cursor: pointer;"
-          (click)="hiddenRetypePassword = !hiddenRetypePassword">{{hiddenRetypePassword ?
-          'visibility' : 'visibility_off'}}</mat-icon>
-        <mat-icon matPrefix>lock</mat-icon>
-      </mat-form-field>
-
-      <button mat-flat-button color="primary" class="full-width" style="height: 52px;">Continue</button>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Retype password</mat-label>
+          <input matInput [type]="hiddenRetypePassword ? 'password' : 'text'" placeholder="Retype your password" formControlName="confirmPassword">
+          <mat-icon matSuffix style="cursor: pointer;"
+            (click)="hiddenRetypePassword = !hiddenRetypePassword">{{hiddenRetypePassword ?
+            'visibility' : 'visibility_off'}}</mat-icon>
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-error *ngIf="signupFormGroup.controls.confirmPassword.errors?.['required']">Please provide a valid password</mat-error>
+          <mat-error *ngIf="signupFormGroup.controls.confirmPassword.errors?.['minlength']">Password should be at least 8 characters long</mat-error>
+        </mat-form-field>
+      </form>
+      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" [disabled]="loading" (click)="signup()">Continue</button>
       <p class="signup-card-create-account" routerLink="/auth/signin">Already have an account? Sign in!</p>
     </mat-card-content>
   </mat-card>

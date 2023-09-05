@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { SignupForm, SignupFormValue, SignupService } from './signup.service';
 
 @Component({
   selector: 'asrdb-signup',
@@ -61,7 +63,28 @@ import { Component } from '@angular/core';
   }
 `]
 })
-export class SignupComponent {
+export class SignupComponent implements OnDestroy {
   hiddenPassword = true;
   hiddenRetypePassword = true;
+  loading = false;
+  signupFormGroup: SignupForm;
+
+  private signupSubscriber?: Subscription;
+
+  constructor(private signupService: SignupService) {
+    this.signupFormGroup = this.signupService.createSignupForm();
+  }
+
+  ngOnDestroy(): void {
+      this.signupSubscriber?.unsubscribe();
+  }
+
+  signup() {
+    if (!this.signupFormGroup.invalid) {
+      this.loading = true;
+      this.signupSubscriber = this.signupService.signup(this.signupFormGroup.value as SignupFormValue).subscribe(() => {
+        this.loading = false;
+      });
+    }
+  }
 }
