@@ -4,6 +4,12 @@
   "newProjectRoot": "projects",
   "projects": {
     "asrdb-frontend": {
+      "i18n": {
+        "sourceLocale": "en",
+        "locales": {
+          "sq": "src/locale/language.sq.xlf"
+        }
+      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:class": {
@@ -38,6 +44,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "localize": [
+              "sq"
+            ],
             "outputPath": "dist/asrdb-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",

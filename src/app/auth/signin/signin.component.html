@@ -1,28 +1,28 @@
 <section class="login-container">
   <mat-card class="login-card">
     <img class="login-card-logo" src="assets/images/logo_instat.png" alt="logo">
-    <mat-card-title class="login-card-title">
+    <mat-card-title class="login-card-title" i18n>
       Sign in to continue
     </mat-card-title>
     <mat-card-content class="login-card-content">
       <form [formGroup]="signinFormGroup">
         <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput placeholder="Enter your email" formControlName="email">
+          <mat-label i18n>Email</mat-label>
+          <input matInput i18n-placeholder placeholder="Enter your email" formControlName="email">
           <mat-icon matPrefix>email</mat-icon>
         </mat-form-field>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput [type]="hiddenPassword ? 'password' : 'text'" placeholder="Enter your password" formControlName="password">
+          <mat-label i18n>Password</mat-label>
+          <input matInput [type]="hiddenPassword ? 'password' : 'text'" i18n-placeholder placeholder="Enter your password" formControlName="password">
           <mat-icon matPrefix>lock</mat-icon>
           <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
             'visibility' : 'visibility_off'}}</mat-icon>
         </mat-form-field>
-        <p class="login-card-forgot-password">Forgot password?</p>
+        <p class="login-card-forgot-password" i18n>Forgot password?</p>
       </form>
 
-      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" (click)="signin()" [disabled]="loading">Continue</button>
-      <p class="login-card-create-account" routerLink="/auth/signup">Create an accoun</p>
+      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" (click)="signin()" [disabled]="loading" i18n>Continue</button>
+      <p class="login-card-create-account" routerLink="/auth/signup" i18n>Create an accoun</p>
     </mat-card-content>
   </mat-card>
 </section>
