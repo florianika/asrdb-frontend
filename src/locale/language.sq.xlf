@@ -60,7 +60,7 @@
       </trans-unit>
       <trans-unit id="9146157164301730812" datatype="html">
         <source>Create an accoun</source>
-        <target>Krijo nje llogari</target>
+        <target>Krijo një llogari</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signin/signin.component.html</context>
           <context context-type="linenumber">25</context>
