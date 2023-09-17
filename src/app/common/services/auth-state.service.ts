@@ -40,8 +40,9 @@ export class AuthStateService {
     return false;
   }
 
-  setJWT(newJWT: any) {
+  setJWT(newJWT: string) {
     this.JWT = newJWT;
+    localStorage.setItem(this.TOKEN_STORAGE_KEY, this.JWT);
   }
 
   getEmail(): string {

@@ -35,15 +35,19 @@ export class SignupService {
   }
 
   signup(signupForm: SignupFormValue) {
-    const formData = new FormData();
     const nameArray = signupForm.fullName!.split(' ');
-    formData.append('name', nameArray[0]);
-    formData.append('lastName', nameArray[1]);
-    formData.append('email', signupForm.email!);
-    formData.append('password', signupForm.password!);
-
+    const data = {
+      name: nameArray[0],
+      lastName: nameArray[1],
+      email: signupForm.email,
+      password: signupForm.password
+    };
     return new Observable(subscribe => {
-      this.httpClient.post(environment.base_url + '/auth/signup', formData).subscribe({
+      this.httpClient.post(environment.base_url + '/auth/signup', JSON.stringify(data), {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).subscribe({
         next: (response) => {
           subscribe.next(response);
           if (response) {

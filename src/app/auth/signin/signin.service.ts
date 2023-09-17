@@ -11,11 +11,15 @@ export class SigninService {
   constructor(private authStateService: AuthStateService, private httpClient: HttpClient) { }
 
   signin(loginData: Partial<{ email: string | null, password: string | null }>) {
-    const formData = new FormData();
-    formData.append('email', loginData.email ?? '');
-    formData.append('password', loginData.password ?? '');
-
-    this.httpClient.post<string>(environment.base_url + '/auth/signin', formData).subscribe(this.signinObserver);
+    const data = {
+      email: loginData.email,
+      password: loginData.password
+    };
+    this.httpClient.post<string>(environment.base_url + '/auth/signin', JSON.stringify(data), {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).subscribe(this.signinObserver);
   }
 
   createSigninForm() {
@@ -26,11 +30,12 @@ export class SigninService {
   }
 
   private signinObserver = {
-    next: (token) => {
+    next: (token: string) => {
       this.authStateService.setJWT(token);
       this.authStateService.setLoginState(true);
     },
     error: (error) => {
+      console.log(error);
       console.error(error);
       this.authStateService.setLoginState(false);
     }
