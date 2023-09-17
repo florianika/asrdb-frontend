@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { JWT } from 'src/app/model/JWT.model';
+import { JWT, Role } from 'src/app/model/JWT.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +10,13 @@ import { JWT } from 'src/app/model/JWT.model';
 export class AuthStateService {
 
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
+  private readonly SIGNIN_PAGE_URL = '/auth/signin';
 
   private JWT: string | null;
   private isLoggedIn: BehaviorSubject<boolean>;
   private helper = new JwtHelperService();
 
-  constructor() {
+  constructor(private router: Router) {
     this.JWT = localStorage.getItem(this.TOKEN_STORAGE_KEY);
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
   }
@@ -42,31 +44,35 @@ export class AuthStateService {
     this.JWT = newJWT;
   }
 
-  getemail(): string {
-    if (!this.JWT) {
-      return '';
-    }
-    const jwtToken = this.helper.decodeToken<JWT>(this.JWT);
+  getEmail(): string {
+    const jwtToken = this.getDecodedJWT();
     return jwtToken?.email ?? '';
   }
 
   getName(): string {
-    if (!this.JWT) {
-      return '';
-    }
-    const jwtToken = this.helper.decodeToken<JWT>(this.JWT);
+    const jwtToken = this.getDecodedJWT();
     return jwtToken?.name ?? '';
   }
 
   getSurname(): string {
-    if (!this.JWT) {
-      return '';
-    }
-    const jwtToken = this.helper.decodeToken<JWT>(this.JWT);
+    const jwtToken = this.getDecodedJWT();
     return jwtToken?.surname ?? '';
   }
 
   getFullName(): string {
     return this.getName() + ' ' + this.getSurname();
+  }
+
+  getRole(): Role | undefined {
+    const jwtToken = this.getDecodedJWT();
+    return jwtToken?.role;
+  }
+
+  private getDecodedJWT(): JWT | null {
+    if (!this.JWT) {
+      this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
+      return null;
+    }
+    return this.helper.decodeToken<JWT>(this.JWT);
   }
 }

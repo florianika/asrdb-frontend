@@ -3,10 +3,11 @@ export type JWT = {
   email: string,
   name: string,
   surname: string,
-  role: "ADMIN" | "USER" | "OTHER",
+  role: Role,
   nbf: number,
   exp: number,
   iat: number,
   iss: string,
   aud: string
 }
+ export type Role = "ADMIN" | "USER" | "OTHER";

@@ -6,7 +6,7 @@ import { AuthStateService } from './auth-state.service';
   providedIn: 'root'
 })
 export class GuardService {
-  private readonly SIGNIN_PAGE_NAME = '/auth/signin';
+  private readonly SIGNIN_PAGE_URL = '/auth/signin';
 
   constructor(
     private authStateService: AuthStateService,
@@ -16,7 +16,7 @@ export class GuardService {
   public canActivate(): boolean {
     const isLoggedIn = this.authStateService.isTokenValid();
     if (!isLoggedIn) {
-      this.router.navigateByUrl(this.SIGNIN_PAGE_NAME);
+      this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
     }
     return isLoggedIn;
   }
