@@ -8,6 +8,11 @@ import { AuthStateService } from './common/services/auth-state.service';
 })
 export class AppComponent {
   title = 'asrdb-frontend';
+  isLoggedIn = this.authStateService.getLoginStateAsObservable();
 
   constructor(private authStateService: AuthStateService) { }
+
+  logout() {
+    this.authStateService.logout();
+  }
 }

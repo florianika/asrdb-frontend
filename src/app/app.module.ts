@@ -7,6 +7,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthStateService } from './common/services/auth-state.service';
 import { NotAuthorizedComponent } from './common/components/not-authorized/not-authorized.component';
 import { NotFoundComponent } from './common/components/not-found/not-found.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @NgModule({
   declarations: [
@@ -17,7 +22,11 @@ import { NotFoundComponent } from './common/components/not-found/not-found.compo
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [AuthStateService],
   bootstrap: [AppComponent]

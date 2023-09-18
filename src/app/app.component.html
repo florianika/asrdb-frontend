@@ -1,4 +1,16 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-
-<router-outlet></router-outlet>
+<mat-toolbar class="mat-elevation-z6" style="margin-bottom: 1px;" *ngIf="isLoggedIn | async">
+  <button mat-icon-button class="example-icon" (click)="drawer.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <img src="assets/images/logo_instat.png" style="width: 150px;">
+  <span class="toolbar-spacer"></span>
+  <button mat-icon-button class="example-icon favorite-icon" (click)="logout()">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-drawer-container class="drawer-container">
+  <mat-drawer #drawer mode="side" class="drawer" [opened]="isLoggedIn | async"></mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

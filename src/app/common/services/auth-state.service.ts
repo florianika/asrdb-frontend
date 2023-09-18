@@ -21,6 +21,12 @@ export class AuthStateService {
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
   }
 
+  logout() {
+    this.setLoginState(false);
+    localStorage.removeItem(this.TOKEN_STORAGE_KEY);
+    this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
+  }
+
   setLoginState(loginState: boolean) {
     this.isLoggedIn.next(loginState);
   }
@@ -38,6 +44,10 @@ export class AuthStateService {
       return !this.helper.isTokenExpired(this.JWT);
     }
     return false;
+  }
+
+  isAdmin() {
+    return this.isTokenValid() && this.getDecodedJWT()?.role === "ADMIN"
   }
 
   setJWT(newJWT: string) {

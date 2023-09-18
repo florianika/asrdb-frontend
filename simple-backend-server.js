@@ -15,7 +15,7 @@ const ADMIN_USER = { id: '1',
   role: 'ADMIN'
 }
 const NORMAL_USER = { id: '1',
-  email: 'admin@test.com',
+  email: 'user@test.com',
   name: 'Normal',
   surname: 'User',
   role: 'USER'

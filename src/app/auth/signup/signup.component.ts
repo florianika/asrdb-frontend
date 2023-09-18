@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/internal/Subscription';
+import { Component } from '@angular/core';
 import { SignupForm, SignupFormValue, SignupService } from './signup.service';
 
 @Component({
@@ -8,6 +7,7 @@ import { SignupForm, SignupFormValue, SignupService } from './signup.service';
   styles: [`
   .signup-container {
     min-height: 100vh;
+    min-width: 100vw;
     display: flex;
     flex-direction: column;
     -webkit-box-pack: center;
