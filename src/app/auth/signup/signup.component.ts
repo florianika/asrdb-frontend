@@ -63,28 +63,19 @@ import { SignupForm, SignupFormValue, SignupService } from './signup.service';
   }
 `]
 })
-export class SignupComponent implements OnDestroy {
+export class SignupComponent {
   hiddenPassword = true;
   hiddenRetypePassword = true;
-  loading = false;
+  loading = this.signupService.signingUpAsObservable;
   signupFormGroup: SignupForm;
-
-  private signupSubscriber?: Subscription;
 
   constructor(private signupService: SignupService) {
     this.signupFormGroup = this.signupService.createSignupForm();
   }
 
-  ngOnDestroy(): void {
-      this.signupSubscriber?.unsubscribe();
-  }
-
   signup() {
     if (!this.signupFormGroup.invalid) {
-      this.loading = true;
-      this.signupSubscriber = this.signupService.signup(this.signupFormGroup.value as SignupFormValue).subscribe(() => {
-        this.loading = false;
-      });
+      this.signupService.signup(this.signupFormGroup.value as SignupFormValue);
     }
   }
 }

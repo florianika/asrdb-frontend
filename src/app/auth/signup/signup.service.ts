@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, Observer } from 'rxjs';
+import { BehaviorSubject, Observable, Observer } from 'rxjs';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import { environment } from 'src/environments/environment';
 
@@ -22,6 +22,17 @@ export type SignupFormValue = Partial<{
 
 @Injectable()
 export class SignupService {
+  private signingUp = new BehaviorSubject(false);
+  private signupObserver = {
+    next: (response) => {
+      this.signingUp.next(false);
+      this.router.navigateByUrl('/auth/signin');
+    },
+    error: (error) => {
+      this.signingUp.next(false);
+      console.error(error);
+    }
+  } as Observer<any>;
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
@@ -42,23 +53,14 @@ export class SignupService {
       email: signupForm.email,
       password: signupForm.password
     };
-    return new Observable(subscribe => {
-      this.httpClient.post(environment.base_url + '/auth/signup', JSON.stringify(data), {
+    this.httpClient.post<any>(environment.base_url + '/auth/signup', JSON.stringify(data), {
       headers: {
         "Content-Type": "application/json"
       }
-    }).subscribe({
-        next: (response) => {
-          subscribe.next(response);
-          if (response) {
-            this.router.navigateByUrl('/auth/signin');
-          }
-        },
-        error: (error) => {
-          console.error(error);
-          subscribe.next();
-        }
-      });
-    })
+    }).subscribe(this.signupObserver);
+  }
+
+  get signingUpAsObservable() {
+    return this.signingUp.asObservable();
   }
 }

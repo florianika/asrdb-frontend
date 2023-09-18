@@ -71,35 +71,19 @@ import { Subscriber, Subscription } from 'rxjs';
     }
   `]
 })
-export class SigninComponent implements OnInit, OnDestroy {
-  loading = false;
+export class SigninComponent {
+  loading = this.signinService.signingInAsObservable;
   hiddenPassword = true;
   signinFormGroup: FormGroup<{
     email: FormControl<string | null>;
     password: FormControl<string | null>;
   }>;
 
-  private loginStateSubscriber?: Subscription;
-
   constructor(private signinService: SigninService, private authStateService: AuthStateService, private router: Router) {
     this.signinFormGroup = this.signinService.createSigninForm();
   }
 
-  ngOnDestroy(): void {
-    this.loginStateSubscriber?.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    this.loginStateSubscriber = this.authStateService.getLoginStateAsObservable().subscribe(state => {
-      this.loading = false;
-      if (state) {
-        this.router.navigateByUrl('/dashboard');
-      }
-    })
-  }
-
   signin() {
-    this.loading = true;
     this.signinService.signin(this.signinFormGroup.value);
   }
 }

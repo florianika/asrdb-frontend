@@ -41,7 +41,7 @@
           <mat-error *ngIf="signupFormGroup.controls.confirmPassword.errors?.['minlength']" i18n>Password should be at least 8 characters long</mat-error>
         </mat-form-field>
       </form>
-      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" [disabled]="loading" (click)="signup()" i18n>Continue</button>
+      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" [disabled]="loading | async" (click)="signup()" i18n>Continue</button>
       <p class="signup-card-create-account" routerLink="/auth/signin" i18n>Already have an account? Sign in!</p>
     </mat-card-content>
   </mat-card>

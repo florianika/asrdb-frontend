@@ -21,7 +21,7 @@
         <p class="login-card-forgot-password" i18n>Forgot password?</p>
       </form>
 
-      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" (click)="signin()" [disabled]="loading" i18n>Continue</button>
+      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" (click)="signin()" [disabled]="loading | async" i18n>Continue</button>
       <p class="login-card-create-account" routerLink="/auth/signup" i18n>Create an accoun</p>
     </mat-card-content>
   </mat-card>
