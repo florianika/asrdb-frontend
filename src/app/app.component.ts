@@ -15,8 +15,4 @@ export class AppComponent {
   logout() {
     this.authStateService.logout();
   }
-
-  get isAdmin(): boolean {
-    return this.authStateService.isAdmin();
-  }
 }

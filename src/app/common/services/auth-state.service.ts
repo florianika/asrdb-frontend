@@ -44,15 +44,15 @@ export class AuthStateService {
       if (this.JWT) {
         return !this.helper.isTokenExpired(this.JWT);
       }
-      return false;
     } catch(e) {
       console.error(e);
-      return false;
     }
+    this.setLoginState(false);
+    return false;
   }
 
   isAdmin() {
-    return this.isTokenValid() && this.getDecodedJWT()?.role === "ADMIN"
+    return this.isTokenValid() && this.getDecodedJWT()?.role === "ADMIN";
   }
 
   setJWT(newJWT: string) {

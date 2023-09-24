@@ -13,13 +13,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { SideBarComponent } from './common/components/side-bar/side-bar.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     NotFoundComponent,
-    NotAuthorizedComponent
+    NotAuthorizedComponent,
+    SideBarComponent
   ],
   imports: [
     BrowserModule,
