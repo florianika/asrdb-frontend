@@ -4,14 +4,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observer } from 'rxjs';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
+import { SigninResponse } from 'src/app/model/JWT.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class SigninService {
   private signingIn = new BehaviorSubject(false);
   private signinObserver = {
-    next: (token: string) => {
-      this.authStateService.setJWT(token);
+    next: (signinResponse: SigninResponse) => {
+      this.authStateService.setJWT(signinResponse.accessToken);
       this.authStateService.setLoginState(true);
       this.router.navigateByUrl('/dashboard');
       this.signingIn.next(false);
@@ -21,7 +22,7 @@ export class SigninService {
       this.signingIn.next(false);
       this.authStateService.setLoginState(false);
     }
-  } as Observer<string>;
+  } as Observer<SigninResponse>;
 
   constructor(private authStateService: AuthStateService, private httpClient: HttpClient,  private router: Router) { }
 
@@ -31,7 +32,7 @@ export class SigninService {
       email: loginData.email,
       password: loginData.password
     };
-    this.httpClient.post<string>(environment.base_url + '/auth/signin', JSON.stringify(data), {
+    this.httpClient.post<SigninResponse>(environment.base_url + '/auth/login', JSON.stringify(data), {
       headers: {
         "Content-Type": "application/json"
       }

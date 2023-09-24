@@ -40,10 +40,15 @@ export class AuthStateService {
   }
 
   isTokenValid(): boolean {
-    if (this.JWT) {
-      return !this.helper.isTokenExpired(this.JWT);
+    try {
+      if (this.JWT) {
+        return !this.helper.isTokenExpired(this.JWT);
+      }
+      return false;
+    } catch(e) {
+      console.error(e);
+      return false;
     }
-    return false;
   }
 
   isAdmin() {

@@ -10,4 +10,9 @@ export type JWT = {
   iss: string,
   aud: string
 }
- export type Role = "ADMIN" | "USER" | "OTHER";
+export type Role = "ADMIN" | "USER" | "OTHER";
+export type SigninResponse = {
+  "idToken": string,
+  "accessToken": string,
+  "refreshToken": string
+}
