@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { AdministrationRoutingModule } from './administration-routing.module';
 import { UserManagementComponent } from './user-management/user-management.component';
@@ -12,24 +13,38 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UserViewDialogComponent } from './user-management/user-view-dialog/user-view-dialog.component';
+import { UserEditDialogComponent } from './user-management/user-edit-dialog/user-edit-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+
 
 @NgModule({
   declarations: [
     UserManagementComponent,
-    RoleManagementComponent
+    RoleManagementComponent,
+    UserViewDialogComponent,
+    UserEditDialogComponent
   ],
   imports: [
     CommonModule,
     AdministrationRoutingModule,
     HttpClientModule,
+    FormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule
   ],
   providers: [UserManagementService]
 })

@@ -1,8 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
+import { Role } from 'src/app/model/JWT.model';
 import { User } from 'src/app/model/User.model';
 import { environment } from 'src/environments/environment';
+import { UserEditDialogComponent } from './user-edit-dialog/user-edit-dialog.component';
+import { UserViewDialogComponent } from './user-view-dialog/user-view-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +17,14 @@ export class UserManagementService {
   private user = new BehaviorSubject<User | null>(null);
   private loading = new BehaviorSubject(false);
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private snackbarService: MatSnackBar, private dialog: MatDialog) { }
 
   get usersAsObservable() {
     return this.users.asObservable();
+  }
+
+  get userAsObservable() {
+    return this.user.asObservable();
   }
 
   get loadingAsObservable() {
@@ -24,61 +33,95 @@ export class UserManagementService {
 
   getUsers() {
     this.loading.next(true);
-    this.httpClient.get<{usersDTO: User[]}>(environment.base_url + '/admin/users').subscribe({
+    this.httpClient.get<{usersDTO: User[]}>(environment.base_url + '/auth/users').subscribe({
       next: (result) => {
-        setTimeout(() => {
-          this.loading.next(false);
-          this.users.next(result.usersDTO);
-        }, 5000)
+        this.loading.next(false);
+        this.users.next(result.usersDTO);
       },
       error: (error) => {
         this.loading.next(false);
         console.error(error);
+        this.showMessage("Coult not load the users. Please reload the page to try again.");
       }
     });
   }
 
   getUser(userId: string) {
-    this.loading.next(true);
-    this.httpClient.get<User>(environment.base_url + `/admin/users/${userId}`).subscribe({
+    // this.loading.next(true);
+    this.httpClient.get<{userDTO: User}>(environment.base_url + `/auth/users/${userId}`).subscribe({
       next: (result) => {
-        this.loading.next(false);
-        this.user.next(result);
+        // this.loading.next(false);
+        this.user.next(result.userDTO);
       },
       error: (error) => {
-        this.loading.next(false);
+        // this.loading.next(false);
         console.error(error);
+        this.showMessage("Coult not load the user. Please reload the page to try again.");
       }
     });
   }
 
-  editUser() {
-    this.loading.next(true);
+  openViewUserDialog(user: User) {
+    this.dialog.open(UserViewDialogComponent, {data: {userId: user.id}});
   }
 
-  terminateUser(userId: string) {
+  openEditUserDialog(user: User) {
+    const editDialog = this.dialog.open(UserEditDialogComponent, {data: user});
+    const editDialogSubscription = editDialog.afterClosed().subscribe(role => {
+      if (role) {
+        this.editUser(user.id, role);
+      }
+      editDialogSubscription.unsubscribe();
+    });
+  }
+
+  editUser(userId: string, role: Role) {
     this.loading.next(true);
-    this.httpClient.patch(environment.base_url + `/admin/users/${userId}/terminate`, {}).subscribe({
+    this.httpClient.patch(environment.base_url + `/auth/users/${userId}/set/${role}`, {}).subscribe({
       next: (result) => {
-        this.loading.next(false);
+        this.getUsers();
       },
       error: (error) => {
         this.loading.next(false);
         console.error(error);
+        this.showMessage("Coult not update user.");
+      }
+    });
+  }
+
+  terminateUser(userId: string) {
+    this.loading.next(true);
+    this.httpClient.patch(environment.base_url + `/auth/users/${userId}/terminate`, {}).subscribe({
+      next: (result) => {
+        this.getUsers();
+        this.showMessage("User was terminated.");
+      },
+      error: (error) => {
+        this.loading.next(false);
+        console.error(error);
+        this.showMessage("Coult not terminate the user.");
       }
     });
   }
 
   activateUser(userId: string) {
     this.loading.next(true);
-    this.httpClient.patch(environment.base_url + `/admin/users/${userId}/activate`, {}).subscribe({
+    this.httpClient.patch(environment.base_url + `/auth/users/${userId}/activate`, {}).subscribe({
       next: (result) => {
-        this.loading.next(false);
+        this.getUsers();
+        this.showMessage("User was activated.");
       },
       error: (error) => {
         this.loading.next(false);
         console.error(error);
+        this.showMessage("Coult not activate the user.");
       }
+    });
+  }
+
+  private showMessage(message: string) {
+    this.snackbarService.open(message, "Ok", {
+      duration: 3000
     });
   }
 }

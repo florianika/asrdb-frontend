@@ -40,4 +40,18 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
+
+  viewUser(user: User) {
+    this.userManagementService.openViewUserDialog(user);
+  }
+
+  editUser(user: User) {
+    this.userManagementService.openEditUserDialog(user);
+  }
+
+  toggleAccountStatus(user: User) {
+    user.accountStatus === "ACTIVE"
+    ? this.userManagementService.terminateUser(user.id)
+    : this.userManagementService.activateUser(user.id);
+  }
 }

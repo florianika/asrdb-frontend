@@ -1,0 +1,28 @@
+<ng-container *ngIf="user | async as data">
+  <h1 mat-dialog-title>Viewing user {{data.name}} {{data.lastName}}</h1>
+  <div mat-dialog-content>
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput [value]="data.name" readonly />
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Last name</mat-label>
+      <input matInput [value]="data.lastName" readonly />
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput [value]="data.email" readonly />
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Role</mat-label>
+      <input matInput [value]="data.accountRole" readonly />
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Status</mat-label>
+      <input matInput [value]="data.accountStatus" readonly />
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button color="primary" [mat-dialog-close]>Close</button>
+  </div>
+</ng-container>

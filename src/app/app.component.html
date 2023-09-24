@@ -1,12 +1,22 @@
 <mat-toolbar class="mat-elevation-z6" style="margin-bottom: 1px;" *ngIf="isLoggedIn | async">
-  <button mat-icon-button class="example-icon" (click)="drawer.toggle()">
+  <button mat-icon-button (click)="drawer.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
   <img src="assets/images/logo_instat.png" style="width: 150px;">
   <span class="toolbar-spacer"></span>
-  <button mat-icon-button class="example-icon favorite-icon" (click)="logout()">
-    <mat-icon>logout</mat-icon>
-  </button>
+  <ng-container>
+    <button mat-icon-button [mat-menu-trigger-for]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">Sign out</button>
+    </mat-menu>
+  </ng-container>
+  <ng-container>
+    <button mat-icon-button>
+      <mat-icon>circle_notifications</mat-icon>
+    </button>
+  </ng-container>
 </mat-toolbar>
 <mat-drawer-container class="drawer-container">
   <mat-drawer #drawer mode="side" class="drawer" [opened]="isLoggedIn | async">
