@@ -9,7 +9,34 @@
   </button>
 </mat-toolbar>
 <mat-drawer-container class="drawer-container">
-  <mat-drawer #drawer mode="side" class="drawer" [opened]="isLoggedIn | async"></mat-drawer>
+  <mat-drawer #drawer mode="side" class="drawer" [opened]="isLoggedIn | async">
+    <mat-selection-list [multiple]="false" hideSingleSelectionIndicator>
+      <mat-list-option>
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        Dashboard
+      </mat-list-option>
+      <mat-list-option>
+        <mat-icon matListItemIcon>domainm</mat-icon>
+        Building register
+      </mat-list-option>
+      <mat-list-option>
+        <mat-icon matListItemIcon>edit_note</mat-icon>
+        Quality management
+      </mat-list-option>
+      <ng-container *ngIf="isAdmin">
+        <mat-divider></mat-divider>
+        <div mat-subheader>Administration</div>
+        <mat-list-option>
+          <mat-icon matListItemIcon>manage_accounts</mat-icon>
+          User administration
+        </mat-list-option>
+        <mat-list-option>
+          <mat-icon matListItemIcon>verified_user</mat-icon>
+          Role management
+        </mat-list-option>
+      </ng-container>
+    </mat-selection-list>
+  </mat-drawer>
   <mat-drawer-content>
     <router-outlet></router-outlet>
   </mat-drawer-content>
