@@ -19,7 +19,7 @@ export class GuardAdminService {
     if (!isLoggedIn) {
       this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
     }
-    if (!isAdmin) {
+    else if (!isAdmin) {
       this.router.navigateByUrl('403');
     }
     return isLoggedIn;
