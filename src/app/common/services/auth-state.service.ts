@@ -28,7 +28,7 @@ export class AuthStateService {
   }
 
   setLoginState(loginState: boolean) {
-    this.isLoggedIn.next(loginState);
+    this.isLoggedIn?.next(loginState);
   }
 
   getLoginState(): boolean {
@@ -40,15 +40,16 @@ export class AuthStateService {
   }
 
   isTokenValid(): boolean {
+    let isTokenValid = false;
     try {
       if (this.JWT) {
-        return !this.helper.isTokenExpired(this.JWT);
+        isTokenValid = !this.helper.isTokenExpired(this.JWT);
       }
     } catch(e) {
       console.error(e);
     }
-    this.setLoginState(false);
-    return false;
+    this.setLoginState(isTokenValid);
+    return isTokenValid;
   }
 
   isAdmin() {

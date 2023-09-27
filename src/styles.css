@@ -14,3 +14,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-sort-header-content {
   text-align: left !important;
 }
+
+.loader {
+  margin: auto;
+}
+
+.table-loader {
+  margin-top: -50px;
+}
