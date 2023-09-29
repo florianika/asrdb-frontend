@@ -43,7 +43,7 @@ export class SideBarComponent {
           icon: "verified_user",
         },
       ],
-      condition: (): boolean => {
+      condition: (): boolean => { //TODO: This is triggered on hover. Find a better solution
         return this.isAdmin;
       }
     }
