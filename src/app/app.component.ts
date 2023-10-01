@@ -11,8 +11,4 @@ export class AppComponent {
   isLoggedIn = this.authStateService.getLoginStateAsObservable();
 
   constructor(private authStateService: AuthStateService) { }
-
-  logout() {
-    this.authStateService.logout();
-  }
 }

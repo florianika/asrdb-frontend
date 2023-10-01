@@ -16,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SideBarComponent } from './common/components/side-bar/side-bar.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ToolbarComponent } from './common/components/toolbar/toolbar.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     AppComponent,
     NotFoundComponent,
     NotAuthorizedComponent,
-    SideBarComponent
+    SideBarComponent,
+    ToolbarComponent
   ],
   imports: [
     BrowserModule,
