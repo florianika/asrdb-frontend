@@ -9,7 +9,8 @@ import { GraphsComponent } from './components/graphs/graphs.component';
 import { MapsComponent } from './components/maps/maps.component';
 import { TablesComponent } from './components/tables/tables.component';
 import { MatCardModule } from '@angular/material/card';
-import { MatGridListModule } from '@angular/material/grid-list';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { MatTableModule } from '@angular/material/table';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -25,7 +26,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     OverviewRoutingModule,
     PlotlyModule,
     MatCardModule,
-    MatGridListModule
+    GoogleMapsModule,
+    MatTableModule
   ]
 })
 export class OverviewModule { }
