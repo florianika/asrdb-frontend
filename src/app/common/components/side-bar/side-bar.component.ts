@@ -77,7 +77,6 @@ export class SideBarComponent implements AfterViewInit {
         sectionElement.selected = this.isSelected(sectionElement.path);
       }
     }
-    console.log(this.sideBarElements)
   }
 
   private isSelected(path: string): boolean {
