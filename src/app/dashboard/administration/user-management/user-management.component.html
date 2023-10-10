@@ -7,40 +7,40 @@
       </ng-container>
 
       <ng-container matColumnDef="email">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Email</th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Email</th>
         <td mat-cell *matCellDef="let row">{{row.email}}</td>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Name</th>
         <td mat-cell *matCellDef="let row">{{row.name}}</td>
       </ng-container>
 
       <ng-container matColumnDef="lastName">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Last name</th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Last name</th>
         <td mat-cell *matCellDef="let row">{{row.lastName}}</td>
       </ng-container>
 
       <ng-container matColumnDef="accountStatus">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Account status</th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Account status</th>
         <td mat-cell *matCellDef="let row">{{row.accountStatus}}</td>
       </ng-container>
 
       <ng-container matColumnDef="accountRole">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Account role</th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Account role</th>
         <td mat-cell *matCellDef="let row">{{row.accountRole}}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
         <td mat-cell *matCellDef="let row">
           <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="isLoadingResults | async">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="viewUser(row)">View</button>
-            <button mat-menu-item (click)="editUser(row)">Edit</button>
-            <button mat-menu-item (click)="toggleAccountStatus(row)">{{ row.accountStatus === "ACTIVE" ? "Terminate" : "Activate" }}</button>
+            <button mat-menu-item (click)="viewUser(row)" i18n>View</button>
+            <button mat-menu-item (click)="editUser(row)" i18n>Edit</button>
+            <button mat-menu-item (click)="toggleAccountStatus(row)" i18n>{{ row.accountStatus === "ACTIVE" ? "Terminate" : "Activate" }}</button>
           </mat-menu>
         </td>
       </ng-container>
