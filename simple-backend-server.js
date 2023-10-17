@@ -15,7 +15,7 @@ const ADMIN_USER = { id: '1',
   role: 'ADMIN'
 }
 const NORMAL_USER = { id: '1',
-  email: 'admin@test.com',
+  email: 'user@test.com',
   name: 'Normal',
   surname: 'User',
   role: 'USER'
@@ -23,6 +23,13 @@ const NORMAL_USER = { id: '1',
 
 app.get('/', (req, res) => {
   res.send('OK')
+})
+
+app.get('/admin/users', (req, res) => {
+  res.send(JSON.stringify([
+    { "id": "5d1462c2-3dce-40e9-a4e6-6591320c7ff0", "email": "florianika@gmail.com", "name": "Florian", "lastName": "Nika", "accountStatus": "ACTIVE", "accountRole": "ADMIN" },
+    { "id": "6d1462c2-3dce-40e9-a4e6-6591320c7ffr", "email": "reipano@gmail.com", "name": "Rei", "lastName": "Pano", "accountStatus": "TERMINATED", "accountRole": "USER" }
+  ]))
 })
 
 app.post('/auth/signin', (req, res) => {

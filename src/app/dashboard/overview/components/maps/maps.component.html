@@ -1,0 +1,7 @@
+<mat-card style="margin-bottom: 20px;">
+  <mat-card-content>
+    <google-map height="400px" width="100%" [center]="center" [zoom]="zoom" (mapClick)="moveMap($event)"
+      (mapMousemove)="move($event)">
+    </google-map>
+  </mat-card-content>
+</mat-card>

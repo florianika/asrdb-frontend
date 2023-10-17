@@ -1,0 +1,62 @@
+<div class="table-container">
+  <table mat-table [dataSource]="(dataSourceObservable | async) ?? []" class="table" matSort>
+    <ng-container>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let row">{{row.id}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Email</th>
+        <td mat-cell *matCellDef="let row">{{row.email}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Name</th>
+        <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Last name</th>
+        <td mat-cell *matCellDef="let row">{{row.lastName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="accountStatus">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Account status</th>
+        <td mat-cell *matCellDef="let row">{{row.accountStatus}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="accountRole">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Account role</th>
+        <td mat-cell *matCellDef="let row">{{row.accountRole}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="isLoadingResults | async">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="viewUser(row)" i18n>View</button>
+            <button mat-menu-item (click)="editUser(row)" i18n>Edit</button>
+            <button mat-menu-item (click)="toggleAccountStatus(row)" i18n>{{ row.accountStatus === "ACTIVE" ? "Terminate" : "Activate" }}</button>
+          </mat-menu>
+        </td>
+      </ng-container>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+
+<mat-paginator [length]="resultsLength" [pageSize]="30" [pageSizeOptions]="[10, 30, 100]"></mat-paginator>
+
+<div *ngIf="isLoadingResults | async"
+   style="display: flex; justify-content: center; align-items: center; background: white;">
+  <mat-progress-spinner
+    color="primary"
+    mode="indeterminate">
+  </mat-progress-spinner>
+</div>

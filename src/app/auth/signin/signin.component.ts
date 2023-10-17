@@ -1,9 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SigninService } from './signin.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { AuthStateService } from 'src/app/common/services/auth-state.service';
-import { Router } from '@angular/router';
-import { Subscriber, Subscription } from 'rxjs';
 
 @Component({
   selector: 'asrdb-signin',
@@ -11,6 +8,7 @@ import { Subscriber, Subscription } from 'rxjs';
   styles: [`
     .login-container {
       min-height: 100vh;
+      min-width: 100vw;
       display: flex;
       flex-direction: column;
       -webkit-box-pack: center;
@@ -79,7 +77,7 @@ export class SigninComponent {
     password: FormControl<string | null>;
   }>;
 
-  constructor(private signinService: SigninService, private authStateService: AuthStateService, private router: Router) {
+  constructor(private signinService: SigninService) {
     this.signinFormGroup = this.signinService.createSigninForm();
   }
 

@@ -1,0 +1,16 @@
+.drawer-container {
+  min-height: 100vh;
+}
+
+.drawer {
+  width: 250px;
+  max-width: 80%;
+}
+
+mat-drawer-content {
+  padding: 12px;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
