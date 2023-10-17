@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { JWT, Role } from 'src/app/model/JWT.model';
+import { JWT, Role, SigninResponse } from 'src/app/model/JWT.model';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -12,12 +12,13 @@ export class AuthStateService {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
   private readonly SIGNIN_PAGE_URL = '/auth/signin';
 
-  private JWT: string | null;
+  private tokens: SigninResponse | null;
   private isLoggedIn: BehaviorSubject<boolean>;
   private helper = new JwtHelperService();
 
   constructor(private router: Router) {
-    this.JWT = localStorage.getItem(this.TOKEN_STORAGE_KEY);
+    const item = localStorage.getItem(this.TOKEN_STORAGE_KEY);
+    this.tokens = item ? JSON.parse(item) : null;
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
   }
 
@@ -42,8 +43,8 @@ export class AuthStateService {
   isTokenValid(): boolean {
     let isTokenValid = false;
     try {
-      if (this.JWT) {
-        isTokenValid = !this.helper.isTokenExpired(this.JWT);
+      if (this.tokens) {
+        isTokenValid = !this.helper.isTokenExpired(this.tokens.idToken);
       }
     } catch(e) {
       console.error(e);
@@ -56,9 +57,9 @@ export class AuthStateService {
     return this.isTokenValid() && this.getDecodedJWT()?.role === "ADMIN";
   }
 
-  setJWT(newJWT: string) {
-    this.JWT = newJWT;
-    localStorage.setItem(this.TOKEN_STORAGE_KEY, this.JWT);
+  setJWT(newJWT: SigninResponse) {
+    this.tokens = newJWT;
+    localStorage.setItem(this.TOKEN_STORAGE_KEY, JSON.stringify(this.tokens));
   }
 
   getEmail(): string {
@@ -86,10 +87,10 @@ export class AuthStateService {
   }
 
   private getDecodedJWT(): JWT | null {
-    if (!this.JWT) {
+    if (!this.tokens) {
       this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
       return null;
     }
-    return this.helper.decodeToken<JWT>(this.JWT);
+    return this.helper.decodeToken<JWT>(this.tokens.idToken);
   }
 }

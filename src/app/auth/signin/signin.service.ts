@@ -12,7 +12,7 @@ export class SigninService {
   private signingIn = new BehaviorSubject(false);
   private signinObserver = {
     next: (signinResponse: SigninResponse) => {
-      this.authStateService.setJWT(signinResponse.accessToken);
+      this.authStateService.setJWT(signinResponse);
       this.authStateService.setLoginState(true);
       this.router.navigateByUrl('/dashboard');
       this.signingIn.next(false);
