@@ -17,10 +17,10 @@ export class GuardAdminService {
     const isLoggedIn = this.authStateService.isTokenValid();
     const isAdmin = this.authStateService.isAdmin();
     if (!isLoggedIn) {
-      this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
+      void this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
     }
     else if (!isAdmin) {
-      this.router.navigateByUrl('403');
+      void this.router.navigateByUrl('403');
     }
     return isLoggedIn;
   }
