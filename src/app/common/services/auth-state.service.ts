@@ -1,31 +1,49 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { JWT, Role, SigninResponse } from 'src/app/model/JWT.model';
-import { Router } from '@angular/router';
+import {Injectable, OnDestroy} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {JWT, Role, SigninResponse} from 'src/app/model/JWT.model';
+import {Router} from '@angular/router';
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthStateService {
+export class AuthStateService implements OnDestroy {
 
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
-  private readonly SIGNIN_PAGE_URL = '/auth/signin';
+  private readonly SIGNIN_URL = '/auth/signin';
+  private readonly SIGNOUT_URL = "/auth/signuout";
+
 
   private tokens: SigninResponse | null;
   private isLoggedIn: BehaviorSubject<boolean>;
   private helper = new JwtHelperService();
 
-  constructor(private router: Router) {
+  private subscription = new BehaviorSubject(false);
+
+  constructor(private router: Router, private httpClient: HttpClient) {
     const item = localStorage.getItem(this.TOKEN_STORAGE_KEY);
     this.tokens = item ? JSON.parse(item) : null;
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
   }
 
+  ngOnDestroy() {
+    this.subscription.next(true);
+    this.subscription.complete();
+  }
+
   logout() {
-    this.setLoginState(false);
-    localStorage.removeItem(this.TOKEN_STORAGE_KEY);
-    this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
+    this.httpClient.post(environment.base_url + this.SIGNOUT_URL, {
+      "UserId": this.getNameId()
+    }).subscribe({
+      next: () => {
+        this.logoutUser();
+      },
+      error: () => {
+        this.logoutUser();
+      }
+    });
   }
 
   setLoginState(loginState: boolean) {
@@ -86,11 +104,21 @@ export class AuthStateService {
     return jwtToken?.role;
   }
 
+  getNameId(): string | undefined {
+    return this.getDecodedJWT()?.nameid;
+  }
+
   private getDecodedJWT(): JWT | null {
     if (!this.tokens) {
-      this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
+      void this.router.navigateByUrl(this.SIGNIN_URL);
       return null;
     }
     return this.helper.decodeToken<JWT>(this.tokens.idToken);
+  }
+
+  private logoutUser() {
+    this.setLoginState(false);
+    localStorage.removeItem(this.TOKEN_STORAGE_KEY);
+    void this.router.navigateByUrl(this.SIGNIN_URL);
   }
 }
