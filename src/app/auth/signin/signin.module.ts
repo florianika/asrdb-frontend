@@ -32,7 +32,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatSnackBarModule
   ],
   providers: [
-    SigninService
+    SigninService,
   ]
-})
+} as NgModule)
 export class SigninModule { }

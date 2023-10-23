@@ -17,7 +17,7 @@ import { SideBarComponent } from './common/components/side-bar/side-bar.componen
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ToolbarComponent } from './common/components/toolbar/toolbar.component';
-
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -38,9 +38,10 @@ import { ToolbarComponent } from './common/components/toolbar/toolbar.component'
     MatListModule,
     MatDividerModule,
     MatMenuModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    HttpClientModule
   ],
   providers: [AuthStateService],
   bootstrap: [AppComponent]
-})
+} as NgModule)
 export class AppModule { }

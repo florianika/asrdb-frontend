@@ -1,6 +1,6 @@
 {
   "/auth/*": {
-    "target": "http://34.88.251.76",
+    "target": "http://35.240.32.51",
     "secure": false,
     "changeOrigin": true
   },
