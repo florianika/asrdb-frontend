@@ -57,6 +57,11 @@ export class AuthStateService implements OnDestroy {
       .subscribe({
         next: (newToken) => {
           console.log(newToken);
+          if (!this.tokens) {
+            this.tokens = {} as SigninResponse;
+          }
+          this.tokens.refreshToken = newToken.refreshToken;
+          this.tokens.accessToken = newToken.accessToken;
           this.checkTokenValidity();
         },
         error: () => {
@@ -147,7 +152,7 @@ export class AuthStateService implements OnDestroy {
   }
 
   private tokenInNearExpired() {
-    let isTokenNearlyExpired = false;
+    let isTokenNearlyExpired: boolean;
     try {
       const expirationDate = this.helper.getTokenExpirationDate(this.tokens!.idToken);
       const startDate = new Date();
@@ -158,6 +163,7 @@ export class AuthStateService implements OnDestroy {
       isTokenNearlyExpired = seconds <= 10;
     } catch (e) {
       console.error(e);
+      isTokenNearlyExpired = true;
     }
     return isTokenNearlyExpired;
   }
@@ -174,6 +180,6 @@ export class AuthStateService implements OnDestroy {
         }
         this.refreshToken();
       }
-    }, 1000);
+    }, 3000);
   }
 }
