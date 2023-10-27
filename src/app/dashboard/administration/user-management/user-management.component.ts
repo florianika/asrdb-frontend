@@ -16,12 +16,12 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   dataSourceObservable: Observable<MatTableDataSource<User>> = this.userManagementService.usersAsObservable.pipe(
     map(users => {
       const dataSource = this.dataSource;
-      dataSource.data = users
+      dataSource.data = users;
       return dataSource;
     })
   );
 
-  private dataSource = new MatTableDataSource<User>();
+  private dataSource: MatTableDataSource<User> = new MatTableDataSource();
 
   resultsLength = 0;
   isLoadingResults = this.userManagementService.loadingAsObservable;

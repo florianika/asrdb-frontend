@@ -1,1 +1,3 @@
-<p>role-management works!</p>
+<div *ngIf="dataSourceObservable | async">
+  <asrdb-role-table [role]="'ADMIN'" [dataSource]="getDatasource('ADMIN')"></asrdb-role-table>
+</div>

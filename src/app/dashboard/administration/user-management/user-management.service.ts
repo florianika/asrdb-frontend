@@ -9,9 +9,7 @@ import { environment } from 'src/environments/environment';
 import { UserEditDialogComponent } from './user-edit-dialog/user-edit-dialog.component';
 import { UserViewDialogComponent } from './user-view-dialog/user-view-dialog.component';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserManagementService {
   private users = new BehaviorSubject<User[]>([]);
   private user = new BehaviorSubject<User | null>(null);
@@ -41,7 +39,7 @@ export class UserManagementService {
       error: (error) => {
         this.loading.next(false);
         console.error(error);
-        this.showMessage("Coult not load the users. Please reload the page to try again.");
+        this.showMessage("Could not load the users. Please reload the page to try again.");
       }
     });
   }
@@ -78,7 +76,7 @@ export class UserManagementService {
   editUser(userId: string, role: Role) {
     this.loading.next(true);
     this.httpClient.patch(environment.base_url + `/auth/users/${userId}/set/${role}`, {}).subscribe({
-      next: (result) => {
+      next: () => {
         this.getUsers();
       },
       error: (error) => {
@@ -92,7 +90,7 @@ export class UserManagementService {
   terminateUser(userId: string) {
     this.loading.next(true);
     this.httpClient.patch(environment.base_url + `/auth/users/${userId}/terminate`, {}).subscribe({
-      next: (result) => {
+      next: () => {
         this.getUsers();
         this.showMessage("User was terminated.");
       },
@@ -107,7 +105,7 @@ export class UserManagementService {
   activateUser(userId: string) {
     this.loading.next(true);
     this.httpClient.patch(environment.base_url + `/auth/users/${userId}/activate`, {}).subscribe({
-      next: (result) => {
+      next: () => {
         this.getUsers();
         this.showMessage("User was activated.");
       },
