@@ -10,6 +10,7 @@ import {RoleManagementService} from "./role-management.service";
   styleUrls: ['./role-management.component.css']
 })
 export class RoleManagementComponent implements OnInit {
+  datasourceToUse: Role = "ADMIN";
   dataSourceObservable: Observable<Map<Role, MatTableDataSource<RolePermissions>>> = this.roleManagementService
     .rolesAsObservable
     .pipe(
@@ -50,7 +51,7 @@ export class RoleManagementComponent implements OnInit {
     this.roleManagementService.getRolePermissions();
   }
 
-  getDatasource(role: Role): MatTableDataSource<RolePermissions> {
-    return this.dataSources.get(role) ?? new MatTableDataSource<RolePermissions>();
+  getDatasource(): MatTableDataSource<RolePermissions> {
+    return this.dataSources.get(this.datasourceToUse) ?? new MatTableDataSource<RolePermissions>();
   }
 }

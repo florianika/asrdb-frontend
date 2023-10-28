@@ -18,6 +18,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatInputModule} from "@angular/material/input";
 import {RoleManagementService} from "./role-management.service";
 import { RoleTableComponent } from './role-table/role-table.component';
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { RoleTableComponent } from './role-table/role-table.component';
     MatDialogModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    MatCardModule
   ],
   providers: [
     RoleManagementService

@@ -1,0 +1,8 @@
+.role-management-table-header {
+  display: flex;
+  flex-flow: row;
+}
+
+.add-role-button {
+  margin: 10px;
+}

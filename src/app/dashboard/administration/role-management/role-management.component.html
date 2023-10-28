@@ -1,3 +1,27 @@
 <div *ngIf="dataSourceObservable | async">
-  <asrdb-role-table [role]="'ADMIN'" [dataSource]="getDatasource('ADMIN')"></asrdb-role-table>
+  <div class="page-header">
+    <h1 i18n>Role Management</h1>
+    <span class="spacer"></span>
+  </div>
+  <mat-card>
+    <div class="role-management-table-header">
+      <mat-form-field>
+        <mat-label i18n>Role</mat-label>
+        <mat-select [(ngModel)]="datasourceToUse">
+          <mat-option value="ADMIN">ADMIN</mat-option>
+          <mat-option value="SUPERVISOR">SUPERVISOR</mat-option>
+          <mat-option value="ENUMERATOR">ENUMERATOR</mat-option>
+          <mat-option value="CLIENT">CLIENT</mat-option>
+          <mat-option value="PUBLISHER">PUBLISHER</mat-option>
+          <mat-option value="USER">USER</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <span class="spacer"></span>
+      <button mat-fab color="primary" class="add-role-button" aria-label="Example icon button with a delete icon">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <asrdb-role-table [role]="datasourceToUse" [dataSource]="getDatasource()"></asrdb-role-table>
+  </mat-card>
 </div>

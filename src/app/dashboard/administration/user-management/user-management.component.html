@@ -1,5 +1,9 @@
 <div class="table-container">
-  <table mat-table [dataSource]="(dataSourceObservable | async) ?? []" class="table" matSort>
+  <div class="page-header">
+    <h1 i18n>User Management</h1>
+    <span class="spacer"></span>
+  </div>
+  <table mat-table [dataSource]="(dataSourceObservable | async) ?? []" matSort>
     <ng-container>
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>#</th>
