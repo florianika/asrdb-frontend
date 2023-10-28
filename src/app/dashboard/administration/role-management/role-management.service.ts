@@ -47,7 +47,7 @@ export class RoleManagementService {
       }
     });
   }
-  
+
   openDeleteRoleDialog(role: RolePermissions) {
     this.dialog.open(RoleDeleteDialogComponent, { data: { role } })
       .afterClosed()
@@ -56,6 +56,7 @@ export class RoleManagementService {
           this.deleteRole(id);
         }
       });
+  }
 
   openUpdateRoleDialog(role: RolePermissions) {
     this.dialog.open(RoleEditDialogComponent, { data: { permission: role.permission } })
@@ -65,6 +66,7 @@ export class RoleManagementService {
           this.updateRole(role.id, permission);
         }
       });
+  }
 
   private createRole(newRole: NewRolePermission) {
     this.loading.next(true);
@@ -86,7 +88,7 @@ export class RoleManagementService {
 
   private updateRole(id: number, permission: Permission) {
     this.loading.next(true);
-    this.httpClient.patch<any>(environment.base_url + 'admin/permissions/' + id, JSON.stringify({permission}), {
+    this.httpClient.patch<any>(environment.base_url + 'admin/permissions/' + id, JSON.stringify({ permission }), {
       headers: {
         "Content-Type": "application/json"
       }
