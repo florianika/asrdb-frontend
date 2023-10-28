@@ -19,7 +19,7 @@ import {UserManagementComponent} from "./user-management.component";
 import {UserViewDialogComponent} from "./user-view-dialog/user-view-dialog.component";
 import {UserEditDialogComponent} from "./user-edit-dialog/user-edit-dialog.component";
 import {UserManagementService} from "./user-management.service";
-import { RoleSelectorComponent } from 'src/app/common/components/role-selector/role-selector.component';
+import { RoleSelectorComponent } from 'src/app/common/standalone-components/role-selector/role-selector.component';
 
 
 @NgModule({
