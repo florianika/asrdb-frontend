@@ -25,6 +25,7 @@ import { EntityTypeSelectorComponent } from 'src/app/common/standalone-component
 import { PermissionSelectorComponent } from 'src/app/common/standalone-components/permission-selector/permission-selector.component';
 import { RoleSelectorComponent } from 'src/app/common/standalone-components/role-selector/role-selector.component';
 import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
+import { RoleDeleteDialogComponent } from './role-delete-dialog/role-delete-dialog.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { VariableSelectorComponent } from 'src/app/common/standalone-components/
     RoleManagementComponent,
     RoleTableComponent,
     RoleCreateDialogComponent,
-    RoleEditDialogComponent
+    RoleEditDialogComponent,
+    RoleDeleteDialogComponent
   ],
   imports: [
     CommonModule,

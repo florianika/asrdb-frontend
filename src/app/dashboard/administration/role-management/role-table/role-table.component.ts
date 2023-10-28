@@ -33,4 +33,8 @@ export class RoleTableComponent implements AfterViewInit {
   editRole(row: RolePermissions) {
     this.roleManagementService.openUpdateRoleDialog(row);
   }
+
+  deleteRow(row: RolePermissions) {
+    this.roleManagementService.openDeleteRoleDialog(row);
+  }
 }
