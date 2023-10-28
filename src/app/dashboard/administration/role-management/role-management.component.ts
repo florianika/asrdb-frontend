@@ -54,4 +54,11 @@ export class RoleManagementComponent implements OnInit {
   getDatasource(): MatTableDataSource<RolePermissions> {
     return this.dataSources.get(this.datasourceToUse) ?? new MatTableDataSource<RolePermissions>();
   }
+
+  createRole() {
+    this.roleManagementService.openCreateRoleDialog();
+  }
+
+  updateRole() {
+  }
 }

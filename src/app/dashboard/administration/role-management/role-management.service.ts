@@ -3,8 +3,9 @@ import {BehaviorSubject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
-import {RolePermissionGetResponse, RolePermissions} from "../../../model/RolePermissions.model";
+import {NewRolePermission, RolePermissionGetResponse, RolePermissions} from "../../../model/RolePermissions.model";
 import {environment} from "../../../../environments/environment";
+import { RoleCreateDialogComponent } from './role-create-dialog/role-create-dialog.component';
 
 @Injectable()
 export class RoleManagementService {
@@ -35,6 +36,32 @@ export class RoleManagementService {
         this.showMessage("Could not load the role permissions. Please reload the page to try again.");
       }
     });
+  }
+
+  openCreateRoleDialog() {
+    this.dialog.open(RoleCreateDialogComponent).afterClosed().subscribe((newRole: NewRolePermission) => {
+      if (!!newRole) {
+        this.createRole(newRole);
+      }
+    });
+  }
+
+  private createRole(newRole: NewRolePermission) {
+    this.loading.next(true);
+    this.httpClient.post<any>(environment.base_url + 'admin/permissions', JSON.stringify(newRole), {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).subscribe({
+      next: () => {
+        this.loading.next(false);
+        this.getRolePermissions();
+      },
+      error: (err) => {
+        this.loading.next(false);
+        this.showMessage("Could not create the role permissions. Please try again or contact the administrator.");
+      }
+    })
   }
 
   private showMessage(message: string) {
