@@ -30,7 +30,7 @@ export class RoleTableComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  editAccount(row: RolePermissions) {
-
+  editRole(row: RolePermissions) {
+    this.roleManagementService.openUpdateRoleDialog(row);
   }
 }

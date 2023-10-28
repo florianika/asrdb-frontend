@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
-import {NewRolePermission, RolePermissionGetResponse, RolePermissions} from "../../../model/RolePermissions.model";
-import {environment} from "../../../../environments/environment";
+import { BehaviorSubject } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog } from "@angular/material/dialog";
+import { NewRolePermission, Permission, RolePermissionGetResponse, RolePermissions } from "../../../model/RolePermissions.model";
+import { environment } from "../../../../environments/environment";
 import { RoleCreateDialogComponent } from './role-create-dialog/role-create-dialog.component';
+import { RoleEditDialogComponent } from './role-edit-dialog/role-edit-dialog.component';
 
 @Injectable()
 export class RoleManagementService {
@@ -46,6 +47,16 @@ export class RoleManagementService {
     });
   }
 
+  openUpdateRoleDialog(role: RolePermissions) {
+    this.dialog.open(RoleEditDialogComponent, { data: { permission: role.permission } })
+      .afterClosed()
+      .subscribe((permission: Permission) => {
+        if (!!permission) {
+          this.updateRole(role.id, permission);
+        }
+      });
+  }
+
   private createRole(newRole: NewRolePermission) {
     this.loading.next(true);
     this.httpClient.post<any>(environment.base_url + 'admin/permissions', JSON.stringify(newRole), {
@@ -61,7 +72,25 @@ export class RoleManagementService {
         this.loading.next(false);
         this.showMessage("Could not create the role permissions. Please try again or contact the administrator.");
       }
-    })
+    });
+  }
+
+  private updateRole(id: number, permission: Permission) {
+    this.loading.next(true);
+    this.httpClient.patch<any>(environment.base_url + 'admin/permissions/' + id, JSON.stringify({permission}), {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).subscribe({
+      next: () => {
+        this.loading.next(false);
+        this.getRolePermissions();
+      },
+      error: (err) => {
+        this.loading.next(false);
+        this.showMessage("Could not update the role permissions. Please try again or contact the administrator.");
+      }
+    });
   }
 
   private showMessage(message: string) {

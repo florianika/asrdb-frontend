@@ -1,1 +1,8 @@
-<p>role-edit-dialog works!</p>
+<h1 mat-dialog-title i18n>Edit role</h1>
+<div mat-dialog-content>
+  <asrdb-permission-selector [(permission)]="permission" [required]="true"></asrdb-permission-selector>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close] i18n>Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="permission" cdkFocusInitial i18n>Update role</button>
+</div>
