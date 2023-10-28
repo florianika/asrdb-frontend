@@ -12,7 +12,7 @@ import {environment} from "../../../environments/environment";
 export class AuthStateService implements OnDestroy {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
   private readonly SIGNIN_URL = '/auth/signin';
-  private readonly SIGNOUT_URL = "/auth/signuout";
+  private readonly SIGNOUT_URL = "/auth/signout";
 
 
   private tokens: SigninResponse | null;

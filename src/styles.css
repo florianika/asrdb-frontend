@@ -22,3 +22,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .table-loader {
   margin-top: -50px;
 }
+
+.table {
+  margin-bottom: 0px !important;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: row;
+}

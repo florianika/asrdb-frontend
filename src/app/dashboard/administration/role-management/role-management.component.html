@@ -1,1 +1,27 @@
-<p>role-management works!</p>
+<div *ngIf="dataSourceObservable | async">
+  <div class="page-header">
+    <h1 i18n>Role Management</h1>
+    <span class="spacer"></span>
+  </div>
+  <mat-card>
+    <div class="role-management-table-header">
+      <mat-form-field>
+        <mat-label i18n>Role</mat-label>
+        <mat-select [(ngModel)]="datasourceToUse">
+          <mat-option value="ADMIN" i18n>ADMIN</mat-option>
+          <mat-option value="SUPERVISOR" i18n>SUPERVISOR</mat-option>
+          <mat-option value="ENUMERATOR" i18n>ENUMERATOR</mat-option>
+          <mat-option value="CLIENT" i18n>CLIENT</mat-option>
+          <mat-option value="PUBLISHER" i18n>PUBLISHER</mat-option>
+          <mat-option value="USER" i18n>USER</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <span class="spacer"></span>
+      <button mat-fab color="primary" class="add-role-button" aria-label="Example icon button with a delete icon">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <asrdb-role-table [role]="datasourceToUse" [dataSource]="getDatasource()"></asrdb-role-table>
+  </mat-card>
+</div>
