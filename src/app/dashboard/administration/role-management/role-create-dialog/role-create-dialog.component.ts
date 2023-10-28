@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NewRolePermission, RolePermissions } from 'src/app/model/RolePermissions.model';
+import { NewRolePermission } from 'src/app/model/RolePermissions.model';
 
 @Component({
   selector: 'asrdb-role-create-dialog',

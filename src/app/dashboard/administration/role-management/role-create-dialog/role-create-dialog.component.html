@@ -1,41 +1,9 @@
 <h1 mat-dialog-title i18n>Create role</h1>
 <div mat-dialog-content>
-  <mat-form-field class="full-width">
-    <mat-label i18n>Role</mat-label>
-    <mat-select [(ngModel)]="newRole.role">
-      <mat-option value="ADMIN" i18n>ADMIN</mat-option>
-      <mat-option value="SUPERVISOR" i18n>SUPERVISOR</mat-option>
-      <mat-option value="ENUMERATOR" i18n>ENUMERATOR</mat-option>
-      <mat-option value="CLIENT" i18n>CLIENT</mat-option>
-      <mat-option value="PUBLISHER" i18n>PUBLISHER</mat-option>
-      <mat-option value="USER" i18n>USER</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="full-width">
-    <mat-label i18n>Entity type</mat-label>
-    <mat-select [(ngModel)]="newRole.entityType">
-      <mat-option value="BUILDING" i18n>BUILDING</mat-option>
-      <mat-option value="ENTRANCE" i18n>ENTRANCE</mat-option>
-      <mat-option value="DWELLING" i18n>DWELLING</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="full-width">
-    <mat-label i18n>Variable</mat-label>
-    <mat-select [(ngModel)]="newRole.variableName">
-      <mat-option value="TEST" i18n>Test variable</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="full-width">
-    <mat-label i18n>Permission</mat-label>
-    <mat-select [(ngModel)]="newRole.permission">
-      <mat-option value="NONE" i18n>NONE</mat-option>
-      <mat-option value="READ" i18n>READ</mat-option>
-      <mat-option value="WRITE" i18n>WRITE</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <asrdb-role-selector [(role)]="newRole.role"></asrdb-role-selector>
+  <asrdb-entity-type-selector [(entityType)]="newRole.entityType"></asrdb-entity-type-selector>
+  <asrdb-variable-selector [(variable)]="newRole.variableName"></asrdb-variable-selector>
+  <asrdb-permission-selector [(permission)]="newRole.permission"></asrdb-permission-selector>
 </div>
 <div mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close] i18n>Cancel</button>

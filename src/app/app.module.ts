@@ -39,7 +39,7 @@ import {HttpClientModule} from "@angular/common/http";
     MatDividerModule,
     MatMenuModule,
     MatSnackBarModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [AuthStateService],
   bootstrap: [AppComponent]

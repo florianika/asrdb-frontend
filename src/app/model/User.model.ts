@@ -1,4 +1,4 @@
-import { Role } from "./JWT.model";
+import { Role } from "./RolePermissions.model";
 
 export type User = {
   id: string,

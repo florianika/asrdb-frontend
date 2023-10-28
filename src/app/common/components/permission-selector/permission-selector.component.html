@@ -1,0 +1,8 @@
+<mat-form-field class="full-width">
+  <mat-label i18n>Permission</mat-label>
+  <mat-select [(ngModel)]="permission" (selectionChange)="changeRole($event)">
+    <mat-option value="NONE" i18n>NONE</mat-option>
+    <mat-option value="READ" i18n>READ</mat-option>
+    <mat-option value="WRITE" i18n>WRITE</mat-option>
+  </mat-select>
+</mat-form-field>

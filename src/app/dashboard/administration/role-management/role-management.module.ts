@@ -21,6 +21,10 @@ import { RoleTableComponent } from './role-table/role-table.component';
 import { MatCardModule } from '@angular/material/card';
 import { RoleCreateDialogComponent } from './role-create-dialog/role-create-dialog.component';
 import { RoleEditDialogComponent } from './role-edit-dialog/role-edit-dialog.component';
+import { RoleSelectorComponent } from 'src/app/common/components/role-selector/role-selector.component';
+import { EntityTypeSelectorComponent } from 'src/app/common/components/entity-type-selector/entity-type-selector.component';
+import { VariableSelectorComponent } from 'src/app/common/components/variable-selector/variable-selector.component';
+import { PermissionSelectorComponent } from 'src/app/common/components/permission-selector/permission-selector.component';
 
 
 @NgModule({
@@ -46,7 +50,11 @@ import { RoleEditDialogComponent } from './role-edit-dialog/role-edit-dialog.com
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+    RoleSelectorComponent,
+    EntityTypeSelectorComponent,
+    VariableSelectorComponent,
+    PermissionSelectorComponent
   ],
   providers: [
     RoleManagementService

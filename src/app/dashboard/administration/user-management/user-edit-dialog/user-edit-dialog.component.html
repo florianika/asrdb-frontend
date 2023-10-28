@@ -1,16 +1,6 @@
 <h1 mat-dialog-title i18n>Update user {{data.name}} {{data.lastName}}</h1>
 <div mat-dialog-content>
-  <mat-form-field>
-    <mat-label i18n>Role</mat-label>
-    <mat-select [(ngModel)]="role">
-      <mat-option value="ADMIN">
-        Admin
-      </mat-option>
-      <mat-option value="USER">
-        User
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <asrdb-role-selector [role]="role"></asrdb-role-selector>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close] i18n>Cancel</button>
