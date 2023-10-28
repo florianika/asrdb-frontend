@@ -1,3 +1,5 @@
+import { Role } from "./RolePermissions.model"
+
 export type JWT = {
   nameid: string,
   id: string,
@@ -11,7 +13,6 @@ export type JWT = {
   iss: string,
   aud: string
 }
-export type Role = "ADMIN" | "USER";
 export type SigninResponse = {
   "idToken": string,
   "accessToken": string,

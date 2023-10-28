@@ -10,6 +10,13 @@ export type RolePermissions = {
   "permission": Permission
 }
 
+export type NewRolePermission = {
+  "role": Role
+  "entityType": EntityType,
+  "variableName": string,
+  "permission": Permission
+}
+
 export type RolePermissionGetResponse = {
   "rolePermissionsDTO": RolePermissions[]
 }

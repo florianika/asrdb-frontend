@@ -1,10 +1,11 @@
 import {Injectable, isDevMode, OnDestroy} from '@angular/core';
 import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {JWT, Role, SigninResponse} from 'src/app/model/JWT.model';
+import {JWT, SigninResponse} from 'src/app/model/JWT.model';
 import {Router} from '@angular/router';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
+import { Role } from 'src/app/model/RolePermissions.model';
 
 @Injectable({
   providedIn: 'root'
@@ -180,6 +181,6 @@ export class AuthStateService implements OnDestroy {
         }
         this.refreshToken();
       }
-    }, 3000);
+    }, 3000) as any;
   }
 }

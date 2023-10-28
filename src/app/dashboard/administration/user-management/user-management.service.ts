@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
-import { Role } from 'src/app/model/JWT.model';
 import { User } from 'src/app/model/User.model';
 import { environment } from 'src/environments/environment';
 import { UserEditDialogComponent } from './user-edit-dialog/user-edit-dialog.component';
 import { UserViewDialogComponent } from './user-view-dialog/user-view-dialog.component';
+import { Role } from 'src/app/model/RolePermissions.model';
 
 @Injectable()
 export class UserManagementService {

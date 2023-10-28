@@ -1,0 +1,11 @@
+<h1 mat-dialog-title i18n>Create role</h1>
+<div mat-dialog-content>
+  <asrdb-role-selector [(role)]="newRole.role" [required]="true"></asrdb-role-selector>
+  <asrdb-entity-type-selector [(entityType)]="newRole.entityType" [required]="true"></asrdb-entity-type-selector>
+  <asrdb-variable-selector [(variable)]="newRole.variableName" [required]="true"></asrdb-variable-selector>
+  <asrdb-permission-selector [(permission)]="newRole.permission" [required]="true"></asrdb-permission-selector>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close] i18n>Cancel</button>
+  <button mat-raised-button color="primary" (click)="createRole()" cdkFocusInitial i18n>Create role</button>
+</div>
