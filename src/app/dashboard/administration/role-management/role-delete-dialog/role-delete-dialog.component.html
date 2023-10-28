@@ -1,0 +1,12 @@
+<h1 mat-dialog-title i18n style="color: red;">Delete role</h1>
+<div mat-dialog-content>
+  <p>Are you sure you want to delete this role? This action cannot be reverted.</p>
+  <asrdb-role-selector [(role)]="role.role" [disabled]="true"></asrdb-role-selector>
+  <asrdb-entity-type-selector [(entityType)]="role.entityType" [disabled]="true"></asrdb-entity-type-selector>
+  <asrdb-variable-selector [(variable)]="role.variableName" [disabled]="true"></asrdb-variable-selector>
+  <asrdb-permission-selector [(permission)]="role.permission" [disabled]="true"></asrdb-permission-selector>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close] i18n>Cancel</button>
+  <button mat-raised-button color="warn" (click)="deleteRole()" cdkFocusInitial i18n>Delete role</button>
+</div>

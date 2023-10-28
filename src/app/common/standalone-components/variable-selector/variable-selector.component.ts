@@ -16,6 +16,7 @@ import { MatSelectModule, MatSelectChange } from '@angular/material/select';
 })
 export class VariableSelectorComponent {
   @Input() required = false;
+  @Input() disabled = false;
   @Input() variable: string = "";
   @Output() variableChange = new EventEmitter<string>();
 

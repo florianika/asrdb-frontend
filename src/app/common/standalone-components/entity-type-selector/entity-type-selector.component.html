@@ -1,6 +1,6 @@
 <mat-form-field class="full-width">
   <mat-label i18n>Entity type</mat-label>
-  <mat-select [(ngModel)]="entityType" (selectionChange)="changeRole($event)" [required]="required">
+  <mat-select [(ngModel)]="entityType" (selectionChange)="changeRole($event)" [required]="required" [disabled]="disabled">
     <mat-option value="BUILDING" i18n>BUILDING</mat-option>
     <mat-option value="ENTRANCE" i18n>ENTRANCE</mat-option>
     <mat-option value="DWELLING" i18n>DWELLING</mat-option>
