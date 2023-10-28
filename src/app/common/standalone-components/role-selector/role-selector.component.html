@@ -1,6 +1,6 @@
 <mat-form-field class="full-width">
   <mat-label i18n>Role</mat-label>
-  <mat-select [(ngModel)]="role" (selectionChange)="changeRole($event)" [required]="required">
+  <mat-select [(ngModel)]="role" (selectionChange)="changeRole($event)" [required]="required" [disabled]="disabled">
     <mat-option value="ADMIN" i18n>ADMIN</mat-option>
     <mat-option value="SUPERVISOR" i18n>SUPERVISOR</mat-option>
     <mat-option value="ENUMERATOR" i18n>ENUMERATOR</mat-option>

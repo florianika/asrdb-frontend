@@ -17,6 +17,7 @@ import { Permission, Role } from 'src/app/model/RolePermissions.model';
 })
 export class PermissionSelectorComponent {
   @Input() required = false;
+  @Input() disabled = false;
   @Input() permission: Permission = "NONE";
   @Output() permissionChange = new EventEmitter<Permission>();
 

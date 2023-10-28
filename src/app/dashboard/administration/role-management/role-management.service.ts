@@ -6,6 +6,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {NewRolePermission, RolePermissionGetResponse, RolePermissions} from "../../../model/RolePermissions.model";
 import {environment} from "../../../../environments/environment";
 import { RoleCreateDialogComponent } from './role-create-dialog/role-create-dialog.component';
+import { RoleDeleteDialogComponent } from './role-delete-dialog/role-delete-dialog.component';
 
 @Injectable()
 export class RoleManagementService {
@@ -46,6 +47,16 @@ export class RoleManagementService {
     });
   }
 
+  openDeleteRoleDialog(role: RolePermissions) {
+    this.dialog.open(RoleDeleteDialogComponent, { data: { role } })
+      .afterClosed()
+      .subscribe((id: number) => {
+        if (!!id) {
+          this.deleteRole(id);
+        }
+      });
+  }
+
   private createRole(newRole: NewRolePermission) {
     this.loading.next(true);
     this.httpClient.post<any>(environment.base_url + 'admin/permissions', JSON.stringify(newRole), {
@@ -62,6 +73,20 @@ export class RoleManagementService {
         this.showMessage("Could not create the role permissions. Please try again or contact the administrator.");
       }
     })
+  }
+
+  private deleteRole(id: number) {
+    this.loading.next(true);
+    this.httpClient.delete<any>(environment.base_url + 'admin/permissions/' + id).subscribe({
+      next: () => {
+        this.loading.next(false);
+        this.getRolePermissions();
+      },
+      error: (err) => {
+        this.loading.next(false);
+        this.showMessage("Could not delete the role permissions. Please try again or contact the administrator.");
+      }
+    });
   }
 
   private showMessage(message: string) {
