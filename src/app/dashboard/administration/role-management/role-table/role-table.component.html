@@ -33,6 +33,7 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="editRole(row)" i18n>Edit</button>
             <button mat-menu-item (click)="deleteRow(row)" i18n>Delete</button>
           </mat-menu>
         </td>
