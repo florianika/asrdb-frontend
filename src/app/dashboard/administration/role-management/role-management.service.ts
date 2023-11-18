@@ -88,7 +88,7 @@ export class RoleManagementService {
 
   private updateRole(id: number, permission: Permission) {
     this.loading.next(true);
-    this.httpClient.patch<any>(environment.base_url + 'admin/permissions/' + id, JSON.stringify({ permission }), {
+    this.httpClient.patch<any>(environment.base_url + 'admin/permissions/' + id + `/rights/${permission}`, {}, {
       headers: {
         "Content-Type": "application/json"
       }
