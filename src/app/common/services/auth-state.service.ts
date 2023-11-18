@@ -63,6 +63,7 @@ export class AuthStateService implements OnDestroy {
           }
           this.tokens.refreshToken = newToken.refreshToken;
           this.tokens.accessToken = newToken.accessToken;
+          this.tokens.idToken = newToken.idToken;
           this.checkTokenValidity();
         },
         error: () => {

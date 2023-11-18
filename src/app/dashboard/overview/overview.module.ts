@@ -11,6 +11,8 @@ import { TablesComponent } from './components/tables/tables.component';
 import { MatCardModule } from '@angular/material/card';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatTableModule } from '@angular/material/table';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { MapComponent } from './components/map/map.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -19,7 +21,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     OverviewComponent,
     GraphsComponent,
     MapsComponent,
-    TablesComponent
+    TablesComponent,
+    MapComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +30,10 @@ PlotlyModule.plotlyjs = PlotlyJS;
     PlotlyModule,
     MatCardModule,
     GoogleMapsModule,
-    MatTableModule
+    MatTableModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    })
   ]
 })
 export class OverviewModule { }
