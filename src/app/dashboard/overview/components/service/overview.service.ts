@@ -1,14 +1,18 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import OAuthInfo from "@arcgis/core/identity/OAuthInfo";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import esriId from "@arcgis/core/identity/IdentityManager";
 import esriConfig from "@arcgis/core/config"
+import { Subject } from "rxjs/internal/Subject";
+import { AuthStateService } from "src/app/common/services/auth-state.service";
+import { takeUntil } from "rxjs";
 
 @Injectable()
-export class OverviewService {
+export class OverviewService implements OnDestroy {
   private ESRI_AUTH_KEY = 'ESRI-AUTH';
   private portalUrl = "https://gislab.teamdev.it/portal";
   private apiKey = "7pVCdD54JxE7lOPm";
+  private subscription = new Subject<boolean>();
 
   uniqueValueInfos = [
     {
@@ -104,6 +108,19 @@ export class OverviewService {
         content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi."
       }
     });
+  }
+
+  constructor(private authState: AuthStateService) {
+    this.authState.getLoginStateAsObservable().pipe(takeUntil(this.subscription)).subscribe((loginState: boolean) => {
+      if (!loginState) {
+        localStorage.removeItem(this.ESRI_AUTH_KEY);
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.next(true);
+    this.subscription.complete();
   }
 
   getSymbol(color: string) {
