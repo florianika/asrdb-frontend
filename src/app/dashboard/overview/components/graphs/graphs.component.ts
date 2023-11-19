@@ -1,6 +1,4 @@
 import { Component, Input, OnInit, isDevMode } from '@angular/core';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import { EChartsOption } from 'echarts';
 import { OverviewService } from '../service/overview.service';
 import { GraphsService } from './graphs.service';
 
@@ -12,7 +10,6 @@ import { GraphsService } from './graphs.service';
 export class GraphsComponent implements OnInit {
   @Input() type!: 'pie' | 'line' | 'bar';
   public graph!: any;
-  public options: EChartsOption | null = null;
 
   constructor(private overviewService: OverviewService, private graphsService: GraphsService) {
   }
