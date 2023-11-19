@@ -6,6 +6,10 @@ import esriConfig from "@arcgis/core/config"
 
 @Injectable()
 export class OverviewService {
+  private ESRI_AUTH_KEY = 'ESRI-AUTH';
+  private portalUrl = "https://gislab.teamdev.it/portal";
+  private apiKey = "7pVCdD54JxE7lOPm";
+
   uniqueValueInfos = [
     {
       value: 1,
@@ -115,17 +119,33 @@ export class OverviewService {
   }
 
   inizializeAuth(): void {
-    const portalUrl = "https://gislab.teamdev.it/portal"
-    const apiKey = "7pVCdD54JxE7lOPm"
-    esriConfig.portalUrl = portalUrl;
-    esriConfig.apiKey = apiKey;
+    this.initIdentityProvider();
+    this.initEsriConfig();
+    this.registerOAuth();
+    esriId.on('credential-create', () => {
+      localStorage.setItem(this.ESRI_AUTH_KEY, JSON.stringify(esriId.toJSON()));
+    })
+  }
 
-    const oAuthInfo = new OAuthInfo({
-      portalUrl: portalUrl,
-      appId: apiKey,
-      flowType: "auto", // default that uses two-step flow
-      popup: false
-    });
-    esriId.registerOAuthInfos([oAuthInfo]);
+  private initEsriConfig() {
+    esriConfig.portalUrl = this.portalUrl;
+    esriConfig.apiKey = this.apiKey;
+  }
+
+  private initIdentityProvider() {
+    const config = localStorage.getItem(this.ESRI_AUTH_KEY);
+    if (config) {
+      esriId.initialize(JSON.parse(config));
+    }
+  }
+
+  private registerOAuth() {
+    // const oAuthInfo = new OAuthInfo({
+    //   portalUrl: portalUrl,
+    //   appId: apiKey,
+    //   flowType: "auto", // default that uses two-step flow
+    //   popup: true
+    // });
+    // esriId.registerOAuthInfos([oAuthInfo]);
   }
 }

@@ -13,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { MapComponent } from './components/map/map.component';
 import { OverviewService } from './components/service/overview.service';
+import { GraphsService } from './components/graphs/graphs.service';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -34,6 +35,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
       echarts: () => import('echarts')
     })
   ],
-  providers: [OverviewService]
+  providers: [OverviewService, GraphsService]
 })
 export class OverviewModule { }

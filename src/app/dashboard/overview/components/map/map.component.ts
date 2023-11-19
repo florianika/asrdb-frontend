@@ -3,12 +3,12 @@ import {
   OnInit,
   ViewChild,
   ElementRef,
-  OnDestroy,
-  isDevMode
+  OnDestroy
 } from "@angular/core";
 
 import WebMap from '@arcgis/core/WebMap';
 import MapView from '@arcgis/core/views/MapView';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer'
 import Popup from '@arcgis/core/widgets/Popup'
 import { OverviewService } from "../service/overview.service";
 
@@ -21,6 +21,8 @@ export class MapComponent implements OnInit, OnDestroy {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
 
   public view: MapView | null = null;
+  private bldlayer: FeatureLayer = this.overviewService.bldLayer;
+  private entlayer = this.overviewService.entLayer;
 
   constructor(private overviewService: OverviewService) {}
 
@@ -28,7 +30,7 @@ export class MapComponent implements OnInit, OnDestroy {
     const container = this.mapViewEl.nativeElement;
     const webmap = new WebMap({
       basemap: "hybrid",
-      layers: [this.overviewService.bldLayer, this.overviewService.entLayer]
+      layers: [this.bldlayer, this.entlayer]
     });
 
     this.view = new MapView({
@@ -49,7 +51,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.view.when(() => {
-      void this.view?.center.clone();
+      const centerPoint = this.view?.center.clone();
 
       this.view?.popup.set("dockOptions", {
         breakpoint: false,
@@ -58,19 +60,17 @@ export class MapComponent implements OnInit, OnDestroy {
       });
     });
 
-    await this.view.whenLayerView(this.overviewService.bldLayer);
-    this.view.goTo(this.overviewService.bldLayer.fullExtent);
+    await this.view.whenLayerView(this.bldlayer);
+    this.view.goTo(this.bldlayer.fullExtent);
   }
 
   ngOnInit(): any {
-    // this.overviewService.inizializeAuth();
+    this.overviewService.inizializeAuth();
 
     // Initialize MapView and return an instance of MapView
     this.initializeMap().then(() => {
-      if (isDevMode()) {
-        console.log('The map is ready.')
-      }
-    });
+      console.log('The map is ready.')
+    })
   }
 
   ngOnDestroy(): void {

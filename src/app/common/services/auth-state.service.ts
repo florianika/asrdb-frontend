@@ -112,7 +112,7 @@ export class AuthStateService implements OnDestroy {
 
   getSurname(): string {
     const jwtToken = this.getDecodedJWT();
-    return jwtToken?.surname ?? '';
+    return jwtToken?.family_name ?? '';
   }
 
   getFullName(): string {
