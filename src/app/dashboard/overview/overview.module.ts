@@ -6,7 +6,6 @@ import { OverviewComponent } from './overview.component';
 import { PlotlyModule } from 'angular-plotly.js';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { GraphsComponent } from './components/graphs/graphs.component';
-import { MapsComponent } from './components/maps/maps.component';
 import { TablesComponent } from './components/tables/tables.component';
 import { MatCardModule } from '@angular/material/card';
 import { GoogleMapsModule } from '@angular/google-maps';
@@ -20,7 +19,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
   declarations: [
     OverviewComponent,
     GraphsComponent,
-    MapsComponent,
     TablesComponent,
     MapComponent
   ],

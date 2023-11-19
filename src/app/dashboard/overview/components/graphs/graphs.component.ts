@@ -9,6 +9,22 @@ import { EChartsOption } from 'echarts';
 })
 export class GraphsComponent implements OnInit {
 
+  public graph = {
+    data: [{
+      values: [] as string[],
+      labels: [] as string[],
+      type: 'pie'
+    }],
+    layout: {
+      autosize: true,
+      title: 'A Fancy Plot',
+      textinfo: "label+percent",
+      textposition: "outside",
+      automargin: true,
+      legend: {orientation: 'h', side: 'top'}
+    },
+  };
+
   private getSymbol(color: string) {
     return {
       type: "simple-fill", // autocasts as new SimpleFillSymbol()
@@ -21,6 +37,44 @@ export class GraphsComponent implements OnInit {
     };
   }
 
+  private uniqueValueInfos = [
+    {
+      value: 1,
+      label: "Permitted (linked to a construction permission)",
+      symbol: this.getSymbol("#00BF7")
+    },
+    {
+      value: 2,
+      label: "Under construction (linked to a construction permission)",
+      symbol: this.getSymbol("#00B4C5")
+    },
+    {
+      value: 3,
+      label: "Completed (linked to a construction permission)",
+      symbol: this.getSymbol("#5BA300")
+    },
+    {
+      value: 4,
+      label: "Existing",
+      symbol: this.getSymbol("#89CE00")
+    },
+    {
+      value: 5,
+      label: "Abandoned (residential and non-residential use excluded)",
+      symbol: this.getSymbol("#E6308A")
+    },
+    {
+      value: 6,
+      label: "Demolished (not existing anymore)",
+      symbol: this.getSymbol("#B51963")
+    },
+    {
+      value: 9,
+      label: "Unknown building status",
+      symbol: this.getSymbol("#F57600")
+    }
+  ];
+
   bldlayer: FeatureLayer = new FeatureLayer({
     title: "ASRDB Buildings",
     url: "https://gislab.teamdev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/1",
@@ -30,43 +84,7 @@ export class GraphsComponent implements OnInit {
       defaultSymbol: this.getSymbol("#FAFAFA"),
       defaultLabel: "Other",
       field: "BldStatus",
-      uniqueValueInfos: [
-        {
-          value: 1,
-          label: "Permitted (linked to a construction permission)",
-          symbol: this.getSymbol("#00BF7")
-        },
-        {
-          value: 2,
-          label: "Under construction (linked to a construction permission)",
-          symbol: this.getSymbol("#00B4C5")
-        },
-        {
-          value: 3,
-          label: "Completed (linked to a construction permission)",
-          symbol: this.getSymbol("#5BA300")
-        },
-        {
-          value: 4,
-          label: "Existing",
-          symbol: this.getSymbol("#89CE00")
-        },
-        {
-          value: 5,
-          label: "Abandoned (residential and non-residential use excluded)",
-          symbol: this.getSymbol("#E6308A")
-        },
-        {
-          value: 6,
-          label: "Demolished (not existing anymore)",
-          symbol: this.getSymbol("#B51963")
-        },
-        {
-          value: 9,
-          label: "Unknown building status",
-          symbol: this.getSymbol("#F57600")
-        }
-      ]
+      uniqueValueInfos: this.uniqueValueInfos
     } as __esri.RendererProperties,
     minScale: 0,
     maxScale: 0,
@@ -100,43 +118,43 @@ export class GraphsComponent implements OnInit {
   options: EChartsOption | null = null;
   async initializeChart(): Promise<any> {
     const data = await this.getStats(this.bldlayer);
-    this.options = {
-      tooltip: {
-        trigger: 'item'
-      },
-      legend: {
-        top: '5%',
-        left: 'center'
-      },
-      series: [
-        {
-          name: 'Try Pie',
-          type: 'pie',
-          radius: ['40%', '70%'],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#fff',
-            borderWidth: 2
-          },
-          label: {
-            show: false,
-            position: 'center'
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 40,
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: data
-        }
-      ]
-    };
+    // this.options = {
+    //   tooltip: {
+    //     trigger: 'item'
+    //   },
+    //   legend: {
+    //     top: '5%',
+    //     left: 'center'
+    //   },
+    //   series: [
+    //     {
+    //       name: 'Try Pie',
+    //       type: 'pie',
+    //       radius: ['40%', '70%'],
+    //       avoidLabelOverlap: false,
+    //       itemStyle: {
+    //         borderRadius: 10,
+    //         borderColor: '#fff',
+    //         borderWidth: 2
+    //       },
+    //       label: {
+    //         show: false,
+    //         position: 'center'
+    //       },
+    //       emphasis: {
+    //         label: {
+    //           show: true,
+    //           fontSize: 40,
+    //           fontWeight: 'bold'
+    //         }
+    //       },
+    //       labelLine: {
+    //         show: false
+    //       },
+    //       data: data
+    //     }
+    //   ]
+    // };
   }
 
   private async getStats(layer: FeatureLayer): Promise<{ name: any, value: any }[]> {
@@ -154,7 +172,14 @@ export class GraphsComponent implements OnInit {
 
     const statsResults = await layer.queryFeatures(query);
     const chartData = statsResults.features.map((feature) => { return { name: feature.attributes.BldStatus, value: feature.attributes.value } });
-    console.log(chartData)
+    const data = statsResults.features.map((feature) => feature.attributes.value);
+    const labels = statsResults.features.map((feature) => feature.attributes.BldStatus).map((label) => {
+      const newLabel = this.uniqueValueInfos.find(o => o.value === label);
+      return newLabel?.label ?? label;
+    });
+    this.graph.data[0].values = data;
+    this.graph.data[0].labels = labels;
+    console.log(chartData);
     return chartData;
   }
 
