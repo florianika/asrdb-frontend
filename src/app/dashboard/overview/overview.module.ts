@@ -13,6 +13,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MapComponent } from './components/map/map.component';
 import { OverviewService } from './components/service/overview.service';
 import { GraphsService } from './components/graphs/graphs.service';
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -30,6 +34,10 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatCardModule,
     GoogleMapsModule,
     MatTableModule,
+    MatPaginatorModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [OverviewService, GraphsService]
 })

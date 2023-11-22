@@ -144,6 +144,17 @@ export class OverviewService implements OnDestroy {
     })
   }
 
+  async getBuildingData(): Promise<__esri.FeatureSet> {
+    const query = this.bldLayer.createQuery();
+    query.where = "1=1";
+    query.outFields = ["*"];
+    query.returnGeometry = false;
+    query.orderByFields = [`BldStatus`];
+    query.outStatistics = []
+
+    return await this.bldLayer.queryFeatures(query);
+  }
+
   private initEsriConfig() {
     esriConfig.portalUrl = this.portalUrl;
     esriConfig.apiKey = this.apiKey;
