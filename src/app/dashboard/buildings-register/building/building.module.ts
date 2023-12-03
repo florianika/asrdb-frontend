@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { MatSortModule } from '@angular/material/sort';
+import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MatSortModule } from '@angular/material/sort';
     MatSortModule
   ],
   providers: [
-    CommonBuildingService
+    CommonBuildingService,
+    CommonEsriAuthService
   ]
 })
 export class BuildingModule { }

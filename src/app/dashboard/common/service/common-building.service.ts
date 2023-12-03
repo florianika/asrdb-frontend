@@ -6,15 +6,12 @@ import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import esriId from "@arcgis/core/identity/IdentityManager";
 import esriConfig from "@arcgis/core/config"
 import { QueryFilter } from '../model/query-filter';
+import { CommonEsriAuthService } from './common-esri-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonBuildingService {
-  private ESRI_AUTH_KEY = 'ESRI-AUTH';
-  private portalUrl = "https://gislab.teamdev.it/portal";
-  private apiKey = "7pVCdD54JxE7lOPm";
-  private subscription = new Subject<boolean>();
 
   uniqueValueInfos = [
     {
@@ -96,36 +93,7 @@ export class CommonBuildingService {
     });
   }
 
-  get entLayer(): FeatureLayer {
-    return new FeatureLayer({
-      title: "ASRDB Entrances",
-      url: "https://gislab.teamdev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/0",
-      outFields: ["*"],
-      minScale: 0,
-      maxScale: 0,
-      // create a new popupTemplate for the layer
-      popupTemplate: {
-        // autocasts as new PopupTemplate()
-        title: "ASRDB Entrance {GlobalID}",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi."
-      }
-    });
-  }
-
-  constructor(private authState: AuthStateService) {
-    this.authState.getLoginStateAsObservable()
-      .pipe(takeUntil(this.subscription))
-      .subscribe((loginState: boolean) => {
-        if (!loginState) {
-          localStorage.removeItem(this.ESRI_AUTH_KEY);
-        }
-      });
-    this.inizializeAuth();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.next(true);
-    this.subscription.complete();
+  constructor(private esriAuthService: CommonEsriAuthService) {
   }
 
   getSymbol(color: string) {
@@ -140,29 +108,8 @@ export class CommonBuildingService {
     };
   }
 
-  inizializeAuth(): void {
-    this.initIdentityProvider();
-    this.initEsriConfig();
-    this.registerOAuth();
-    esriId.on('credential-create', () => {
-      localStorage.setItem(this.ESRI_AUTH_KEY, JSON.stringify(esriId.toJSON()));
-    })
-  }
-
   getBuildingData(filter?: Partial<QueryFilter>): Observable<any> {
     return defer(() => from(this.fetchBuildingData(filter)));
-  }
-
-  async getEntranceData(filter?: Partial<QueryFilter>): Promise<__esri.FeatureSet> {
-    const query = this.entLayer.createQuery();
-    query.start = 0;
-    query.num = 5;
-    query.where = filter?.where ?? "1=1";
-    query.outFields = filter?.outFields ?? ["*"];
-    query.returnGeometry = false;
-    query.orderByFields = filter?.orderByFields ?? [`BldStatus`];
-    query.outStatistics = [];
-    return await this.entLayer.queryFeatures(query);
   }
 
   private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any} | null> {
@@ -186,27 +133,5 @@ export class CommonBuildingService {
     } catch (e) {
       return null;
     }
-  }
-
-  private initEsriConfig() {
-    esriConfig.portalUrl = this.portalUrl;
-    esriConfig.apiKey = this.apiKey;
-  }
-
-  private initIdentityProvider() {
-    const config = localStorage.getItem(this.ESRI_AUTH_KEY);
-    if (config) {
-      esriId.initialize(JSON.parse(config));
-    }
-  }
-
-  private registerOAuth() {
-    // const oAuthInfo = new OAuthInfo({
-    //   portalUrl: portalUrl,
-    //   appId: apiKey,
-    //   flowType: "auto", // default that uses two-step flow
-    //   popup: true
-    // });
-    // esriId.registerOAuthInfos([oAuthInfo]);
   }
 }
