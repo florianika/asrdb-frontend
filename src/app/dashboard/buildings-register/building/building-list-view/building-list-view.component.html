@@ -1,37 +1,37 @@
-<div class="example-container mat-elevation-z8">
-  <div class="example-loading-shade" *ngIf="isLoadingResults">
+<div class="asrbd-container mat-elevation-z8">
+  <div class="asrbd-loading-shade" *ngIf="isLoadingResults">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
   </div>
 
-  <div class="example-table-container">
+  <div class="asrbd-table-container">
 
-    <table mat-table [dataSource]="data" class="example-table" matSort>
+    <table mat-table [dataSource]="data" class="asrbd-table" matSort>
       <ng-container matColumnDef="BldMunicipality">
-        <th mat-header-cell *matHeaderCellDef>{{getTitle('BldMunicipality')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldMunicipality')}}</th>
         <td mat-cell *matCellDef="let element"> {{getMunicipality('BldMunicipality', element.BldMunicipality)}} </td>
       </ng-container>
       <ng-container matColumnDef="GlobalID">
-        <th mat-header-cell *matHeaderCellDef>{{getTitle('GlobalID')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('GlobalID')}}</th>
         <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
       </ng-container>
       <ng-container matColumnDef="BldStatus">
-        <th mat-header-cell *matHeaderCellDef>{{getTitle('BldStatus')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldStatus')}}</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldStatus', element.BldStatus)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldType">
-        <th mat-header-cell *matHeaderCellDef>{{getTitle('BldType')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldType')}}</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldType', element.BldType)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldFloorsAbove">
-        <th mat-header-cell *matHeaderCellDef>{{getTitle('BldFloorsAbove')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldFloorsAbove')}}</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldFloorsAbove', element.BldFloorsAbove)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldEntranceRecs">
-        <th mat-header-cell *matHeaderCellDef>{{getTitle('BldEntranceRecs')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldEntranceRecs')}}</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldEntranceRecs', element.BldEntranceRecs)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldDwellingRecs">
-        <th mat-header-cell *matHeaderCellDef>{{getTitle('BldDwellingRecs')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldDwellingRecs')}}</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldDwellingRecs', element.BldDwellingRecs)}} </td>
       </ng-container>
       <ng-container matColumnDef="actions">

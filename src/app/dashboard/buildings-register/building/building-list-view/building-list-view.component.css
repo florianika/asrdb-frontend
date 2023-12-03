@@ -1,9 +1,9 @@
 /* Structure */
-.example-container {
+.asrbd-container {
   position: relative;
 }
 
-.example-table-container {
+.asrbd-table-container {
   position: relative;
   min-height: 200px;
   max-height: 400px;
@@ -14,7 +14,7 @@ table {
   width: 100%;
 }
 
-.example-loading-shade {
+.asrbd-loading-shade {
   position: absolute;
   top: 0;
   left: 0;

@@ -33,13 +33,14 @@ export class BuildingListViewComponent implements AfterViewInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.commonBuildingService.getBuildingData(
-            {
-              orderByFields: [this.sort.active],
-              start: this.paginator.pageIndex,
-              num: this.paginator.pageSize
-            } as Partial<QueryFilter>
-          ).pipe(catchError(() => observableOf(null)));
+          const filter = {
+            start: this.paginator.pageIndex,
+            num: this.paginator.pageSize
+          } as Partial<QueryFilter>;
+          if (this.sort.active) {
+            filter.orderByFields = [this.sort.active + " " + this.sort.direction.toUpperCase()]
+          }
+          return this.commonBuildingService.getBuildingData(filter).pipe(catchError(() => observableOf(null)));
         }),
         map(async (res) => {
           if (!res) {
