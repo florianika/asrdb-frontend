@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import { takeUntil } from 'rxjs';
+import { Observable, Subscriber, TeardownLogic, defer, from, takeUntil } from 'rxjs';
 import { Subject } from 'rxjs/internal/Subject';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import esriId from "@arcgis/core/identity/IdentityManager";
@@ -120,6 +120,7 @@ export class CommonBuildingService {
           localStorage.removeItem(this.ESRI_AUTH_KEY);
         }
       });
+    this.inizializeAuth();
   }
 
   ngOnDestroy(): void {
@@ -148,26 +149,43 @@ export class CommonBuildingService {
     })
   }
 
-  async getBuildingData(filter?: QueryFilter): Promise<__esri.FeatureSet> {
-    const query = this.bldLayer.createQuery();
-    query.where = filter?.where ?? "1=1";
-    query.outFields = filter?.outFields ?? ["*"];
-    query.returnGeometry = false;
-    query.orderByFields = filter?.orderByFields ?? [`BldStatus`];
-    query.outStatistics = [];
-
-    return await this.bldLayer.queryFeatures(query);
+  getBuildingData(filter?: Partial<QueryFilter>): Observable<any> {
+    return defer(() => from(this.fetchBuildingData(filter)));
   }
 
-  async getEntranceData(filter?: QueryFilter): Promise<__esri.FeatureSet> {
+  async getEntranceData(filter?: Partial<QueryFilter>): Promise<__esri.FeatureSet> {
     const query = this.entLayer.createQuery();
+    query.start = 0;
+    query.num = 5;
+    query.where = filter?.where ?? "1=1";
+    query.outFields = filter?.outFields ?? ["*"];
+    query.returnGeometry = false;
+    query.orderByFields = filter?.orderByFields ?? [`BldStatus`];
+    query.outStatistics = [];
+    return await this.entLayer.queryFeatures(query);
+  }
+
+  private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any} | null> {
+    const query = this.bldLayer.createQuery();
+    query.start = filter?.start ?? 0;
+    query.num = filter?.num ?? 5;
     query.where = filter?.where ?? "1=1";
     query.outFields = filter?.outFields ?? ["*"];
     query.returnGeometry = false;
     query.orderByFields = filter?.orderByFields ?? [`BldStatus`];
     query.outStatistics = [];
 
-    return await this.entLayer.queryFeatures(query);
+    try {
+      const featureCount = await this.bldLayer.queryFeatureCount();
+      const features = await (await this.bldLayer.queryFeatures(query)).toJSON();
+
+      return {
+        count: featureCount,
+        data: features
+      }
+    } catch (e) {
+      return null;
+    }
   }
 
   private initEsriConfig() {

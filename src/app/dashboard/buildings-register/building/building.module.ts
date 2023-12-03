@@ -12,12 +12,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonBuildingService } from '../../common/service/common-building.service';
-
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
     BuildingListViewComponent,
-    BuildingDetailsComponent
+    BuildingDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -28,7 +28,8 @@ import { CommonBuildingService } from '../../common/service/common-building.serv
     MatCardModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSortModule
   ],
   providers: [
     CommonBuildingService
