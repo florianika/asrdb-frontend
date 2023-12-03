@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
 import { merge, startWith, switchMap, catchError, map, of as observableOf } from 'rxjs';
 import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
 import { CommonBuildingService } from 'src/app/dashboard/common/service/common-building.service';
@@ -15,7 +14,9 @@ export class BuildingListViewComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  displayedColumns: string[] = ['BldMunicipality', 'GlobalID', 'BldStatus', 'BldType', 'BldFloorsAbove', 'BldEntranceRecs', 'BldDwellingRecs', 'actions'];
+  private columns = ['BldMunicipality', 'GlobalID', 'BldStatus', 'BldType', 'BldFloorsAbove', 'BldEntranceRecs', 'BldDwellingRecs'];
+
+  displayedColumns: string[] = this.columns.concat(['actions']);
   data: any[] = [];
   fields: any[] = [];
   resultsLength = 0;
@@ -34,8 +35,9 @@ export class BuildingListViewComponent implements AfterViewInit {
         switchMap(() => {
           this.isLoadingResults = true;
           const filter = {
-            start: this.paginator.pageIndex,
-            num: this.paginator.pageSize
+            start: this.paginator.pageIndex * this.paginator.pageSize,
+            num: this.paginator.pageSize,
+            outFields: this.columns
           } as Partial<QueryFilter>;
           if (this.sort.active) {
             filter.orderByFields = [this.sort.active + " " + this.sort.direction.toUpperCase()]
