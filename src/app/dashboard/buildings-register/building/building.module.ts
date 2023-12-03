@@ -14,11 +14,18 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { MatSortModule } from '@angular/material/sort';
 import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BuildingListViewFilterComponent } from './building-list-view/building-list-view-filter/building-list-view-filter.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
     BuildingListViewComponent,
     BuildingDetailsComponent,
+    BuildingListViewFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -30,7 +37,13 @@ import { CommonEsriAuthService } from '../../common/service/common-esri-auth.ser
     MatProgressSpinnerModule,
     MatIconModule,
     MatMenuModule,
-    MatSortModule
+    MatSortModule,
+    MatSelectModule,
+    MatChipsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
   providers: [
     CommonBuildingService,

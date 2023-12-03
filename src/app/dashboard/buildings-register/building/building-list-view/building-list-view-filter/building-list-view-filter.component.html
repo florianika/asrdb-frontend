@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Filter data</h2>
+<mat-dialog-content style="padding-top: 10px;">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Municipality</mat-label>
+    <mat-select [value]="filterConfig.filter.BldMunicipality"
+      (selectionChange)="changeValue($event, 'BldMunicipality')">
+      <mat-option *ngFor="let municipality of filterConfig.options.BldMunicipality"
+        [value]="municipality.code">{{municipality.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Status</mat-label>
+    <mat-select [value]="filterConfig.filter.BldStatus" (selectionChange)="changeValue($event, 'BldStatus')">
+      <mat-option *ngFor="let status of filterConfig.options.BldStatus"
+        [value]="status.code">{{status.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Type</mat-label>
+    <mat-select [value]="filterConfig.filter.BldType" (selectionChange)="changeValue($event, 'BldType')">
+      <mat-option *ngFor="let type of filterConfig.options.BldType" [value]="type.code">{{type.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-button color="primary" [mat-dialog-close]="filterConfig">Filter</button>
+</mat-dialog-actions>

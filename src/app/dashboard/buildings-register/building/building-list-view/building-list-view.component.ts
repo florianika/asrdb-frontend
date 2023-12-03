@@ -1,9 +1,13 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { merge, startWith, switchMap, catchError, map, of as observableOf } from 'rxjs';
 import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
 import { CommonBuildingService } from 'src/app/dashboard/common/service/common-building.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { BuildingListViewFilterComponent } from './building-list-view-filter/building-list-view-filter.component';
+import { BuildingFilter } from 'src/app/dashboard/common/model/building';
 
 @Component({
   selector: 'asrdb-building-list-view',
@@ -22,7 +26,27 @@ export class BuildingListViewComponent implements AfterViewInit {
   resultsLength = 0;
   isLoadingResults = true;
 
-  constructor(private commonBuildingService: CommonBuildingService) {
+  filterConfig: BuildingFilter = {
+    filter: {
+      BldMunicipality: '',
+      BldStatus: '',
+      BldType: ''
+    },
+    options: {
+      BldMunicipality: [] as any[],
+      BldStatus: [] as any[],
+      BldType: [] as any[],
+    }
+  };
+
+  get filterChips() {
+    return Object
+      .entries(this.filterConfig.filter)
+      .filter(([key, value]) => !!value)
+      .map(([key, value]) => ({column: key, value}));
+  }
+
+  constructor(private commonBuildingService: CommonBuildingService, private matDialog: MatDialog) {
   }
 
   ngAfterViewInit() {
@@ -58,6 +82,7 @@ export class BuildingListViewComponent implements AfterViewInit {
       .subscribe(async (data) => {
         this.data = await data;
         this.isLoadingResults = false;
+        this.prepareFilter();
       });
   }
 
@@ -65,7 +90,7 @@ export class BuildingListViewComponent implements AfterViewInit {
     if (!this.data?.length) {
       return '';
     }
-    const field = this.fields?.find(field => field.name === column);
+    const field = this.getField(column);
     return field.alias;
   }
 
@@ -85,8 +110,49 @@ export class BuildingListViewComponent implements AfterViewInit {
     return codeValues?.name ?? code;
   }
 
+  openFilter() {
+    this.matDialog
+    .open(BuildingListViewFilterComponent, {
+      data: JSON.parse(JSON.stringify(this.filterConfig))
+    }).afterClosed().subscribe((newFilterConfig: BuildingFilter | null) => {
+      if (newFilterConfig) {
+        this.filterConfig = newFilterConfig;
+      }
+    });
+  }
+
+  remove(chip: any) {}
+
+  private prepareFilter() {
+    this.filterConfig = {
+      ...this.filterConfig,
+      options: {
+        BldMunicipality: this.getOptions('BldMunicipality'),
+        BldStatus: this.getOptions('BldStatus'),
+        BldType: this.getOptions('BldType'),
+      }
+    }
+  }
+
+  private getOptions(column: string) {
+    const field = this.getField(column);
+    if (!field) {
+      return [];
+    }
+    return field.domain?.codedValues?.map((codeValue: { name: string, code: string }) => {
+      return {
+        name: codeValue.name,
+        code: codeValue.code,
+      }
+    });
+  }
+
+  private getField(column: string) {
+    return this.fields?.find(field => field.name === column);
+  }
+
   private getCodeValues(column: string, code: string) {
-    const field = this.fields?.find(field => field.name === column);
+    const field = this.getField(column);
     const codeValues = field?.domain?.codedValues?.find((o: any) => o.code === code);
     return codeValues;
   }

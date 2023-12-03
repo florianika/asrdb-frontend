@@ -39,3 +39,16 @@ export type Building = {
   BldEntranceRecs: number;
   BldAddressID: number;
 }
+
+export type BuildingFilter = {
+  filter: {
+    BldMunicipality: string;
+    BldStatus: string;
+    BldType: string;
+  };
+  options: {
+    BldMunicipality: any[];
+    BldStatus: any[];
+    BldType: any[];
+  }
+}
