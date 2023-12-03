@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, isDevMode } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { merge, startWith, switchMap, catchError, map, of as observableOf } from 'rxjs';
+import { merge, startWith, switchMap, catchError, map, of as observableOf, takeUntil, Subject } from 'rxjs';
 import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
 import { CommonBuildingService } from 'src/app/dashboard/common/service/common-building.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,6 +19,7 @@ export class BuildingListViewComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   private columns = ['BldMunicipality', 'GlobalID', 'BldStatus', 'BldType', 'BldFloorsAbove', 'BldEntranceRecs', 'BldDwellingRecs'];
+  private subscriber = new Subject();
 
   displayedColumns: string[] = this.columns.concat(['actions']);
   data: any[] = [];
@@ -43,7 +44,7 @@ export class BuildingListViewComponent implements AfterViewInit {
     return Object
       .entries(this.filterConfig.filter)
       .filter(([key, value]) => !!value)
-      .map(([key, value]) => ({column: key, value}));
+      .map(([key, value]) => ({ column: key, value }));
   }
 
   constructor(private commonBuildingService: CommonBuildingService, private matDialog: MatDialog) {
@@ -55,35 +56,11 @@ export class BuildingListViewComponent implements AfterViewInit {
 
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
+        takeUntil(this.subscriber),
         startWith({}),
-        switchMap(() => {
-          this.isLoadingResults = true;
-          const filter = {
-            start: this.paginator.pageIndex * this.paginator.pageSize,
-            num: this.paginator.pageSize,
-            outFields: this.columns
-          } as Partial<QueryFilter>;
-          if (this.sort.active) {
-            filter.orderByFields = [this.sort.active + " " + this.sort.direction.toUpperCase()]
-          }
-          return this.commonBuildingService.getBuildingData(filter).pipe(catchError(() => observableOf(null)));
-        }),
-        map(async (res) => {
-          if (!res) {
-            return [];
-          }
-          const rows = res.data.features.map((feature: any) => feature.attributes);
-          this.fields = res.data.fields;
-          this.resultsLength = res.count;
-          console.log("Data", res);
-          return rows;
-        }),
+        switchMap(() => this.loadBuildings()),
       )
-      .subscribe(async (data) => {
-        this.data = await data;
-        this.isLoadingResults = false;
-        this.prepareFilter();
-      });
+      .subscribe((res) => this.handleResponse(res));
   }
 
   getTitle(column: string) {
@@ -112,16 +89,50 @@ export class BuildingListViewComponent implements AfterViewInit {
 
   openFilter() {
     this.matDialog
-    .open(BuildingListViewFilterComponent, {
-      data: JSON.parse(JSON.stringify(this.filterConfig))
-    }).afterClosed().subscribe((newFilterConfig: BuildingFilter | null) => {
-      if (newFilterConfig) {
-        this.filterConfig = newFilterConfig;
-      }
-    });
+      .open(BuildingListViewFilterComponent, {
+        data: JSON.parse(JSON.stringify(this.filterConfig))
+      }).afterClosed().subscribe((newFilterConfig: BuildingFilter | null) => {
+        if (newFilterConfig) {
+          this.filterConfig = newFilterConfig;
+        }
+      });
   }
 
-  remove(chip: any) {}
+  reload() {
+    this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+  }
+
+  remove(column: string) {
+    console.log("removing: ", column);
+    (this.filterConfig.filter as any)[column] = "";
+  }
+
+  private loadBuildings() {
+    this.isLoadingResults = true;
+    const filter = {
+      start: this.paginator.pageIndex * this.paginator.pageSize,
+      num: this.paginator.pageSize,
+      outFields: this.columns
+    } as Partial<QueryFilter>;
+    if (this.sort.active) {
+      filter.orderByFields = [this.sort.active + " " + this.sort.direction.toUpperCase()]
+    }
+    return this.commonBuildingService.getBuildingData(filter).pipe(catchError(() => observableOf(null)));
+  }
+
+  private async handleResponse(res: any) {
+    if (isDevMode()) {
+      console.log("Data", res);
+    }
+    if (!res) {
+      return;
+    }
+    this.fields = res.data.fields;
+    this.resultsLength = res.count;
+    this.data = res.data.features.map((feature: any) => feature.attributes);;
+    this.isLoadingResults = false;
+    this.prepareFilter();
+  }
 
   private prepareFilter() {
     this.filterConfig = {

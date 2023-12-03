@@ -1,21 +1,23 @@
 <div class="asrbd-container mat-elevation-z8" style="background-color: white;">
-  <div style="max-width: 500px; margin: auto; padding-top: 15px;">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Favorite Fruits</mat-label>
-      <input matInput placeholder="Search" i18n-placeholder />
-      <button mat-icon-button matSuffix (click)="openFilter()">
-        <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
-      </button>
-    </mat-form-field>
-    <mat-chip-set>
-      <mat-chip *ngFor="let chip of filterChips" (removed)="remove(chip)">
-        {{getValueFromStatus(chip.column, chip.value)}}
-        <button matChipRemove>
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip>
-    </mat-chip-set>
+  <div class="header-container">
+    <h1 i18n class="header-title">Building Register</h1>
+
+    <div class="spacer"></div>
+
+    <button mat-icon-button (click)="openFilter()" [disabled]="isLoadingResults">
+      <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
+    </button>
+    <button mat-icon-button (click)="reload()" [disabled]="isLoadingResults">
+      <mat-icon style="cursor: pointer;">refresh</mat-icon>
+    </button>
   </div>
+
+  <mat-chip-set style="padding: 0px 10px;">
+    <mat-chip *ngFor="let chip of filterChips" [removable]="true" (removed)="remove(chip.column)">
+      {{getValueFromStatus(chip.column, chip.value)}}
+      <mat-icon matChipRemove style="pointer-events: auto;">cancel</mat-icon>
+    </mat-chip>
+  </mat-chip-set>
 
   <div class="asrbd-loading-shade" *ngIf="isLoadingResults">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
@@ -70,6 +72,6 @@
     </table>
   </div>
 
-  <mat-paginator [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
+  <mat-paginator [disabled]="isLoadingResults" [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
     showFirstLastButtons></mat-paginator>
 </div>
