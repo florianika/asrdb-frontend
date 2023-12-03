@@ -1,0 +1,52 @@
+<div class="mat-elevation-z8">
+  <table *ngIf="!loading" mat-table [dataSource]="dataSource" style="margin-top: 20px">
+    <ng-container matColumnDef="BldMunicipality">
+      <th mat-header-cell *matHeaderCellDef>{{getTitle('BldMunicipality')}}</th>
+      <td mat-cell *matCellDef="let element"> {{getMunicipality('BldMunicipality', element.BldMunicipality)}} </td>
+    </ng-container>
+    <ng-container matColumnDef="GlobalID">
+      <th mat-header-cell *matHeaderCellDef>{{getTitle('GlobalID')}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
+    </ng-container>
+    <ng-container matColumnDef="BldStatus">
+      <th mat-header-cell *matHeaderCellDef>{{getTitle('BldStatus')}}</th>
+      <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldStatus', element.BldStatus)}} </td>
+    </ng-container>
+    <ng-container matColumnDef="BldType">
+      <th mat-header-cell *matHeaderCellDef>{{getTitle('BldType')}}</th>
+      <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldType', element.BldType)}} </td>
+    </ng-container>
+    <ng-container matColumnDef="BldFloorsAbove">
+      <th mat-header-cell *matHeaderCellDef>{{getTitle('BldFloorsAbove')}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.BldFloorsAbove}} </td>
+    </ng-container>
+    <ng-container matColumnDef="BldEntranceRecs">
+      <th mat-header-cell *matHeaderCellDef>{{getTitle('BldEntranceRecs')}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.BldEntranceRecs}} </td>
+    </ng-container>
+    <ng-container matColumnDef="BldDwellingRecs">
+      <th mat-header-cell *matHeaderCellDef>{{getTitle('BldDwellingRecs')}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.BldDwellingRecs}} </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item i18n><mat-icon>apartment</mat-icon> View building details</button>
+          <button mat-menu-item i18n><mat-icon>directions_walk</mat-icon> View entrances</button>
+          <button mat-menu-item i18n><mat-icon>meeting_room</mat-icon> View dwellings</button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>

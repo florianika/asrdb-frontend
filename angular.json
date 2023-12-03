@@ -45,7 +45,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "localize": [
-              "sq"
+              "en"
             ],
             "outputPath": "dist/asrdb-frontend",
             "index": "src/index.html",
