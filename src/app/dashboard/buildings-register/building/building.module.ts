@@ -20,6 +20,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { BuildingListViewFilterComponent } from './building-list-view/building-list-view-filter/building-list-view-filter.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 
 @NgModule({
   declarations: [
@@ -39,11 +40,11 @@ import { MatInputModule } from '@angular/material/input';
     MatMenuModule,
     MatSortModule,
     MatSelectModule,
-    MatChipsModule,
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    ChipComponent
   ],
   providers: [
     CommonBuildingService,

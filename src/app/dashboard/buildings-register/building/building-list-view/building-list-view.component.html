@@ -12,12 +12,9 @@
     </button>
   </div>
 
-  <mat-chip-set style="padding: 0px 10px;">
-    <mat-chip *ngFor="let chip of filterChips" [removable]="true" (removed)="remove(chip.column)">
-      {{getValueFromStatus(chip.column, chip.value)}}
-      <mat-icon matChipRemove style="pointer-events: auto;">cancel</mat-icon>
-    </mat-chip>
-  </mat-chip-set>
+  <div style="padding: 0px 10px;">
+    <asrdb-chip (remove)="remove($event)" [chips]="filterChips"></asrdb-chip>
+  </div>
 
   <div class="asrbd-loading-shade" *ngIf="isLoadingResults">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
@@ -60,7 +57,8 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item i18n><mat-icon>apartment</mat-icon> View building details</button>
+            <button mat-menu-item i18n (click)="viewBuildingDetails(element.GlobalID)"><mat-icon>apartment</mat-icon>
+              View building details</button>
             <button mat-menu-item i18n><mat-icon>directions_walk</mat-icon> View entrances</button>
             <button mat-menu-item i18n><mat-icon>meeting_room</mat-icon> View dwellings</button>
           </mat-menu>
@@ -69,6 +67,9 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data-cell" colspan="8">No data</td>
+      </tr>
     </table>
   </div>
 

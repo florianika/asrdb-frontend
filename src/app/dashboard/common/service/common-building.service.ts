@@ -123,7 +123,7 @@ export class CommonBuildingService {
     query.outStatistics = [];
 
     try {
-      const featureCount = await this.bldLayer.queryFeatureCount();
+      const featureCount = await this.bldLayer.queryFeatureCount(query);
       const features = await (await this.bldLayer.queryFeatures(query)).toJSON();
 
       return {
@@ -131,6 +131,7 @@ export class CommonBuildingService {
         data: features
       }
     } catch (e) {
+      console.log(e);
       return null;
     }
   }
