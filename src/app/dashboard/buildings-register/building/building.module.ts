@@ -21,12 +21,15 @@ import { BuildingListViewFilterComponent } from './building-list-view/building-l
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
+import { CommonBuldingRegisterHelper as CommonBuildingRegisterHelper } from '../../common/service/common-helper.service';
+import { BuildingDetailComponent } from './building-details/building-detail/building-detail.component';
 
 @NgModule({
   declarations: [
     BuildingListViewComponent,
     BuildingDetailsComponent,
     BuildingListViewFilterComponent,
+    BuildingDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -48,7 +51,8 @@ import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.co
   ],
   providers: [
     CommonBuildingService,
-    CommonEsriAuthService
+    CommonEsriAuthService,
+    CommonBuildingRegisterHelper
   ]
 })
 export class BuildingModule { }

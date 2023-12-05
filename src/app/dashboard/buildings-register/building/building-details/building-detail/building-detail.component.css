@@ -1,0 +1,15 @@
+
+.detail-container {
+  width: 100%;
+  display: flex;
+}
+
+.detail-container > span:first-of-type {
+  display: inline-block;
+  min-width: 30%;
+}
+
+.detail-container > span:last-of-type {
+  display: inline-block;
+  min-width: 70%;
+}

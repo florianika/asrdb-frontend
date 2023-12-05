@@ -1,1 +1,49 @@
-<p>building-details works!</p>
+<div *ngIf="!isLoadingResults" class="building-details-container">
+  <mat-card class="building-details-card">
+    <mat-card-content>
+      <h2 i18n>Details for building: {{building.GlobalID}}</h2>
+      <section>
+        <h3>Details</h3>
+        <asrdb-building-detail [title]="getTitle('BldMunicipality')" [value]="getMunicipality()"></asrdb-building-detail>
+        <div>
+          <span i18n>{{getTitle('BldCadastralZone')}}: </span>
+          <span>{{getValueFromStatus('BldCadastralZone')}}</span>
+        </div>
+        <div>
+          <span i18n>{{getTitle('BldAddressID')}}: </span>
+          <span>{{getValueFromStatus('BldAddressID')}}</span>
+        </div>
+        <div>
+          <span i18n>{{getTitle('BldCensus2023')}}: </span>
+          <span>{{getValueFromStatus('BldCensus2023')}}</span>
+        </div>
+        <div>
+          <span i18n>{{getTitle('BldEnumArea')}}: </span>
+          <span>{{getValueFromStatus('BldEnumArea')}}</span>
+        </div>
+        <div>
+          <span i18n>{{getTitle('BldType')}}: </span>
+          <span>{{getValueFromStatus('BldType')}}</span>
+        </div>
+        <div>
+          <span i18n>{{getTitle('BldStatus')}}: </span>
+          <span>{{getValueFromStatus('BldStatus')}}</span>
+        </div>
+      </section>
+      <hr>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="building-last-modified-card">
+    <mat-card-content>
+      <h2 i18n>Hostory details</h2>
+      <div>
+        <span i18n>Created by: </span>
+        <span>{{building.created_user}} - {{building.created_date}}</span>
+      </div>
+      <div>
+        <span i18n>Last edited by: </span>
+        <span>{{building.last_edited_user}} - {{building.last_edited_date}}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

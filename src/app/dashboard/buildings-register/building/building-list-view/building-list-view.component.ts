@@ -9,6 +9,7 @@ import { BuildingListViewFilterComponent } from './building-list-view-filter/bui
 import { BuildingFilter } from 'src/app/dashboard/common/model/building';
 import { Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
+import { CommonBuldingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-building-list-view',
@@ -48,7 +49,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value) }));
   }
 
-  constructor(private commonBuildingService: CommonBuildingService, private matDialog: MatDialog, private router: Router) {
+  constructor(private commonBuildingService: CommonBuildingService, private commonBuildingRegisterHelper: CommonBuldingRegisterHelper, private matDialog: MatDialog, private router: Router) {
   }
 
   ngAfterViewInit() {
@@ -70,27 +71,15 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
   }
 
   getTitle(column: string) {
-    const field = this.getField(column);
-    if (!field) {
-      return column;
-    }
-    return field.alias;
+    return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
   }
 
   getMunicipality(column: string, code: string) {
-    const codeValues = this.getCodeValues(column, code);
-    if (!codeValues) {
-      return code;
-    }
-    return codeValues.code + ' - ' + codeValues.name;
+    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, column, code);
   }
 
   getValueFromStatus(column: string, code: string) {
-    const codeValues = this.getCodeValues(column, code);
-    if (!codeValues) {
-      return code;
-    }
-    return codeValues.name;
+    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
   }
 
   openFilter() {
@@ -181,7 +170,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
   }
 
   private getOptions(column: string) {
-    const field = this.getField(column);
+    const field = this.commonBuildingRegisterHelper.getField(this.fields, column);
     if (!field) {
       return [];
     }
@@ -191,15 +180,5 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
         code: codeValue.code,
       }
     });
-  }
-
-  private getField(column: string) {
-    return this.fields?.find(field => field.name === column);
-  }
-
-  private getCodeValues(column: string, code: string) {
-    const field = this.getField(column);
-    const codeValues = field?.domain?.codedValues?.find((o: any) => o.code === code);
-    return codeValues;
   }
 }

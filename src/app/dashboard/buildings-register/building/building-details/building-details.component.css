@@ -1,0 +1,19 @@
+.building-details-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 13px;
+}
+
+.building-details-card {
+  display: flex;
+  flex-grow: 1;
+}
+
+.building-last-modified-card {
+  display: flex;
+  flex-grow: 1;
+  margin-bottom: 15px;
+}
