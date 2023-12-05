@@ -17,3 +17,13 @@
   flex-grow: 1;
   margin-bottom: 15px;
 }
+
+.details-header {
+  margin-bottom: 0px !important;
+}
+
+.details-subheader {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: gray;
+}
