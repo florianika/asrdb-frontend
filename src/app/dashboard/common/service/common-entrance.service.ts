@@ -7,7 +7,7 @@ import { CommonEsriAuthService } from './common-esri-auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class CommonBuildingService {
+export class CommonEntranceBuildingService {
 
   get entLayer(): FeatureLayer {
     return new FeatureLayer({
@@ -43,7 +43,7 @@ export class CommonBuildingService {
     query.outStatistics = [];
 
     try {
-      const featureCount = await this.entLayer.queryFeatureCount();
+      const featureCount = await this.entLayer.queryFeatureCount(query);
       const features = await (await this.entLayer.queryFeatures(query)).toJSON();
 
       return {

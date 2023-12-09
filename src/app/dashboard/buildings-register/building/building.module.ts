@@ -23,6 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 import { CommonBuldingRegisterHelper as CommonBuildingRegisterHelper } from '../../common/service/common-helper.service';
 import { BuildingDetailComponent } from './building-details/building-detail/building-detail.component';
+import { EntranceListViewComponent } from '../../common/component/entrance-list-view/entrance-list-view.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { BuildingDetailComponent } from './building-details/building-detail/buil
     MatDialogModule,
     MatInputModule,
     MatFormFieldModule,
-    ChipComponent
+    ChipComponent,
+    EntranceListViewComponent
   ],
   providers: [
     CommonBuildingService,

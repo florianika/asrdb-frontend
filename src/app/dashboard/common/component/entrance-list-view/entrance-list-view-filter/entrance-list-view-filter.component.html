@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Filter data</h2>
+<mat-dialog-content style="padding-top: 10px;">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Building number</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.EntBuildingNumber"/>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Entrance number</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.EntEntranceNumber"/>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Entrance id</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.GlobalID"/>
+  </mat-form-field>
+  <mat-form-field *ngIf="showBuildingIdFilter" appearance="outline" class="full-width">
+    <mat-label i18n>Building id</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.fk_buildings"/>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Entrance status</mat-label>
+    <mat-select [value]="filterConfig.filter.EntPointStatus" (selectionChange)="changeValue($event, 'EntPointStatus')">
+      <mat-option *ngFor="let type of filterConfig.options.EntPointStatus" [value]="type.code">{{type.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-button color="primary" [mat-dialog-close]="filterConfig">Filter</button>
+</mat-dialog-actions>

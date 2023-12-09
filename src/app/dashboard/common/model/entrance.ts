@@ -25,3 +25,16 @@ export type Entrance = {
     Y: number;
   }
 }
+
+export type EntranceFilter = {
+  filter: {
+    EntBuildingNumber: number,
+    EntEntranceNumber: number,
+    EntPointStatus: string,
+    GlobalID: string,
+    fk_buildings?: string
+  };
+  options: {
+    EntPointStatus: any[];
+  }
+}
