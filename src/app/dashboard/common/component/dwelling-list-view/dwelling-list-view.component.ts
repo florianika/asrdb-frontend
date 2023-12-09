@@ -9,10 +9,10 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
+import { Subject, takeUntil, catchError, of as observableOf, merge, startWith, switchMap } from 'rxjs';
 import { ChipComponent, Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { QueryFilter } from '../../model/query-filter';
-import { CommonBuldingRegisterHelper } from '../../service/common-helper.service';
+import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
 import { EntranceListViewFilterComponent } from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
 import { DwellingFilter } from '../../model/dwelling';
 import { Router } from '@angular/router';
@@ -67,7 +67,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
   }
 
-  constructor(private commonDwellingBuildingService: CommonDwellingBuildingService, private commonEntranceBuildingService: CommonEntranceBuildingService, private commonBuildingRegisterHelper: CommonBuldingRegisterHelper, private matDialog: MatDialog, private router: Router) {
+  constructor(private commonDwellingBuildingService: CommonDwellingBuildingService, private commonEntranceBuildingService: CommonEntranceBuildingService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
   }
 
   ngOnInit() {
@@ -87,9 +87,22 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
           this.filterConfig.filter.fk_entrance = `(${condition})`;
           this.reload();
         }));
-    } else {
-      this.reload();
     }
+  }
+
+  ngAfterViewInit() {
+    // If the user changes the sort order, reset back to the first page.
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    if (this.buildingGlobalId) {
+      return;
+    }
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        takeUntil(this.subscriber),
+        startWith({}),
+        switchMap(() => this.loadDwellings()),
+      )
+      .subscribe((res) => this.handleResponse(res));
   }
 
   ngOnDestroy(): void {

@@ -9,7 +9,7 @@ import { BuildingListViewFilterComponent } from './building-list-view-filter/bui
 import { BuildingFilter } from 'src/app/dashboard/common/model/building';
 import { Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
-import { CommonBuldingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-building-list-view',
@@ -50,7 +50,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value) }));
   }
 
-  constructor(private commonBuildingService: CommonBuildingService, private commonBuildingRegisterHelper: CommonBuldingRegisterHelper, private matDialog: MatDialog, private router: Router) {
+  constructor(private commonBuildingService: CommonBuildingService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
   }
 
   ngAfterViewInit() {

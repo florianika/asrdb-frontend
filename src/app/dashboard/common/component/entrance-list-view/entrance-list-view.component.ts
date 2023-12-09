@@ -5,7 +5,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { Subject, merge, takeUntil, startWith, switchMap, catchError, of as observableOf } from 'rxjs';
 import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 import { QueryFilter } from '../../model/query-filter';
-import { CommonBuldingRegisterHelper } from '../../service/common-helper.service';
+import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
 import { Router } from '@angular/router';
 import { CommonEntranceBuildingService } from '../../service/common-entrance.service';
 import { EntranceFilter } from '../../model/entrance';
@@ -61,7 +61,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
   }
 
-  constructor(private commonEntranceBuildingService: CommonEntranceBuildingService, private commonBuildingRegisterHelper: CommonBuldingRegisterHelper, private matDialog: MatDialog, private router: Router) {
+  constructor(private commonEntranceBuildingService: CommonEntranceBuildingService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
   }
 
   ngOnInit() {

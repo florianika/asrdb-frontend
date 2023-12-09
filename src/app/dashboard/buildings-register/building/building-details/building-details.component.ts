@@ -4,7 +4,7 @@ import { Subject, catchError, of as observableOf, takeUntil } from 'rxjs';
 import { CommonBuildingService } from 'src/app/dashboard/common/service/common-building.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { CommonBuldingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-building-details',
@@ -182,7 +182,7 @@ export class BuildingDetailsComponent implements OnInit {
   private fields: any[] = [];
   private id: string | null = '';
 
-  constructor(private commonBuildingService: CommonBuildingService, private commonBuildingRegisterHelper: CommonBuldingRegisterHelper, private matSnack: MatSnackBar, private activatedRoute: ActivatedRoute) {}
+  constructor(private commonBuildingService: CommonBuildingService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matSnack: MatSnackBar, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');

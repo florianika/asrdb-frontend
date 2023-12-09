@@ -15,13 +15,12 @@ import { CommonBuildingService } from '../../common/service/common-building.serv
 import { MatSortModule } from '@angular/material/sort';
 import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
 import { MatSelectModule } from '@angular/material/select';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BuildingListViewFilterComponent } from './building-list-view/building-list-view-filter/building-list-view-filter.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
-import { CommonBuldingRegisterHelper as CommonBuildingRegisterHelper } from '../../common/service/common-helper.service';
+import { CommonBuildingRegisterHelper } from '../../common/service/common-helper.service';
 import { BuildingDetailComponent } from './building-details/building-detail/building-detail.component';
 import { EntranceListViewComponent } from '../../common/component/entrance-list-view/entrance-list-view.component';
 import { DwellingListViewComponent } from '../../common/component/dwelling-list-view/dwelling-list-view.component';

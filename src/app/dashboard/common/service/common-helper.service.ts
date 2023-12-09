@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
 @Injectable()
-export class CommonBuldingRegisterHelper {
+export class CommonBuildingRegisterHelper {
 
 
   getTitle(fields: any[], column: string) {
