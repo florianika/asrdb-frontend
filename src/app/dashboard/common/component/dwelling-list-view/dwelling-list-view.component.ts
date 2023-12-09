@@ -79,6 +79,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     let buildingId;
+    let entranceId = this.activatedRoute.snapshot.queryParamMap.get('entrance');
 
     this.buildingIdQueryParam = this.activatedRoute.snapshot.queryParamMap.get('building');
     if (this.buildingIdQueryParam) {
@@ -88,21 +89,9 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
     }
 
     if (buildingId) {
-      this.commonEntranceBuildingService.getEntranceData({
-        where: `fk_buildings='${buildingId?.replace('{', '').replace('}', '')}'`
-      })
-        .pipe(takeUntil(this.subscriber))
-        .subscribe((res => {
-          const condition = res.data.features
-            .map((feature: any) => feature.attributes)
-            .reduce((currentValue: string[], item: any) => {
-              currentValue.push(`'${item.GlobalID.replace('{', '').replace('}', '')}'`);
-              return currentValue;
-            }, [])
-            .join(', ');
-          this.filterConfig.filter.fk_entrance = `(${condition})`;
-          this.reload();
-        }));
+      this.loadDwellingsForBuilding(buildingId);
+    } else if (entranceId) {
+      this.loadDwellingsForEntrances(entranceId);
     }
   }
 
@@ -241,5 +230,27 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
         code: codeValue.code,
       }
     });
+  }
+
+  private loadDwellingsForBuilding(buildingId: string) {
+    this.commonEntranceBuildingService.getEntranceData({
+      where: `fk_buildings='${buildingId?.replace('{', '').replace('}', '')}'`
+    })
+      .pipe(takeUntil(this.subscriber))
+      .subscribe((res => {
+        const condition = res.data.features
+          .map((feature: any) => feature.attributes)
+          .reduce((currentValue: string[], item: any) => {
+            currentValue.push(`'${item.GlobalID.replace('{', '').replace('}', '')}'`);
+            return currentValue;
+          }, [])
+          .join(', ');
+        this.filterConfig.filter.fk_entrance = `(${condition})`;
+        this.reload();
+      }));
+  }
+
+  private loadDwellingsForEntrances(entranceId: string) {
+    this.filterConfig.filter.fk_entrance = `('${entranceId.replace('{', '').replace('}', '')}')`;
   }
 }

@@ -129,6 +129,10 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.router.navigateByUrl('/dashboard/buildings-register/entrance/details/' + globalId);
   }
 
+  viewDwellings(globalId: string) {
+    this.router.navigateByUrl('/dashboard/buildings-register/dwelling?entrance=' + globalId);
+  }
+
   private handlePopupClose(newFilterConfig: EntranceFilter | null) {
     if (newFilterConfig) {
       this.filterConfig = newFilterConfig;

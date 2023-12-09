@@ -62,7 +62,7 @@
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item i18n (click)="viewEntranceDetails(element.GlobalID)"><mat-icon>directions_walk</mat-icon> View entrance details</button>
-            <button mat-menu-item i18n><mat-icon>meeting_room</mat-icon> View dwellings</button>
+            <button mat-menu-item i18n (click)="viewDwellings(element.GlobalID)"><mat-icon>meeting_room</mat-icon> View dwellings</button>
           </mat-menu>
         </td>
       </ng-container>
