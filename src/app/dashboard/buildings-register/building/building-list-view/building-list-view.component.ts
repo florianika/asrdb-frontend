@@ -20,7 +20,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  private columns = ['BldMunicipality', 'GlobalID', 'BldStatus', 'BldType', 'BldFloorsAbove', 'BldEntranceRecs', 'BldDwellingRecs'];
+  private columns = ['GlobalID', 'BldMunicipality', 'BldStatus', 'BldType', 'BldFloorsAbove', 'BldEntranceRecs', 'BldDwellingRecs'];
   private subscriber = new Subject();
 
   displayedColumns: string[] = this.columns.concat(['actions']);
