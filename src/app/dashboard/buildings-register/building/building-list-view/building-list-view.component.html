@@ -22,13 +22,13 @@
 
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="data" class="asrbd-table" matSort>
-      <ng-container matColumnDef="BldMunicipality">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldMunicipality')}}</th>
-        <td mat-cell *matCellDef="let element"> {{getMunicipality('BldMunicipality', element.BldMunicipality)}} </td>
-      </ng-container>
       <ng-container matColumnDef="GlobalID">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('GlobalID')}}</th>
         <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
+      </ng-container>
+      <ng-container matColumnDef="BldMunicipality">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldMunicipality')}}</th>
+        <td mat-cell *matCellDef="let element"> {{getMunicipality('BldMunicipality', element.BldMunicipality)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldStatus">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldStatus')}}</th>

@@ -134,8 +134,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
     this.reload();
   }
 
-  viewBuildingDetails(globalId: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/dwellings/details/' + globalId);
+  viewDwellingDetails(globalId: string) {
+    this.router.navigateByUrl('/dashboard/buildings-register/dwelling/details/' + globalId);
   }
 
   private handlePopupClose(newFilterConfig: DwellingFilter | null) {
