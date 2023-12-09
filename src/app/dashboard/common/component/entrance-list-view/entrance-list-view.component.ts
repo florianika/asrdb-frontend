@@ -6,7 +6,7 @@ import { Subject, merge, takeUntil, startWith, switchMap, catchError, of as obse
 import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 import { QueryFilter } from '../../model/query-filter';
 import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { EntranceFilter } from '../../model/entrance';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +27,7 @@ import { EntranceListViewFilterComponent } from './entrance-list-view-filter/ent
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() buildingGlobalId?: string;
+  buildingIdQueryParam?: string | null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -61,11 +62,21 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
   }
 
-  constructor(private commonEntranceBuildingService: CommonEntranceService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
+  constructor(
+    private commonEntranceBuildingService: CommonEntranceService,
+    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private matDialog: MatDialog,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.filterConfig.filter.fk_buildings = this.buildingGlobalId?.replace('{', '').replace('}', '');
+    this.buildingIdQueryParam = this.activatedRoute.snapshot.queryParamMap.get('building');
+    if (this.buildingIdQueryParam) {
+      this.filterConfig.filter.fk_buildings = this.buildingIdQueryParam?.replace('{', '').replace('}', '');
+    } else if (this.buildingGlobalId) {
+      this.filterConfig.filter.fk_buildings = this.buildingGlobalId?.replace('{', '').replace('}', '');
+    }
   }
 
   ngAfterViewInit() {
@@ -101,7 +112,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   openFilter() {
     this.matDialog
       .open(EntranceListViewFilterComponent, {
-        data: {filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.buildingGlobalId}
+        data: { filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.buildingGlobalId }
       }).afterClosed().subscribe((newFilterConfig: EntranceFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 

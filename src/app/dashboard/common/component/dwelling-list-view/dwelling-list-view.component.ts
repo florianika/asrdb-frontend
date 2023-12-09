@@ -15,7 +15,7 @@ import { QueryFilter } from '../../model/query-filter';
 import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
 import { EntranceListViewFilterComponent } from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
 import { DwellingFilter } from '../../model/dwelling';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwelling-list-view-filter.component';
 
@@ -29,6 +29,7 @@ import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwe
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy {
   @Input() buildingGlobalId?: string;
+  buildingIdQueryParam?: string | null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -67,13 +68,28 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
   }
 
-  constructor(private commonDwellingBuildingService: CommonDwellingService, private commonEntranceBuildingService: CommonEntranceService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
+  constructor(
+    private commonDwellingBuildingService: CommonDwellingService,
+    private commonEntranceBuildingService: CommonEntranceService,
+    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private matDialog: MatDialog,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    if (this.buildingGlobalId) {
+    let buildingId;
+
+    this.buildingIdQueryParam = this.activatedRoute.snapshot.queryParamMap.get('building');
+    if (this.buildingIdQueryParam) {
+      buildingId = this.buildingIdQueryParam?.replace('{', '').replace('}', '');
+    } else if (this.buildingGlobalId) {
+      buildingId = this.buildingGlobalId?.replace('{', '').replace('}', '');
+    }
+
+    if (buildingId) {
       this.commonEntranceBuildingService.getEntranceData({
-        where: `fk_buildings='${this.buildingGlobalId?.replace('{', '').replace('}', '')}'`
+        where: `fk_buildings='${buildingId?.replace('{', '').replace('}', '')}'`
       })
         .pipe(takeUntil(this.subscriber))
         .subscribe((res => {
@@ -93,7 +109,13 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    if (this.buildingGlobalId) {
+    if (this.buildingGlobalId || this.buildingIdQueryParam) {
+      merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        takeUntil(this.subscriber),
+        switchMap(() => this.loadDwellings()),
+      )
+      .subscribe((res) => this.handleResponse(res));
       return;
     }
     merge(this.sort.sortChange, this.paginator.page)

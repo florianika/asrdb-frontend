@@ -103,6 +103,14 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
     this.router.navigateByUrl('/dashboard/buildings-register/details/' + globalId);
   }
 
+  viewEntrances(globalId: string) {
+    this.router.navigateByUrl('/dashboard/buildings-register/entrance?building=' + globalId);
+  }
+
+  viewDwellings(globalId: string) {
+    this.router.navigateByUrl('/dashboard/buildings-register/dwelling?building=' + globalId);
+  }
+
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
     if (newFilterConfig) {
       this.filterConfig = newFilterConfig;
