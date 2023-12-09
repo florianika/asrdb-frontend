@@ -17,6 +17,7 @@ export type Chip = {
 })
 export class ChipComponent {
   @Input() chips!: Chip[];
+  @Input() clearable!: boolean;
   @Output() remove = new EventEmitter<Chip>
 
   removeChip(chip: Chip) {

@@ -21,6 +21,10 @@
       <mat-option *ngFor="let type of filterConfig.options.BldType" [value]="type.code">{{type.name}}</mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>PK Buildings (Global ID)</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.GlobalID"/>
+  </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>

@@ -24,6 +24,8 @@ import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.co
 import { CommonBuldingRegisterHelper as CommonBuildingRegisterHelper } from '../../common/service/common-helper.service';
 import { BuildingDetailComponent } from './building-details/building-detail/building-detail.component';
 import { EntranceListViewComponent } from '../../common/component/entrance-list-view/entrance-list-view.component';
+import { DwellingListViewComponent } from '../../common/component/dwelling-list-view/dwelling-list-view.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { EntranceListViewComponent } from '../../common/component/entrance-list-
     MatInputModule,
     MatFormFieldModule,
     ChipComponent,
-    EntranceListViewComponent
+    EntranceListViewComponent,
+    DwellingListViewComponent,
+    FormsModule
   ],
   providers: [
     CommonBuildingService,

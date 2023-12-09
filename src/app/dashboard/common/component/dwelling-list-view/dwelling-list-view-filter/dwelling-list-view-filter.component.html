@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Filter data</h2>
+<mat-dialog-content style="padding-top: 10px;">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Appartment number</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.DwlApartNumber"/>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Entrance ID</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.DwlEntranceID"/>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Dwelling type</mat-label>
+    <mat-select [value]="filterConfig.filter.DwlType" (selectionChange)="changeValue($event, 'DwlType')">
+      <mat-option *ngFor="let type of filterConfig.options.DwlType" [value]="type.code">{{type.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Dwelling status</mat-label>
+    <mat-select [value]="filterConfig.filter.DwlStatus" (selectionChange)="changeValue($event, 'DwlStatus')">
+      <mat-option *ngFor="let type of filterConfig.options.DwlStatus" [value]="type.code">{{type.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Dwelling id (Global ID)</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.GlobalID"/>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-button color="primary" [mat-dialog-close]="filterConfig">Filter</button>
+</mat-dialog-actions>

@@ -33,7 +33,8 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
     filter: {
       BldMunicipality: '',
       BldStatus: '',
-      BldType: ''
+      BldType: '',
+      GlobalID: ''
     },
     options: {
       BldMunicipality: [] as any[],
