@@ -7,6 +7,9 @@ import { EntranceListViewComponent } from '../../common/component/entrance-list-
 import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
 import { CommonBuildingRegisterHelper } from '../../common/service/common-helper.service';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { BuildingDetailComponent } from '../../common/component/building-detail/building-detail.component';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
 
 
 @NgModule({
@@ -17,11 +20,14 @@ import { MatDialogModule } from '@angular/material/dialog';
     CommonModule,
     EntrancesRoutingModule,
     EntranceListViewComponent,
-    MatDialogModule
+    MatDialogModule,
+    MatCardModule,
+    BuildingDetailComponent
   ],
   providers: [
     CommonEsriAuthService,
-    CommonBuildingRegisterHelper
+    CommonBuildingRegisterHelper,
+    CommonEntranceService
   ]
 })
 export class EntrancesModule { }

@@ -61,7 +61,7 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item i18n><mat-icon>directions_walk</mat-icon> View entrance detailes</button>
+            <button mat-menu-item i18n (click)="viewEntranceDetails(element.GlobalID)"><mat-icon>directions_walk</mat-icon> View entrance details</button>
             <button mat-menu-item i18n><mat-icon>meeting_room</mat-icon> View dwellings</button>
           </mat-menu>
         </td>

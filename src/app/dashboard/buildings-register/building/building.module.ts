@@ -21,17 +21,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 import { CommonBuildingRegisterHelper } from '../../common/service/common-helper.service';
-import { BuildingDetailComponent } from './building-details/building-detail/building-detail.component';
 import { EntranceListViewComponent } from '../../common/component/entrance-list-view/entrance-list-view.component';
 import { DwellingListViewComponent } from '../../common/component/dwelling-list-view/dwelling-list-view.component';
 import { FormsModule } from '@angular/forms';
+import { BuildingDetailComponent } from '../../common/component/building-detail/building-detail.component';
 
 @NgModule({
   declarations: [
     BuildingListViewComponent,
     BuildingDetailsComponent,
     BuildingListViewFilterComponent,
-    BuildingDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -52,7 +51,8 @@ import { FormsModule } from '@angular/forms';
     ChipComponent,
     EntranceListViewComponent,
     DwellingListViewComponent,
-    FormsModule
+    FormsModule,
+    BuildingDetailComponent
   ],
   providers: [
     CommonBuildingService,

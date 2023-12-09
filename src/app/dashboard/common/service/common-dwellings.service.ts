@@ -7,7 +7,7 @@ import { CommonEsriAuthService } from './common-esri-auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class CommonDwellingBuildingService {
+export class CommonDwellingService {
 
   get entLayer(): FeatureLayer {
     return new FeatureLayer({

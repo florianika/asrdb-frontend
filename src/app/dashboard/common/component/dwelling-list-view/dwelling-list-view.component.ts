@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
-import { CommonDwellingBuildingService } from '../../service/common-dwellings.service';
+import { CommonDwellingService } from '../../service/common-dwellings.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,7 +16,7 @@ import { CommonBuildingRegisterHelper } from '../../service/common-helper.servic
 import { EntranceListViewFilterComponent } from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
 import { DwellingFilter } from '../../model/dwelling';
 import { Router } from '@angular/router';
-import { CommonEntranceBuildingService } from '../../service/common-entrance.service';
+import { CommonEntranceService } from '../../service/common-entrance.service';
 import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwelling-list-view-filter.component';
 
 @Component({
@@ -24,7 +24,7 @@ import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwe
   templateUrl: './dwelling-list-view.component.html',
   styleUrls: ['./dwelling-list-view.component.css'],
   standalone: true,
-  providers: [CommonDwellingBuildingService, CommonEntranceBuildingService],
+  providers: [CommonDwellingService, CommonEntranceService],
   imports: [MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy {
@@ -67,7 +67,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
   }
 
-  constructor(private commonDwellingBuildingService: CommonDwellingBuildingService, private commonEntranceBuildingService: CommonEntranceBuildingService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
+  constructor(private commonDwellingBuildingService: CommonDwellingService, private commonEntranceBuildingService: CommonEntranceService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
   }
 
   ngOnInit() {

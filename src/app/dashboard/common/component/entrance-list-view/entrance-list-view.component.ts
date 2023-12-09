@@ -7,7 +7,7 @@ import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/c
 import { QueryFilter } from '../../model/query-filter';
 import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
 import { Router } from '@angular/router';
-import { CommonEntranceBuildingService } from '../../service/common-entrance.service';
+import { CommonEntranceService } from '../../service/common-entrance.service';
 import { EntranceFilter } from '../../model/entrance';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -22,7 +22,7 @@ import { EntranceListViewFilterComponent } from './entrance-list-view-filter/ent
   templateUrl: './entrance-list-view.component.html',
   styleUrls: ['./entrance-list-view.component.css'],
   standalone: true,
-  providers: [CommonEntranceBuildingService],
+  providers: [CommonEntranceService],
   imports: [MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -61,7 +61,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
   }
 
-  constructor(private commonEntranceBuildingService: CommonEntranceBuildingService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
+  constructor(private commonEntranceBuildingService: CommonEntranceService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matDialog: MatDialog, private router: Router) {
   }
 
   ngOnInit() {
@@ -114,7 +114,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.reload();
   }
 
-  viewBuildingDetails(globalId: string) {
+  viewEntranceDetails(globalId: string) {
     this.router.navigateByUrl('/dashboard/buildings-register/entrance/details/' + globalId);
   }
 
