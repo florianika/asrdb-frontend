@@ -24,7 +24,21 @@ export class SideBarComponent implements AfterViewInit {
           title: "Building register",
           path: "/dashboard/buildings-register",
           icon: "domainm",
-          selected: false
+          selected: false,
+          subSection: [
+            {
+              title: "Entrance register",
+              path: "/dashboard/buildings-register/entrance",
+              icon: "directions_walk",
+              selected: false,
+            },
+            {
+              title: "Dwelling register",
+              path: "/dashboard/buildings-register/dwelling",
+              icon: "meeting_room",
+              selected: false,
+            }
+          ]
         },
         {
           title: "Quality management",
