@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EntranceFilter } from '../../../model/entrance';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
