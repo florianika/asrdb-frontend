@@ -2,9 +2,9 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
-import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
-import { CommonDwellingService } from 'src/app/dashboard/common/service/common-dwellings.service';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { QueryFilter } from 'src/app/dashboard/buildings-register/common/model/query-filter';
+import { CommonDwellingService } from 'src/app/dashboard/buildings-register/common/service/common-dwellings.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/buildings-register/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-dwelling-details',

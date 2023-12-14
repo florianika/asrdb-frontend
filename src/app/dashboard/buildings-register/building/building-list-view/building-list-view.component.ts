@@ -2,14 +2,14 @@ import { AfterViewInit, Component, OnDestroy, ViewChild, isDevMode } from '@angu
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { merge, startWith, switchMap, catchError, of as observableOf, takeUntil, Subject } from 'rxjs';
-import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
-import { CommonBuildingService } from 'src/app/dashboard/common/service/common-building.service';
+import { QueryFilter } from 'src/app/dashboard/buildings-register/common/model/query-filter';
+import { CommonBuildingService } from 'src/app/dashboard/buildings-register/common/service/common-building.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BuildingListViewFilterComponent } from './building-list-view-filter/building-list-view-filter.component';
-import { BuildingFilter } from 'src/app/dashboard/common/model/building';
+import { BuildingFilter } from 'src/app/dashboard/buildings-register/common/model/building';
 import { Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/buildings-register/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-building-list-view',

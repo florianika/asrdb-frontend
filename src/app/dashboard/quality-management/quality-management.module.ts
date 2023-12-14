@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { QualityManagementRoutingModule } from './quality-management-routing.module';
 import { QualityManagementComponent } from './quality-management.component';
+import { QualityTableComponent } from './common/component/quality-table/quality-table.component';
 
 
 @NgModule({
   declarations: [
-    QualityManagementComponent
+    QualityManagementComponent,
+    QualityTableComponent
   ],
   imports: [
     CommonModule,

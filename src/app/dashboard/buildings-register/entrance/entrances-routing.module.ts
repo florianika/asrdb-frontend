@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EntranceListViewComponent } from '../../common/component/entrance-list-view/entrance-list-view.component';
+import { EntranceListViewComponent } from '../common/component/entrance-list-view/entrance-list-view.component';
 import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
 
 const routes: Routes = [
