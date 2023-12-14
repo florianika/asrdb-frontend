@@ -61,8 +61,12 @@ export class AuthStateService implements OnDestroy {
           if (!this.tokens) {
             this.tokens = {} as SigninResponse;
           }
-          this.tokens.refreshToken = newToken.refreshToken;
-          this.tokens.accessToken = newToken.accessToken;
+          this.setJWT({
+            idToken: newToken.idToken,
+            accessToken: newToken.accessToken,
+            refreshToken: newToken.refreshToken
+          });
+
           this.checkTokenValidity();
         },
         error: () => {
@@ -111,7 +115,7 @@ export class AuthStateService implements OnDestroy {
 
   getSurname(): string {
     const jwtToken = this.getDecodedJWT();
-    return jwtToken?.surname ?? '';
+    return jwtToken?.family_name ?? '';
   }
 
   getFullName(): string {

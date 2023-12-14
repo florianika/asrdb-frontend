@@ -1,6 +1,13 @@
 <div style="padding: 5px 15px;">
-  <h2>Welcome, {{user}}</h2>
-  <asrdb-graphs></asrdb-graphs>
-  <asrdb-maps></asrdb-maps>
+  <h2>Welcome, <span style="text-transform: capitalize;">{{user}}</span></h2>
+  <asrdb-map></asrdb-map>
+  <div class="row">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
+      <asrdb-graphs [type]="'pie'"></asrdb-graphs>
+    </div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
+      <asrdb-graphs [type]="'bar'"></asrdb-graphs>
+    </div>
+  </div>
   <asrdb-tables></asrdb-tables>
 </div>

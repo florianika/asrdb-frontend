@@ -1,0 +1,28 @@
+<div *ngIf="!isLoadingResults" class="building-details-container">
+  <mat-card class="building-details-card">
+    <mat-card-content>
+      <h2 class="details-header" i18n>Details for building: {{entrance.GlobalID}}</h2>
+      <span class="details-subheader" i18n>Quality: <span
+          style="font-weight: bold;">{{getValueFromStatus('EntQuality')}}</span></span>
+      <section *ngFor="let section of sections">
+        <h3>{{section.title}}</h3>
+        <asrdb-building-detail *ngFor="let entry of section.entries" [title]="entry.title"
+          [value]="entry.value"></asrdb-building-detail>
+        <hr>
+      </section>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="building-last-modified-card">
+    <mat-card-content>
+      <h2 i18n>History details</h2>
+      <div>
+        <span i18n>Created by: </span>
+        <span>{{entrance.created_user}} - {{entrance.created_date}}</span>
+      </div>
+      <div>
+        <span i18n>Last edited by: </span>
+        <span>{{entrance.last_edited_user}} - {{entrance.last_edited_date}}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

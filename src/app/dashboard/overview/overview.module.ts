@@ -6,11 +6,17 @@ import { OverviewComponent } from './overview.component';
 import { PlotlyModule } from 'angular-plotly.js';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { GraphsComponent } from './components/graphs/graphs.component';
-import { MapsComponent } from './components/maps/maps.component';
 import { TablesComponent } from './components/tables/tables.component';
 import { MatCardModule } from '@angular/material/card';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatTableModule } from '@angular/material/table';
+import { MapComponent } from './components/map/map.component';
+import { OverviewService } from './components/service/overview.service';
+import { GraphsService } from './components/graphs/graphs.service';
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -18,8 +24,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
   declarations: [
     OverviewComponent,
     GraphsComponent,
-    MapsComponent,
-    TablesComponent
+    TablesComponent,
+    MapComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +33,12 @@ PlotlyModule.plotlyjs = PlotlyJS;
     PlotlyModule,
     MatCardModule,
     GoogleMapsModule,
-    MatTableModule
-  ]
+    MatTableModule,
+    MatPaginatorModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule
+  ],
+  providers: [OverviewService, GraphsService]
 })
 export class OverviewModule { }

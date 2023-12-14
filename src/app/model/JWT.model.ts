@@ -5,7 +5,7 @@ export type JWT = {
   id: string,
   email: string,
   name: string,
-  surname: string,
+  family_name: string,
   role: Role,
   nbf: number,
   exp: number,

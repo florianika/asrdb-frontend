@@ -23,8 +23,23 @@ export class SideBarComponent implements AfterViewInit {
         {
           title: "Building register",
           path: "/dashboard/buildings-register",
+          pathMatch: true,
           icon: "domainm",
-          selected: false
+          selected: false,
+          subSection: [
+            {
+              title: "Entrance register",
+              path: "/dashboard/buildings-register/entrance",
+              icon: "directions_walk",
+              selected: false,
+            },
+            {
+              title: "Dwelling register",
+              path: "/dashboard/buildings-register/dwelling",
+              icon: "meeting_room",
+              selected: false,
+            }
+          ]
         },
         {
           title: "Quality management",
@@ -74,12 +89,15 @@ export class SideBarComponent implements AfterViewInit {
   private setSelected() {
     for (const sideBarElement of this.sideBarElements) {
       for (const sectionElement of sideBarElement.sectionElements) {
-        sectionElement.selected = this.isSelected(sectionElement.path);
+        sectionElement.selected = this.isSelected(sectionElement.path, !!sectionElement.pathMatch);
+        sectionElement.subSection?.forEach(subsection => {
+          subsection.selected = this.isSelected(subsection.path);
+        });
       }
     }
   }
 
-  private isSelected(path: string): boolean {
-    return this.router.url.includes(path);
+  private isSelected(path: string, pathMatch = false): boolean {
+    return pathMatch ? this.router.url === path : this.router.url.includes(path);
   }
 }
