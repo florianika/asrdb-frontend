@@ -6,7 +6,6 @@ import { OverviewComponent } from './overview.component';
 import { PlotlyModule } from 'angular-plotly.js';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { GraphsComponent } from './components/graphs/graphs.component';
-import { TablesComponent } from './components/tables/tables.component';
 import { MatCardModule } from '@angular/material/card';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatTableModule } from '@angular/material/table';
@@ -17,6 +16,9 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import { CommonEsriAuthService } from '../common/service/common-esri-auth.service';
+import { CommonBuildingService } from '../common/service/common-building.service';
+import { CommonEntranceService } from '../common/service/common-entrance.service';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -24,7 +26,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
   declarations: [
     OverviewComponent,
     GraphsComponent,
-    TablesComponent,
     MapComponent
   ],
   imports: [
@@ -39,6 +40,12 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatButtonModule,
     MatIconModule
   ],
-  providers: [OverviewService, GraphsService]
+  providers: [
+    OverviewService,
+    GraphsService,
+    CommonEsriAuthService,
+    CommonBuildingService,
+    CommonEntranceService
+  ]
 })
 export class OverviewModule { }

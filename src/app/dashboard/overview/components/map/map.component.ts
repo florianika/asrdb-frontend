@@ -10,7 +10,10 @@ import WebMap from '@arcgis/core/WebMap';
 import MapView from '@arcgis/core/views/MapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer'
 import Popup from '@arcgis/core/widgets/Popup'
-import { OverviewService } from "../service/overview.service";
+import { CommonEsriAuthService } from "src/app/dashboard/common/service/common-esri-auth.service";
+import { CommonBuildingService } from "src/app/dashboard/common/service/common-building.service";
+import { CommonEntranceService } from "src/app/dashboard/common/service/common-entrance.service";
+import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
 
 @Component({
   selector: "asrdb-map",
@@ -21,10 +24,29 @@ export class MapComponent implements OnInit, OnDestroy {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
 
   public view: MapView | null = null;
-  private bldlayer: FeatureLayer = this.overviewService.bldLayer;
-  private entlayer = this.overviewService.entLayer;
+  private bldlayer: FeatureLayer = this.buildingService.bldLayer;
+  private entlayer = this.entranceService.entLayer;
 
-  constructor(private overviewService: OverviewService) {}
+  constructor(
+    private buildingService: CommonBuildingService,
+    private entranceService: CommonEntranceService,
+    private esriAuthService: CommonEsriAuthService) { }
+
+  ngOnInit(): any {
+    // this.overviewService.inizializeAuth();
+
+    // Initialize MapView and return an instance of MapView
+    this.initializeMap().then(() => {
+      console.log('The map is ready.')
+    })
+  }
+
+  ngOnDestroy(): void {
+    if (this.view) {
+      // destroy the map view
+      this.view.destroy();
+    }
+  }
 
   async initializeMap(): Promise<any> {
     const container = this.mapViewEl.nativeElement;
@@ -44,7 +66,7 @@ export class MapComponent implements OnInit, OnDestroy {
           breakpoint: false
         },
         visibleElements: {
-          closeButton: false
+          closeButton: false,
         }
       }),
       map: webmap
@@ -60,23 +82,9 @@ export class MapComponent implements OnInit, OnDestroy {
       });
     });
 
-    await this.view.whenLayerView(this.bldlayer);
+    (await this.view.whenLayerView(this.bldlayer)).filter = new FeatureFilter({
+      where: "BldType > 2"
+    });
     this.view.goTo(this.bldlayer.fullExtent);
-  }
-
-  ngOnInit(): any {
-    this.overviewService.inizializeAuth();
-
-    // Initialize MapView and return an instance of MapView
-    this.initializeMap().then(() => {
-      console.log('The map is ready.')
-    })
-  }
-
-  ngOnDestroy(): void {
-    if (this.view) {
-      // destroy the map view
-      this.view.destroy();
-    }
   }
 }
