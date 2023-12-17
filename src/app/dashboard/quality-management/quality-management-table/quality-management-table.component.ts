@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
-import { Observable, map, switchMap } from 'rxjs';
-import { EntityType, QualityManagementConfig, QualityRule } from '../quality-management-config';
+import { Observable, map } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatPaginator } from '@angular/material/paginator';
@@ -83,10 +82,14 @@ export class QualityManagementTableComponent implements OnInit {
   }
 
   viewDetails(id: string) {
-    this.router.navigateByUrl('/dashboard/quality-management/details/' + id);
+    this.router.navigateByUrl('/dashboard/quality-management/details/' + this.qualityType + '/' + id);
   }
 
   edit(id: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/edit/' + id);
+    this.router.navigateByUrl('/dashboard/buildings-register/edit/' + this.qualityType + '/' + id);
+  }
+
+  add() {
+
   }
 }
