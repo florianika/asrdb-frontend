@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatPaginator } from '@angular/material/paginator';
@@ -11,11 +11,11 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './quality-management-table.component.html',
   styleUrls: ['./quality-management-table.component.css']
 })
-export class QualityManagementTableComponent implements OnInit {
+export class QualityManagementTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  public qualityRulesObservable: Observable<MatTableDataSource<any>>;
-  public isLoadingResults: Observable<boolean>;
+  public qualityRulesObservable!: Observable<MatTableDataSource<any>>;
+  public isLoadingResults!: Observable<boolean>;
   public displayedColumns = [
     'id',
     'localId',
@@ -30,7 +30,8 @@ export class QualityManagementTableComponent implements OnInit {
     'actions',
   ];
 
-  private qualityType: string | null;
+  private qualityType!: string | null;
+  private subscription = new Subject();
 
   // TODO: Change this
   filterConfig: any = {
@@ -51,18 +52,17 @@ export class QualityManagementTableComponent implements OnInit {
     private qualityManagementService: QualityManagementService,
     private activatedRoute: ActivatedRoute,
     private router: Router) {
-    this.qualityRulesObservable = this.qualityManagementService.qualityRulesAsObservable.pipe(map((value) => {
-      const datasource = new MatTableDataSource(value);
-      datasource.paginator = this.paginator;
-      return datasource;
-    }));
-    this.isLoadingResults = this.qualityManagementService.loadingResultsAsObservable;
-
-    this.qualityType = this.activatedRoute.snapshot.paramMap.get('entity');
+    this.init();
+    this.activatedRoute.paramMap.pipe(takeUntil(this.subscription)).subscribe(this.init)
   }
 
   ngOnInit(): void {
     this.qualityManagementService.getData(this.qualityType);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.next(true);
+    this.subscription.complete();
   }
 
   openFilter() {
@@ -91,5 +91,15 @@ export class QualityManagementTableComponent implements OnInit {
 
   add() {
     throw new Error('Unimplemented');
+  }
+
+  private init() {
+    this.qualityRulesObservable = this.qualityManagementService.qualityRulesAsObservable.pipe(map((value) => {
+      const datasource = new MatTableDataSource(value);
+      datasource.paginator = this.paginator;
+      return datasource;
+    }));
+    this.isLoadingResults = this.qualityManagementService.loadingResultsAsObservable;
+    this.qualityType = this.activatedRoute.snapshot.paramMap.get('entity');
   }
 }

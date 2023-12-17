@@ -20,31 +20,53 @@ export class SideBarComponent implements AfterViewInit {
           icon: 'dashboard',
           selected: false
         },
+      ],
+      visible: true
+    },
+    {
+      sectionTitle: 'Registers',
+      sectionElements: [
         {
           title: 'Building register',
           path: '/dashboard/buildings-register',
           pathMatch: true,
           icon: 'domainm',
           selected: false,
-          subSection: [
-            {
-              title: 'Entrance register',
-              path: '/dashboard/buildings-register/entrance',
-              icon: 'directions_walk',
-              selected: false,
-            },
-            {
-              title: 'Dwelling register',
-              path: '/dashboard/buildings-register/dwelling',
-              icon: 'meeting_room',
-              selected: false,
-            }
-          ]
         },
         {
-          title: 'Quality management',
-          path: '/dashboard/quality-management',
-          icon: 'edit_note',
+          title: 'Entrance register',
+          path: '/dashboard/buildings-register/entrance',
+          icon: 'directions_walk',
+          selected: false,
+        },
+        {
+          title: 'Dwelling register',
+          path: '/dashboard/buildings-register/dwelling',
+          icon: 'meeting_room',
+          selected: false,
+        }
+      ],
+      visible: true
+    },
+    {
+      sectionTitle: 'Quality Management',
+      sectionElements: [
+        {
+          title: 'Building Quality',
+          path: '/dashboard/quality-management/BUILDING',
+          icon: 'domainm',
+          selected: false
+        },
+        {
+          title: 'Entrance Quality',
+          path: '/dashboard/quality-management/ENTRANCE',
+          icon: 'directions_walk',
+          selected: false
+        },
+        {
+          title: 'Dwelling Quality',
+          path: '/dashboard/quality-management/DWELLING',
+          icon: 'meeting_room',
           selected: false
         },
       ],
@@ -90,9 +112,9 @@ export class SideBarComponent implements AfterViewInit {
     for (const sideBarElement of this.sideBarElements) {
       for (const sectionElement of sideBarElement.sectionElements) {
         sectionElement.selected = this.isSelected(sectionElement.path, !!sectionElement.pathMatch);
-        sectionElement.subSection?.forEach(subsection => {
-          subsection.selected = this.isSelected(subsection.path);
-        });
+        // sectionElement.subSection?.forEach(subsection => {
+        //   subsection.selected = this.isSelected(subsection.path);
+        // });
       }
     }
   }

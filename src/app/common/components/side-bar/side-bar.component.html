@@ -2,19 +2,20 @@
   <ng-container *ngFor="let sideBarElement of sideBarElements; let i = index">
     <ng-container *ngIf="sideBarElement.visible">
       <mat-divider *ngIf="i !== 0"></mat-divider>
+      <div mat-subheader *ngIf="sideBarElement.sectionTitle">{{sideBarElement.sectionTitle}}</div>
+
       <ng-container *ngFor="let sectionElement of sideBarElement.sectionElements">
         <mat-list-option [routerLink]="sectionElement.path" [selected]="sectionElement.selected">
           <mat-icon matListItemIcon>{{sectionElement.icon}}</mat-icon>
           {{sectionElement.title}}
         </mat-list-option>
-        <div *ngIf="sectionElement.subSection">
+        <!-- <div *ngIf="sectionElement.subSection">
           <mat-list-option class="sub-element" *ngFor="let subsectionElement of sectionElement.subSection" [routerLink]="subsectionElement.path" [selected]="subsectionElement.selected">
             <mat-icon matListItemIcon>{{subsectionElement.icon}}</mat-icon>
             <span>{{subsectionElement.title}}</span>
           </mat-list-option>
-        </div>
+        </div> -->
       </ng-container>
-      <div mat-subheader *ngIf="sideBarElement.sectionTitle">{{sideBarElement.sectionTitle}}</div>
     </ng-container>
   </ng-container>
 </mat-selection-list>
