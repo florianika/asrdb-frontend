@@ -176,7 +176,7 @@ export class BuildingDetailsComponent implements OnInit {
         },
       ]
     }
-  ]
+  ];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -198,7 +198,7 @@ export class BuildingDetailsComponent implements OnInit {
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.building[column]) ?? "Unknown";
+    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.building[column]) ?? 'Unknown';
   }
 
   private prepareWhereCase() {
@@ -207,7 +207,7 @@ export class BuildingDetailsComponent implements OnInit {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Data", res);
+      console.log('Data', res);
     }
     if (!res) {
       return;

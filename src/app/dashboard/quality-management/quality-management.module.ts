@@ -16,8 +16,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from 'src/app/common/services/auth-interceptor';
 
 
 @NgModule({

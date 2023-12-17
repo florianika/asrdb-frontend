@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Observer } from 'rxjs';
-import { AuthStateService } from 'src/app/common/services/auth-state.service';
+import { BehaviorSubject, Observer } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export type SignupForm = FormGroup<{
@@ -55,7 +54,7 @@ export class SignupService {
     };
     this.httpClient.post<any>(environment.base_url + '/auth/signup', JSON.stringify(data), {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     }).subscribe(this.signupObserver);
   }

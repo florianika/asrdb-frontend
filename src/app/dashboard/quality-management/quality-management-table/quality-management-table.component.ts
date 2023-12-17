@@ -77,7 +77,7 @@ export class QualityManagementTableComponent implements OnInit {
   }
 
   remove($event: Chip) {
-    (this.filterConfig.filter as any)[$event.column] = "";
+    (this.filterConfig.filter as any)[$event.column] = '';
     this.reload();
   }
 
@@ -90,6 +90,6 @@ export class QualityManagementTableComponent implements OnInit {
   }
 
   add() {
-
+    throw new Error('Unimplemented');
   }
 }

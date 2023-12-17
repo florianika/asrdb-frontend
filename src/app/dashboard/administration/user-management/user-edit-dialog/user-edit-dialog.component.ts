@@ -9,7 +9,7 @@ import { User } from 'src/app/model/User.model';
   styleUrls: ['./user-edit-dialog.component.css']
 })
 export class UserEditDialogComponent {
-  role: Role = "ADMIN";
+  role: Role = 'ADMIN';
   constructor(@Inject(MAT_DIALOG_DATA) public data: User) {
     this.role = data.accountRole;
   }

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
 import { CommonDwellingService } from '../../service/common-dwellings.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,7 +27,7 @@ import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwe
   providers: [CommonDwellingService, CommonEntranceService],
   imports: [MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
 })
-export class DwellingListViewComponent implements OnInit, OnDestroy {
+export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() buildingGlobalId?: string;
   buildingIdQueryParam?: string | null;
 
@@ -79,7 +79,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     let buildingId;
-    let entranceId = this.activatedRoute.snapshot.queryParamMap.get('entrance');
+    const entranceId = this.activatedRoute.snapshot.queryParamMap.get('entrance');
 
     this.buildingIdQueryParam = this.activatedRoute.snapshot.queryParamMap.get('building');
     if (this.buildingIdQueryParam) {
@@ -141,7 +141,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
   }
 
   remove($event: Chip) {
-    (this.filterConfig.filter as any)[$event.column] = "";
+    (this.filterConfig.filter as any)[$event.column] = '';
     this.reload();
   }
 
@@ -164,12 +164,12 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
       .map(([key, value]) => ({ column: key, value } as Chip))
       .forEach(filter => {
         if (filter.column === 'fk_entrance') {
-          conditions.push(filter.column + " in " + filter.value);
+          conditions.push(filter.column + ' in ' + filter.value);
         } else {
-          conditions.push(filter.column + "=" + this.getWhereConditionValue(filter.value));
+          conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
         }
       });
-    return conditions.length ? conditions.join(" and ") : "1=1";
+    return conditions.length ? conditions.join(' and ') : '1=1';
   }
 
   private getWhereConditionValue(value: string | number) {
@@ -185,7 +185,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
       where: this.prepareWhereCase()
     } as Partial<QueryFilter>;
     if (this.sort.active) {
-      filter.orderByFields = [this.sort.active + " " + this.sort.direction.toUpperCase()]
+      filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
     return this.commonDwellingBuildingService.getDwellings(filter).pipe(catchError((err) => {
       console.log(err);
@@ -195,7 +195,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Dwellings: ", res);
+      console.log('Dwellings: ', res);
     }
     if (!res) {
       return;
@@ -216,7 +216,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
         DwlType: this.getOptions('DwlType').length ? this.getOptions('DwlType') : this.filterConfig.options.DwlType,
         DwlStatus: this.getOptions('DwlStatus').length ? this.getOptions('DwlStatus') : this.filterConfig.options.DwlStatus,
       }
-    }
+    };
   }
 
   private getOptions(column: string) {
@@ -228,7 +228,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy {
       return {
         name: codeValue.name,
         code: codeValue.code,
-      }
+      };
     });
   }
 

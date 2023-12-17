@@ -58,10 +58,10 @@ export class QualityManagementConfig {
         return 1;
       }
       case 'DWELLING': {
-        return 2
+        return 2;
       }
       default: {
-        return 0
+        return 0;
       }
     }
   }

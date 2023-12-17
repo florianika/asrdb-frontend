@@ -81,7 +81,7 @@ export class EntranceDetailsComponent implements OnInit {
         },
       ]
     }
-  ]
+  ];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -99,7 +99,7 @@ export class EntranceDetailsComponent implements OnInit {
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.entrance[column]) ?? "Unknown";
+    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.entrance[column]) ?? 'Unknown';
   }
 
   private prepareWhereCase() {
@@ -108,7 +108,7 @@ export class EntranceDetailsComponent implements OnInit {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Entrance", res);
+      console.log('Entrance', res);
     }
     if (!res) {
       return;

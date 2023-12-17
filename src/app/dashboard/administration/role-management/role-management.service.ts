@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from "rxjs";
-import { HttpClient } from "@angular/common/http";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatDialog } from "@angular/material/dialog";
-import { NewRolePermission, Permission, RolePermissionGetResponse, RolePermissions } from "../../../model/RolePermissions.model";
-import { environment } from "../../../../environments/environment";
+import { Injectable, isDevMode } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { NewRolePermission, Permission, RolePermissionGetResponse, RolePermissions } from '../../../model/RolePermissions.model';
+import { environment } from '../../../../environments/environment';
 import { RoleCreateDialogComponent } from './role-create-dialog/role-create-dialog.component';
 import { RoleDeleteDialogComponent } from './role-delete-dialog/role-delete-dialog.component';
 import { RoleEditDialogComponent } from './role-edit-dialog/role-edit-dialog.component';
@@ -35,14 +35,14 @@ export class RoleManagementService {
       error: (error) => {
         this.loading.next(false);
         console.error(error);
-        this.showMessage("Could not load the role permissions. Please reload the page to try again.");
+        this.showMessage('Could not load the role permissions. Please reload the page to try again.');
       }
     });
   }
 
   openCreateRoleDialog() {
     this.dialog.open(RoleCreateDialogComponent).afterClosed().subscribe((newRole: NewRolePermission) => {
-      if (!!newRole) {
+      if (newRole) {
         this.createRole(newRole);
       }
     });
@@ -52,7 +52,7 @@ export class RoleManagementService {
     this.dialog.open(RoleDeleteDialogComponent, { data: { role } })
       .afterClosed()
       .subscribe((id: number) => {
-        if (!!id) {
+        if (id) {
           this.deleteRole(id);
         }
       });
@@ -62,7 +62,7 @@ export class RoleManagementService {
     this.dialog.open(RoleEditDialogComponent, { data: { permission: role.permission } })
       .afterClosed()
       .subscribe((permission: Permission) => {
-        if (!!permission) {
+        if (permission) {
           this.updateRole(role.id, permission);
         }
       });
@@ -72,7 +72,7 @@ export class RoleManagementService {
     this.loading.next(true);
     this.httpClient.post<any>(environment.base_url + 'admin/permissions', JSON.stringify(newRole), {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     }).subscribe({
       next: () => {
@@ -80,8 +80,11 @@ export class RoleManagementService {
         this.getRolePermissions();
       },
       error: (err) => {
+        if (isDevMode()) {
+          console.log(err);
+        }
         this.loading.next(false);
-        this.showMessage("Could not create the role permissions. Please try again or contact the administrator.");
+        this.showMessage('Could not create the role permissions. Please try again or contact the administrator.');
       }
     });
   }
@@ -90,7 +93,7 @@ export class RoleManagementService {
     this.loading.next(true);
     this.httpClient.patch<any>(environment.base_url + 'admin/permissions/' + id + `/rights/${permission}`, {}, {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     }).subscribe({
       next: () => {
@@ -98,8 +101,11 @@ export class RoleManagementService {
         this.getRolePermissions();
       },
       error: (err) => {
+        if (isDevMode()) {
+          console.log(err);
+        }
         this.loading.next(false);
-        this.showMessage("Could not update the role permissions. Please try again or contact the administrator.");
+        this.showMessage('Could not update the role permissions. Please try again or contact the administrator.');
       }
     });
   }
@@ -112,14 +118,17 @@ export class RoleManagementService {
         this.getRolePermissions();
       },
       error: (err) => {
+        if (isDevMode()) {
+          console.log(err);
+        }
         this.loading.next(false);
-        this.showMessage("Could not delete the role permissions. Please try again or contact the administrator.");
+        this.showMessage('Could not delete the role permissions. Please try again or contact the administrator.');
       }
     });
   }
 
   private showMessage(message: string) {
-    this.snackbarService.open(message, "Ok", {
+    this.snackbarService.open(message, 'Ok', {
       duration: 3000
     });
   }

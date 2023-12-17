@@ -3,8 +3,8 @@ import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {JWT, SigninResponse} from 'src/app/model/JWT.model';
 import {Router} from '@angular/router';
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
 import { Role } from 'src/app/model/RolePermissions.model';
 
 @Injectable({
@@ -13,7 +13,7 @@ import { Role } from 'src/app/model/RolePermissions.model';
 export class AuthStateService implements OnDestroy {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
   private readonly SIGNIN_URL = '/auth/signin';
-  private readonly SIGNOUT_URL = "/auth/signout";
+  private readonly SIGNOUT_URL = '/auth/signout';
 
 
   private tokens: SigninResponse | null;
@@ -38,7 +38,7 @@ export class AuthStateService implements OnDestroy {
 
   logout() {
     this.httpClient.post(environment.base_url + this.SIGNOUT_URL, {
-      "UserId": this.getNameId()
+      'UserId': this.getNameId()
     }).pipe(takeUntil(this.subscription)).subscribe({
       next: () => {
         this.logoutUser();
@@ -51,9 +51,9 @@ export class AuthStateService implements OnDestroy {
 
   refreshToken() {
     clearInterval(this.interval);
-    this.httpClient.post<SigninResponse>(environment.base_url + "/auth/refreshtoken", {
-      "AccessToken": this.tokens?.accessToken,
-      "RefreshToken": this.tokens?.refreshToken
+    this.httpClient.post<SigninResponse>(environment.base_url + '/auth/refreshtoken', {
+      'AccessToken': this.tokens?.accessToken,
+      'RefreshToken': this.tokens?.refreshToken
     }).pipe(takeUntil(this.subscription))
       .subscribe({
         next: (newToken) => {
@@ -88,13 +88,13 @@ export class AuthStateService implements OnDestroy {
   }
 
   isTokenValid(): boolean {
-    let isTokenValid = this.isTokenValidInternal();
+    const isTokenValid = this.isTokenValidInternal();
     this.setLoginState(isTokenValid);
     return isTokenValid;
   }
 
   isAdmin() {
-    return this.isTokenValid() && this.getDecodedJWT()?.role === "ADMIN";
+    return this.isTokenValid() && this.getDecodedJWT()?.role === 'ADMIN';
   }
 
   setJWT(newJWT: SigninResponse) {
@@ -132,7 +132,7 @@ export class AuthStateService implements OnDestroy {
   }
 
   getAuthorizationToken() {
-    return "Bearer " + this.tokens?.accessToken;
+    return 'Bearer ' + this.tokens?.accessToken;
   }
 
   private getDecodedJWT(): JWT | null {
@@ -167,7 +167,7 @@ export class AuthStateService implements OnDestroy {
       const startDate = new Date();
       const seconds = ((expirationDate?.getTime() ?? 0) - startDate.getTime()) / 1000;
       if (isDevMode()) {
-        console.log(`Seconds left: ${seconds}`)
+        console.log(`Seconds left: ${seconds}`);
       }
       isTokenNearlyExpired = seconds <= 10;
     } catch (e) {
@@ -185,7 +185,7 @@ export class AuthStateService implements OnDestroy {
       }
       if (this.tokenInNearExpired()) {
         if (isDevMode()) {
-          console.log("Reloaded token");
+          console.log('Reloaded token');
         }
         this.refreshToken();
       }

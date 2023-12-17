@@ -121,7 +121,7 @@ export class DwellingDetailsComponent implements OnInit {
         },
       ]
     }
-  ]
+  ];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -139,7 +139,7 @@ export class DwellingDetailsComponent implements OnInit {
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.dwelling[column]) ?? "Unknown";
+    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.dwelling[column]) ?? 'Unknown';
   }
 
   private prepareWhereCase() {
@@ -148,7 +148,7 @@ export class DwellingDetailsComponent implements OnInit {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Dwelling", res);
+      console.log('Dwelling', res);
     }
     if (!res) {
       return;

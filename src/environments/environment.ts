@@ -1,3 +1,3 @@
 export const environment = {
-  base_url: "prod"
+  base_url: 'prod'
 };

@@ -12,63 +12,63 @@ import { filter } from 'rxjs/internal/operators/filter';
 export class SideBarComponent implements AfterViewInit {
   sideBarElements = [
     {
-      sectionTitle: "",
+      sectionTitle: '',
       sectionElements: [
         {
-          title: "Dashboard",
-          path: "dashboard/overview",
-          icon: "dashboard",
+          title: 'Dashboard',
+          path: 'dashboard/overview',
+          icon: 'dashboard',
           selected: false
         },
         {
-          title: "Building register",
-          path: "/dashboard/buildings-register",
+          title: 'Building register',
+          path: '/dashboard/buildings-register',
           pathMatch: true,
-          icon: "domainm",
+          icon: 'domainm',
           selected: false,
           subSection: [
             {
-              title: "Entrance register",
-              path: "/dashboard/buildings-register/entrance",
-              icon: "directions_walk",
+              title: 'Entrance register',
+              path: '/dashboard/buildings-register/entrance',
+              icon: 'directions_walk',
               selected: false,
             },
             {
-              title: "Dwelling register",
-              path: "/dashboard/buildings-register/dwelling",
-              icon: "meeting_room",
+              title: 'Dwelling register',
+              path: '/dashboard/buildings-register/dwelling',
+              icon: 'meeting_room',
               selected: false,
             }
           ]
         },
         {
-          title: "Quality management",
-          path: "/dashboard/quality-management",
-          icon: "edit_note",
+          title: 'Quality management',
+          path: '/dashboard/quality-management',
+          icon: 'edit_note',
           selected: false
         },
       ],
       visible: true
     },
     {
-      sectionTitle: "Administration",
+      sectionTitle: 'Administration',
       sectionElements: [
         {
-          title: "User administration",
-          path: "/dashboard/administration/user-management",
-          icon: "manage_accounts",
+          title: 'User administration',
+          path: '/dashboard/administration/user-management',
+          icon: 'manage_accounts',
           selected: false
         },
         {
-          title: "Role management",
-          path: "/dashboard/administration/role-management",
-          icon: "verified_user",
+          title: 'Role management',
+          path: '/dashboard/administration/role-management',
+          icon: 'verified_user',
           selected: false
         },
       ],
       visible: this.isAdmin
     }
-  ]
+  ];
 
   constructor(private authStateService: AuthStateService, private router: Router, private changeDetection: ChangeDetectorRef) {
   }

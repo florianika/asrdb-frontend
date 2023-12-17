@@ -18,7 +18,7 @@ import { Role } from 'src/app/model/RolePermissions.model';
 export class RoleSelectorComponent {
   @Input() required = false;
   @Input() disabled = false;
-  @Input() role: Role = "ADMIN";
+  @Input() role: Role = 'ADMIN';
   @Output() roleChange = new EventEmitter<Role>();
 
   changeRole(selectedRole: MatSelectChange) {

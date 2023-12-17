@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {map, Observable} from "rxjs";
-import {MatTableDataSource} from "@angular/material/table";
-import {Role, RolePermissions} from "../../../model/RolePermissions.model";
-import {RoleManagementService} from "./role-management.service";
+import {map, Observable} from 'rxjs';
+import {MatTableDataSource} from '@angular/material/table';
+import {Role, RolePermissions} from '../../../model/RolePermissions.model';
+import {RoleManagementService} from './role-management.service';
 
 @Component({
   selector: 'asrdb-role-management',
@@ -10,18 +10,18 @@ import {RoleManagementService} from "./role-management.service";
   styleUrls: ['./role-management.component.css']
 })
 export class RoleManagementComponent implements OnInit {
-  datasourceToUse: Role = "ADMIN";
+  datasourceToUse: Role = 'ADMIN';
   dataSourceObservable: Observable<Map<Role, MatTableDataSource<RolePermissions>>> = this.roleManagementService
     .rolesAsObservable
     .pipe(
       map(rolePermissions => {
         const rolePermissionGroups = new Map<Role, RolePermissions[]>([
-          ["USER", []],
-          ["ADMIN", []],
-          ["SUPERVISOR", []],
-          ["ENUMERATOR", []],
-          ["CLIENT", []],
-          ["PUBLISHER", []],
+          ['USER', []],
+          ['ADMIN', []],
+          ['SUPERVISOR', []],
+          ['ENUMERATOR', []],
+          ['CLIENT', []],
+          ['PUBLISHER', []],
         ]);
         rolePermissions.forEach(rolePermission => {
           rolePermissionGroups.get(rolePermission.role)?.push(rolePermission);
@@ -30,18 +30,18 @@ export class RoleManagementComponent implements OnInit {
         dataSources.forEach((dataSource, key) => {
           dataSource.data = rolePermissionGroups.get(key) ?? [];
         });
-        console.log(dataSources)
+        console.log(dataSources);
         return dataSources;
       })
   );
 
   private dataSources: Map<Role, MatTableDataSource<RolePermissions>> = new Map([
-    ["USER", new MatTableDataSource()],
-    ["ADMIN", new MatTableDataSource()],
-    ["SUPERVISOR", new MatTableDataSource()],
-    ["ENUMERATOR", new MatTableDataSource()],
-    ["CLIENT", new MatTableDataSource()],
-    ["PUBLISHER", new MatTableDataSource()],
+    ['USER', new MatTableDataSource()],
+    ['ADMIN', new MatTableDataSource()],
+    ['SUPERVISOR', new MatTableDataSource()],
+    ['ENUMERATOR', new MatTableDataSource()],
+    ['CLIENT', new MatTableDataSource()],
+    ['PUBLISHER', new MatTableDataSource()],
   ]);
 
   constructor(private roleManagementService: RoleManagementService) {
@@ -60,5 +60,6 @@ export class RoleManagementComponent implements OnInit {
   }
 
   updateRole() {
+    throw new Error('Not implemented');
   }
 }

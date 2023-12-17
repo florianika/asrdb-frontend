@@ -4,21 +4,21 @@ import {
   ViewChild,
   ElementRef,
   OnDestroy
-} from "@angular/core";
+} from '@angular/core';
 
 import WebMap from '@arcgis/core/WebMap';
 import MapView from '@arcgis/core/views/MapView';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer'
-import Popup from '@arcgis/core/widgets/Popup'
-import { CommonEsriAuthService } from "src/app/dashboard/buildings-register/common/service/common-esri-auth.service";
-import { CommonBuildingService } from "src/app/dashboard/buildings-register/common/service/common-building.service";
-import { CommonEntranceService } from "src/app/dashboard/buildings-register/common/service/common-entrance.service";
-import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import Popup from '@arcgis/core/widgets/Popup';
+import { CommonEsriAuthService } from 'src/app/dashboard/buildings-register/common/service/common-esri-auth.service';
+import { CommonBuildingService } from 'src/app/dashboard/buildings-register/common/service/common-building.service';
+import { CommonEntranceService } from 'src/app/dashboard/buildings-register/common/service/common-entrance.service';
+import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 
 @Component({
-  selector: "asrdb-map",
-  templateUrl: "./map.component.html",
-  styleUrls: ["./map.component.css"]
+  selector: 'asrdb-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, OnDestroy {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
@@ -37,8 +37,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
     // Initialize MapView and return an instance of MapView
     this.initializeMap().then(() => {
-      console.log('The map is ready.')
-    })
+      console.log('The map is ready.');
+    });
   }
 
   ngOnDestroy(): void {
@@ -51,7 +51,7 @@ export class MapComponent implements OnInit, OnDestroy {
   async initializeMap(): Promise<any> {
     const container = this.mapViewEl.nativeElement;
     const webmap = new WebMap({
-      basemap: "hybrid",
+      basemap: 'hybrid',
       layers: [this.bldlayer, this.entlayer]
     });
 
@@ -73,17 +73,17 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.view.when(() => {
-      const centerPoint = this.view?.center.clone();
+      // const centerPoint = this.view?.center.clone();
 
-      this.view?.popup.set("dockOptions", {
+      this.view?.popup.set('dockOptions', {
         breakpoint: false,
         buttonEnabled: false,
-        position: "top-left"
+        position: 'top-left'
       });
     });
 
     (await this.view.whenLayerView(this.bldlayer)).filter = new FeatureFilter({
-      where: "BldType > 2"
+      where: 'BldType > 2'
     });
     this.view.goTo(this.bldlayer.fullExtent);
   }

@@ -1,16 +1,16 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from '@angular/core';
 
-import esriId from "@arcgis/core/identity/IdentityManager";
-import esriConfig from "@arcgis/core/config";
-import { AuthStateService } from "src/app/common/services/auth-state.service";
-import { takeUntil } from "rxjs/internal/operators/takeUntil";
-import { Subject } from "rxjs/internal/Subject";
+import esriId from '@arcgis/core/identity/IdentityManager';
+import esriConfig from '@arcgis/core/config';
+import { AuthStateService } from 'src/app/common/services/auth-state.service';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { Subject } from 'rxjs/internal/Subject';
 
 @Injectable()
-export class CommonEsriAuthService {
+export class CommonEsriAuthService implements OnDestroy {
   private ESRI_AUTH_KEY = 'ESRI-AUTH';
-  private portalUrl = "https://gislab.teamdev.it/portal";
-  private apiKey = "7pVCdD54JxE7lOPm";
+  private portalUrl = 'https://gislab.teamdev.it/portal';
+  private apiKey = '7pVCdD54JxE7lOPm';
   private subscription = new Subject<boolean>();
 
   constructor(private authState: AuthStateService) {
@@ -35,7 +35,7 @@ export class CommonEsriAuthService {
     this.registerOAuth();
     esriId.on('credential-create', () => {
       localStorage.setItem(this.ESRI_AUTH_KEY, JSON.stringify(esriId.toJSON()));
-    })
+    });
   }
 
   private initEsriConfig() {
