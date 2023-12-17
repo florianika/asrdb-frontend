@@ -17,7 +17,8 @@ import { SideBarComponent } from './common/components/side-bar/side-bar.componen
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ToolbarComponent } from './common/components/toolbar/toolbar.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import { AuthInterceptor } from './common/services/auth-interceptor';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import {HttpClientModule} from "@angular/common/http";
     MatSnackBarModule,
     HttpClientModule,
   ],
-  providers: [AuthStateService],
+  providers: [AuthStateService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },],
   bootstrap: [AppComponent]
 } as NgModule)
 export class AppModule { }

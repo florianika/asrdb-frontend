@@ -131,6 +131,10 @@ export class AuthStateService implements OnDestroy {
     return this.getDecodedJWT()?.nameid;
   }
 
+  getAuthorizationToken() {
+    return "Bearer " + this.tokens?.accessToken;
+  }
+
   private getDecodedJWT(): JWT | null {
     if (!this.tokens) {
       void this.router.navigateByUrl(this.SIGNIN_URL);
