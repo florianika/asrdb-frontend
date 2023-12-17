@@ -53,7 +53,10 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private router: Router) {
     this.init();
-    this.activatedRoute.paramMap.pipe(takeUntil(this.subscription)).subscribe(this.init)
+    this.activatedRoute.paramMap.pipe(takeUntil(this.subscription)).subscribe(() => {
+      this.init();
+      this.reload();
+    })
   }
 
   ngOnInit(): void {
@@ -63,6 +66,13 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.next(true);
     this.subscription.complete();
+  }
+
+  get entityTitle() {
+    if (!this.qualityType) {
+      return 'Building';
+    }
+    return this.qualityType.charAt(0) + this.qualityType.substring(1).toLowerCase();
   }
 
   openFilter() {
