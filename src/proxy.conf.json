@@ -1,8 +1,9 @@
 {
   "*/**": {
-    "target": "http://35.240.32.51",
+    "target": "http://35.240.32.51:9999",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "logLevel": "debug"
   },
   "logLevel": "debug"
 }
