@@ -16,8 +16,8 @@
     <asrdb-chip (remove)="remove($event)" [chips]="filterChips"></asrdb-chip>
   </div> -->
 
-  <div class="asrbd-loading-shade" *ngIf="isLoadingResults">
-    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  <div class="asrbd-loading-shade" *ngIf="isLoadingResults | async">
+    <mat-spinner *ngIf="isLoadingResults | async"></mat-spinner>
   </div>
 
   <div class="asrbd-table-container">

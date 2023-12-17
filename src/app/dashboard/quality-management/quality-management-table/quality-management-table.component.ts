@@ -31,7 +31,7 @@ export class QualityManagementTableComponent implements OnInit {
     'actions',
   ];
 
-  private qualityType: EntityType;
+  private qualityType: string | null;
 
   // TODO: Change this
   filterConfig: any = {
@@ -59,8 +59,7 @@ export class QualityManagementTableComponent implements OnInit {
     }));
     this.isLoadingResults = this.qualityManagementService.loadingResultsAsObservable;
 
-    const entity = this.activatedRoute.snapshot.queryParamMap.get('entity');
-    this.qualityType = QualityManagementConfig.getType(entity);
+    this.qualityType = this.activatedRoute.snapshot.paramMap.get('entity');
   }
 
   ngOnInit(): void {

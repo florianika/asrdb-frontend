@@ -11,6 +11,10 @@ export type QualityAction = 'AUT' | 'MISS' | 'QUE' | 'ERR';
 
 export type RuleStatus = 'ACTIVE' | 'DISABLED';
 
+export type QualityRuleResponse = {
+  ruleDTO: QualityRule[]
+}
+
 export type QualityRule = {
   id: number;
   localId: string;
@@ -37,14 +41,28 @@ export type QualityRule = {
 export const BaseUrl = '/qms/rules/entity/';
 
 export class QualityManagementConfig {
-  public static getUrlForType(type: EntityType) {
-    return BaseUrl + type.toUpperCase();
+  public static getUrlForType(type: string | null) {
+    return BaseUrl + this.getType(type);
   }
 
   public static getType(type: string | null) {
-    if (!type) {
-      return 'BUILDING';
+    // if (!type) {
+    //   return 'BUILDING';
+    // }
+    // return ['BUILDING', 'ENTRANCE', 'DWELLING'].includes(type) ? type as EntityType : 'BUILDING';
+    switch(type) {
+      case 'BUILDING': {
+        return 0;
+      }
+      case 'ENTRANCE': {
+        return 1;
+      }
+      case 'DWELLING': {
+        return 2
+      }
+      default: {
+        return 0
+      }
     }
-    return ['BUILDING', 'ENTRANCE', 'DWELLING'].includes(type) ? type as EntityType : 'BUILDING';
   }
 }

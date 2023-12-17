@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EntityType, QualityManagementConfig, QualityRule } from './quality-management-config';
+import { QualityManagementConfig, QualityRule, QualityRuleResponse } from './quality-management-config';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,17 +21,17 @@ export class QualityManagementService {
     return this.loadingResults.asObservable();
   }
 
-  public getData(type: EntityType) {
+  public getData(type: string | null) {
     this.loadingResults.next(true);
     const url = QualityManagementConfig.getUrlForType(type);
-    this.httpClient.get<QualityRule[]>(url).pipe(catchError(err => {
+    this.httpClient.get<QualityRuleResponse>(url).pipe(catchError(err => {
       this.snack.open(`Could not load quality rules for ${type}`, 'Ok', {
         duration: 3000
       });
       console.log(err);
-      return of([]);
-    })).subscribe((res: QualityRule[]) => {
-      this.qualityRules.next(res);
+      return of({ruleDTO: []});
+    })).subscribe((res: QualityRuleResponse) => {
+      this.qualityRules.next(res.ruleDTO);
       this.loadingResults.next(false);
     });
   }
