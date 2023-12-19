@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Permission, RolePermissions } from 'src/app/model/RolePermissions.model';
+import { Permission } from 'src/app/model/RolePermissions.model';
 
 @Component({
   selector: 'asrdb-role-edit-dialog',

@@ -11,16 +11,16 @@ export class CommonEntranceService {
 
   get entLayer(): FeatureLayer {
     return new FeatureLayer({
-      title: "ASRDB Entrances",
-      url: "https://gislab.teamdev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/0",
-      outFields: ["*"],
+      title: 'ASRDB Entrances',
+      url: 'https://gislab.teamdev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/0',
+      outFields: ['*'],
       minScale: 0,
       maxScale: 0,
       // create a new popupTemplate for the layer
       popupTemplate: {
         // autocasts as new PopupTemplate()
-        title: "ASRDB Entrance {GlobalID}",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi."
+        title: 'ASRDB Entrance {GlobalID}',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi.'
       }
     });
   }
@@ -36,10 +36,10 @@ export class CommonEntranceService {
     const query = this.entLayer.createQuery();
     query.start = filter?.start ?? 0;
     query.num = filter?.num ?? 5;
-    query.where = filter?.where ?? "1=1";
-    query.outFields = filter?.outFields ?? ["*"];
+    query.where = filter?.where ?? '1=1';
+    query.outFields = filter?.outFields ?? ['*'];
     query.returnGeometry = false;
-    query.orderByFields = filter?.orderByFields ?? [`EntBuildingNumber`];
+    query.orderByFields = filter?.orderByFields ?? ['EntBuildingNumber'];
     query.outStatistics = [];
 
     try {
@@ -49,7 +49,7 @@ export class CommonEntranceService {
       return {
         count: featureCount,
         data: features
-      }
+      };
     } catch (e) {
       return null;
     }

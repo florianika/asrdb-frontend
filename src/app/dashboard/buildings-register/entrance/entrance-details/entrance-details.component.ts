@@ -2,9 +2,9 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
-import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
-import { CommonEntranceService } from 'src/app/dashboard/common/service/common-entrance.service';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { QueryFilter } from 'src/app/dashboard/buildings-register/common/model/query-filter';
+import { CommonEntranceService } from 'src/app/dashboard/buildings-register/common/service/common-entrance.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/buildings-register/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -81,7 +81,7 @@ export class EntranceDetailsComponent implements OnInit {
         },
       ]
     }
-  ]
+  ];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -99,7 +99,7 @@ export class EntranceDetailsComponent implements OnInit {
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.entrance[column]) ?? "Unknown";
+    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.entrance[column]) ?? 'Unknown';
   }
 
   private prepareWhereCase() {
@@ -108,7 +108,7 @@ export class EntranceDetailsComponent implements OnInit {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Entrance", res);
+      console.log('Entrance', res);
     }
     if (!res) {
       return;

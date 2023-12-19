@@ -121,7 +121,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   remove($event: Chip) {
-    (this.filterConfig.filter as any)[$event.column] = "";
+    (this.filterConfig.filter as any)[$event.column] = '';
     this.reload();
   }
 
@@ -147,9 +147,9 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       .filter(([, value]) => !!value)
       .map(([key, value]) => ({ column: key, value } as Chip))
       .forEach(filter => {
-        conditions.push(filter.column + "=" + this.getWhereConditionValue(filter.value));
+        conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
       });
-    return conditions.length ? conditions.join(" and ") : "1=1";
+    return conditions.length ? conditions.join(' and ') : '1=1';
   }
 
   private getWhereConditionValue(value: string | number) {
@@ -165,7 +165,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       where: this.prepareWhereCase()
     } as Partial<QueryFilter>;
     if (this.sort.active) {
-      filter.orderByFields = [this.sort.active + " " + this.sort.direction.toUpperCase()]
+      filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
     return this.commonEntranceBuildingService.getEntranceData(filter).pipe(catchError((err) => {
       console.log(err);
@@ -175,7 +175,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Entrances: ", res);
+      console.log('Entrances: ', res);
     }
     if (!res) {
       return;
@@ -184,7 +184,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       this.fields = res.data.fields;
     }
     this.resultsLength = res.count;
-    this.data = res.data.features.map((feature: any) => feature.attributes);;
+    this.data = res.data.features.map((feature: any) => feature.attributes);
     this.isLoadingResults = false;
     this.prepareFilter();
   }
@@ -195,7 +195,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       options: {
         EntPointStatus: this.getOptions('EntPointStatus').length ? this.getOptions('EntPointStatus') : this.filterConfig.options.EntPointStatus,
       }
-    }
+    };
   }
 
   private getOptions(column: string) {
@@ -207,7 +207,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       return {
         name: codeValue.name,
         code: codeValue.code,
-      }
+      };
     });
   }
 }

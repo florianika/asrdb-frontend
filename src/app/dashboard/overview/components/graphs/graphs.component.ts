@@ -32,7 +32,7 @@ export class GraphsComponent implements OnInit {
       this.graph.data[0].x = labels;
       this.graph.data[0].y = data;
     } else if (this.type === 'line') {
-
+      console.log('TEST');
     }
   }
 
@@ -44,8 +44,8 @@ export class GraphsComponent implements OnInit {
       layout: {
         autosize: true,
         title: 'Building types',
-        textinfo: "label+percent",
-        textposition: "outside",
+        textinfo: 'label+percent',
+        textposition: 'outside',
         automargin: true,
         legend: { orientation: 'h', side: 'top' }
       },
@@ -53,9 +53,9 @@ export class GraphsComponent implements OnInit {
 
     this.initializeChart().then(() => {
       if (isDevMode()) {
-        console.log("chart initialized");
+        console.log('chart initialized');
       }
     });
-    console.log(this.type)
+    console.log(this.type);
   }
 }

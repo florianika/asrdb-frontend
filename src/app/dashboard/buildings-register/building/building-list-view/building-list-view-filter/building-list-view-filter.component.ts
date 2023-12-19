@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
-import { BuildingFilter } from 'src/app/dashboard/common/model/building';
+import { BuildingFilter } from 'src/app/dashboard/buildings-register/common/model/building';
 
 @Component({
   selector: 'asrdb-building-list-view-filter',

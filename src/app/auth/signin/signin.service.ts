@@ -34,7 +34,7 @@ export class SigninService {
     };
     this.httpClient.post<SigninResponse>(environment.base_url + '/auth/login', JSON.stringify(data), {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     }).subscribe(this.signinObserver);
   }

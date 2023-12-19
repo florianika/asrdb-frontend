@@ -2,14 +2,14 @@ import { AfterViewInit, Component, OnDestroy, ViewChild, isDevMode } from '@angu
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { merge, startWith, switchMap, catchError, of as observableOf, takeUntil, Subject } from 'rxjs';
-import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
-import { CommonBuildingService } from 'src/app/dashboard/common/service/common-building.service';
+import { QueryFilter } from 'src/app/dashboard/buildings-register/common/model/query-filter';
+import { CommonBuildingService } from 'src/app/dashboard/buildings-register/common/service/common-building.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BuildingListViewFilterComponent } from './building-list-view-filter/building-list-view-filter.component';
-import { BuildingFilter } from 'src/app/dashboard/common/model/building';
+import { BuildingFilter } from 'src/app/dashboard/buildings-register/common/model/building';
 import { Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/buildings-register/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-building-list-view',
@@ -95,7 +95,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
   }
 
   remove($event: Chip) {
-    (this.filterConfig.filter as any)[$event.column] = "";
+    (this.filterConfig.filter as any)[$event.column] = '';
     this.reload();
   }
 
@@ -125,9 +125,9 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
       .filter(([, value]) => !!value)
       .map(([key, value]) => ({ column: key, value } as Chip))
       .forEach(filter => {
-        conditions.push(filter.column + "=" + this.getWhereConditionValue(filter.value));
+        conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
       });
-    return conditions.length ? conditions.join(" and ") : "1=1";
+    return conditions.length ? conditions.join(' and ') : '1=1';
   }
 
   private getWhereConditionValue(value: string | number) {
@@ -143,7 +143,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
       where: this.prepareWhereCase()
     } as Partial<QueryFilter>;
     if (this.sort.active) {
-      filter.orderByFields = [this.sort.active + " " + this.sort.direction.toUpperCase()]
+      filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
     return this.commonBuildingService.getBuildingData(filter).pipe(catchError((err) => {
       console.log(err);
@@ -153,7 +153,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Data", res);
+      console.log('Data', res);
     }
     if (!res) {
       return;
@@ -162,7 +162,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
       this.fields = res.data.fields;
     }
     this.resultsLength = res.count;
-    this.data = res.data.features.map((feature: any) => feature.attributes);;
+    this.data = res.data.features.map((feature: any) => feature.attributes);
     this.isLoadingResults = false;
     this.prepareFilter();
   }
@@ -175,7 +175,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
         BldStatus: this.getOptions('BldStatus').length ? this.getOptions('BldStatus') : this.filterConfig.options.BldStatus,
         BldType: this.getOptions('BldType').length ? this.getOptions('BldType') : this.filterConfig.options.BldType,
       }
-    }
+    };
   }
 
   private getOptions(column: string) {
@@ -187,7 +187,7 @@ export class BuildingListViewComponent implements AfterViewInit, OnDestroy {
       return {
         name: codeValue.name,
         code: codeValue.code,
-      }
+      };
     });
   }
 }

@@ -50,7 +50,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   }
 
   toggleAccountStatus(user: User) {
-    user.accountStatus === "ACTIVE"
+    user.accountStatus === 'ACTIVE'
     ? this.userManagementService.terminateUser(user.id)
     : this.userManagementService.activateUser(user.id);
   }

@@ -12,63 +12,85 @@ import { filter } from 'rxjs/internal/operators/filter';
 export class SideBarComponent implements AfterViewInit {
   sideBarElements = [
     {
-      sectionTitle: "",
+      sectionTitle: '',
       sectionElements: [
         {
-          title: "Dashboard",
-          path: "dashboard/overview",
-          icon: "dashboard",
-          selected: false
-        },
-        {
-          title: "Building register",
-          path: "/dashboard/buildings-register",
-          pathMatch: true,
-          icon: "domainm",
-          selected: false,
-          subSection: [
-            {
-              title: "Entrance register",
-              path: "/dashboard/buildings-register/entrance",
-              icon: "directions_walk",
-              selected: false,
-            },
-            {
-              title: "Dwelling register",
-              path: "/dashboard/buildings-register/dwelling",
-              icon: "meeting_room",
-              selected: false,
-            }
-          ]
-        },
-        {
-          title: "Quality management",
-          path: "/dashboard/quality-management",
-          icon: "edit_note",
+          title: 'Dashboard',
+          path: 'dashboard/overview',
+          icon: 'dashboard',
           selected: false
         },
       ],
       visible: true
     },
     {
-      sectionTitle: "Administration",
+      sectionTitle: 'Registers',
       sectionElements: [
         {
-          title: "User administration",
-          path: "/dashboard/administration/user-management",
-          icon: "manage_accounts",
+          title: 'Building register',
+          path: '/dashboard/buildings-register',
+          pathMatch: true,
+          icon: 'domainm',
+          selected: false,
+        },
+        {
+          title: 'Entrance register',
+          path: '/dashboard/buildings-register/entrance',
+          icon: 'directions_walk',
+          selected: false,
+        },
+        {
+          title: 'Dwelling register',
+          path: '/dashboard/buildings-register/dwelling',
+          icon: 'meeting_room',
+          selected: false,
+        }
+      ],
+      visible: true
+    },
+    {
+      sectionTitle: 'Quality Management',
+      sectionElements: [
+        {
+          title: 'Building Quality',
+          path: '/dashboard/quality-management/BUILDING',
+          icon: 'domainm',
           selected: false
         },
         {
-          title: "Role management",
-          path: "/dashboard/administration/role-management",
-          icon: "verified_user",
+          title: 'Entrance Quality',
+          path: '/dashboard/quality-management/ENTRANCE',
+          icon: 'directions_walk',
+          selected: false
+        },
+        {
+          title: 'Dwelling Quality',
+          path: '/dashboard/quality-management/DWELLING',
+          icon: 'meeting_room',
+          selected: false
+        },
+      ],
+      visible: true
+    },
+    {
+      sectionTitle: 'Administration',
+      sectionElements: [
+        {
+          title: 'User administration',
+          path: '/dashboard/administration/user-management',
+          icon: 'manage_accounts',
+          selected: false
+        },
+        {
+          title: 'Role management',
+          path: '/dashboard/administration/role-management',
+          icon: 'verified_user',
           selected: false
         },
       ],
       visible: this.isAdmin
     }
-  ]
+  ];
 
   constructor(private authStateService: AuthStateService, private router: Router, private changeDetection: ChangeDetectorRef) {
   }
@@ -90,9 +112,6 @@ export class SideBarComponent implements AfterViewInit {
     for (const sideBarElement of this.sideBarElements) {
       for (const sectionElement of sideBarElement.sectionElements) {
         sectionElement.selected = this.isSelected(sectionElement.path, !!sectionElement.pathMatch);
-        sectionElement.subSection?.forEach(subsection => {
-          subsection.selected = this.isSelected(subsection.path);
-        });
       }
     }
   }

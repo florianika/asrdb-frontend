@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
-import {Role, RolePermissions} from "../../../../model/RolePermissions.model";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort} from "@angular/material/sort";
-import {RoleManagementService} from "../role-management.service";
-import {Observable} from "rxjs";
+import {Role, RolePermissions} from '../../../../model/RolePermissions.model';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {RoleManagementService} from '../role-management.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'asrdb-role-table',

@@ -2,9 +2,9 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
-import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
-import { CommonDwellingService } from 'src/app/dashboard/common/service/common-dwellings.service';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { QueryFilter } from 'src/app/dashboard/buildings-register/common/model/query-filter';
+import { CommonDwellingService } from 'src/app/dashboard/buildings-register/common/service/common-dwellings.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/buildings-register/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-dwelling-details',
@@ -121,7 +121,7 @@ export class DwellingDetailsComponent implements OnInit {
         },
       ]
     }
-  ]
+  ];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -139,7 +139,7 @@ export class DwellingDetailsComponent implements OnInit {
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.dwelling[column]) ?? "Unknown";
+    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.dwelling[column]) ?? 'Unknown';
   }
 
   private prepareWhereCase() {
@@ -148,7 +148,7 @@ export class DwellingDetailsComponent implements OnInit {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Dwelling", res);
+      console.log('Dwelling', res);
     }
     if (!res) {
       return;

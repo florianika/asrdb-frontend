@@ -39,7 +39,7 @@ export class UserManagementService {
       error: (error) => {
         this.loading.next(false);
         console.error(error);
-        this.showMessage("Could not load the users. Please reload the page to try again.");
+        this.showMessage('Could not load the users. Please reload the page to try again.');
       }
     });
   }
@@ -54,7 +54,7 @@ export class UserManagementService {
       error: (error) => {
         // this.loading.next(false);
         console.error(error);
-        this.showMessage("Coult not load the user. Please reload the page to try again.");
+        this.showMessage('Coult not load the user. Please reload the page to try again.');
       }
     });
   }
@@ -82,7 +82,7 @@ export class UserManagementService {
       error: (error) => {
         this.loading.next(false);
         console.error(error);
-        this.showMessage("Coult not update user.");
+        this.showMessage('Coult not update user.');
       }
     });
   }
@@ -92,12 +92,12 @@ export class UserManagementService {
     this.httpClient.patch(environment.base_url + `/auth/users/${userId}/terminate`, {}).subscribe({
       next: () => {
         this.getUsers();
-        this.showMessage("User was terminated.");
+        this.showMessage('User was terminated.');
       },
       error: (error) => {
         this.loading.next(false);
         console.error(error);
-        this.showMessage("Coult not terminate the user.");
+        this.showMessage('Coult not terminate the user.');
       }
     });
   }
@@ -107,18 +107,18 @@ export class UserManagementService {
     this.httpClient.patch(environment.base_url + `/auth/users/${userId}/activate`, {}).subscribe({
       next: () => {
         this.getUsers();
-        this.showMessage("User was activated.");
+        this.showMessage('User was activated.');
       },
       error: (error) => {
         this.loading.next(false);
         console.error(error);
-        this.showMessage("Coult not activate the user.");
+        this.showMessage('Coult not activate the user.');
       }
     });
   }
 
   private showMessage(message: string) {
-    this.snackbarService.open(message, "Ok", {
+    this.snackbarService.open(message, 'Ok', {
       duration: 3000
     });
   }

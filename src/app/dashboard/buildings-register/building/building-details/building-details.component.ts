@@ -1,10 +1,10 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
-import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
+import { QueryFilter } from 'src/app/dashboard/buildings-register/common/model/query-filter';
 import { Subject, catchError, of as observableOf, takeUntil } from 'rxjs';
-import { CommonBuildingService } from 'src/app/dashboard/common/service/common-building.service';
+import { CommonBuildingService } from 'src/app/dashboard/buildings-register/common/service/common-building.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/common/service/common-helper.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/buildings-register/common/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-building-details',
@@ -176,7 +176,7 @@ export class BuildingDetailsComponent implements OnInit {
         },
       ]
     }
-  ]
+  ];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -198,7 +198,7 @@ export class BuildingDetailsComponent implements OnInit {
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.building[column]) ?? "Unknown";
+    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.building[column]) ?? 'Unknown';
   }
 
   private prepareWhereCase() {
@@ -207,7 +207,7 @@ export class BuildingDetailsComponent implements OnInit {
 
   private async handleResponse(res: any) {
     if (isDevMode()) {
-      console.log("Data", res);
+      console.log('Data', res);
     }
     if (!res) {
       return;
