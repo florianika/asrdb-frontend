@@ -33,7 +33,7 @@ import { SignupForm, SignupFormValue, SignupService } from './signup.service';
   .signup-card-create-account {
     cursor: pointer;
     text-align: right;
-    padding-top: 20px;
+    margin-top: 20px;
   }
   .signup-card-create-account:hover {
     text-decoration: underline;

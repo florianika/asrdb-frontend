@@ -34,7 +34,7 @@ import { FormGroup, FormControl } from '@angular/forms';
     .login-card-create-account {
       cursor: pointer;
       text-align: right;
-      padding-top: 20px;
+      margin-top: 20px;
     }
     .login-card-create-account:hover {
       text-decoration: underline;
