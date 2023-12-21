@@ -178,6 +178,9 @@ export class AuthStateService implements OnDestroy {
   }
 
   private checkTokenValidity() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
     this.interval = setInterval(() => {
       if (isDevMode()) {
         console.log(`Token is valid: ${this.isTokenValidInternal()}`);
