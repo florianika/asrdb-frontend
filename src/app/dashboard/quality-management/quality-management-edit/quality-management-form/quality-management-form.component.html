@@ -1,0 +1,92 @@
+<mat-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel i18n>General</ng-template>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Local ID</mat-label>
+        <input matInput formControlName="localId">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Entity type</mat-label>
+        <input matInput formControlName="entityType">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Variable</mat-label>
+        <input matInput formControlName="variable">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Name in Albanian</mat-label>
+        <input matInput formControlName="nameAl">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Name in English</mat-label>
+        <input matInput formControlName="nameEn">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Description in Albanian</mat-label>
+        <input matInput formControlName="descriptionAl">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Description in English</mat-label>
+        <input matInput formControlName="descriptionEn">
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="secondFormGroup">
+    <ng-template matStepLabel i18n>Details</ng-template>
+    <form [formGroup]="secondFormGroup">
+      <mat-form-field class="full-width">
+        <mat-label i18n>Quality action</mat-label>
+        <mat-select formControlName="qualityAction">
+          <mat-option value="AUT">Automatic</mat-option>
+          <mat-option value="MISS">Miss</mat-option>
+          <mat-option value="QUE">Queue</mat-option>
+          <mat-option value="ERR">Error</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Quality status</mat-label>
+        <mat-select formControlName="qualityStatus">
+          <mat-option value="ACTIVE">Automatic</mat-option>
+          <mat-option value="DISABLED">Miss</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Rule requirement</mat-label>
+        <textarea matInput formControlName="ruleRequirement"></textarea>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Remark</mat-label>
+        <textarea matInput formControlName="remark"></textarea>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Quality message in Albanian</mat-label>
+        <textarea matInput formControlName="qualityMessageAl"></textarea>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label i18n>Quality message in English</mat-label>
+        <textarea matInput formControlName="qualityMessageEn"></textarea>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="thirdFormGroup">
+    <ng-template matStepLabel>Expression</ng-template>
+    <ng-template matStepContent>
+      <asrdb-quality-management-expression-builder [formGroup]="thirdFormGroup" [entityType]="qualityType"
+        [variable]="firstFormGroup.value.variable"></asrdb-quality-management-expression-builder>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="stepper.reset()">Reset</button>
+      </div>
+    </ng-template>
+  </mat-step>
+</mat-stepper>

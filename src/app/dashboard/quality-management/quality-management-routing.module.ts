@@ -6,7 +6,8 @@ import { QualityManagementEditComponent } from './quality-management-edit/qualit
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'BUILDING'},
   {path: ':entity', pathMatch: 'full', component: QualityManagementTableComponent},
-  {path: ':entity/edit/:id', pathMatch: 'full', component: QualityManagementEditComponent}
+  {path: ':entity/edit/:id', pathMatch: 'full', component: QualityManagementEditComponent},
+  {path: ':entity/edit', redirectTo: '/dashboard/quality-management/:entity/edit/', pathMatch: 'full'}
 ];
 
 @NgModule({

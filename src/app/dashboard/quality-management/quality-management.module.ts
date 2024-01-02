@@ -16,16 +16,28 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import { QualityManagementFormComponent } from './quality-management-edit/quality-management-form/quality-management-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
+import { QualityManagementExpressionBuilderComponent } from './quality-management-edit/quality-management-expression-builder/quality-management-expression-builder.component';
+import {MatListModule} from '@angular/material/list';
+import { ExpressionFormComponent } from './quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
     QualityManagementTableComponent,
-    QualityManagementEditComponent
+    QualityManagementEditComponent,
+    QualityManagementFormComponent,
+    QualityManagementExpressionBuilderComponent,
+    ExpressionFormComponent
   ],
   imports: [
     CommonModule,
     QualityManagementRoutingModule,
+    MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatTableModule,
@@ -36,7 +48,13 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatDialogModule,
-    ChipComponent
+    MatSelectModule,
+    MatStepperModule,
+    MatListModule,
+    ChipComponent,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    FormsModule
   ],
   providers: [
     QualityManagementService

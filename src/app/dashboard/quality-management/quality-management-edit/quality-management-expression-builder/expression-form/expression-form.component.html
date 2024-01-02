@@ -1,0 +1,39 @@
+<form [formGroup]="rule" *ngIf="rule" class="expression-form">
+  <div class="rule-form expression">
+    <mat-form-field class="full-width">
+      <mat-label i18n>Variable</mat-label>
+      <input matInput formControlName="variable">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label i18n>Condition</mat-label>
+      <mat-select formControlName="condition">
+        <mat-option [value]="getCondition(consdition.EQUALS)" i18n>Equals</mat-option>
+        <mat-option [value]="getCondition(consdition.NOT_EQUALS)" i18n>Not equals</mat-option>
+        <mat-option [value]="getCondition(consdition.IS_NULL)" i18n>Is null</mat-option>
+        <mat-option [value]="getCondition(consdition.IS_NOT_NULL)" i18n>Is not null</mat-option>
+        <mat-option [value]="getCondition(consdition.IN)" i18n>In</mat-option>
+        <mat-option [value]="getCondition(consdition.NOT_IN)" i18n>Not in</mat-option>
+        <mat-option [value]="getCondition(consdition.HIGHIER)" i18n>Highier than</mat-option>
+        <mat-option [value]="getCondition(consdition.HIGHIER_EQ)" i18n>Highier or equal to</mat-option>
+        <mat-option [value]="getCondition(consdition.LOWER)" i18n>Lower than</mat-option>
+        <mat-option [value]="getCondition(consdition.LOWER_EQ)" i18n>Lower or equal than</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label i18n>Value</mat-label>
+      <input matInput formControlName="value">
+    </mat-form-field>
+  </div>
+  <div class="rule-form expression-operator">
+    <mat-form-field *ngIf="showOperator" class="full-width">
+      <mat-label i18n>Operator</mat-label>
+      <mat-select formControlName="operator">
+        <mat-option [value]="operator.AND" i18n>And</mat-option>
+        <mat-option [value]="operator.OR" i18n>Or</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox formControlName="group" *ngIf="rule.value.operator === operator.OR">
+      Group with next condition
+    </mat-checkbox>
+  </div>
+</form>

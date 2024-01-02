@@ -56,11 +56,11 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     this.activatedRoute.paramMap.pipe(takeUntil(this.subscription)).subscribe(() => {
       this.init();
       this.reload();
-    })
+    });
   }
 
   ngOnInit(): void {
-    this.qualityManagementService.getData(this.qualityType);
+    this.qualityManagementService.getRules(this.qualityType);
   }
 
   ngOnDestroy(): void {
@@ -83,7 +83,7 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   }
 
   reload() {
-    this.qualityManagementService.getData(this.qualityType);
+    this.qualityManagementService.getRules(this.qualityType);
   }
 
   remove($event: Chip) {
@@ -92,15 +92,15 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   }
 
   viewDetails(id: string) {
-    this.router.navigateByUrl('/dashboard/quality-management/details/' + this.qualityType + '/' + id);
+    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/details/' + id);
   }
 
   edit(id: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/edit/' + this.qualityType + '/' + id);
+    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/edit/' + id);
   }
 
   add() {
-    throw new Error('Unimplemented');
+    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/edit');
   }
 
   private init() {
