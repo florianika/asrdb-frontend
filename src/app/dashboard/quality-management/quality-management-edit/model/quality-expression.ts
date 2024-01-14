@@ -1,4 +1,5 @@
-import { Condition, ICondition, getCondition } from "./conditions/ICondition";
+import { Condition, ConditionsMap, ICondition, getCondition, getConditionByConditionString, getConditionById } from "./conditions/ICondition";
+import { NotNullCondition } from "./conditions/NotNullCondition";
 
 export interface FlatRule {
   id: string;
@@ -11,7 +12,7 @@ export interface FlatRule {
 
 export interface ExpressionForm {
   variable: string | null;
-  condition: ICondition | null;
+  condition: string | null;
   value: string | null | undefined;
   group: boolean | null | undefined;
   operator: string | null | undefined;
@@ -111,7 +112,7 @@ export class Expression {
   updateValues(id: string, values: Partial<ExpressionForm>) {
     if (this.firstRule.id === id) {
       this.firstRule.variable = values.variable ?? "";
-      this.firstRule.condition = values.condition ?? getCondition(Condition.EQUALS);
+      this.firstRule.condition = values.condition ? getConditionById(values.condition) : getCondition(Condition.EQUALS);
       this.firstRule.value = values.value ?? "";
       this.firstRule.group = (values.group ?? false) && values.operator === Operator.OR;
       this.operator = values.operator as Operator ?? undefined;
@@ -162,7 +163,8 @@ export class Expression {
   }
 
   private static getVariableAndGroup(variable: string) {
-    let variableName = variable.includes(Condition.IS_NULL) ? variable.substring(0, variable.lastIndexOf('.')) : variable;
+    const condition = getCondition(Condition.IS_NULL).getCondition();
+    let variableName = variable.includes(condition) ? variable.substring(0, variable.lastIndexOf('.')) : variable;
     let group = false;
     if (variable.startsWith("(")) {
       variableName = variableName.substring(1);
@@ -175,20 +177,27 @@ export class Expression {
   }
 
   private static getCondition(subString: string, parts: string[], isNotCondition: boolean): ICondition {
-    if (subString.includes(Condition.IS_NULL)) {
-      return getCondition(isNotCondition ? Condition.IS_NOT_NULL : Condition.IS_NULL);
+    const isNullCondition = getCondition(Condition.IS_NULL).getCondition();
+    const notInCondition = getCondition(Condition.NOT_IN).getCondition();
+
+    if (subString.includes(isNullCondition)) {
+      return isNotCondition ? ConditionsMap.get(Condition.IS_NOT_NULL)! : ConditionsMap.get(Condition.IS_NULL)!;
     }
-    if (subString.includes(Condition.NOT_IN)) {
-      return getCondition(`${parts[1]} ${parts[2]}`);
+    if (subString.includes(notInCondition)) {
+      return getCondition(Condition.NOT_IN);
     }
-    return getCondition(parts[1] as string)
+    return getConditionByConditionString(parts[1] as string);
   }
 
   private static getValue(subString: string, parts: string[], condition: ICondition) {
+    const isNullCondition = getCondition(Condition.IS_NULL).getCondition();
+    const notInCondition = getCondition(Condition.NOT_IN).getCondition();
+    const inCondition = getCondition(Condition.IN).getCondition();
+
     let value;
-    if (subString.includes(Condition.IS_NULL)) {
+    if (subString.includes(isNullCondition)) {
       return;
-    } else if (subString.includes(Condition.NOT_IN)) {
+    } else if (subString.includes(notInCondition)) {
       const valueParts = parts.slice(3);
       value = valueParts.join(' ') as string | undefined;
     } else {
@@ -197,10 +206,10 @@ export class Expression {
     }
     value = value?.trim();
 
-    if (value?.endsWith(")") && !subString.includes(Condition.IS_NULL)) {
+    if (value?.endsWith(")") && !subString.includes(isNullCondition)) {
       let index = value.indexOf(')');
       let startIndex = 0;
-      if ([Condition.IN, Condition.NOT_IN].includes(condition.condition)) {
+      if ([inCondition, notInCondition].includes(condition.getCondition())) {
         startIndex++;
       }
       value = value.substring(startIndex, index);

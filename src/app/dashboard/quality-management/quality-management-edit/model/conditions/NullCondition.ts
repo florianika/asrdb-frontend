@@ -2,7 +2,7 @@ import { Condition, ICondition } from './ICondition';
 
 export class NullCondition implements ICondition {
   id: string;
-  condition: Condition = Condition.IS_NULL;
+  condition = 'isNull()';
   isValueRequired = false;
 
   constructor() {
@@ -23,6 +23,10 @@ export class NullCondition implements ICondition {
     }
 
     return `${variable}.${this.condition}`;
+  }
+
+  getCondition(): string {
+    return this.condition;
   }
 
 }

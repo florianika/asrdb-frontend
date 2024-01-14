@@ -11,27 +11,28 @@ import { NullCondition } from './NullCondition';
 
 export interface ICondition {
   id: string;
-  condition: Condition;
+  condition: string;
   isValueRequired: boolean;
   getText(): string;
   getValueInputType(): string;
   buildExpression(variable: string, value?: string): string;
+  getCondition(): string;
 }
 
 export enum Condition {
-  EQUALS = '==',
-  NOT_EQUALS = '!=',
-  IS_NULL = 'isNull()',
-  IS_NOT_NULL = 'isNull()',
-  HIGHIER = '>',
-  HIGHIER_EQ = '>=',
-  LOWER = '<',
-  LOWER_EQ = '<=',
-  IN = 'in',
-  NOT_IN = 'not in'
+  EQUALS,
+  NOT_EQUALS,
+  IS_NULL,
+  IS_NOT_NULL,
+  HIGHIER,
+  HIGHIER_EQ,
+  LOWER,
+  LOWER_EQ,
+  IN,
+  NOT_IN
 }
 
-export function getCondition(conditionString: string) : ICondition {
+export function getCondition(conditionString: Condition) : ICondition {
   for (const [key, value] of ConditionsMap.entries()) {
     if (key === conditionString) {
       return value;
@@ -39,6 +40,25 @@ export function getCondition(conditionString: string) : ICondition {
   }
   return ConditionsMap.get(Condition.EQUALS)!;
 }
+
+export function getConditionById(id: string) : ICondition {
+  for (const [, value] of ConditionsMap.entries()) {
+    if (value.id === id) {
+      return value;
+    }
+  }
+  return ConditionsMap.get(Condition.EQUALS)!;
+}
+
+export function getConditionByConditionString(condition: string) : ICondition {
+  for (const [, value] of ConditionsMap.entries()) {
+    if (value.condition === condition) {
+      return value;
+    }
+  }
+  return ConditionsMap.get(Condition.EQUALS)!;
+}
+
 
 export const ConditionsMap = new Map<Condition, ICondition>([
   [Condition.EQUALS, new EqualsCondition()],

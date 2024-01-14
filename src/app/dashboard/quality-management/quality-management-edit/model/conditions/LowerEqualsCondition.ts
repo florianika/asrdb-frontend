@@ -2,7 +2,7 @@ import { Condition, ICondition } from './ICondition';
 
 export class LowerEqualsCondition implements ICondition {
   id: string;
-  condition: Condition = Condition.LOWER_EQ;
+  condition = '<=';
   isValueRequired = true;
 
   constructor() {
@@ -26,6 +26,10 @@ export class LowerEqualsCondition implements ICondition {
     }
 
     return `${variable} ${this.condition} "${value}"`;
+  }
+
+  getCondition(): string {
+    return this.condition;
   }
 
 }

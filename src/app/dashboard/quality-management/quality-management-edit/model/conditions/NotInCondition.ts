@@ -2,7 +2,7 @@ import { Condition, ICondition } from './ICondition';
 
 export class NotInCondition implements ICondition {
   id: string;
-  condition: Condition = Condition.NOT_IN;
+  condition = 'not in';
   isValueRequired = true;
 
   constructor() {
@@ -26,6 +26,10 @@ export class NotInCondition implements ICondition {
     }
 
     return `${variable} ${this.condition} ("${value}")`;
+  }
+
+  getCondition(): string {
+    return this.condition;
   }
 
 }

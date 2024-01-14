@@ -17,14 +17,14 @@ export class ExpressionFormComponent {
 
   @ViewChild('deleteDialog') deleteDialog!: TemplateRef<any>;
 
-  consdition = Condition;
+  condition = Condition;
   operator = Operator;
 
   constructor(private matDialog: MatDialog) {
   }
 
-  getCondition(condition: Condition) {
-    return ConditionsMap.get(condition);
+  getCondition(condition: Condition): string {
+    return ConditionsMap.get(condition)!.id;
   }
 
   openDeleteConditionDialog() {
@@ -36,6 +36,6 @@ export class ExpressionFormComponent {
           this.removeExpression.emit(this.rule?.value);
         }
       }
-      );
+    );
   }
 }

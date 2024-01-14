@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EntityType } from '../../quality-management-config';
 import { Expression, ExpressionForm, Rule } from '../model/quality-expression';
-import { Condition, ConditionsMap, ICondition } from '../model/conditions/ICondition';
+import { Condition, ConditionsMap, ICondition, getCondition } from '../model/conditions/ICondition';
 
 @Component({
   selector: 'asrdb-quality-management-expression-builder',
@@ -31,7 +31,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
       const valueValidators = this.getValueValidations(element.condition);
       const form = {
         variable: new FormControl(element.variable, [Validators.required]),
-        condition: new FormControl(element.condition, [Validators.required]),
+        condition: new FormControl(element.condition.id, [Validators.required]),
         value: new FormControl(element.value, valueValidators),
         group: new FormControl(element.group),
         operator: new FormControl(element.operator, (index !== expressionMap.length - 1 ) ? [Validators.required] : [])
@@ -41,7 +41,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
       }
       const newFormGroup = new FormGroup(form, { updateOn: 'change' });
       newFormGroup.valueChanges.subscribe((ruleValues) => {
-        this.expression.updateValues(element.id, ruleValues);
+        this.expression.updateValues(element.id, ruleValues); //TODO: Make use of ids
         this.expressionString = this.buildExpressionString();
         this.formGroup.setValue({expression: this.expression});
       });
@@ -78,7 +78,10 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   }
 
   private getValueValidations(condition: ICondition) {
-    if ([Condition.IS_NULL, Condition.IS_NOT_NULL].includes(condition.condition)) {
+    const isNullCondition = getCondition(Condition.IS_NULL).getCondition();
+    const isNotNullCondition = getCondition(Condition.IS_NOT_NULL).getCondition();
+
+    if ([isNotNullCondition, isNullCondition].includes(condition.condition)) {
       return [];
     }
     return [Validators.required];

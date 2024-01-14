@@ -2,7 +2,7 @@ import { Condition, ICondition } from './ICondition';
 
 export class NotEqualsCondition implements ICondition {
   id: string;
-  condition: Condition = Condition.NOT_EQUALS;
+  condition = '!=';
   isValueRequired = true;
 
   constructor() {
@@ -26,6 +26,10 @@ export class NotEqualsCondition implements ICondition {
     }
 
     return `${variable} ${this.condition} "${value}"`;
+  }
+
+  getCondition(): string {
+    return this.condition;
   }
 
 }
