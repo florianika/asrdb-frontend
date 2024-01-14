@@ -19,10 +19,12 @@ export class NotInCondition implements ICondition {
 
   buildExpression(variable: string, value?: string | number): string {
     if (!variable) {
-      throw new Error('Variable is required for the condition');
+      console.log('Variable is required for the condition');
+      return '';
     }
     if (!value) {
-      throw new Error('Value is required for the condition');
+      console.log('Value is required for the condition');
+      return '';
     }
 
     return `${variable} ${this.condition} (${value})`;

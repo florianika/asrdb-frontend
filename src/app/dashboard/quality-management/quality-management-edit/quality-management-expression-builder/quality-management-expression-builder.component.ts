@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EntityType } from '../../quality-management-config';
 import { Expression, ExpressionForm, Rule } from '../model/quality-expression';
-import { Condition, ConditionsMap, ICondition, getCondition } from '../model/conditions/ICondition';
+import { Condition, ConditionsMap, ICondition, getCondition, getConditionById } from '../model/conditions/ICondition';
 
 @Component({
   selector: 'asrdb-quality-management-expression-builder',
@@ -40,11 +40,27 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
         form.value.disable();
       }
       const newFormGroup = new FormGroup(form, { updateOn: 'change' });
+
       newFormGroup.valueChanges.subscribe((ruleValues) => {
         this.expression.updateValues(element.id, ruleValues);
         this.expressionString = this.buildExpressionString();
         this.formGroup.setValue({expression: this.expressionString});
+        const condition = getConditionById(ruleValues.condition!);
+        const existingForm = this.expressionFormGroup.find(f => f.value.id === ruleValues.id);
+        if (existingForm) {
+          const valueFormElement = existingForm.controls['value'];
+          const shouldHaveValue = this.hasValue(condition.condition);
+
+          if (shouldHaveValue && valueFormElement.disabled) {
+            valueFormElement.enable();
+            valueFormElement.setValidators([Validators.required]);
+          } else if (!shouldHaveValue && valueFormElement.enabled) {
+            valueFormElement.disable();
+            valueFormElement.setValidators([]);
+          }
+        }
       });
+
       this.expressionFormGroup.push(newFormGroup);
     });
     this.expressionString = this.buildExpressionString();
@@ -79,12 +95,19 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   }
 
   private getValueValidations(condition: ICondition) {
+    if (this.hasValue(condition.condition)) {
+      return [Validators.required];
+    }
+    return [];
+  }
+
+  private hasValue(condition: string | undefined | null) {
     const isNullCondition = getCondition(Condition.IS_NULL).getCondition();
     const isNotNullCondition = getCondition(Condition.IS_NOT_NULL).getCondition();
 
-    if ([isNotNullCondition, isNullCondition].includes(condition.condition)) {
-      return [];
+    if (condition && [isNotNullCondition, isNullCondition].includes(condition)) {
+      return false;
     }
-    return [Validators.required];
+    return true;
   }
 }

@@ -19,7 +19,8 @@ export class NotNullCondition implements ICondition {
 
   buildExpression(variable: string, value?: string | number): string {
     if (!variable) {
-      throw new Error('Variable is required for the condition');
+      console.log('Variable is required for the condition');
+      return '';
     }
 
     return `not ${variable}.${this.condition}`;
