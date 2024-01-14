@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { EntityType, QualityAction, QualityRule, RuleStatus } from '../../quality-management-config';
 import { QualityManagementService } from '../../quality-management.service';
+import { MatStepper } from '@angular/material/stepper';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'asrdb-quality-management-form',
@@ -13,9 +15,11 @@ export class QualityManagementFormComponent {
   @Input() qualityType!: EntityType;
   @Input() id?: string | null;
 
+  @ViewChild('resetDialog') resetDialog!: TemplateRef<any>;
+
   public isSaving = this.qualityManagementService.isSavingAsObservable;
 
-  constructor(private qualityManagementService: QualityManagementService) { }
+  constructor(private qualityManagementService: QualityManagementService, private matDialog: MatDialog) { }
 
   public firstFormGroup = new FormGroup({
     localId: new FormControl<string>(this.rule?.localId ?? '', [Validators.required]),
@@ -52,5 +56,16 @@ export class QualityManagementFormComponent {
     } else {
       this.qualityManagementService.save(rule, this.qualityType);
     }
+  }
+
+  reset(stepper: MatStepper) {
+    this.matDialog
+      .open(this.resetDialog)
+      .afterClosed()
+      .subscribe(confirm => {
+        if (confirm) {
+          stepper.reset();
+        }
+      })
   }
 }

@@ -25,7 +25,7 @@ export class EqualsCondition implements ICondition {
       throw new Error('Value is required for the condition');
     }
 
-    return `${variable} ${this.condition} "${value}"`;
+    return `${variable} ${this.condition} ${value}`;
   }
 
   getCondition(): string {

@@ -41,9 +41,9 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
       }
       const newFormGroup = new FormGroup(form, { updateOn: 'change' });
       newFormGroup.valueChanges.subscribe((ruleValues) => {
-        this.expression.updateValues(element.id, ruleValues); //TODO: Make use of ids
+        this.expression.updateValues(element.id, ruleValues);
         this.expressionString = this.buildExpressionString();
-        this.formGroup.setValue({expression: this.expression});
+        this.formGroup.setValue({expression: this.expressionString});
       });
       this.expressionFormGroup.push(newFormGroup);
     });

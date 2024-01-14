@@ -85,10 +85,23 @@
         [variable]="firstFormGroup.value.variable"></asrdb-quality-management-expression-builder>
       <div class="quality-action-button">
         <button mat-button matStepperPrevious i18n [disabled]="isSaving | async">Back</button>
-        <button mat-button color="warn" (click)="stepper.reset()" i18n [disabled]="isSaving | async">Reset</button>
+        <button mat-button color="warn" (click)="reset(stepper)" i18n [disabled]="isSaving | async">Reset</button>
         <span></span>
         <button mat-raised-button color="primary" (click)="save()" i18n [disabled]="isSaving | async">Save</button>
       </div>
     </ng-template>
   </mat-step>
 </mat-stepper>
+
+<ng-template #resetDialog>
+  <h2 mat-dialog-title i18n>Reset form?</h2>
+  <mat-dialog-content i18n>
+    This action will reset the form. All values will be deleted. <b>This action cannot be undone</b>.
+    <br/>
+    Are you sure you want to reset the form </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-raised-button color="warn" [mat-dialog-close]="true">Reset form</button>
+  </mat-dialog-actions>
+</ng-template>
