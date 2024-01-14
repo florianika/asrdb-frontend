@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EntityType } from '../../quality-management-config';
-import { Expression, Operator, Rule } from '../model/quality-expression';
-import { Condition, ConditionsMap } from '../model/conditions/ICondition';
+import { Expression, ExpressionForm, Rule } from '../model/quality-expression';
+import { Condition, ConditionsMap, ICondition } from '../model/conditions/ICondition';
 
 @Component({
   selector: 'asrdb-quality-management-expression-builder',
@@ -20,25 +20,29 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.expression = this.buildExpressionFromString();
-    this.test();
     this.toForm()
   }
 
   toForm() {
     const expressionMap = this.expression.toFlatArray();
     this.expressionFormGroup = [];
-    expressionMap.forEach(element => {
+    expressionMap.forEach((element, index) => {
+      const valueValidators = this.getValueValidations(element.condition);
       const form = {
-        variable: new FormControl(element.variable),
-        condition: new FormControl(element.condition),
-        value: new FormControl(element.value),
+        variable: new FormControl(element.variable, [Validators.required]),
+        condition: new FormControl(element.condition, [Validators.required]),
+        value: new FormControl(element.value, valueValidators),
         group: new FormControl(element.group),
-        operator: new FormControl(element.operator)
+        operator: new FormControl(element.operator, (index !== expressionMap.length - 1 ) ? [Validators.required] : [])
       };
-      const newFormGroup = new FormGroup(form, { updateOn: 'blur' });
+      if (valueValidators.length === 0) {
+        form.value.disable();
+      }
+      const newFormGroup = new FormGroup(form, { updateOn: 'change' });
       newFormGroup.valueChanges.subscribe((ruleValues) => {
         this.expression.updateValues(element.id, ruleValues);
         this.expressionString = this.buildExpressionString();
+        this.formGroup.setValue({expression: this.expression});
       });
       this.expressionFormGroup.push(newFormGroup);
     });
@@ -56,7 +60,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
     this.toForm();
   }
 
-  removeRule(rule: Expression) {
+  removeRule(rule: Partial<ExpressionForm>) {
     this.expression.removeRule(rule);
     this.toForm();
   }
@@ -72,25 +76,10 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
     return this.expression.toString();
   }
 
-  test() {
-    const expression = new Expression(
-      new Rule('A', ConditionsMap.get(Condition.EQUALS)!, '12', false),
-      Operator.AND,
-      new Expression(
-        new Rule('B', ConditionsMap.get(Condition.NOT_EQUALS)!, '12', true),
-        Operator.OR,
-        new Expression(
-          new Rule('C', ConditionsMap.get(Condition.IS_NOT_NULL)!, undefined, false),
-          Operator.AND,
-          new Expression(
-            new Rule('D', ConditionsMap.get(Condition.IN)!, '12, 13', false),
-          )
-        )
-      )
-    );
-
-    const expressionString = expression.toString();
-    console.log(expressionString);
-    console.log(Expression.fromString(expressionString));
+  private getValueValidations(condition: ICondition) {
+    if ([Condition.IS_NULL, Condition.IS_NOT_NULL].includes(condition.condition)) {
+      return [];
+    }
+    return [Validators.required];
   }
 }

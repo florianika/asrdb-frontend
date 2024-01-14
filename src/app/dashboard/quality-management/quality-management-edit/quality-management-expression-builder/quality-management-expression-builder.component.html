@@ -3,9 +3,9 @@
     <mat-icon>add</mat-icon>
   </button>
   <section class="form">
-    <p>{{expressionString}}</p>
+    <p>Expression: <b>{{expressionString}}</b></p>
     <ng-container *ngFor="let expression of expressionFormGroup; let i = index">
-      <asrdb-expression-form [rule]="expression" [showOperator]="i !== expressionFormGroup.length - 1"></asrdb-expression-form>
+      <asrdb-expression-form [rule]="expression" [showOperator]="i !== expressionFormGroup.length - 1" [showDeleteButton]="i > 0" (removeExpression)="removeRule($event)"></asrdb-expression-form>
     </ng-container>
   </section>
 </section>

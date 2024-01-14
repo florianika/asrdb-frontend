@@ -1,9 +1,4 @@
-import { Condition, ConditionsMap, ICondition, getCondition } from "./conditions/ICondition";
-
-
-/*
-=========================================
-*/
+import { Condition, ICondition, getCondition } from "./conditions/ICondition";
 
 export interface FlatRule {
   id: string;
@@ -12,6 +7,14 @@ export interface FlatRule {
   value?: string;
   group?: boolean;
   operator?: string;
+}
+
+export interface ExpressionForm {
+  variable: string | null;
+  condition: ICondition | null;
+  value: string | null | undefined;
+  group: boolean | null | undefined;
+  operator: string | null | undefined;
 }
 
 export enum Operator {
@@ -30,7 +33,7 @@ export const OperatorsToExpressionMap = new Map<Operator, string>([
 ]);
 
 export class Expression {
-  constructor(public firstRule: Rule, public operator?: Operator, public nextRule?: Expression) {}
+  constructor(public firstRule: Rule, public operator?: Operator, public nextRule?: Expression) { }
 
   addRule(rule: Expression) {
     if (!this.nextRule) {
@@ -40,9 +43,9 @@ export class Expression {
     }
   }
 
-  removeRule(rule: Expression) {
-    if (this.nextRule?.firstRule.variable === rule.firstRule.variable && this.nextRule?.firstRule.value === rule.firstRule.value && this.nextRule?.firstRule.condition === rule.firstRule.condition) {
-      const nextRule = this.nextRule.nextRule;
+  removeRule(rule: Partial<ExpressionForm>) {
+    if (this.nextRule?.firstRule.variable === rule.variable && this.nextRule?.firstRule.value === rule.value && this.nextRule?.firstRule.condition === rule.condition) {
+      const nextRule = this.nextRule?.nextRule;
       this.nextRule = nextRule;
     }
   }
@@ -63,9 +66,9 @@ export class Expression {
 
     const parts = subString.split(" "); // ['A', '=', '"12"']
 
-    const {variable, group} = Expression.getVariableAndGroup(parts[0] as string);
+    const { variable, group } = Expression.getVariableAndGroup(parts[0] as string);
     const condition = Expression.getCondition(subString, variable, parts);
-    const value = Expression.getValue(subString, parts);
+    const value = Expression.getValue(subString, parts, condition);
 
     const rule = new Rule(variable, condition, value, group);
     const nextExpression: Expression | undefined = operator ? Expression.fromString(expressionString.substring(index + 2)) : undefined;
@@ -75,20 +78,24 @@ export class Expression {
 
   toFlatArray(): FlatRule[] {
     const ruleArray: FlatRule[] = [];
-    ruleArray.push({...this.firstRule, operator: this.operator});
+    ruleArray.push({ ...this.firstRule, operator: this.operator });
     if (this.nextRule) {
       ruleArray.push(...this.nextRule.toFlatArray());
     }
     return ruleArray;
   }
 
-  toString(): string {
+  toString(closeBrackets = 0): string {
     let expression = this.buildExpression();
 
     if (this.operator != undefined && this.nextRule != undefined) {
       const operator = this.operator;
       if (this.firstRule.group) {
-        return this.buildGroupedExpression(this.nextRule, expression, operator!);
+        if (this.nextRule.operator === Operator.OR && this.nextRule.firstRule.group) {
+          return `(${expression} ${operator} ${this.nextRule.toString(++closeBrackets)}`;
+        } else {
+          return this.buildGroupedExpression(this.nextRule, expression, operator!, closeBrackets);
+        }
       } else {
         return expression + ` ${operator} ` + this.nextRule.toString();
       }
@@ -96,13 +103,7 @@ export class Expression {
     return expression;
   }
 
-  updateValues(id: string, values: Partial<{
-    variable: string | null;
-    condition: ICondition | null;
-    value: string | null | undefined;
-    group: boolean | null | undefined;
-    operator: string | null | undefined;
-}>) {
+  updateValues(id: string, values: Partial<ExpressionForm>) {
     if (this.firstRule.id === id) {
       this.firstRule.variable = values.variable ?? "";
       this.firstRule.condition = values.condition ?? getCondition(Condition.EQUALS);
@@ -118,12 +119,24 @@ export class Expression {
     return this.firstRule.condition.buildExpression(this.firstRule.variable, this.firstRule.value);
   }
 
-  private buildGroupedExpression(nextRule: Expression, expression: string, operator: string) {
+  private buildGroupedExpression(nextRule: Expression, expression: string, operator: string, closeBrackets: number) {
     const secondExpression = nextRule.buildExpression();
-    const combinedExpression = `(${expression} ${operator} ${secondExpression})`;
+    let combinedExpression = `(${expression} ${operator} ${secondExpression})`;
     if (nextRule.nextRule) {
       const nextOperator = nextRule.operator;
-      return combinedExpression + ` ${nextOperator} ` + nextRule.nextRule.toString();
+      if (nextOperator === Operator.AND && closeBrackets) {
+        for (let index = 0; index < closeBrackets; index++) {
+          combinedExpression += ")";
+        }
+        closeBrackets = 0;
+      }
+      return combinedExpression + ` ${nextOperator} ` + nextRule.nextRule.toString(closeBrackets);
+    }
+    if (closeBrackets) {
+      for (let index = 0; index < closeBrackets; index++) {
+        combinedExpression += ")";
+      }
+      closeBrackets = 0;
     }
     return combinedExpression;
   }
@@ -172,7 +185,7 @@ export class Expression {
     return condition;
   }
 
-  private static getValue(subString: string, parts: string[]) {
+  private static getValue(subString: string, parts: string[], condition: ICondition) {
     let value;
     if (subString.includes(Condition.IS_NULL) || subString.includes(Condition.IS_NOT_NULL)) {
       return;
@@ -180,9 +193,27 @@ export class Expression {
     if (subString.includes(Condition.NOT_IN)) {
       const valueParts = parts.slice(3);
       value = valueParts.join(' ') as string | undefined;
+    } else {
+      const valueParts = parts.slice(2);
+      value = valueParts.join(' ') as string | undefined;
     }
-    const valueParts = parts.slice(2);
-    value = valueParts.join(' ') as string | undefined;
+    value = value?.trim();
+
+    if (value?.endsWith(")")) {
+      let index = value.indexOf(')');
+      let startIndex = 0;
+      if ([Condition.IN, Condition.NOT_IN].includes(condition.condition)) {
+        startIndex++;
+      }
+      value = value.substring(startIndex, index);
+    }
+
+    if (value?.startsWith('"')) {
+      value = value.substring(1);
+    }
+    if (value?.endsWith('"')) {
+      value = value.substring(0, value.length - 1);
+    }
     return value?.trim();
   }
 }

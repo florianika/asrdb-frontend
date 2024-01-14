@@ -31,9 +31,6 @@ export class QualityManagementFormComponent {
   }, { updateOn: 'blur' });
 
   public thirdFormGroup = new FormGroup({
-    expression: new FormControl<string>(this.rule?.expression ?? '', [Validators.required]),
-    // variable: new FormControl<string>('', [Validators.required]),
-    // condition: new FormControl<string>('', [Validators.required]),
-    // value: new FormControl<string>(''),
+    expression: new FormControl<string>(this.rule?.expression ?? '', [Validators.required])
   });
 }
