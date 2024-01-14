@@ -22,7 +22,7 @@ export class NotNullCondition implements ICondition {
       throw new Error('Variable is required for the condition');
     }
 
-    return `${variable} is not null`;
+    return `not ${variable}.${this.condition}`;
   }
 
 }

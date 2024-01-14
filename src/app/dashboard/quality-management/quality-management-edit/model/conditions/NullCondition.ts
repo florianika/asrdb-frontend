@@ -22,7 +22,7 @@ export class NullCondition implements ICondition {
       throw new Error('Variable is required for the condition');
     }
 
-    return `${variable} is null`;
+    return `${variable}.${this.condition}`;
   }
 
 }

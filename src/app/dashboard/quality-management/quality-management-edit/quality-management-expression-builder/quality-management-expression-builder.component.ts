@@ -20,7 +20,8 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.expression = this.buildExpressionFromString();
-    this.toForm()
+    this.toForm();
+    this.expressionString = this.buildExpressionString();
   }
 
   toForm() {

@@ -52,7 +52,7 @@ export class Expression {
 
   static fromString(expressionString: string): Expression {
     // A = "12" & (B != "12" | C is not null) & D in ("12, 13")
-
+    let isNotCondtition = false;
     let index = Expression.getOperatorIndex(expressionString);
     const operator = index === -1 ? undefined : expressionString.substring(index, index + 1) as Operator;
 
@@ -60,14 +60,19 @@ export class Expression {
       index = expressionString.length;
     }
 
-    const subString = expressionString
+    let subString = expressionString
       .substring(0, index)
       .trim();
+
+    if (subString.startsWith('not') || subString.startsWith('(not')) {
+      subString = subString.replace('not ', '').trim();
+      isNotCondtition = true;
+    }
 
     const parts = subString.split(" "); // ['A', '=', '"12"']
 
     const { variable, group } = Expression.getVariableAndGroup(parts[0] as string);
-    const condition = Expression.getCondition(subString, variable, parts);
+    const condition = Expression.getCondition(subString, parts, isNotCondtition);
     const value = Expression.getValue(subString, parts, condition);
 
     const rule = new Rule(variable, condition, value, group);
@@ -157,10 +162,10 @@ export class Expression {
   }
 
   private static getVariableAndGroup(variable: string) {
-    let variableName = variable;
+    let variableName = variable.includes(Condition.IS_NULL) ? variable.substring(0, variable.lastIndexOf('.')) : variable;
     let group = false;
     if (variable.startsWith("(")) {
-      variableName = variable.substring(1);
+      variableName = variableName.substring(1);
       group = true;
     }
     return {
@@ -169,28 +174,21 @@ export class Expression {
     }
   }
 
-  private static getCondition(subString: string, variable: string, parts: string[]) {
-    let condition;
-    if (subString.includes(Condition.IS_NULL) || subString.includes(Condition.IS_NOT_NULL)) {
-      const conditionString = subString
-        .substring(variable.length + 1)
-        .trim()
-        .replace(')', "");
-      condition = getCondition(conditionString);
-    } else if (subString.includes(Condition.NOT_IN)) {
-      condition = getCondition(`${parts[1]} ${parts[2]}`);
-    } else {
-      condition = getCondition(parts[1] as string);
+  private static getCondition(subString: string, parts: string[], isNotCondition: boolean): ICondition {
+    if (subString.includes(Condition.IS_NULL)) {
+      return getCondition(isNotCondition ? Condition.IS_NOT_NULL : Condition.IS_NULL);
     }
-    return condition;
+    if (subString.includes(Condition.NOT_IN)) {
+      return getCondition(`${parts[1]} ${parts[2]}`);
+    }
+    return getCondition(parts[1] as string)
   }
 
   private static getValue(subString: string, parts: string[], condition: ICondition) {
     let value;
-    if (subString.includes(Condition.IS_NULL) || subString.includes(Condition.IS_NOT_NULL)) {
+    if (subString.includes(Condition.IS_NULL)) {
       return;
-    }
-    if (subString.includes(Condition.NOT_IN)) {
+    } else if (subString.includes(Condition.NOT_IN)) {
       const valueParts = parts.slice(3);
       value = valueParts.join(' ') as string | undefined;
     } else {
@@ -199,7 +197,7 @@ export class Expression {
     }
     value = value?.trim();
 
-    if (value?.endsWith(")")) {
+    if (value?.endsWith(")") && !subString.includes(Condition.IS_NULL)) {
       let index = value.indexOf(')');
       let startIndex = 0;
       if ([Condition.IN, Condition.NOT_IN].includes(condition.condition)) {

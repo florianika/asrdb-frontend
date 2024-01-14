@@ -25,7 +25,7 @@ export class HighierCondition implements ICondition {
       throw new Error('Value is required for the condition');
     }
 
-    return `${variable} > "${value}"`;
+    return `${variable} ${this.condition} "${value}"`;
   }
 
 }

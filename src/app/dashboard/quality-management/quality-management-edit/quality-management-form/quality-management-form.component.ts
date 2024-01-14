@@ -31,6 +31,6 @@ export class QualityManagementFormComponent {
   }, { updateOn: 'blur' });
 
   public thirdFormGroup = new FormGroup({
-    expression: new FormControl<string>(this.rule?.expression ?? '', [Validators.required])
+    expression: new FormControl<string>(this.rule?.expression ?? 'qwe == "12" & (qwe != "14" | (not qwe.isNull() | not qwe.isNull())) & (qwe in ("14,15") | qwe not in ("16,17")) & (qwe > "20" | qwe >= "25") & (qwe < "30" | qwe <= "32")', [Validators.required])
   });
 }

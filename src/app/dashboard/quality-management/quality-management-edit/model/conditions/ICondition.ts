@@ -19,10 +19,10 @@ export interface ICondition {
 }
 
 export enum Condition {
-  EQUALS = '=',
+  EQUALS = '==',
   NOT_EQUALS = '!=',
-  IS_NULL = 'is null',
-  IS_NOT_NULL = 'is not null',
+  IS_NULL = 'isNull()',
+  IS_NOT_NULL = 'isNull()',
   HIGHIER = '>',
   HIGHIER_EQ = '>=',
   LOWER = '<',
