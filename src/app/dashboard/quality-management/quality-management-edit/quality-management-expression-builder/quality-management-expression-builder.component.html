@@ -8,7 +8,7 @@
       <asrdb-expression-form
         [rule]="expression"
         [showOperator]="i !== expressionFormGroup.length - 1"
-        [showDeleteButton]="i > 0"
+        [showDeleteButton]="expressionFormGroup.length - 1 !== 0"
         (removeExpression)="removeRule($event)"></asrdb-expression-form>
     </ng-container>
   </section>

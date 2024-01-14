@@ -31,7 +31,7 @@
         <input matInput formControlName="descriptionEn">
       </mat-form-field>
       <div>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-button matStepperNext i18n>Next</button>
       </div>
     </form>
   </mat-step>
@@ -42,17 +42,17 @@
       <mat-form-field class="full-width">
         <mat-label i18n>Quality action</mat-label>
         <mat-select formControlName="qualityAction">
-          <mat-option value="AUT">Automatic</mat-option>
-          <mat-option value="MISS">Miss</mat-option>
-          <mat-option value="QUE">Queue</mat-option>
-          <mat-option value="ERR">Error</mat-option>
+          <mat-option value="AUT" i18n>Automatic</mat-option>
+          <mat-option value="MISS" i18n>Miss</mat-option>
+          <mat-option value="QUE" i18n>Queue</mat-option>
+          <mat-option value="ERR" i18n>Error</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label i18n>Quality status</mat-label>
         <mat-select formControlName="qualityStatus">
-          <mat-option value="ACTIVE">Automatic</mat-option>
-          <mat-option value="DISABLED">Miss</mat-option>
+          <mat-option value="ACTIVE" i18n>Automatic</mat-option>
+          <mat-option value="DISABLED" i18n>Miss</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="full-width">
@@ -72,20 +72,22 @@
         <textarea matInput formControlName="qualityMessageEn"></textarea>
       </mat-form-field>
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-button matStepperPrevious i18n>Back</button>
+        <button mat-button matStepperNext i18n>Next</button>
       </div>
     </form>
   </mat-step>
 
   <mat-step [stepControl]="thirdFormGroup">
-    <ng-template matStepLabel>Expression</ng-template>
+    <ng-template matStepLabel i18n>Expression</ng-template>
     <ng-template matStepContent>
       <asrdb-quality-management-expression-builder [formGroup]="thirdFormGroup" [entityType]="qualityType"
         [variable]="firstFormGroup.value.variable"></asrdb-quality-management-expression-builder>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button (click)="stepper.reset()">Reset</button>
+      <div class="quality-action-button">
+        <button mat-button matStepperPrevious i18n [disabled]="isSaving | async">Back</button>
+        <button mat-button color="warn" (click)="stepper.reset()" i18n [disabled]="isSaving | async">Reset</button>
+        <span></span>
+        <button mat-raised-button color="primary" (click)="save()" i18n [disabled]="isSaving | async">Save</button>
       </div>
     </ng-template>
   </mat-step>

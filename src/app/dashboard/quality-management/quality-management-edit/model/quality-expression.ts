@@ -33,7 +33,7 @@ export const OperatorsToExpressionMap = new Map<Operator, string>([
 ]);
 
 export class Expression {
-  constructor(public firstRule: Rule, public operator?: Operator, public nextRule?: Expression) { }
+  constructor(public firstRule: Rule, public operator?: Operator, public nextRule?: Expression, public prevRule?: Expression) { }
 
   addRule(rule: Expression) {
     if (!this.nextRule) {
@@ -43,28 +43,23 @@ export class Expression {
     }
   }
 
-  removeRule(id: string): number {
+  removeRule(id: string) {
     if (this.firstRule.id === id) {
-      if (this.nextRule) {
-        return 1;
-      } else {
-        return -1;
+      if (this.nextRule && this.prevRule) {
+        this.prevRule.nextRule = this.nextRule.nextRule;
+      } else if (this.nextRule) {
+        this.firstRule = this.nextRule.firstRule;
+        this.operator = this.nextRule.operator;
+        this.nextRule = this.nextRule.nextRule;
+      } else if (this.prevRule) {
+        this.prevRule.nextRule = undefined;
       }
     } else if (this.nextRule) {
-      const result = this.nextRule.removeRule(id);
-      if (result === -1) {
-        this.nextRule = undefined;
-        return 0;
-      } else if (result === 1) {
-        this.nextRule = this.nextRule.nextRule;
-        return 0;
-      }
-      return result;
+      this.nextRule.removeRule(id);
     }
-    return 0;
   }
 
-  static fromString(expressionString: string): Expression {
+  static fromString(expressionString: string, prevExpression?: Expression): Expression {
     let isNotCondtition = false;
     let index = Expression.getOperatorIndex(expressionString);
     const operator = index === -1 ? undefined : expressionString.substring(index, index + 1) as Operator;
@@ -82,16 +77,19 @@ export class Expression {
       isNotCondtition = true;
     }
 
-    const parts = subString.split(" "); // ['A', '=', '"12"']
+    const parts = subString.split(" ");
 
     const { variable, group } = Expression.getVariableAndGroup(parts[0] as string);
     const condition = Expression.getCondition(subString, parts, isNotCondtition);
     const value = Expression.getValue(subString, parts, condition);
 
     const rule = new Rule(variable, condition, value, group);
-    const nextExpression: Expression | undefined = operator ? Expression.fromString(expressionString.substring(index + 2)) : undefined;
+    const expression = new Expression(rule, operator);
+    const nextExpression: Expression | undefined = operator ? Expression.fromString(expressionString.substring(index + 2), expression) : undefined;
 
-    return new Expression(rule, operator, nextExpression);
+    expression.nextRule = nextExpression;
+    expression.prevRule = prevExpression;
+    return expression;
   }
 
   toFlatArray(): FlatRule[] {

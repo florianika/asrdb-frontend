@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { EntityType, QualityAction, QualityRule, RuleStatus } from '../../quality-management-config';
+import { QualityManagementService } from '../../quality-management.service';
 
 @Component({
   selector: 'asrdb-quality-management-form',
@@ -10,10 +11,15 @@ import { EntityType, QualityAction, QualityRule, RuleStatus } from '../../qualit
 export class QualityManagementFormComponent {
   @Input() rule?: QualityRule;
   @Input() qualityType!: EntityType;
+  @Input() id?: string | null;
+
+  public isSaving = this.qualityManagementService.isSavingAsObservable;
+
+  constructor(private qualityManagementService: QualityManagementService) { }
 
   public firstFormGroup = new FormGroup({
     localId: new FormControl<string>(this.rule?.localId ?? '', [Validators.required]),
-    entityType: new FormControl<EntityType>({value: this.rule?.entityType ?? 'BUILDING', disabled: true}, [Validators.required]),
+    entityType: new FormControl<EntityType>({ value: this.rule?.entityType ?? 'BUILDING', disabled: true }, [Validators.required]),
     variable: new FormControl<string>(this.rule?.variable ?? '', [Validators.required]),
     nameAl: new FormControl<string>(this.rule?.nameAl ?? '', [Validators.required]),
     nameEn: new FormControl<string>(this.rule?.nameEn ?? ''),
@@ -31,6 +37,20 @@ export class QualityManagementFormComponent {
   }, { updateOn: 'blur' });
 
   public thirdFormGroup = new FormGroup({
-    expression: new FormControl<string>(this.rule?.expression ?? 'qwe == "12" & (qwe != "14" | (not qwe.isNull() | not qwe.isNull())) & (qwe in ("14,15") | qwe not in ("16,17")) & (qwe > "20" | qwe >= "25") & (qwe < "30" | qwe <= "32")', [Validators.required])
-  });
+    expression: new FormControl<string>(this.rule?.expression ?? 'qwe == 12 & (qwe != 14 | (not qwe.isNull() | not qwe.isNull())) & (qwe in (14,15) | qwe not in (16,17)) & (qwe > "20" | qwe >= 25) & (qwe < 30 | qwe <= 32)', [Validators.required])
+  }, { updateOn: 'blur' });
+
+  save() {
+    const rule = {
+      ...this.firstFormGroup.value,
+      ...this.secondFormGroup.value,
+      ...this.thirdFormGroup.value
+    } as any;
+    if (this.id) {
+      rule.id = this.id;
+      this.qualityManagementService.update(rule, this.qualityType);
+    } else {
+      this.qualityManagementService.save(rule, this.qualityType);
+    }
+  }
 }

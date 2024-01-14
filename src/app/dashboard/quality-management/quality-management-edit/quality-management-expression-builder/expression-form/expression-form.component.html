@@ -35,7 +35,7 @@
         <mat-option [value]="operator.OR" i18n>Or</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-checkbox formControlName="group" *ngIf="rule.value.operator === operator.OR" i18n>
+    <mat-checkbox formControlName="group" *ngIf="rule.value.operator === operator.OR && showOperator" i18n>
       Group with next condition
     </mat-checkbox>
   </div>
@@ -45,9 +45,9 @@
 <ng-template #deleteDialog>
   <h2 mat-dialog-title i18n>Delete rule?</h2>
   <mat-dialog-content i18n>This will delete the rule and cannot be undone.</mat-dialog-content>
-  <mat-dialog-actions>
+  <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>
     <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-    <button mat-button [mat-dialog-close]="true">Delete</button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="true">Delete</button>
   </mat-dialog-actions>
 </ng-template>

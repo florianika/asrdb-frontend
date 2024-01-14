@@ -3,7 +3,7 @@
     <mat-card-content>
       <h2 *ngIf="!id" i18n>Create new rule</h2>
       <h2 *ngIf="id" i18n>Update rule</h2>
-      <asrdb-quality-management-form [rule]="getRule(rule)" [qualityType]="qualityType"></asrdb-quality-management-form>
+      <asrdb-quality-management-form [rule]="getRule(rule)" [qualityType]="qualityType" [id]="id"></asrdb-quality-management-form>
     </mat-card-content>
   </mat-card>
 </section>
