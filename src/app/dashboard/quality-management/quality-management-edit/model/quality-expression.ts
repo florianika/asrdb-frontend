@@ -1,5 +1,4 @@
 import { Condition, ConditionsMap, ICondition, getCondition, getConditionByConditionString, getConditionById } from "./conditions/ICondition";
-import { NotNullCondition } from "./conditions/NotNullCondition";
 
 export interface FlatRule {
   id: string;
@@ -44,15 +43,28 @@ export class Expression {
     }
   }
 
-  removeRule(rule: Partial<ExpressionForm>) {
-    if (this.nextRule?.firstRule.variable === rule.variable && this.nextRule?.firstRule.value === rule.value && this.nextRule?.firstRule.condition === rule.condition) {
-      const nextRule = this.nextRule?.nextRule;
-      this.nextRule = nextRule;
+  removeRule(id: string): number {
+    if (this.firstRule.id === id) {
+      if (this.nextRule) {
+        return 1;
+      } else {
+        return -1;
+      }
+    } else if (this.nextRule) {
+      const result = this.nextRule.removeRule(id);
+      if (result === -1) {
+        this.nextRule = undefined;
+        return 0;
+      } else if (result === 1) {
+        this.nextRule = this.nextRule.nextRule;
+        return 0;
+      }
+      return result;
     }
+    return 0;
   }
 
   static fromString(expressionString: string): Expression {
-    // A = "12" & (B != "12" | C is not null) & D in ("12, 13")
     let isNotCondtition = false;
     let index = Expression.getOperatorIndex(expressionString);
     const operator = index === -1 ? undefined : expressionString.substring(index, index + 1) as Operator;

@@ -21,7 +21,6 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   ngOnInit(): void {
     this.expression = this.buildExpressionFromString();
     this.toForm();
-    this.expressionString = this.buildExpressionString();
   }
 
   toForm() {
@@ -30,6 +29,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
     expressionMap.forEach((element, index) => {
       const valueValidators = this.getValueValidations(element.condition);
       const form = {
+        id: new FormControl(element.id),
         variable: new FormControl(element.variable, [Validators.required]),
         condition: new FormControl(element.condition.id, [Validators.required]),
         value: new FormControl(element.value, valueValidators),
@@ -47,6 +47,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
       });
       this.expressionFormGroup.push(newFormGroup);
     });
+    this.expressionString = this.buildExpressionString();
   }
 
   addRule() {
@@ -61,8 +62,8 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
     this.toForm();
   }
 
-  removeRule(rule: Partial<ExpressionForm>) {
-    this.expression.removeRule(rule);
+  removeRule(id: string) {
+    this.expression.removeRule(id);
     this.toForm();
   }
 

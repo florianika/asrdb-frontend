@@ -13,7 +13,7 @@ export class ExpressionFormComponent {
   @Input() rule?: FormGroup;
   @Input() showOperator?: boolean;
   @Input() showDeleteButton: boolean = false;
-  @Output() removeExpression = new EventEmitter<Partial<ExpressionForm>>();
+  @Output() removeExpression = new EventEmitter<string>();
 
   @ViewChild('deleteDialog') deleteDialog!: TemplateRef<any>;
 
@@ -33,7 +33,7 @@ export class ExpressionFormComponent {
       .afterClosed()
       .subscribe(response => {
         if (response) {
-          this.removeExpression.emit(this.rule?.value);
+          this.removeExpression.emit(this.rule?.value.id);
         }
       }
     );
