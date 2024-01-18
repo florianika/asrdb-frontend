@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Condition, ConditionsMap, ICondition } from '../../model/conditions/ICondition';
 import { ExpressionForm, Operator } from '../../model/quality-expression';
 import { MatDialog } from '@angular/material/dialog';
+import { EntityType } from '../../../quality-management-config';
 
 @Component({
   selector: 'asrdb-expression-form',
@@ -13,6 +14,7 @@ export class ExpressionFormComponent {
   @Input() rule?: FormGroup;
   @Input() showOperator?: boolean;
   @Input() showDeleteButton: boolean = false;
+  @Input() entityType!: EntityType;
   @Output() removeExpression = new EventEmitter<string>();
 
   @ViewChild('deleteDialog') deleteDialog!: TemplateRef<any>;

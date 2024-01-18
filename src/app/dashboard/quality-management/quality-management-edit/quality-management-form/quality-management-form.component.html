@@ -10,10 +10,13 @@
         <mat-label i18n>Entity type</mat-label>
         <input matInput formControlName="entityType">
       </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label i18n>Variable</mat-label>
-        <input matInput formControlName="variable">
-      </mat-form-field>
+      <asrdb-quality-management-variable-selection
+        [entity]="qualityType"
+        [variable]="'variable'"
+        [label]="'Variable'"
+        [formGroup]="firstFormGroup"
+        >
+      </asrdb-quality-management-variable-selection>
       <mat-form-field class="full-width">
         <mat-label i18n>Name in Albanian</mat-label>
         <input matInput formControlName="nameAl">
@@ -97,7 +100,7 @@
   <h2 mat-dialog-title i18n>Reset form?</h2>
   <mat-dialog-content i18n>
     This action will reset the form. All values will be deleted. <b>This action cannot be undone</b>.
-    <br/>
+    <br />
     Are you sure you want to reset the form </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>

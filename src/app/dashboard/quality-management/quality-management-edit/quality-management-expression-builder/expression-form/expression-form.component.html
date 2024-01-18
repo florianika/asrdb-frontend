@@ -1,9 +1,6 @@
 <form [formGroup]="rule" *ngIf="rule" class="expression-form">
   <div class="rule-form expression">
-    <mat-form-field class="full-width">
-      <mat-label i18n>Variable</mat-label>
-      <input matInput formControlName="variable">
-    </mat-form-field>
+    <asrdb-quality-management-variable-selection [entity]="entityType" [variable]="'variable'" [label]="'Variable'" [formGroup]="rule"></asrdb-quality-management-variable-selection>
     <mat-form-field class="full-width">
       <mat-label i18n>Condition</mat-label>
       <mat-select formControlName="condition">
