@@ -103,6 +103,10 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/edit');
   }
 
+  toggleEdit(id: string) {
+    this.qualityManagementService.toogleStatus(id, this.qualityType!);
+  }
+
   private init() {
     this.qualityRulesObservable = this.qualityManagementService.qualityRulesAsObservable.pipe(map((value) => {
       const datasource = new MatTableDataSource(value);

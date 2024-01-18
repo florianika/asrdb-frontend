@@ -61,8 +61,9 @@
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item i18n (click)="viewDetails(element.id)"><mat-icon>apartment</mat-icon>
-              View building details</button>
-            <button mat-menu-item i18n (click)="edit(element.id)"><mat-icon>directions_walk</mat-icon> View entrances</button>
+              View rule details</button>
+            <button mat-menu-item i18n (click)="edit(element.id)"><mat-icon>edit</mat-icon>Edit rule</button>
+            <button mat-menu-item i18n (click)="edit(element.id)"><mat-icon>switch_access_2</mat-icon>Toggle status</button>
           </mat-menu>
         </td>
       </ng-container>

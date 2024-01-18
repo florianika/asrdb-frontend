@@ -113,4 +113,23 @@ export class QualityManagementService {
       },
     });
   }
+
+  public toogleStatus(ruleId: string, qualityType: string) {
+    this.isSaving.next(true);
+    this.httpClient.patch(environment.base_url + UPDATE_URL + ruleId, {}).subscribe({
+      next: (value) => {
+        this.isSaving.next(true);
+        this.router.navigateByUrl('/dashboard/quality-management/' + qualityType);
+        this.snack.open('Quality rule was saved', 'Ok', {
+          duration: 3000
+        });
+      },
+      error: (err) => {
+        this.isSaving.next(true);
+        this.snack.open('Error when trying to change status. Please try again.', 'Ok', {
+          duration: 3000
+        });
+      },
+    })
+  }
 }
