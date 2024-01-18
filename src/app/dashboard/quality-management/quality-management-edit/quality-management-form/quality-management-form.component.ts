@@ -46,9 +46,9 @@ export class QualityManagementFormComponent {
 
   save() {
     const rule = {
-      ...this.firstFormGroup.value,
-      ...this.secondFormGroup.value,
-      ...this.thirdFormGroup.value
+      ...this.firstFormGroup.getRawValue(),
+      ...this.secondFormGroup.getRawValue(),
+      ...this.thirdFormGroup.getRawValue()
     } as any;
     if (this.id) {
       rule.id = this.id;
