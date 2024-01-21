@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { EntityType } from '../../../quality-management-config';
-import { BUILDING_VARIABLES } from './data/building-variables';
-import { ENTRANCE_VARIABLES } from './data/entrance-variables';
-import { DWELLING_VARIABLES } from './data/dwelling-variables';
+import { BUILDING_VARIABLES } from '../../../../../common/data/building-variables';
+import { ENTRANCE_VARIABLES } from '../../../../../common/data/entrance-variables';
+import { DWELLING_VARIABLES } from '../../../../../common/data/dwelling-variables';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -21,7 +21,6 @@ export class QualityManagementVariableSelectionComponent {
     ['ENTRANCE', ENTRANCE_VARIABLES],
     ['DWELLING', DWELLING_VARIABLES],
   ])
-
 
   public get variables() : string[] {
     return this._variables.get(this.entity)!;

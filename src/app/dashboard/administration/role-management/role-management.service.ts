@@ -70,7 +70,7 @@ export class RoleManagementService {
 
   private createRole(newRole: NewRolePermission) {
     this.loading.next(true);
-    this.httpClient.post<any>(environment.base_url + 'admin/permissions', JSON.stringify(newRole), {
+    this.httpClient.post<any>(environment.base_url + '/admin/permissions', JSON.stringify(newRole), {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -91,7 +91,7 @@ export class RoleManagementService {
 
   private updateRole(id: number, permission: Permission) {
     this.loading.next(true);
-    this.httpClient.patch<any>(environment.base_url + 'admin/permissions/' + id + `/rights/${permission}`, {}, {
+    this.httpClient.patch<any>(environment.base_url + '/admin/permissions/' + id + `/rights/${permission}`, {}, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -112,7 +112,7 @@ export class RoleManagementService {
 
   private deleteRole(id: number) {
     this.loading.next(true);
-    this.httpClient.delete<any>(environment.base_url + 'admin/permissions/' + id).subscribe({
+    this.httpClient.delete<any>(environment.base_url + '/admin/permissions/' + id).subscribe({
       next: () => {
         this.loading.next(false);
         this.getRolePermissions();

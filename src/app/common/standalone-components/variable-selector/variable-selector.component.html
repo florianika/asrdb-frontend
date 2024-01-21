@@ -1,6 +1,6 @@
 <mat-form-field class="full-width">
   <mat-label i18n>Variable</mat-label>
   <mat-select [(ngModel)]="variable" (selectionChange)="changeRole($event)" [required]="required" [disabled]="disabled">
-    <mat-option value="TEST" i18n>Test variable</mat-option>
+    <mat-option *ngFor="let variable of variables" [value]="variable" i18n>{{ variable }}</mat-option>
   </mat-select>
 </mat-form-field>
