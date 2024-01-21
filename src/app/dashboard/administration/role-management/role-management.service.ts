@@ -27,7 +27,7 @@ export class RoleManagementService {
 
   getRolePermissions() {
     this.loading.next(true);
-    this.httpClient.get<RolePermissionGetResponse>(environment.base_url + 'admin/permissions').subscribe({
+    this.httpClient.get<RolePermissionGetResponse>(environment.base_url + '/admin/permissions').subscribe({
       next: (result) => {
         this.loading.next(false);
         this.rolePermissions.next(result.rolePermissionsDTO);
