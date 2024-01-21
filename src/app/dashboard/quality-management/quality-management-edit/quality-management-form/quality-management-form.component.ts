@@ -33,7 +33,7 @@ export class QualityManagementFormComponent {
 
   public secondFormGroup = new FormGroup({
     qualityAction: new FormControl<QualityAction>(this.rule?.qualityAction ?? 'AUT', [Validators.required]),
-    qualityStatus: new FormControl<RuleStatus>(this.rule?.ruleStaus ?? 'ACTIVE', [Validators.required]),
+    ruleStatus: new FormControl<RuleStatus>(this.rule?.ruleStaus ?? 'ACTIVE', [Validators.required]),
     ruleRequirement: new FormControl<string>(this.rule?.localId ?? ''),
     remark: new FormControl<string>(this.rule?.ruleRequirement ?? ''),
     qualityMessageAl: new FormControl<string>(this.rule?.qualityMessageAl ?? '', [Validators.required]),
@@ -65,7 +65,27 @@ export class QualityManagementFormComponent {
       .subscribe(confirm => {
         if (confirm) {
           stepper.reset();
+          this.firstFormGroup.setValue({
+            localId: this.rule?.localId ?? '',
+            entityType: this.rule?.entityType ?? this.qualityType,
+            variable: this.rule?.variable ?? '',
+            nameAl: this.rule?.nameAl ?? '',
+            nameEn: this.rule?.nameEn ?? '',
+            descriptionAl: this.rule?.descriptionAl ?? '',
+            descriptionEn: this.rule?.descriptionEn ?? '',
+          });
+          this.secondFormGroup.setValue({
+            qualityAction: this.rule?.qualityAction ?? 'AUT',
+            ruleStatus: this.rule?.ruleStaus ?? 'ACTIVE',
+            ruleRequirement: this.rule?.localId ?? '',
+            remark: this.rule?.ruleRequirement ?? '',
+            qualityMessageAl: this.rule?.qualityMessageAl ?? '',
+            qualityMessageEn: this.rule?.qualityMessageEn ?? '',
+          });
+          this.thirdFormGroup.setValue({
+            expression: this.rule?.expression ?? ''
+          });
         }
-      })
+      });
   }
 }
