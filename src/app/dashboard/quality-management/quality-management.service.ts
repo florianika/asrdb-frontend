@@ -45,25 +45,24 @@ export class QualityManagementService {
         duration: 3000
       });
       console.log(err);
-      return of({ruleDTO: []});
+      return of({rulesDTO: []});
     })).subscribe((res: QualityRulesResponse) => {
-      this.qualityRules.next(res.ruleDTO);
+      this.qualityRules.next(res.rulesDTO);
       this.loadingResults.next(false);
     });
   }
 
   public getRule(type: string | null, id: string) {
     this.loadingResults.next(true);
-    const url = QualityManagementConfig.getUrlForType(type) + '/' + id;
 
-    this.httpClient.get<QualityRuleResponse>(url).pipe(catchError(err => {
+    this.httpClient.get<QualityRuleResponse>(environment.base_url + UPDATE_URL + id).pipe(catchError(err => {
       this.snack.open(`Could not load quality rule for ${type} and id ${id}`, 'Ok', {
         duration: 3000
       });
       console.log(err);
-      return of({ruleDTO: null});
-    })).subscribe((res: QualityRuleResponse | {ruleDTO: null}) => {
-      this.qualityRule.next(res.ruleDTO);
+      return of({rulesDTO: null});
+    })).subscribe((res: QualityRuleResponse | {rulesDTO: null}) => {
+      this.qualityRule.next(res.rulesDTO);
       this.loadingResults.next(false);
     });
   }
@@ -99,14 +98,16 @@ export class QualityManagementService {
       }
     }).subscribe({
       next: (value) => {
-        this.isSaving.next(true);
+        this.isSaving.next(false);
+        this.qualityRule.next(null);
         this.router.navigateByUrl('/dashboard/quality-management/' + qualityType);
         this.snack.open('Quality rule was saved', 'Ok', {
           duration: 3000
         });
       },
       error: (err) => {
-        this.isSaving.next(true);
+        this.isSaving.next(false);
+        this.qualityRule.next(null);
         this.snack.open('Error when trying to save the rule. Please try again.', 'Ok', {
           duration: 3000
         });
@@ -118,14 +119,18 @@ export class QualityManagementService {
     this.isSaving.next(true);
     this.httpClient.patch(environment.base_url + UPDATE_URL + ruleId, {}).subscribe({
       next: (value) => {
-        this.isSaving.next(true);
+        this.isSaving.next(false);
+        this.qualityRule.next(null);
+        this.getRules(qualityType);
         this.router.navigateByUrl('/dashboard/quality-management/' + qualityType);
         this.snack.open('Quality rule was saved', 'Ok', {
           duration: 3000
         });
       },
       error: (err) => {
-        this.isSaving.next(true);
+        this.isSaving.next(false);
+        this.qualityRule.next(null);
+        this.getRules(qualityType);
         this.snack.open('Error when trying to change status. Please try again.', 'Ok', {
           duration: 3000
         });

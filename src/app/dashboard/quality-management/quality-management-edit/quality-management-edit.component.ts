@@ -29,11 +29,4 @@ export class QualityManagementEditComponent implements OnInit {
       this.qualityManagementService.getRule(this.qualityType, this.id);
     }
   }
-
-  getRule(rule: boolean | QualityRule): QualityRule | undefined {
-    if (typeof rule === 'boolean') {
-      return undefined;
-    }
-    return rule;
-  }
 }

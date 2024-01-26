@@ -24,7 +24,7 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     'variable',
     'version',
     // 'qualityAction',
-    'ruleStaus',
+    'ruleStatus',
     // 'ruleRequirement',
     // 'expression',
     'actions',

@@ -14,11 +14,11 @@ export type QualityAction = 'AUT' | 'MISS' | 'QUE' | 'ERR';
 export type RuleStatus = 'ACTIVE' | 'DISABLED';
 
 export type QualityRulesResponse = {
-  ruleDTO: QualityRule[]
+  rulesDTO: QualityRule[]
 }
 
 export type QualityRuleResponse = {
-  ruleDTO: QualityRule
+  rulesDTO: QualityRule
 }
 
 export type QualityRule = {
