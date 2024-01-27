@@ -20,7 +20,7 @@ export class NullCondition implements ICondition {
   buildExpression(variable: string, value?: string | number): string {
     if (!variable) {
       console.log('Variable is required for the condition');
-      return '';
+      throw new Error('Variable is required')
     }
 
     return `${variable}.${this.condition}`;

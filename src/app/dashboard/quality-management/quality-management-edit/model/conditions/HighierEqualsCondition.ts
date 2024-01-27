@@ -20,11 +20,11 @@ export class HighierEqualsCondition implements ICondition {
   buildExpression(variable: string, value?: string | number): string {
     if (!variable) {
       console.log('Variable is required for the condition');
-      return '';
+      throw new Error('Variable is required')
     }
     if (!value) {
       console.log('Value is required for the condition');
-      return '';
+      throw new Error('Value is required')
     }
 
     return `${variable} ${this.condition} ${value}`;

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EntityType } from '../../quality-management-config';
-import { Expression, ExpressionForm, Rule } from '../model/quality-expression';
+import { Expression, Rule } from '../model/quality-expression';
 import { Condition, ConditionsMap, ICondition, getCondition, getConditionById } from '../model/conditions/ICondition';
 
 @Component({
@@ -17,6 +17,10 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   public expression!: Expression;
   public expressionFormGroup: FormGroup[] = [];
   public expressionString = "";
+
+  get expressionFormControl(): AbstractControl | null {
+    return this.formGroup.controls['expression'];
+  }
 
   ngOnInit(): void {
     this.expression = this.buildExpressionFromString();
@@ -76,11 +80,13 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
       )
     ));
     this.toForm();
+    this.formGroup.setValue({expression: this.expressionString});
   }
 
   removeRule(id: string) {
     this.expression.removeRule(id);
     this.toForm();
+    this.formGroup.setValue({expression: this.expressionString});
   }
 
   buildExpressionFromString() {
@@ -91,7 +97,11 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   }
 
   buildExpressionString() {
-    return this.expression.toString();
+    try {
+      return this.expression.toString();
+    } catch (error) {
+      return '';
+    }
   }
 
   private getValueValidations(condition: ICondition) {

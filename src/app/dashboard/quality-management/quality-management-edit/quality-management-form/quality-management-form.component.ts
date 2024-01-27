@@ -16,6 +16,7 @@ export class QualityManagementFormComponent implements OnInit {
   @Input() id?: string | null;
 
   @ViewChild('resetDialog') resetDialog!: TemplateRef<any>;
+  @ViewChild('stepper') stepper!: MatStepper;
 
   public isSaving = this.qualityManagementService.isSavingAsObservable;
   public firstFormGroup!: FormGroup;
@@ -50,6 +51,9 @@ export class QualityManagementFormComponent implements OnInit {
   }
 
   save() {
+    if (this.firstFormGroup.invalid || this.secondFormGroup.invalid || this.thirdFormGroup.invalid) {
+      return;
+    }
     const rule = {
       ...this.firstFormGroup.getRawValue(),
       ...this.secondFormGroup.getRawValue(),

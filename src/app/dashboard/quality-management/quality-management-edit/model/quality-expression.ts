@@ -104,13 +104,17 @@ export class Expression {
   toString(closeBrackets = 0): string {
     let expression = this.buildExpression();
 
+    if (this.operator == undefined && this.nextRule != undefined) {
+      throw new Error('Operator must be provided');
+    }
+
     if (this.operator != undefined && this.nextRule != undefined) {
       const operator = this.operator;
       if (this.firstRule.group) {
         if (this.nextRule.operator === Operator.OR && this.nextRule.firstRule.group) {
           return `(${expression} ${operator} ${this.nextRule.toString(++closeBrackets)}`;
         } else {
-          return this.buildGroupedExpression(this.nextRule, expression, operator!, closeBrackets);
+          return this.buildGroupedExpression(this.nextRule, expression, operator, closeBrackets);
         }
       } else {
         return expression + ` ${operator} ` + this.nextRule.toString();
@@ -140,6 +144,9 @@ export class Expression {
     let combinedExpression = `(${expression} ${operator} ${secondExpression})`;
     if (nextRule.nextRule) {
       const nextOperator = nextRule.operator;
+      if (nextOperator == undefined) {
+        throw new Error("Operator must be provided");
+      }
       if (nextOperator === Operator.AND && closeBrackets) {
         for (let index = 0; index < closeBrackets; index++) {
           combinedExpression += ")";
