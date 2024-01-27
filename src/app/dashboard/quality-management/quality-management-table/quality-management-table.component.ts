@@ -5,6 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { QualityManagementTableFitlerComponent } from './quality-management-table-fitler/quality-management-table-fitler.component';
+import { QualityRuleFilter } from './model/quality-rule-filter';
+import { EntityType } from '../quality-management-config';
 
 @Component({
   selector: 'asrdb-quality-management-table',
@@ -23,44 +27,36 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     'nameEn',
     'variable',
     'version',
-    // 'qualityAction',
-    'ruleStaus',
-    // 'ruleRequirement',
-    // 'expression',
+    'ruleStatus',
     'actions',
   ];
+  private datasource = new MatTableDataSource();
 
   private qualityType!: string | null;
   private subscription = new Subject();
 
-  // TODO: Change this
-  filterConfig: any = {
-    filter: {
-      BldMunicipality: '',
-      BldStatus: '',
-      BldType: '',
-      GlobalID: ''
-    },
-    options: {
-      BldMunicipality: [] as any[],
-      BldStatus: [] as any[],
-      BldType: [] as any[],
-    }
+  filterConfig: QualityRuleFilter = {
+    localId: '',
+    nameAl: '',
+    nameEn: '',
+    variable: '',
+    ruleStatus: '',
   };
 
   constructor(
     private qualityManagementService: QualityManagementService,
     private activatedRoute: ActivatedRoute,
-    private router: Router) {
+    private router: Router,
+    private matDialog: MatDialog) {
     this.init();
     this.activatedRoute.paramMap.pipe(takeUntil(this.subscription)).subscribe(() => {
       this.init();
       this.reload();
-    })
+    });
   }
 
   ngOnInit(): void {
-    this.qualityManagementService.getData(this.qualityType);
+    this.qualityManagementService.getRules(this.qualityType);
   }
 
   ngOnDestroy(): void {
@@ -76,40 +72,68 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   }
 
   openFilter() {
-    // this.matDialog
-    //   .open(BuildingListViewFilterComponent, {
-    //     data: JSON.parse(JSON.stringify(this.filterConfig))
-    //   }).afterClosed().subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
+    this.matDialog
+      .open(QualityManagementTableFitlerComponent, {
+        data: JSON.parse(JSON.stringify({filter: this.filterConfig, qualityType: this.qualityType}))
+      }).afterClosed().subscribe((newFilterConfig: QualityRuleFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
   reload() {
-    this.qualityManagementService.getData(this.qualityType);
+    this.qualityManagementService.getRules(this.qualityType);
   }
 
-  remove($event: Chip) {
-    (this.filterConfig.filter as any)[$event.column] = '';
-    this.reload();
-  }
+  // remove($event: Chip) {
+  //   (this.filterConfig as any)[$event.column] = '';
+  //   this.reload();
+  // }
 
   viewDetails(id: string) {
-    this.router.navigateByUrl('/dashboard/quality-management/details/' + this.qualityType + '/' + id);
+    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/details/' + id);
   }
 
   edit(id: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/edit/' + this.qualityType + '/' + id);
+    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/edit/' + id);
   }
 
   add() {
-    throw new Error('Unimplemented');
+    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/edit');
+  }
+
+  toggleEdit(id: string) {
+    this.qualityManagementService.toogleStatus(id, this.qualityType!);
   }
 
   private init() {
+    this.filterConfig = {
+      localId: '',
+      nameAl: '',
+      nameEn: '',
+      variable: '',
+      ruleStatus: '',
+    };
     this.qualityRulesObservable = this.qualityManagementService.qualityRulesAsObservable.pipe(map((value) => {
-      const datasource = new MatTableDataSource(value);
-      datasource.paginator = this.paginator;
-      return datasource;
+      this.datasource.data = value;
+      this.datasource.paginator = this.paginator;
+      return this.datasource;
     }));
     this.isLoadingResults = this.qualityManagementService.loadingResultsAsObservable;
     this.qualityType = this.activatedRoute.snapshot.paramMap.get('entity');
+    this.datasource.filterPredicate = (data: any, filter) => {
+      const filterObject: QualityRuleFilter = JSON.parse(filter);
+      let shouldShow = true;
+      for (const [key, value] of Object.entries(filterObject)) {
+        if (!!value) {
+          shouldShow = shouldShow && data[key] === value;
+        }
+      }
+      return shouldShow;
+    };
+  }
+
+  private handlePopupClose(newFilter: QualityRuleFilter | null) {
+    if (newFilter) {
+      this.datasource.filter = JSON.stringify(newFilter);
+      this.filterConfig = newFilter;
+    }
   }
 }

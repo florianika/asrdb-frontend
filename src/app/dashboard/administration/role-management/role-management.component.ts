@@ -30,7 +30,6 @@ export class RoleManagementComponent implements OnInit {
         dataSources.forEach((dataSource, key) => {
           dataSource.data = rolePermissionGroups.get(key) ?? [];
         });
-        console.log(dataSources);
         return dataSources;
       })
   );

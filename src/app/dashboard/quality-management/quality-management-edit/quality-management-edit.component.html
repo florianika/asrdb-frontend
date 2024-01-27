@@ -1,1 +1,27 @@
-<p>quality-management-edit works!</p>
+<section id="quality-rule-form" *ngIf="!id; else editForm">
+  <mat-card class="full-width">
+    <mat-card-content>
+      <h2 *ngIf="!id" i18n>Create new rule</h2>
+      <h2 *ngIf="id" i18n>Update rule</h2>
+      <asrdb-quality-management-form [rule]="undefined" [qualityType]="qualityType" [id]="id"></asrdb-quality-management-form>
+    </mat-card-content>
+  </mat-card>
+</section>
+
+<ng-template #editForm>
+  <section id="quality-rule-form" *ngIf="(qualityRuleObservable | async) as rule">
+    <mat-card class="full-width">
+      <mat-card-content>
+        <h2 *ngIf="!id" i18n>Create new rule</h2>
+        <h2 *ngIf="id" i18n>Update rule</h2>
+        <asrdb-quality-management-form [rule]="rule" [qualityType]="qualityType" [id]="id"></asrdb-quality-management-form>
+      </mat-card-content>
+    </mat-card>
+  </section>
+  </ng-template>
+
+<ng-container *ngIf="isLoadingResults | async">
+  <div style="margin: 20px auto;">
+    <mat-spinner diameter="20"></mat-spinner>
+  </div>
+</ng-container>

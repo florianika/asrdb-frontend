@@ -1,0 +1,16 @@
+export const ENTRANCE_VARIABLES = [
+  'EntDwellingRecs',
+  'EntPointStatus',
+  'EntDwellingExpec',
+  'EntID',
+  'EntBuildingID',
+  'EntAddressID',
+  'EntQuality',
+  'EntLatitude',
+  'EntLongitude',
+  'EntBuildingNumber',
+  'EntEntranceNumber',
+  'EntTown',
+  'EntZipCode',
+  'EntStreetCode',
+]

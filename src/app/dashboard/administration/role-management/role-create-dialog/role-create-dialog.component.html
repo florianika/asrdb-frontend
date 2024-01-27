@@ -2,7 +2,8 @@
 <div mat-dialog-content>
   <asrdb-role-selector [(role)]="newRole.role" [required]="true"></asrdb-role-selector>
   <asrdb-entity-type-selector [(entityType)]="newRole.entityType" [required]="true"></asrdb-entity-type-selector>
-  <asrdb-variable-selector [(variable)]="newRole.variableName" [required]="true"></asrdb-variable-selector>
+  <asrdb-variable-selector [(variable)]="newRole.variableName" [required]="true"
+    [entityType]="newRole.entityType"></asrdb-variable-selector>
   <asrdb-permission-selector [(permission)]="newRole.permission" [required]="true"></asrdb-permission-selector>
 </div>
 <div mat-dialog-actions align="end">

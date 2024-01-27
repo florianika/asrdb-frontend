@@ -1,0 +1,7 @@
+.quality-action-button {
+  display: flex;
+}
+
+.quality-action-button > span {
+  flex-grow: 1;
+}

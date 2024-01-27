@@ -1,3 +1,5 @@
+import { environment } from 'src/environments/environment';
+
 export type QualityConfig = {
   endpoint: string;
 }
@@ -11,8 +13,12 @@ export type QualityAction = 'AUT' | 'MISS' | 'QUE' | 'ERR';
 
 export type RuleStatus = 'ACTIVE' | 'DISABLED';
 
+export type QualityRulesResponse = {
+  rulesDTO: QualityRule[]
+}
+
 export type QualityRuleResponse = {
-  ruleDTO: QualityRule[]
+  rulesDTO: QualityRule
 }
 
 export type QualityRule = {
@@ -38,31 +44,18 @@ export type QualityRule = {
   updatedUser: string | null;
   updatedTimestamp: string | null
 }
-export const BaseUrl = '/qms/rules/entity/';
+export const BaseUrl = environment.base_url + '/qms/rules/entity/';
 
 export class QualityManagementConfig {
-  public static getUrlForType(type: string | null) {
-    return BaseUrl + this.getType(type);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public static getUrlForType(_type: string | null) {
+    return BaseUrl + this.getType(_type);
   }
 
   public static getType(type: string | null) {
-    // if (!type) {
-    //   return 'BUILDING';
-    // }
-    // return ['BUILDING', 'ENTRANCE', 'DWELLING'].includes(type) ? type as EntityType : 'BUILDING';
-    switch(type) {
-      case 'BUILDING': {
-        return 0;
-      }
-      case 'ENTRANCE': {
-        return 1;
-      }
-      case 'DWELLING': {
-        return 2;
-      }
-      default: {
-        return 0;
-      }
-    }
+    if (!type) {
+       return 'BUILDING';
+     }
+    return ['BUILDING', 'ENTRANCE', 'DWELLING'].includes(type) ? type as EntityType : 'BUILDING';
   }
 }
