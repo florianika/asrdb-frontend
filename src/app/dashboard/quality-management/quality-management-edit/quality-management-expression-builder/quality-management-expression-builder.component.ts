@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EntityType } from '../../quality-management-config';
-import { Expression, Rule } from '../model/quality-expression';
+import { Expression, Operator, Rule } from '../model/quality-expression';
 import { Condition, ConditionsMap, ICondition, getCondition, getConditionById } from '../model/conditions/ICondition';
 
 @Component({
@@ -76,8 +76,10 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
         this.variable ?? "Variable",
         ConditionsMap.get(Condition.EQUALS)!,
         '',
-        false
-      )
+        false,
+      ),
+      Operator.AND,
+      undefined,
     ));
     this.toForm();
     this.formGroup.setValue({expression: this.expressionString});

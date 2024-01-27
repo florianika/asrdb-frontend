@@ -38,6 +38,7 @@ export class Expression {
   addRule(rule: Expression) {
     if (!this.nextRule) {
       this.nextRule = rule;
+      rule.prevRule = this;
     } else {
       this.nextRule.addRule(rule);
     }
@@ -46,7 +47,8 @@ export class Expression {
   removeRule(id: string) {
     if (this.firstRule.id === id) {
       if (this.nextRule && this.prevRule) {
-        this.prevRule.nextRule = this.nextRule.nextRule;
+        this.prevRule.nextRule = this.nextRule;
+        this.nextRule.prevRule = this.prevRule;
       } else if (this.nextRule) {
         this.firstRule = this.nextRule.firstRule;
         this.operator = this.nextRule.operator;
