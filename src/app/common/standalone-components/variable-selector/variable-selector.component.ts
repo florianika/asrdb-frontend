@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule, MatSelectChange } from '@angular/material/select';
 import { BUILDING_VARIABLES } from '../../data/building-variables';
 import { DWELLING_VARIABLES } from '../../data/dwelling-variables';
@@ -24,6 +24,7 @@ export class VariableSelectorComponent {
   @Input() required = false;
   @Input() disabled = false;
   @Input() variable = '';
+  @Input() appearance: MatFormFieldAppearance = 'fill';
   @Input() entityType: EntityType = 'BUILDING';
   @Output() variableChange = new EventEmitter<string>();
 

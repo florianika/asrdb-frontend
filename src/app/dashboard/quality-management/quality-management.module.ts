@@ -26,6 +26,8 @@ import {MatListModule} from '@angular/material/list';
 import { ExpressionFormComponent } from './quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { QualityManagementVariableSelectionComponent } from './quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component';
+import { QualityManagementTableFitlerComponent } from './quality-management-table/quality-management-table-fitler/quality-management-table-fitler.component';
+import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { QualityManagementVariableSelectionComponent } from './quality-managemen
     QualityManagementFormComponent,
     QualityManagementExpressionBuilderComponent,
     ExpressionFormComponent,
-    QualityManagementVariableSelectionComponent
+    QualityManagementVariableSelectionComponent,
+    QualityManagementTableFitlerComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +59,8 @@ import { QualityManagementVariableSelectionComponent } from './quality-managemen
     ChipComponent,
     ReactiveFormsModule,
     MatCheckboxModule,
-    FormsModule
+    FormsModule,
+    VariableSelectorComponent
   ],
   providers: [
     QualityManagementService

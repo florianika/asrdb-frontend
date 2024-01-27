@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Filter data</h2>
+<mat-dialog-content style="padding-top: 10px;">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Local ID</mat-label>
+    <input matInput [(ngModel)]="filterConfig.localId"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Name in Albanian</mat-label>
+    <input matInput [(ngModel)]="filterConfig.nameAl"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Name in English</mat-label>
+    <input matInput [(ngModel)]="filterConfig.nameEn"/>
+  </mat-form-field>
+
+  <asrdb-variable-selector [variable]="filterConfig.variable" [entityType]="qualityType" (variableChange)="changeValue($event, 'variable')" appearance="outline"></asrdb-variable-selector>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Rule status</mat-label>
+    <mat-select [value]="filterConfig.ruleStatus" (selectionChange)="changeStatusValue($event, 'ruleStatus')">
+      <mat-option value="ACTIVE" i18n>Active</mat-option>
+      <mat-option value="DISABLED" i18n>Disabled</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-button color="primary" [mat-dialog-close]="filterConfig">Filter</button>
+</mat-dialog-actions>
