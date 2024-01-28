@@ -43,6 +43,13 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     ruleStatus: '',
   };
 
+  get filterChips(): Chip[] {
+    return Object
+      .entries(this.filterConfig)
+      .filter(([, value]) => !!value)
+      .map(([key, value]) => ({ column: key, value: value }));
+  }
+
   constructor(
     private qualityManagementService: QualityManagementService,
     private activatedRoute: ActivatedRoute,
@@ -82,10 +89,10 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     this.qualityManagementService.getRules(this.qualityType);
   }
 
-  // remove($event: Chip) {
-  //   (this.filterConfig as any)[$event.column] = '';
-  //   this.reload();
-  // }
+  remove($event: Chip) {
+    (this.filterConfig as any)[$event.column] = '';
+    this.datasource.filter = JSON.stringify(this.filterConfig);
+  }
 
   viewDetails(id: string) {
     this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/details/' + id);

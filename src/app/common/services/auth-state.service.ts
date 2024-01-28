@@ -171,7 +171,9 @@ export class AuthStateService implements OnDestroy {
       }
       isTokenNearlyExpired = seconds <= 10;
     } catch (e) {
-      console.error(e);
+      if (!this.router.url.includes('/auth/')) {
+        console.error(e);
+      }
       isTokenNearlyExpired = true;
     }
     return isTokenNearlyExpired;
@@ -186,7 +188,7 @@ export class AuthStateService implements OnDestroy {
         console.log(`Token is valid: ${this.isTokenValidInternal()}`);
         console.log(`Subscription is: ${this.subscription.closed}`);
       }
-      if (this.tokenInNearExpired()) {
+      if (this.tokenInNearExpired() && !this.router.url.includes('/auth/')) {
         if (isDevMode()) {
           console.log('Reloaded token');
         }

@@ -1,4 +1,4 @@
-<section class="login-container">
+<section class="login-container" (keyup.enter)="signin()">
   <mat-card class="login-card">
     <img class="login-card-logo" src="assets/images/logo_instat.png" alt="logo">
     <mat-card-title class="login-card-title" i18n>
@@ -18,7 +18,7 @@
           <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
             'visibility' : 'visibility_off'}}</mat-icon>
         </mat-form-field>
-        <p class="login-card-forgot-password" i18n>Forgot password?</p>
+        <!-- <p class="login-card-forgot-password" i18n>Forgot password?</p> -->
       </form>
 
       <button mat-flat-button color="primary" class="full-width" style="height: 52px;" (click)="signin()" [disabled]="loading | async" i18n>Continue</button>

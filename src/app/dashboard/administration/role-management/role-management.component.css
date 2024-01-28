@@ -1,3 +1,5 @@
+@import '../../style/table.css';
+
 .role-management-table-header {
   display: flex;
   flex-flow: row;

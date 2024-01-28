@@ -15,12 +15,12 @@
     </button>
   </div>
 
-  <!-- <div style="padding: 0px 10px;">
-    <asrdb-chip (remove)="remove($event)" [chips]="filterChips"></asrdb-chip>
-  </div> -->
+  <div style="padding: 0px 10px;">
+    <asrdb-chip (remove)="remove($event)" [chips]="filterChips" [clearable]="true"></asrdb-chip>
+  </div>
 
   <div class="asrbd-loading-shade" *ngIf="isLoadingResults | async">
-    <mat-spinner *ngIf="isLoadingResults | async"></mat-spinner>
+    <mat-spinner></mat-spinner>
   </div>
 
   <div class="asrbd-table-container">
