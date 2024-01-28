@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observer } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -30,10 +31,13 @@ export class SignupService {
     error: (error) => {
       this.signingUp.next(false);
       console.error(error);
+      this.matSnack.open('Could not sign up. Please try again later', 'Ok', {
+        duration: 3000
+      });
     }
   } as Observer<any>;
 
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  constructor(private httpClient: HttpClient, private router: Router, private matSnack: MatSnackBar) { }
 
   createSignupForm(): SignupForm {
     return new FormGroup({
@@ -45,6 +49,7 @@ export class SignupService {
   }
 
   signup(signupForm: SignupFormValue) {
+    this.signingUp.next(true);
     const nameArray = signupForm.fullName!.split(' ');
     const data = {
       name: nameArray[0],

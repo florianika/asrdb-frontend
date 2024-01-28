@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observer } from 'rxjs';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
@@ -21,10 +22,17 @@ export class SigninService {
       console.error(error);
       this.signingIn.next(false);
       this.authStateService.setLoginState(false);
+      this.matSnack.open('Username or password not correct', 'Ok', {
+        duration: 3000
+      });
     }
   } as Observer<SigninResponse>;
 
-  constructor(private authStateService: AuthStateService, private httpClient: HttpClient,  private router: Router) { }
+  constructor(
+    private authStateService: AuthStateService,
+    private httpClient: HttpClient,
+    private router: Router,
+    private matSnack: MatSnackBar) { }
 
   signin(loginData: Partial<{ email: string | null, password: string | null }>) {
     this.signingIn.next(true);

@@ -74,6 +74,7 @@ export class SignupComponent {
   }
 
   signup() {
+    this.signupFormGroup.markAllAsTouched();
     if (!this.signupFormGroup.invalid) {
       this.signupService.signup(this.signupFormGroup.value as SignupFormValue);
     }
