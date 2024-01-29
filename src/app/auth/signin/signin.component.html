@@ -1,4 +1,4 @@
-<section class="login-container" (keyup.enter)="signin()">
+<section class="login-container">
   <mat-card class="login-card">
     <img class="login-card-logo" src="assets/images/logo_instat.png" alt="logo">
     <mat-card-title class="login-card-title" i18n>
@@ -8,12 +8,12 @@
       <form [formGroup]="signinFormGroup">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>Email</mat-label>
-          <input matInput i18n-placeholder placeholder="Enter your email" formControlName="email">
+          <input matInput i18n-placeholder placeholder="Enter your email" formControlName="email" (keyup.enter)="signin()">
           <mat-icon matPrefix>email</mat-icon>
         </mat-form-field>
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>Password</mat-label>
-          <input matInput [type]="hiddenPassword ? 'password' : 'text'" i18n-placeholder placeholder="Enter your password" formControlName="password">
+          <input matInput [type]="hiddenPassword ? 'password' : 'text'" i18n-placeholder placeholder="Enter your password" formControlName="password" (keyup.enter)="signin()">
           <mat-icon matPrefix>lock</mat-icon>
           <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
             'visibility' : 'visibility_off'}}</mat-icon>

@@ -6,8 +6,8 @@ import { SignupForm, SignupFormValue, SignupService } from './signup.service';
   templateUrl: './signup.component.html',
   styles: [`
   .signup-container {
-    min-height: 100vh;
-    min-width: 100vw;
+    min-height: 100%;
+    min-width: 100%;
     display: flex;
     flex-direction: column;
     -webkit-box-pack: center;
