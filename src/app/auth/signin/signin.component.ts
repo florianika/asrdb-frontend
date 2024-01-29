@@ -7,8 +7,8 @@ import { FormGroup, FormControl } from '@angular/forms';
   templateUrl: './signin.component.html',
   styles: [`
     .login-container {
-      min-height: 100vh;
-      min-width: 100vw;
+      min-height: 100%;
+      min-width: 100%;
       display: flex;
       flex-direction: column;
       -webkit-box-pack: center;
