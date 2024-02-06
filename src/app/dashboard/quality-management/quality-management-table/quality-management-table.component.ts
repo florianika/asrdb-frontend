@@ -8,7 +8,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { QualityManagementTableFitlerComponent } from './quality-management-table-fitler/quality-management-table-fitler.component';
 import { QualityRuleFilter } from './model/quality-rule-filter';
-import { EntityType } from '../quality-management-config';
 
 @Component({
   selector: 'asrdb-quality-management-table',
@@ -81,7 +80,7 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   openFilter() {
     this.matDialog
       .open(QualityManagementTableFitlerComponent, {
-        data: JSON.parse(JSON.stringify({filter: this.filterConfig, qualityType: this.qualityType}))
+        data: JSON.parse(JSON.stringify({ filter: this.filterConfig, qualityType: this.qualityType }))
       }).afterClosed().subscribe((newFilterConfig: QualityRuleFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
@@ -107,7 +106,9 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   }
 
   toggleEdit(id: string) {
-    this.qualityManagementService.toogleStatus(id, this.qualityType!);
+    if (this.qualityType) {
+      this.qualityManagementService.toogleStatus(id, this.qualityType);
+    }
   }
 
   private init() {
@@ -129,7 +130,7 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
       const filterObject: QualityRuleFilter = JSON.parse(filter);
       let shouldShow = true;
       for (const [key, value] of Object.entries(filterObject)) {
-        if (!!value) {
+        if (value) {
           shouldShow = shouldShow && data[key] === value;
         }
       }

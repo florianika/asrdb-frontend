@@ -13,7 +13,7 @@ import { EntityType } from '../../../quality-management-config';
 export class ExpressionFormComponent {
   @Input() rule?: FormGroup;
   @Input() showOperator?: boolean;
-  @Input() showDeleteButton: boolean = false;
+  @Input() showDeleteButton = false;
   @Input() entityType!: EntityType;
   @Output() removeExpression = new EventEmitter<string>();
 

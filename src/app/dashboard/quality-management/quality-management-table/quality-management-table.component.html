@@ -60,10 +60,9 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item i18n (click)="viewDetails(element.id)"><mat-icon>apartment</mat-icon>
-              View rule details</button>
             <button mat-menu-item i18n (click)="edit(element.id)"><mat-icon>edit</mat-icon>Edit rule</button>
-            <button mat-menu-item i18n (click)="toggleEdit(element.id)"><mat-icon>switch_access_2</mat-icon>Toggle status</button>
+            <button mat-menu-item i18n (click)="toggleEdit(element.id)"><mat-icon>published_with_changes</mat-icon>Toggle
+              status</button>
           </mat-menu>
         </td>
       </ng-container>

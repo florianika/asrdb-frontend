@@ -16,7 +16,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
 
   public expression!: Expression;
   public expressionFormGroup: FormGroup[] = [];
-  public expressionString = "";
+  public expressionString = '';
 
   get expressionFormControl(): AbstractControl | null {
     return this.formGroup.controls['expression'];
@@ -73,7 +73,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   addRule() {
     this.expression.addRule(new Expression(
       new Rule(
-        this.variable ?? "Variable",
+        this.variable ?? 'Variable',
         ConditionsMap.get(Condition.EQUALS)!,
         '',
         false,
@@ -95,7 +95,7 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
     return this.formGroup.value.expression
       ? Expression.fromString(this.formGroup.value.expression)
       : new Expression(
-        new Rule(this.variable ?? "Variable", ConditionsMap.get(Condition.EQUALS)!, '', false));
+        new Rule(this.variable ?? 'Variable', ConditionsMap.get(Condition.EQUALS)!, '', false));
   }
 
   buildExpressionString() {
