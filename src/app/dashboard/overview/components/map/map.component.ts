@@ -33,8 +33,6 @@ export class MapComponent implements OnInit, OnDestroy {
     private esriAuthService: CommonEsriAuthService) { }
 
   ngOnInit(): any {
-    // this.overviewService.inizializeAuth();
-
     // Initialize MapView and return an instance of MapView
     this.initializeMap().then(() => {
       console.log('The map is ready.');
