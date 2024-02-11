@@ -116,6 +116,7 @@ export class RegisterMapService {
     (await view.whenLayerView(this.bldlayer)).filter = new FeatureFilter({
       where: whereCondition,
     });
+    view.goTo(this.bldlayer.fullExtent);
   }
 
   async filterEntranceData(view: MapView, whereCondition: string) {

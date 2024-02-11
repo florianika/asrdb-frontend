@@ -160,6 +160,12 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log();
   }
 
+  filterBuilding(GlobalID: string) {
+    const filterCopy = JSON.parse(JSON.stringify(this.filterConfig));
+    (filterCopy as any).filter['GlobalID'] = GlobalID;
+    this.registerFilterService.updateFilter(filterCopy);
+  }
+
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
     if (newFilterConfig) {
       this.registerFilterService.updateFilter(newFilterConfig);
