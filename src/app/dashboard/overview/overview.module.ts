@@ -16,9 +16,9 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import { CommonEsriAuthService } from '../buildings-register/common/service/common-esri-auth.service';
-import { CommonBuildingService } from '../buildings-register/common/service/common-building.service';
-import { CommonEntranceService } from '../buildings-register/common/service/common-entrance.service';
+import { CommonBuildingService } from '../register/service/common-building.service';
+import { CommonEntranceService } from '../register/service/common-entrance.service';
+import { CommonEsriAuthService } from '../register/service/common-esri-auth.service';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 

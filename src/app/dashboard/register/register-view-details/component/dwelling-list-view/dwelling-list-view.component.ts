@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
-import { CommonDwellingService } from '../../service/common-dwellings.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
@@ -11,13 +10,15 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { Subject, takeUntil, catchError, of as observableOf, merge, startWith, switchMap } from 'rxjs';
 import { ChipComponent, Chip } from 'src/app/common/standalone-components/chip/chip.component';
-import { QueryFilter } from '../../model/query-filter';
-import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
 import { EntranceListViewFilterComponent } from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
-import { DwellingFilter } from '../../model/dwelling';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonEntranceService } from '../../service/common-entrance.service';
 import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwelling-list-view-filter.component';
+import { CommonEntranceService } from '../../../service/common-entrance.service';
+import { DwellingFilter } from '../../../model/dwelling';
+import { QueryFilter } from '../../../model/query-filter';
+import { CommonDwellingService } from '../../../service/common-dwellings.service';
+import { CommonBuildingRegisterHelper } from '../../../service/common-helper.service';
+import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -25,7 +26,7 @@ import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwe
   styleUrls: ['./dwelling-list-view.component.css'],
   standalone: true,
   providers: [CommonDwellingService, CommonEntranceService],
-  imports: [MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
+  imports: [MatIconModule, MatDialogModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() buildingGlobalId?: string;
@@ -100,11 +101,11 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     if (this.buildingGlobalId || this.buildingIdQueryParam) {
       merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        takeUntil(this.subscriber),
-        switchMap(() => this.loadDwellings()),
-      )
-      .subscribe((res) => this.handleResponse(res));
+        .pipe(
+          takeUntil(this.subscriber),
+          switchMap(() => this.loadDwellings()),
+        )
+        .subscribe((res) => this.handleResponse(res));
       return;
     }
     merge(this.sort.sortChange, this.paginator.page)
@@ -146,7 +147,10 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   viewDwellingDetails(globalId: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/dwelling/details/' + globalId);
+    this.matDialog.open(DwellingDetailsComponent, {
+      data: globalId
+    });
+    // this.router.navigateByUrl('/dashboard/buildings-register/dwelling/details/' + globalId);
   }
 
   private handlePopupClose(newFilterConfig: DwellingFilter | null) {
@@ -238,15 +242,19 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     })
       .pipe(takeUntil(this.subscriber))
       .subscribe((res => {
-        const condition = res.data.features
-          .map((feature: any) => feature.attributes)
-          .reduce((currentValue: string[], item: any) => {
-            currentValue.push(`'${item.GlobalID.replace('{', '').replace('}', '')}'`);
-            return currentValue;
-          }, [])
-          .join(', ');
-        this.filterConfig.filter.fk_entrance = `(${condition})`;
-        this.reload();
+        if (res.data.count) {
+          const condition = res.data.features
+            .map((feature: any) => feature.attributes)
+            .reduce((currentValue: string[], item: any) => {
+              currentValue.push(`'${item.GlobalID.replace('{', '').replace('}', '')}'`);
+              return currentValue;
+            }, [])
+            .join(', ');
+          this.filterConfig.filter.fk_entrance = `(${condition})`;
+          this.reload();
+        } else {
+          this.isLoadingResults = false;
+        }
       }));
   }
 

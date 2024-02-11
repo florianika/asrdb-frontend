@@ -145,15 +145,15 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   viewBuildingDetails(globalId: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/details/' + globalId);
+    this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + globalId);
   }
 
   viewEntrances(globalId: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/entrance?building=' + globalId);
+    // this.router.navigateByUrl('/dashboard/buildings-register/entrance?building=' + globalId);
   }
 
   viewDwellings(globalId: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/dwelling?building=' + globalId);
+    // this.router.navigateByUrl('/dashboard/buildings-register/dwelling?building=' + globalId);
   }
 
   addNewBuilding() {

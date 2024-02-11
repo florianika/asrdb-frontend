@@ -1,15 +1,27 @@
-import { Component, OnInit, isDevMode } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, isDevMode } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
-import { QueryFilter } from 'src/app/dashboard/buildings-register/common/model/query-filter';
-import { CommonDwellingService } from 'src/app/dashboard/buildings-register/common/service/common-dwellings.service';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/buildings-register/common/service/common-helper.service';
+import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
+import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
+import { CommonDwellingService } from 'src/app/dashboard/register/service/common-dwellings.service';
+import { CommonBuildingRegisterHelper } from 'src/app/dashboard/register/service/common-helper.service';
 
 @Component({
   selector: 'asrdb-dwelling-details',
   templateUrl: './dwelling-details.component.html',
-  styleUrls: ['./dwelling-details.component.css']
+  styleUrls: ['./dwelling-details.component.css'],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatCardModule,
+    MatButtonModule,
+    BuildingDetailComponent
+  ],
+  standalone: true
 })
 export class DwellingDetailsComponent implements OnInit {
   isLoadingResults = true;
@@ -127,10 +139,15 @@ export class DwellingDetailsComponent implements OnInit {
   private fields: any[] = [];
   private id: string | null = '';
 
-  constructor(private commonEntranceService: CommonDwellingService, private commonBuildingRegisterHelper: CommonBuildingRegisterHelper, private matSnack: MatSnackBar, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private commonEntranceService: CommonDwellingService,
+    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private matSnack: MatSnackBar,
+    @Inject(MAT_DIALOG_DATA) public data: string) {
+      this.id = this.data;
+    }
 
   ngOnInit(): void {
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.loadDwelling().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
   }
 

@@ -1,14 +1,10 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { Subject, merge, takeUntil, startWith, switchMap, catchError, of as observableOf } from 'rxjs';
 import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
-import { QueryFilter } from '../../model/query-filter';
-import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonEntranceService } from '../../service/common-entrance.service';
-import { EntranceFilter } from '../../model/entrance';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +12,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { EntranceListViewFilterComponent } from './entrance-list-view-filter/entrance-list-view-filter.component';
+import { EntranceFilter } from '../../../model/entrance';
+import { QueryFilter } from '../../../model/query-filter';
+import { CommonEntranceService } from '../../../service/common-entrance.service';
+import { CommonBuildingRegisterHelper } from '../../../service/common-helper.service';
+import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
 
 @Component({
   selector: 'asrdb-entrance-list-view',
@@ -23,7 +24,7 @@ import { EntranceListViewFilterComponent } from './entrance-list-view-filter/ent
   styleUrls: ['./entrance-list-view.component.css'],
   standalone: true,
   providers: [CommonEntranceService],
-  imports: [MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
+  imports: [MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, MatDialogModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() buildingGlobalId?: string;
@@ -126,11 +127,14 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   viewEntranceDetails(globalId: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/entrance/details/' + globalId);
+    this.matDialog.open(EntranceDetailsComponent, {
+      data: globalId
+    });
   }
 
   viewDwellings(globalId: string) {
-    this.router.navigateByUrl('/dashboard/buildings-register/dwelling?entrance=' + globalId);
+    // TODO: Should emit entrance id -> load only dwellings for entrance
+    // this.router.navigateByUrl('/dashboard/buildings-register/dwelling?entrance=' + globalId);
   }
 
   private handlePopupClose(newFilterConfig: EntranceFilter | null) {

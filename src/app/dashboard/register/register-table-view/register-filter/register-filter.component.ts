@@ -2,12 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { BuildingFilter } from 'src/app/dashboard/buildings-register/common/model/building';
+import { BuildingFilter } from '../../model/building';
 
 @Component({
   selector: 'asrdb-building-list-view-filter',

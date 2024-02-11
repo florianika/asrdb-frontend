@@ -1,4 +1,5 @@
-<div *ngIf="!isLoadingResults" class="building-details-container">
+<h2 mat-dialog-title>Install Angular</h2>
+<mat-dialog-content *ngIf="!isLoadingResults" class="building-details-container mat-typography" style="color: initial; margin: 10px;">
   <mat-card class="building-details-card">
     <mat-card-content>
       <h2 class="details-header" i18n>Details for building: {{entrance.GlobalID}}</h2>
@@ -25,4 +26,7 @@
       </div>
     </mat-card-content>
   </mat-card>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

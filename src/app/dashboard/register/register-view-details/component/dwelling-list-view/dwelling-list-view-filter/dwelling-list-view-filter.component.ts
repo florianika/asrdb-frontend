@@ -1,26 +1,26 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EntranceFilter } from '../../../model/entrance';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { DwellingFilter } from 'src/app/dashboard/register/model/dwelling';
 
 @Component({
-  selector: 'asrdb-entrance-list-view-filter',
+  selector: 'asrdb-dwelling-list-view-filter',
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatSelectModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
-  templateUrl: './entrance-list-view-filter.component.html',
-  styleUrls: ['./entrance-list-view-filter.component.css']
+  templateUrl: './dwelling-list-view-filter.component.html',
+  styleUrls: ['./dwelling-list-view-filter.component.css']
 })
-export class EntranceListViewFilterComponent {
+export class DwellingListViewFilterComponent {
 
-  filterConfig: EntranceFilter;
+  filterConfig: DwellingFilter;
   showBuildingIdFilter: boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {filter: EntranceFilter, showBuildingIdFilter: boolean}) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {filter: DwellingFilter, showBuildingIdFilter: boolean}) {
     this.filterConfig = data.filter;
     this.showBuildingIdFilter = data.showBuildingIdFilter;
   }

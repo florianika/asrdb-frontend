@@ -10,10 +10,10 @@ import WebMap from '@arcgis/core/WebMap';
 import MapView from '@arcgis/core/views/MapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import Popup from '@arcgis/core/widgets/Popup';
-import { CommonEsriAuthService } from 'src/app/dashboard/buildings-register/common/service/common-esri-auth.service';
-import { CommonBuildingService } from 'src/app/dashboard/buildings-register/common/service/common-building.service';
-import { CommonEntranceService } from 'src/app/dashboard/buildings-register/common/service/common-entrance.service';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
+import { CommonBuildingService } from 'src/app/dashboard/register/service/common-building.service';
+import { CommonEntranceService } from 'src/app/dashboard/register/service/common-entrance.service';
+import { CommonEsriAuthService } from 'src/app/dashboard/register/service/common-esri-auth.service';
 
 @Component({
   selector: 'asrdb-map',
