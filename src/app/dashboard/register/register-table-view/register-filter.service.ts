@@ -33,6 +33,12 @@ export class RegisterFilterService {
   constructor(private commonBuildingRegisterHelper: CommonBuildingRegisterHelper) {
   }
 
+  setBuildingGlobalIdFilter(globalId: string) {
+    const filterValue = JSON.parse(JSON.stringify(this.filter.getValue()));
+    filterValue.filter.GlobalID = globalId;
+    this.filter.next(filterValue);
+  }
+
   updateGlobalIds(globalIds: string[]) {
     this.globalIds.next(globalIds);
   }

@@ -9,6 +9,7 @@ import WebMap from '@arcgis/core/WebMap';
 import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
+import { RegisterFilterService } from '../register-filter.service';
 
 @Injectable()
 export class RegisterMapService {
@@ -18,6 +19,7 @@ export class RegisterMapService {
   constructor(
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
+    private registerFilterService: RegisterFilterService,
     private esriAuthService: CommonEsriAuthService) {
       this.bldlayer = this.buildingService.bldLayer;
       this.entlayer = this.entranceService.entLayer;
@@ -87,12 +89,20 @@ export class RegisterMapService {
         position: 'top-left'
       });
     });
-    view.on('click', function() {
+
+    view.on('click', () => {
       // event is the event handle returned after the event fires.
       setTimeout(() => {
-        console.log(view.popup.features);
+        console.log(view.popup.selectedFeature);
+        if (!view.popup.selectedFeature) {
+          this.registerFilterService.setBuildingGlobalIdFilter('');
+          return;
+        }
+        const globalId = view.popup.selectedFeature.attributes['GlobalID'];
+        this.registerFilterService.setBuildingGlobalIdFilter(globalId);
       }, 100);
     });
+
     await view.whenLayerView(this.bldlayer);
     view.goTo(this.bldlayer.fullExtent);
 
