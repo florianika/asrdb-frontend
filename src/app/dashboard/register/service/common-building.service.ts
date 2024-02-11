@@ -114,23 +114,31 @@ export class CommonBuildingService {
     this.httpClient.post(addFeatureLayerURL, feature);
   }
 
-  private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any} | null> {
-    const query = this.bldLayer.createQuery();
-    query.start = filter?.start ?? 0;
-    query.num = filter?.num ?? 5;
-    query.where = filter?.where ?? '1=1';
-    query.outFields = filter?.outFields ?? ['*'];
-    query.returnGeometry = false;
-    query.orderByFields = filter?.orderByFields ?? ['BldStatus'];
-    query.outStatistics = [];
+  private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any, globalIds: string[]} | null> {
+    const dataQuery = this.bldLayer.createQuery();
+    dataQuery.start = filter?.start ?? 0;
+    dataQuery.num = filter?.num ?? 5;
+    dataQuery.where = filter?.where ?? '1=1';
+    dataQuery.outFields = filter?.outFields ?? ['*'];
+    dataQuery.returnGeometry = false;
+    dataQuery.orderByFields = filter?.orderByFields ?? ['BldStatus'];
+    dataQuery.outStatistics = [];
+
+    const globalIdQuery = this.bldLayer.createQuery();
+    globalIdQuery.where = filter?.where ?? '1=1';
+    globalIdQuery.outFields = ['GlobalID'];
+    globalIdQuery.returnGeometry = false;
+    globalIdQuery.outStatistics = [];
 
     try {
-      const featureCount = await this.bldLayer.queryFeatureCount(query);
-      const features = await (await this.bldLayer.queryFeatures(query)).toJSON();
+      const featureCount = await this.bldLayer.queryFeatureCount(dataQuery);
+      const features = await (await this.bldLayer.queryFeatures(dataQuery)).toJSON();
+      const globalIds = (await (await this.bldLayer.queryFeatures(globalIdQuery)).toJSON()).features.map((o: any) => o.attributes['GlobalID']);
 
       return {
         count: featureCount,
-        data: features
+        data: features,
+        globalIds
       };
     } catch (e) {
       console.log(e);

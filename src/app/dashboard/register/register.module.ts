@@ -24,6 +24,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { CommonBuildingRegisterHelper } from './service/common-helper.service';
+import { RegisterFilterService } from './register-table-view/register-filter.service';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { CommonBuildingRegisterHelper } from './service/common-helper.service';
     CommonDwellingService,
     CommonEsriAuthService,
     CommonBuildingRegisterHelper,
+    RegisterFilterService
   ]
 })
 export class RegisterModule { }

@@ -15,9 +15,4 @@ import { RegisterTableComponent } from './register-table/register-table.componen
   styleUrls: ['./register-table-view.component.css']
 })
 export class RegisterTableViewComponent {
-  public whereExpression = '';
-
-  setWhereExpression($event: string) {
-    this.whereExpression = $event;
-  }
 }

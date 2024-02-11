@@ -3,7 +3,9 @@
     <h1 i18n class="header-title">Building Register</h1>
 
     <div class="spacer"></div>
-
+    <button mat-icon-button (click)="addNewBuilding()" [disabled]="isLoadingResults">
+      <mat-icon style="cursor: pointer;">add</mat-icon>
+    </button>
     <button mat-icon-button (click)="openFilter()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
     </button>
@@ -13,7 +15,7 @@
   </div>
 
   <div style="padding: 0px 10px;">
-    <asrdb-chip (remove)="remove($event)" [chips]="filterChips"></asrdb-chip>
+    <asrdb-chip (remove)="remove($event)" [chips]="filterChips" [clearable]="true"></asrdb-chip>
   </div>
 
   <div class="asrbd-loading-shade" *ngIf="isLoadingResults">
@@ -59,8 +61,13 @@
           <mat-menu #menu="matMenu">
             <button mat-menu-item i18n (click)="viewBuildingDetails(element.GlobalID)"><mat-icon>apartment</mat-icon>
               View building details</button>
-            <button mat-menu-item i18n (click)="viewEntrances(element.GlobalID)"><mat-icon>directions_walk</mat-icon> View entrances</button>
-            <button mat-menu-item i18n (click)="viewDwellings(element.GlobalID)"><mat-icon>meeting_room</mat-icon> View dwellings</button>
+            <button mat-menu-item i18n (click)="viewBuildingDetails(element.GlobalID)"><mat-icon>edit</mat-icon>
+              Edit building details</button>
+              <mat-divider></mat-divider>
+            <button mat-menu-item i18n (click)="viewEntrances(element.GlobalID)"><mat-icon>directions_walk</mat-icon>
+              View entrances</button>
+            <button mat-menu-item i18n (click)="viewDwellings(element.GlobalID)"><mat-icon>meeting_room</mat-icon> View
+              dwellings</button>
           </mat-menu>
         </td>
       </ng-container>

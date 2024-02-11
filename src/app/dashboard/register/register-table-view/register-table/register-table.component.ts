@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnDestroy, Output, ViewChild, isDevMode } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -16,6 +16,8 @@ import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
 import { Router } from '@angular/router';
 import { RegisterFilterComponent } from '../register-filter/register-filter.component';
+import { RegisterFilterService } from '../register-filter.service';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'asrdb-register-table',
@@ -31,22 +33,23 @@ import { RegisterFilterComponent } from '../register-filter/register-filter.comp
     MatIconModule,
     MatDialogModule,
     ChipComponent,
+    MatDividerModule
   ],
   templateUrl: './register-table.component.html',
-  styleUrls: ['./register-table.component.css']
+  styleUrls: ['./register-table.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegisterTableComponent implements AfterViewInit, OnDestroy {
+export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  @Output() filter = new EventEmitter();
-
   private columns = ['GlobalID', 'BldMunicipality', 'BldStatus', 'BldType', 'BldFloorsAbove', 'BldEntranceRecs', 'BldDwellingRecs'];
   private subscriber = new Subject();
+  private initialized = false;
 
   displayedColumns: string[] = this.columns.concat(['actions']);
-  data: any[] = [];
-  fields: any[] = [];
+  data: never[] = [];
+  fields: never[] = [];
   resultsLength = 0;
   isLoadingResults = true;
 
@@ -74,8 +77,24 @@ export class RegisterTableComponent implements AfterViewInit, OnDestroy {
   constructor(
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private registerFilterService: RegisterFilterService,
     private matDialog: MatDialog,
+    private changeDetectionRef: ChangeDetectorRef,
     private router: Router) {
+  }
+
+  ngOnInit(): void {
+    this.registerFilterService.filterObservable.subscribe((filter) => {
+      if (JSON.stringify(filter) == JSON.stringify(this.filterConfig)) {
+        return;
+      }
+      this.filterConfig = filter;
+      if (!this.initialized) {
+        this.initialized = true;
+        return;
+      }
+      this.reload();
+    });
   }
 
   ngAfterViewInit() {
@@ -120,8 +139,9 @@ export class RegisterTableComponent implements AfterViewInit, OnDestroy {
   }
 
   remove($event: Chip) {
-    (this.filterConfig.filter as any)[$event.column] = '';
-    this.reload();
+    const filterCopy = JSON.parse(JSON.stringify(this.filterConfig));
+    (filterCopy as any).filter[$event.column] = '';
+    this.registerFilterService.updateFilter(filterCopy);
   }
 
   viewBuildingDetails(globalId: string) {
@@ -136,27 +156,14 @@ export class RegisterTableComponent implements AfterViewInit, OnDestroy {
     this.router.navigateByUrl('/dashboard/buildings-register/dwelling?building=' + globalId);
   }
 
+  addNewBuilding() {
+    console.log();
+  }
+
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
     if (newFilterConfig) {
-      this.filterConfig = newFilterConfig;
-      this.reload();
+      this.registerFilterService.updateFilter(newFilterConfig);
     }
-  }
-
-  private prepareWhereCase() {
-    const conditions: string[] = [];
-    Object
-      .entries(this.filterConfig.filter)
-      .filter(([, value]) => !!value)
-      .map(([key, value]) => ({ column: key, value } as Chip))
-      .forEach(filter => {
-        conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
-      });
-    return conditions.length ? conditions.join(' and ') : '1=1';
-  }
-
-  private getWhereConditionValue(value: string | number) {
-    return (typeof value == 'number') ? value : `'${value}'`;
   }
 
   private loadBuildings() {
@@ -165,12 +172,11 @@ export class RegisterTableComponent implements AfterViewInit, OnDestroy {
       start: this.paginator.pageIndex * this.paginator.pageSize,
       num: this.paginator.pageSize,
       outFields: this.columns,
-      where: this.prepareWhereCase()
+      where: this.registerFilterService.prepareWhereCase()
     } as Partial<QueryFilter>;
     if (this.sort.active) {
       filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
-    this.filter.emit(filter.where);
     return this.commonBuildingService.getBuildingData(filter).pipe(catchError((err) => {
       console.log(err);
       return of(null);
@@ -190,30 +196,10 @@ export class RegisterTableComponent implements AfterViewInit, OnDestroy {
     this.resultsLength = res.count;
     this.data = res.data.features.map((feature: any) => feature.attributes);
     this.isLoadingResults = false;
-    this.prepareFilter();
-  }
-
-  private prepareFilter() {
-    this.filterConfig = {
-      ...this.filterConfig,
-      options: {
-        BldMunicipality: this.getOptions('BldMunicipality').length ? this.getOptions('BldMunicipality') : this.filterConfig.options.BldMunicipality,
-        BldStatus: this.getOptions('BldStatus').length ? this.getOptions('BldStatus') : this.filterConfig.options.BldStatus,
-        BldType: this.getOptions('BldType').length ? this.getOptions('BldType') : this.filterConfig.options.BldType,
-      }
-    };
-  }
-
-  private getOptions(column: string) {
-    const field = this.commonBuildingRegisterHelper.getField(this.fields, column);
-    if (!field) {
-      return [];
+    this.registerFilterService.updateGlobalIds(res.globalIds);
+    if (!this.initialized) {
+      this.registerFilterService.prepareFilter(this.fields);
     }
-    return field.domain?.codedValues?.map((codeValue: { name: string, code: string }) => {
-      return {
-        name: codeValue.name,
-        code: codeValue.code,
-      };
-    });
+    this.changeDetectionRef.markForCheck();
   }
 }

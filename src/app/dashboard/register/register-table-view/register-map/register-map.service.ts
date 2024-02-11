@@ -1,6 +1,5 @@
 import { ElementRef, Injectable } from '@angular/core';
 
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
@@ -24,7 +23,7 @@ export class RegisterMapService {
       this.entlayer = this.entranceService.entLayer;
     }
 
-  async init(mapViewEl: ElementRef): Promise<MapView> {
+  async init(mapViewEl: ElementRef, enableEdditing: boolean): Promise<MapView> {
     const container = mapViewEl.nativeElement;
     const graphicsLayer = new GraphicsLayer();
 
@@ -59,31 +58,40 @@ export class RegisterMapService {
 
     view.when(() => {
       // const centerPoint = this.view?.center.clone();
-      const sketch = new Sketch({
-        layer: graphicsLayer,
-        view: view,
-        // graphic will be selected as soon as it is created
-        creationMode: 'update',
-      });
+      if (enableEdditing) {
+        const sketch = new Sketch({
+          layer: graphicsLayer,
+          view: view,
+          // graphic will be selected as soon as it is created
+          creationMode: 'update',
+        });
 
-      sketch.on('create', (event) => {
-        if (event.state === 'complete') {
-          console.log(event.graphic.geometry.toJSON());
-        }
-      });
+        sketch.on('create', (event) => {
+          if (event.state === 'complete') {
+            console.log(event.graphic.geometry.toJSON());
+          }
+        });
 
-      sketch.on('update', (event) => {
-        if (event.state === 'complete') {
-          console.log(event.graphics[0].geometry.toJSON());
-        }
-      });
+        sketch.on('update', (event) => {
+          if (event.state === 'complete') {
+            console.log(event.graphics[0].geometry.toJSON());
+          }
+        });
 
-      view.ui.add(sketch, 'top-right');
-      view?.popup.set('dockOptions', {
+        view.ui.add(sketch, 'top-right');
+      }
+
+      view.popup.set('dockOptions', {
         breakpoint: false,
         buttonEnabled: false,
         position: 'top-left'
       });
+    });
+    view.on('click', function() {
+      // event is the event handle returned after the event fires.
+      setTimeout(() => {
+        console.log(view.popup.features);
+      }, 100);
     });
     await view.whenLayerView(this.bldlayer);
     view.goTo(this.bldlayer.fullExtent);
@@ -91,8 +99,20 @@ export class RegisterMapService {
     return view;
   }
 
-  async filterData(view: MapView, whereCondition: string) {
+  async filterBuildingData(view: MapView, whereCondition: string) {
+    if (!view) {
+      return;
+    }
     (await view.whenLayerView(this.bldlayer)).filter = new FeatureFilter({
+      where: whereCondition,
+    });
+  }
+
+  async filterEntranceData(view: MapView, whereCondition: string) {
+    if (!view) {
+      return;
+    }
+    (await view.whenLayerView(this.entlayer)).filter = new FeatureFilter({
       where: whereCondition,
     });
   }
