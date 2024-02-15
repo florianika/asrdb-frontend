@@ -109,9 +109,24 @@ export class CommonBuildingService {
     return defer(() => from(this.fetchBuildingData(filter)));
   }
 
+  getAttributesMetadata() {
+    return defer(() => from(this.fetchAttributesMetadata()));
+  }
+
   createFeature(feature: any) {
     const addFeatureLayerURL = this.bldLayer.url + 'addFeatures';
     this.httpClient.post(addFeatureLayerURL, feature);
+  }
+
+  private async fetchAttributesMetadata() {
+    const dataQuery = this.bldLayer.createQuery();
+    dataQuery.start = 0;
+    dataQuery.num = 1;
+    dataQuery.outFields = ['*'];
+    dataQuery.outStatistics = [];
+    dataQuery.returnGeometry = false;
+    const features = await (await this.bldLayer.queryFeatures(dataQuery)).toJSON();
+    return features.fields;
   }
 
   private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any, globalIds: string[]} | null> {

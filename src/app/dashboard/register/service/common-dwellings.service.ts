@@ -9,7 +9,7 @@ import { CommonEsriAuthService } from './common-esri-auth.service';
 })
 export class CommonDwellingService {
 
-  get entLayer(): FeatureLayer {
+  get dwlLayer(): FeatureLayer {
     return new FeatureLayer({
       title: 'ASRDB Dwellings',
       url: 'https://gislab.teamdev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/2',
@@ -32,8 +32,24 @@ export class CommonDwellingService {
     return defer(() => from(this.fetchDwellingsData(filter)));
   }
 
+  getAttributesMetadata() {
+    return defer(() => from(this.fetchAttributesMetadata()));
+  }
+
+  private async fetchAttributesMetadata() {
+    const dataQuery = this.dwlLayer.createQuery();
+    dataQuery.start = 0;
+    dataQuery.num = 1;
+    dataQuery.outFields = ['*'];
+    dataQuery.where = '1=1';
+    dataQuery.returnGeometry = false;
+    dataQuery.outStatistics = [];
+    const features = await (await this.dwlLayer.queryFeatures(dataQuery)).toJSON();
+    return features.fields;
+  }
+
   private async fetchDwellingsData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any} | null> {
-    const query = this.entLayer.createQuery();
+    const query = this.dwlLayer.createQuery();
     query.start = filter?.start ?? 0;
     query.num = filter?.num ?? 5;
     query.where = filter?.where ?? '1=1';
@@ -43,8 +59,8 @@ export class CommonDwellingService {
     query.outStatistics = [];
 
     try {
-      const featureCount = await this.entLayer.queryFeatureCount(query);
-      const features = await (await this.entLayer.queryFeatures(query)).toJSON();
+      const featureCount = await this.dwlLayer.queryFeatureCount(query);
+      const features = await (await this.dwlLayer.queryFeatures(query)).toJSON();
 
       return {
         count: featureCount,

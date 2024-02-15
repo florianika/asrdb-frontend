@@ -1,0 +1,35 @@
+<mat-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="buildingPolly">
+    <ng-template matStepLabel i18n>Building pollygon</ng-template>
+    <asrdb-building-creation [formGroup]="buildingPolly"></asrdb-building-creation>
+    <div style="margin-top: 20px;">
+      <button mat-button matStepperNext i18n>Next</button>
+    </div>
+  </mat-step>
+  <!-- <mat-step [stepControl]="entrancePoint">
+    <ng-template matStepLabel i18n>Entrance position</ng-template>
+    <asrdb-entrance-creation [formGroup]="entrancePoint"></asrdb-entrance-creation>
+    <div>
+      <button mat-button matStepperPrevious i18n>Back</button>
+      <button mat-button matStepperNext i18n>Next</button>
+    </div>
+  </mat-step> -->
+  <mat-step [stepControl]="buildingDetails">
+    <ng-template matStepLabel i18n>Building details</ng-template>
+    <asrdb-building-details-form [formGroup]="buildingDetails"></asrdb-building-details-form>
+    <div>
+      <button mat-button matStepperPrevious i18n>Back</button>
+      <button mat-button matStepperNext i18n>Next</button>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]="entranceDetails">
+    <ng-template matStepLabel i18n>Entrance details</ng-template>
+    <asrdb-entrance-details-form [formGroup]="entranceDetails"></asrdb-entrance-details-form>
+    <div class="quality-action-button">
+      <button mat-button matStepperPrevious i18n [disabled]="isSaving | async">Back</button>
+      <button mat-button color="warn" (click)="reset(stepper)" i18n [disabled]="isSaving | async">Reset</button>
+      <span></span>
+      <button mat-raised-button color="primary" (click)="save()" i18n [disabled]="isSaving | async">Save</button>
+    </div>
+  </mat-step>
+</mat-stepper>

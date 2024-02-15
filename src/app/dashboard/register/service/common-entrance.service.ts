@@ -32,6 +32,21 @@ export class CommonEntranceService {
     return defer(() => from(this.fetchEntranceData(filter)));
   }
 
+  getAttributesMetadata() {
+    return defer(() => from(this.fetchAttributesMetadata()));
+  }
+
+  private async fetchAttributesMetadata() {
+    const dataQuery = this.entLayer.createQuery();
+    dataQuery.start = 0;
+    dataQuery.num = 1;
+    dataQuery.outFields = ['*'];
+    dataQuery.outStatistics = [];
+    dataQuery.returnGeometry = false;
+    const features = await (await this.entLayer.queryFeatures(dataQuery)).toJSON();
+    return features.fields;
+  }
+
   private async fetchEntranceData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any} | null> {
     const query = this.entLayer.createQuery();
     query.start = filter?.start ?? 0;

@@ -157,7 +157,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   addNewBuilding() {
-    console.log();
+    this.router.navigateByUrl('/dashboard/register/form');
   }
 
   filterBuilding(GlobalID: string) {

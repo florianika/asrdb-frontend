@@ -37,16 +37,16 @@ export class AuthStateService implements OnDestroy {
   }
 
   logout() {
-    this.httpClient.post(environment.base_url + this.SIGNOUT_URL, {
-      'UserId': this.getNameId()
-    }).pipe(takeUntil(this.subscription)).subscribe({
-      next: () => {
-        this.logoutUser();
-      },
-      error: () => {
-        this.logoutUser();
-      }
-    });
+    // this.httpClient.post(environment.base_url + this.SIGNOUT_URL, {
+    //   'UserId': this.getNameId()
+    // }).pipe(takeUntil(this.subscription)).subscribe({
+    //   next: () => {
+    //     this.logoutUser();
+    //   },
+    //   error: () => {
+    //     this.logoutUser();
+    //   }
+    // });
   }
 
   refreshToken() {
