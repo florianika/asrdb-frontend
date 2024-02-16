@@ -33,7 +33,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     this.mapService.valueChanged.subscribe((value) => {
       if (value.rings) {
         this.formGroup.patchValue({
-          buildingPolly: value.rings
+          buildingPoly: value.rings
         });
       } else if (value.x && value.y) {
         const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: {x: number, y: number}) => mp.x !== value.x && mp.y !== value.y);
@@ -51,7 +51,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     this.mapService.valueDeleted.subscribe((value) => {
       if (value.rings) {
         this.formGroup.patchValue({
-          buildingPolly: null
+          buildingPoly: null
         });
       } else if (value.x && value.y) {
         const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: {x: number, y: number}) => mp.x !== value.x && mp.y !== value.y);

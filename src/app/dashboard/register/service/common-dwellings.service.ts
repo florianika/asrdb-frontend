@@ -3,6 +3,7 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import { Observable, defer, from } from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class CommonDwellingService {
   get dwlLayer(): FeatureLayer {
     return new FeatureLayer({
       title: 'ASRDB Dwellings',
-      url: 'https://gislab.teamdev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/2',
+      url: environment.dwelling_url,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,

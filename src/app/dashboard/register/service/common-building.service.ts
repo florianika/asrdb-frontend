@@ -4,6 +4,7 @@ import { Observable, defer, from } from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +52,7 @@ export class CommonBuildingService {
   get bldLayer(): FeatureLayer {
     return new FeatureLayer({
       title: 'ASRDB Buildings',
-      url: 'https://gislab.teamdev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/1',
+      url: environment.building_url,
       outFields: ['*'],
       renderer: {
         type: 'unique-value', // autocasts as new UniqueValueRenderer()
@@ -113,9 +114,9 @@ export class CommonBuildingService {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
 
-  createFeature(feature: any) {
-    const addFeatureLayerURL = this.bldLayer.url + 'addFeatures';
-    this.httpClient.post(addFeatureLayerURL, feature);
+  createFeature(features: any) {
+    const addFeatureLayerURL = this.bldLayer.url + '/addFeatures';
+    return this.httpClient.post(addFeatureLayerURL, { features });
   }
 
   private async fetchAttributesMetadata() {
@@ -129,7 +130,7 @@ export class CommonBuildingService {
     return features.fields;
   }
 
-  private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any, globalIds: string[]} | null> {
+  private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<{ count: number, data: any, globalIds: string[] } | null> {
     const dataQuery = this.bldLayer.createQuery();
     dataQuery.start = filter?.start ?? 0;
     dataQuery.num = filter?.num ?? 5;

@@ -1,2 +1,4 @@
 <div #mapViewNode></div>
-<mat-error *ngIf="formGroup.controls['buildingPolly']?.invalid" i18n>Please draw the building to continue!</mat-error>
+<mat-error *ngIf="formGroup.controls['buildingPoly']?.invalid" i18n>Please draw the building to continue!</mat-error>
+<br>
+<mat-error *ngIf="formGroup.controls['mapPoint']?.invalid" i18n>Please draw at least one entrance point to continue!</mat-error>
