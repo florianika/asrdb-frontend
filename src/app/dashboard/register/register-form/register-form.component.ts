@@ -47,11 +47,7 @@ export class RegisterFormComponent implements OnInit{
 
   buildingPolly = new FormGroup({
     buildingPolly: new FormControl(null, [Validators.required]),
-    mapPoint: new FormControl(null, [Validators.required])
-  });
-
-  entrancePoint = new FormGroup({
-    mapPoint: new FormControl(null, [Validators.required])
+    mapPoint: new FormControl([], [Validators.required])
   });
 
   buildingDetails = new FormGroup({

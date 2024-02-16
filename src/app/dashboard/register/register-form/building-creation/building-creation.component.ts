@@ -36,11 +36,27 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           buildingPolly: value.rings
         });
       } else if (value.x && value.y) {
+        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: {x: number, y: number}) => mp.x !== value.x && mp.y !== value.y);
+        currentMapPoint.push({
+          x: value.x,
+          y: value.y
+        });
         this.formGroup.patchValue({
-          mapPoint: {
-            x: value.x,
-            y: value.y
-          }
+          mapPoint: currentMapPoint
+        });
+      }
+      console.log(this.formGroup.value);
+    });
+
+    this.mapService.valueDeleted.subscribe((value) => {
+      if (value.rings) {
+        this.formGroup.patchValue({
+          buildingPolly: null
+        });
+      } else if (value.x && value.y) {
+        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: {x: number, y: number}) => mp.x !== value.x && mp.y !== value.y);
+        this.formGroup.patchValue({
+          mapPoint: currentMapPoint
         });
       }
       console.log(this.formGroup.value);

@@ -13,6 +13,11 @@ export class EntityCreationMapService {
     return this.valueUpdate.asObservable();
   }
 
+  private valueDelete = new Subject<{rings: [number[]], x: number, y: number}>();
+  get valueDeleted() {
+    return this.valueDelete.asObservable();
+  }
+
   constructor(private esriAuthService: CommonEsriAuthService) {
 
   }
@@ -67,6 +72,11 @@ export class EntityCreationMapService {
           console.log(event.graphics[0].geometry.toJSON());
           this.valueUpdate.next(event.graphics[0].geometry.toJSON());
         }
+      });
+
+      sketch.on('delete', (event) => {
+        console.log(event.graphics[0].geometry.toJSON());
+        this.valueDelete.next(event.graphics[0].geometry.toJSON());
       });
 
       view.ui.add(sketch, 'top-right');
