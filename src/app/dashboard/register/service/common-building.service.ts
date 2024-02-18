@@ -126,6 +126,17 @@ export class CommonBuildingService {
     });
   }
 
+  updateFeature(features: any): Observable<EntityCreateResponse> {
+    const addFeatureLayerURL = environment.building_url
+    + '/updateFeatures?token='
+    + this.esriAuthService.getTokenForResource(environment.building_url);
+    return this.httpClient.post<EntityCreateResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
   private async fetchAttributesMetadata() {
     const dataQuery = this.bldLayer.createQuery();
     dataQuery.start = 0;

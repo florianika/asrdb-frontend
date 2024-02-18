@@ -12,6 +12,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Point from '@arcgis/core/geometry/Point';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class EntityCreationMapService {
@@ -25,12 +26,15 @@ export class EntityCreationMapService {
     return this.valueDelete.asObservable();
   }
 
-  constructor(private esriAuthService: CommonEsriAuthService, private commonBuildingService: CommonBuildingService) {
-
+  constructor(
+    private esriAuthService: CommonEsriAuthService,
+    private matSnackBar: MatSnackBar
+  ) {
   }
 
   public async initBuildingCreationmap(mapViewEl: ElementRef, editingGeometry?: any[]) {
-    return this.init(mapViewEl, ['polygon', 'point'], editingGeometry);
+    const availableCreateTools = editingGeometry ? ['point'] : ['polygon', 'point'];
+    return this.init(mapViewEl, availableCreateTools, editingGeometry);
   }
 
   private async init(mapViewEl: ElementRef, availableTools: string[], editingGeometry?: any[]): Promise<MapView> {
@@ -62,6 +66,18 @@ export class EntityCreationMapService {
         // graphic will be selected as soon as it is created
         creationMode: 'update',
         availableCreateTools: availableTools,
+        defaultUpdateOptions: {
+          multipleSelectionEnabled: false,
+        },
+        visibleElements: {
+          duplicateButton: false,
+          undoRedoMenu: false,
+          selectionTools: {
+            'rectangle-selection': false,
+            'lasso-selection': false
+          },
+          settingsMenu: false
+        }
       });
 
       // TODO: Clear handlers
@@ -84,6 +100,20 @@ export class EntityCreationMapService {
 
   private registerDeleteEvent(sketch: Sketch) {
     sketch.on('delete', (event) => {
+      if (event.graphics[0].attributes.id.toString().startsWith('{')) {
+        // stop the delete by adding back the graphic in the layer
+        setTimeout(() => {
+          this.addExistingGraphics([{
+            ...event.graphics[0].geometry.toJSON(),
+            id: event.graphics[0].attributes.id,
+            type: event.graphics[0].geometry.toJSON().rings ? 'polygon' : 'point'
+          }], sketch.layer);
+        }, 100);
+        this.matSnackBar.open('You cannot delete already existing entities!', 'Ok', {
+          duration: 3000
+        });
+        return;
+      }
       console.log(event.graphics[0].geometry.toJSON());
       this.valueDelete.next({
         ...event.graphics[0].geometry.toJSON(),
@@ -112,7 +142,7 @@ export class EntityCreationMapService {
       if (event.state === 'complete') {
         console.log(event.graphic.geometry.toJSON());
 
-        const id = event.graphic.geometry.type === 'polygon' ? null : Math.random();
+        const id = event.graphic.geometry.type === 'polygon' ? null : ('New (' + Math.random() + ')');
         this.valueUpdate.next({
           ...event.graphic.geometry.toJSON(),
           id: id
@@ -143,20 +173,20 @@ export class EntityCreationMapService {
         });
 
       const symbol = g.type === 'point'
-      ? new SimpleMarkerSymbol({
-        style: 'circle',
-        outline: {
-          width: '1px'
-        },
-        size: 6,
-        color: 'white'
-      })
-      : new SimpleFillSymbol({
-        style: 'forward-diagonal',
-        outline: {
-          width: '3px'
-        }
-      });
+        ? new SimpleMarkerSymbol({
+          style: 'circle',
+          outline: {
+            width: '1px'
+          },
+          size: 6,
+          color: 'white'
+        })
+        : new SimpleFillSymbol({
+          style: 'forward-diagonal',
+          outline: {
+            width: '3px'
+          }
+        });
       const graphic = new Graphic({
         geometry,
         symbol,

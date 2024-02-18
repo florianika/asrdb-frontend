@@ -39,7 +39,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
       'buildingPoly', new FormControl(this.existingBuildingGeometry ? this.existingBuildingGeometry.rings : null, [Validators.required])
     );
     this.formGroup.addControl(
-      'mapPoint', new FormControl(this.existingEntrancesGeometry
+      'entrancePoints', new FormControl(this.existingEntrancesGeometry
         ? this.existingEntrancesGeometry.map(o => ({
           x: o.x,
           y: o.y,
@@ -60,14 +60,14 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           buildingPoly: value.rings
         });
       } else if (value.x && value.y) {
-        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: Point) => mp.id !== value.id);
+        const currentMapPoint = this.formGroup.value.entrancePoints.filter((mp: Point) => mp.id !== value.id);
         currentMapPoint.push({
           x: value.x,
           y: value.y,
           id: value.id
         });
         this.formGroup.patchValue({
-          mapPoint: currentMapPoint
+          entrancePoints: currentMapPoint
         });
       }
       if (isDevMode()) {
@@ -81,9 +81,9 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           buildingPoly: null
         });
       } else if (value.x && value.y) {
-        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: Point) => mp.id !== value.id);
+        const currentMapPoint = this.formGroup.value.entrancePoints.filter((mp: Point) => mp.id !== value.id);
         this.formGroup.patchValue({
-          mapPoint: currentMapPoint
+          entrancePoints: currentMapPoint
         });
       }
       if (isDevMode()) {

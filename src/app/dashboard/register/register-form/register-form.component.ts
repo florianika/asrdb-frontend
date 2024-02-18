@@ -7,16 +7,17 @@ import { BuildingDetailsFormComponent } from './building-details-form/building-d
 import { EntranceDetailsFormComponent } from './entrance-details-form/entrance-details-form.component';
 import { CommonBuildingService } from '../service/common-building.service';
 import { CommonEntranceService } from '../service/common-entrance.service';
-import { Subject, takeUntil, zip } from 'rxjs';
+import { Subject, map, takeUntil, zip } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { EntityManagementService } from './entity-creation.service';
-import { DEFAULR_SPARTIAL_REF, MapFormData } from '../model/map-data';
+import { BuildingManagementService } from './building-creation.service';
+import { MapFormData } from '../model/map-data';
 import { Building } from '../model/building';
 import { Entrance } from '../model/entrance';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import Geometry from '@arcgis/core/geometry/Geometry';
+import { EntranceManagementService } from './entrance-creation.service';
 
 @Component({
   selector: 'asrdb-register-form',
@@ -32,23 +33,40 @@ import Geometry from '@arcgis/core/geometry/Geometry';
     MatIconModule,
     MatSnackBarModule
   ],
-  providers: [EntityManagementService],
+  providers: [BuildingManagementService, EntranceManagementService],
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css']
 })
 export class RegisterFormComponent implements OnInit {
-  isSaving = this.entityManagementService.isSavingObservable;
+  private isSavingBuilding = this.entityManagementService.isSavingObservable;
+  private isSavingEntrance = this.entityManagementService.isSavingObservable;
+
+  isSaving = zip([this.isSavingBuilding, this.isSavingEntrance])
+    .pipe(
+      map(([isSavingBuilding, isSavingEntrance]) => {
+        return isSavingBuilding && isSavingEntrance;
+      })
+    );
+
   isLoadingData = true;
+
   buildingId?: string;
   existingBuildingDetails?: Building;
   existingBuildingGeometry?: Geometry;
   existingEntrancesDetails?: Entrance[];
   existingEntrancesGeometry?: Geometry[];
 
+
+  mapDetails = new FormGroup({});
+  buildingDetails = new FormGroup({});
+  entranceDetails = new FormGroup({});
+
+  entranceIds: string[] = [];
+
   private subscriber = new Subject();
 
   constructor(
-    private entityManagementService: EntityManagementService,
+    private entityManagementService: BuildingManagementService,
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
     private activatedRoute: ActivatedRoute,
@@ -67,10 +85,10 @@ export class RegisterFormComponent implements OnInit {
 
       zip([getBuildingRequest, getEntranceRequest]).subscribe(([building, entrances]) => {
         this.existingBuildingDetails = building.data.features[0].attributes;
-        this.existingBuildingGeometry = {...building.data.features[0].geometry, type: 'polygon', id: this.buildingId};
+        this.existingBuildingGeometry = { ...building.data.features[0].geometry, type: 'polygon', id: this.buildingId };
 
         this.existingEntrancesDetails = entrances.data.features.map((featrue: any) => featrue.attributes);
-        this.existingEntrancesGeometry = entrances.data.features.map((featrue: any) => ({...featrue.geometry, type: 'point', id: featrue.attributes.OBJECTID}));
+        this.existingEntrancesGeometry = entrances.data.features.map((featrue: any) => ({ ...featrue.geometry, type: 'point', id: featrue.attributes.GlobalID }));
         this.isLoadingData = false;
       });
     } else {
@@ -78,9 +96,15 @@ export class RegisterFormComponent implements OnInit {
     }
   }
 
-  mapDetails = new FormGroup({});
-  buildingDetails = new FormGroup({});
-  entranceDetails = new FormGroup({});
+  setEntranceIds() {
+    this.entranceIds = (this.mapDetails.value as MapFormData).entrancePoints.map(o => o.id.toString());
+  }
+
+  onSelectionChanged(index: number) {
+    if (index !== 0) {
+      this.setEntranceIds();
+    }
+  }
 
   save() {
     if (this.mapDetails.invalid || this.buildingDetails.invalid || this.entranceDetails.invalid) {
@@ -90,9 +114,27 @@ export class RegisterFormComponent implements OnInit {
       this.mapDetails.markAllAsTouched();
       this.buildingDetails.markAllAsTouched();
       this.entranceDetails.markAllAsTouched();
+      return;
     }
-    this.entityManagementService.createBuildingEntity(this.mapDetails.value as MapFormData,
+
+    const entrancesDetails = this.entranceDetails.value;
+    const entrances: Entrance[] = [];
+    this.entranceIds.forEach(id => {
+      const entrance = {} as any;
+      Object.entries(entrancesDetails).forEach(([key, value]: [string, any]) => {
+        if (key.includes(id)) {
+          const entranceKey = key.replace(id + '_', '');
+          entrance[entranceKey] = value;
+        }
+      });
+      if (!id.startsWith('{')) { // new element
+        entrance['GlobalId'] = id; // This value will be deleted later on when request is being send
+      }
+      entrances.push(entrance);
+    });
+
+    this.entityManagementService.saveBuilding(this.mapDetails.value as MapFormData,
       this.buildingDetails.value as Building,
-      this.entranceDetails.value as Entrance);
+      entrances as Entrance[]);
   }
 }
