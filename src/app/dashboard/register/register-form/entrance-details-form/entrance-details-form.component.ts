@@ -7,6 +7,7 @@ import { CommonEntranceService } from '../../service/common-entrance.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Entrance } from '../../model/entrance';
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -24,6 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   @Input() formGroup!: FormGroup;
+  @Input() existingEntrancesDetails?: Entrance[];
   private onDestroy = new Subject();
 
   formStructure: FormObject[] = [];

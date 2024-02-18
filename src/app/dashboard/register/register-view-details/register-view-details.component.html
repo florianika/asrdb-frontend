@@ -1,6 +1,9 @@
 <div *ngIf="!isLoadingResults" class="building-details-container">
   <mat-card class="building-details-card">
     <mat-card-content>
+      <button mat-icon-button style="float: right;" (click)="editBuilding(building.GlobalID)">
+        <mat-icon>edit</mat-icon>
+      </button>
       <h2 class="details-header" i18n>Details for building: {{building.GlobalID}}</h2>
       <span class="details-subheader" i18n>Quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
       <section *ngFor="let section of sections">

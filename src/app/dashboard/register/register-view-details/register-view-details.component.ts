@@ -1,15 +1,17 @@
-import { Component, isDevMode } from '@angular/core';
+import { Component, OnDestroy, OnInit, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { BuildingDetailComponent } from './component/building-detail/building-detail.component';
 import { EntranceListViewComponent } from './component/entrance-list-view/entrance-list-view.component';
 import { DwellingListViewComponent } from './component/dwelling-list-view/dwelling-list-view.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonBuildingService } from '../service/common-building.service';
 import { CommonRegisterHelperService } from '../service/common-helper.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -17,6 +19,8 @@ import { CommonRegisterHelperService } from '../service/common-helper.service';
   imports: [
     CommonModule,
     MatCardModule,
+    MatButtonModule,
+    MatIconModule,
     BuildingDetailComponent,
     EntranceListViewComponent,
     DwellingListViewComponent
@@ -24,7 +28,7 @@ import { CommonRegisterHelperService } from '../service/common-helper.service';
   templateUrl: './register-view-details.component.html',
   styleUrls: ['./register-view-details.component.css']
 })
-export class RegisterViewDetailsComponent {
+export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   isLoadingResults = true;
   building: any;
 
@@ -199,11 +203,16 @@ export class RegisterViewDetailsComponent {
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matSnack: MatSnackBar,
+    private router: Router,
     private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+  }
+  ngOnDestroy(): void {
+    this.subscriber.next(true);
+    this.subscriber.complete();
   }
 
   getTitle(column: string) {
@@ -216,6 +225,10 @@ export class RegisterViewDetailsComponent {
 
   getValueFromStatus(column: string) {
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.building[column]) ?? 'Unknown';
+  }
+
+  editBuilding(globalId: string) {
+    this.router.navigateByUrl('dashboard/register/form/' + globalId);
   }
 
   private prepareWhereCase() {

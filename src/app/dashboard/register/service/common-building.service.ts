@@ -143,7 +143,7 @@ export class CommonBuildingService {
     dataQuery.num = filter?.num ?? 5;
     dataQuery.where = filter?.where ?? '1=1';
     dataQuery.outFields = filter?.outFields ?? ['*'];
-    dataQuery.returnGeometry = false;
+    dataQuery.returnGeometry = filter?.returnGeometry ?? false;
     dataQuery.orderByFields = filter?.orderByFields ?? ['BldStatus'];
     dataQuery.outStatistics = [];
 

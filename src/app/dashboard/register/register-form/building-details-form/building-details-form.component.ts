@@ -8,6 +8,7 @@ import { CommonBuildingService } from '../../service/common-building.service';
 import { Subject } from 'rxjs';
 import { CommonRegisterHelperService } from '../../service/common-helper.service';
 import { FormObject, getFormObjectOptions, getFormObjectType } from '../../model/form-object';
+import { Building } from '../../model/building';
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -25,6 +26,8 @@ import { FormObject, getFormObjectOptions, getFormObjectType } from '../../model
 export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   @Input() formGroup!: FormGroup;
+  @Input() existingBuildingDetails?: Building;
+
   private onDestroy = new Subject();
 
   formStructure: FormObject[] = [];
@@ -57,14 +60,17 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   private createFormControlForField(field: never) {
-    const control = new FormControl(field['defaultValue'] ?? '');
+    const fieldName = field['name'];
+    const value = (this.existingBuildingDetails as any)?.[fieldName];
+    const defaultValue = field['defaultValue'] ?? '';
+    const control = new FormControl(value ? value : defaultValue);
     if (!field['nullable']) {
       control.addValidators(Validators.required);
     }
     if (field['length']) {
       control.addValidators(Validators.maxLength(field['length']));
     }
-    this.formGroup.addControl(field['name'], control);
+    this.formGroup.addControl(fieldName, control);
   }
 
   ngOnDestroy(): void {

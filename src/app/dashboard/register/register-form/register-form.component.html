@@ -1,14 +1,14 @@
-<mat-stepper [linear]="true" #stepper>
+<mat-stepper [linear]="true" #stepper *ngIf="!isLoadingData">
   <mat-step [stepControl]="mapDetails">
     <ng-template matStepLabel i18n>Building pollygon</ng-template>
-    <asrdb-building-creation [formGroup]="mapDetails"></asrdb-building-creation>
+    <asrdb-building-creation [formGroup]="mapDetails" [existingBuildingGeometry]="existingBuildingGeometry" [existingEntrancesGeometry]="existingEntrancesGeometry"></asrdb-building-creation>
     <div style="margin-top: 20px;">
       <button mat-flat-button color="primary" matStepperNext i18n>Next <mat-icon iconPositionEnd>navigate_next</mat-icon></button>
     </div>
   </mat-step>
   <mat-step [stepControl]="buildingDetails">
     <ng-template matStepLabel i18n>Building details</ng-template>
-    <asrdb-building-details-form [formGroup]="buildingDetails"></asrdb-building-details-form>
+    <asrdb-building-details-form [formGroup]="buildingDetails" [existingBuildingDetails]="existingBuildingDetails"></asrdb-building-details-form>
     <div>
       <button mat-flat-button matStepperPrevious i18n>Back <mat-icon iconPositionBefore>navigate_before</mat-icon></button>
       <button mat-flat-button color="primary" matStepperNext i18n>Next <mat-icon iconPositionEnd>navigate_next</mat-icon></button>
@@ -16,7 +16,7 @@
   </mat-step>
   <mat-step [stepControl]="entranceDetails">
     <ng-template matStepLabel i18n>Entrance details</ng-template>
-    <asrdb-entrance-details-form [formGroup]="entranceDetails"></asrdb-entrance-details-form>
+    <asrdb-entrance-details-form [formGroup]="entranceDetails" [existingEntrancesDetails]="existingEntrancesDetails"></asrdb-entrance-details-form>
     <div class="quality-action-button">
       <button mat-flat-button matStepperPrevious i18n [disabled]="isSaving | async">Back <mat-icon iconPositionBefore>navigate_before</mat-icon></button>
       <span></span>

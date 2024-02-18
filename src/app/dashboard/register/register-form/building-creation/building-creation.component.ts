@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import MapView from '@arcgis/core/views/MapView';
 import { RegisterFilterService } from '../../register-table-view/register-filter.service';
@@ -7,6 +7,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Point } from '../../model/map-data';
+import Geometry from '@arcgis/core/geometry/Geometry';
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -22,6 +23,9 @@ import { Point } from '../../model/map-data';
 })
 export class BuildingCreationComponent implements OnInit, OnDestroy {
   @Input() formGroup!: FormGroup;
+  @Input() existingBuildingGeometry?: any;
+  @Input() existingEntrancesGeometry?: any[];
+
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
 
@@ -32,10 +36,17 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
       this.formGroup = new FormGroup({});
     }
     this.formGroup.addControl(
-      'buildingPoly', new FormControl(null, [Validators.required])
+      'buildingPoly', new FormControl(this.existingBuildingGeometry ? this.existingBuildingGeometry.rings : null, [Validators.required])
     );
     this.formGroup.addControl(
-      'mapPoint', new FormControl([], [Validators.required, Validators.minLength(1)])
+      'mapPoint', new FormControl(this.existingEntrancesGeometry
+        ? this.existingEntrancesGeometry.map(o => ({
+          x: o.x,
+          y: o.y,
+          id: o.id
+        }))
+        : [],
+        [Validators.required, Validators.minLength(1)])
     );
 
     // Initialize MapView and return an instance of MapView
@@ -49,16 +60,19 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           buildingPoly: value.rings
         });
       } else if (value.x && value.y) {
-        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: Point) => mp.x !== value.x && mp.y !== value.y);
+        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: Point) => mp.id !== value.id);
         currentMapPoint.push({
           x: value.x,
-          y: value.y
+          y: value.y,
+          id: value.id
         });
         this.formGroup.patchValue({
           mapPoint: currentMapPoint
         });
       }
-      console.log(this.formGroup.value);
+      if (isDevMode()) {
+        console.log(this.formGroup.value);
+      }
     });
 
     this.mapService.valueDeleted.subscribe((value) => {
@@ -67,12 +81,14 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           buildingPoly: null
         });
       } else if (value.x && value.y) {
-        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: Point) => mp.x !== value.x && mp.y !== value.y);
+        const currentMapPoint = this.formGroup.value.mapPoint.filter((mp: Point) => mp.id !== value.id);
         this.formGroup.patchValue({
           mapPoint: currentMapPoint
         });
       }
-      console.log(this.formGroup.value);
+      if (isDevMode()) {
+        console.log(this.formGroup.value);
+      }
     });
   }
 
@@ -84,6 +100,13 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
   }
 
   async initializeMap(): Promise<any> {
-    this.view = await this.mapService.initBuildingCreationmap(this.mapViewEl);
+    const editingGeometry = [];
+    if (this.existingBuildingGeometry) {
+      editingGeometry.push(this.existingBuildingGeometry);
+    }
+    if (this.existingEntrancesGeometry) {
+      this.existingEntrancesGeometry.forEach(el => editingGeometry.push(el));
+    }
+    this.view = await this.mapService.initBuildingCreationmap(this.mapViewEl, editingGeometry);
   }
 }

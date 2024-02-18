@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommonBuildingService } from '../service/common-building.service';
 import { CommonEntranceService } from '../service/common-entrance.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MapFormData, Point, Ring } from '../model/map-data';
+import { DEFAULR_SPARTIAL_REF, MapFormData, Point, Ring } from '../model/map-data';
 import { Building } from '../model/building';
 import { Entrance } from '../model/entrance';
 import { EntityCreateResponse } from '../model/entity-req-res';
@@ -51,10 +51,7 @@ export class EntityManagementService {
       {
         'geometry': {
           rings: geometry,
-          spatialReference: {
-            'latestWkid': 3857,
-            'wkid': 102100
-          }
+          spatialReference: DEFAULR_SPARTIAL_REF
         },
         'attributes': cleanedAttributes
       },
@@ -70,10 +67,7 @@ export class EntityManagementService {
         'geometry': {
           'x': point.x,
           'y': point.y,
-          spatialReference: {
-            'latestWkid': 3857,
-            'wkid': 102100
-          }
+          spatialReference: DEFAULR_SPARTIAL_REF
         },
         'attributes': attributes
       });

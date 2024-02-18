@@ -67,7 +67,7 @@ export class CommonEntranceService {
     query.num = filter?.num ?? 5;
     query.where = filter?.where ?? '1=1';
     query.outFields = filter?.outFields ?? ['*'];
-    query.returnGeometry = false;
+    query.returnGeometry = filter?.returnGeometry ?? false;
     query.orderByFields = filter?.orderByFields ?? ['EntBuildingNumber'];
     query.outStatistics = [];
 
