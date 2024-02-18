@@ -4,6 +4,8 @@ import { Observable, defer, from } from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
 import { environment } from 'src/environments/environment';
+import { EntityCreateResponse } from '../model/entity-req-res';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +28,7 @@ export class CommonEntranceService {
     });
   }
 
-  constructor(private esriAuthService: CommonEsriAuthService) {
+  constructor(private esriAuthService: CommonEsriAuthService, private httpClient: HttpClient) {
   }
 
   getEntranceData(filter?: Partial<QueryFilter>): Observable<any> {
@@ -35,6 +37,17 @@ export class CommonEntranceService {
 
   getAttributesMetadata() {
     return defer(() => from(this.fetchAttributesMetadata()));
+  }
+
+  createFeature(features: any[]): Observable<EntityCreateResponse> {
+    const addFeatureLayerURL = environment.entrance_url
+    + '/addFeatures?token='
+    + this.esriAuthService.getTokenForResource(environment.entrance_url);
+    return this.httpClient.post<EntityCreateResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   private async fetchAttributesMetadata() {

@@ -6,15 +6,16 @@ import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
 import { Subject } from 'rxjs';
 import { CommonBuildingService } from '../service/common-building.service';
+import { MapData, Point, Ring } from '../model/map-data';
 
 @Injectable()
 export class EntityCreationMapService {
-  private valueUpdate = new Subject<{ rings: [number[]], x: number, y: number }>();
+  private valueUpdate = new Subject<MapData>();
   get valueChanged() {
     return this.valueUpdate.asObservable();
   }
 
-  private valueDelete = new Subject<{ rings: [number[]], x: number, y: number }>();
+  private valueDelete = new Subject<MapData>();
   get valueDeleted() {
     return this.valueDelete.asObservable();
   }
@@ -29,41 +30,6 @@ export class EntityCreationMapService {
 
   public async initEntranceCreationMap(mapViewEl: ElementRef) {
     return this.init(mapViewEl, ['point']);
-  }
-
-  public async createBuilding(geometry: [number[]], attributes: object) {
-    const features = [ //TODO: Where to put this?
-      {
-        'geometry': {
-          rings: geometry,
-          spatialReference: {
-            'latestWkid': 3857,
-            'wkid': 102100
-          }
-        },
-        'attributes': attributes
-      },
-    ];
-    this.commonBuildingService.createFeature(features).subscribe(response => {
-      console.log(response);
-    });
-  }
-
-  public async createEntrance(geometry: { x: number, y: number }[], attributes: object) {
-    const features = [];
-    geometry.forEach(point => {
-      features.push({
-        'geometry': {
-          'x': point.x,
-          'y': point.y,
-          spatialReference: {
-            'latestWkid': 3857,
-            'wkid': 102100
-          }
-        },
-        'attributes': attributes
-      });
-    });
   }
 
   private async init(mapViewEl: ElementRef, availableTools: string[]): Promise<MapView> {

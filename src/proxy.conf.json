@@ -1,4 +1,10 @@
 {
+  "*/addFeatures": {
+    "target": "https://gislab.teamdev.it",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "*/**": {
     "target": "http://35.240.32.51:9999",
     "secure": false,

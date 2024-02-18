@@ -5,6 +5,7 @@ import { QueryFilter } from '../model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { EntityCreateResponse } from '../model/entity-req-res';
 
 @Injectable({
   providedIn: 'root'
@@ -114,9 +115,15 @@ export class CommonBuildingService {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
 
-  createFeature(features: any) {
-    const addFeatureLayerURL = this.bldLayer.url + '/addFeatures';
-    return this.httpClient.post(addFeatureLayerURL, { features });
+  createFeature(features: any): Observable<EntityCreateResponse> {
+    const addFeatureLayerURL = environment.building_url
+    + '/addFeatures?token='
+    + this.esriAuthService.getTokenForResource(environment.building_url);
+    return this.httpClient.post<EntityCreateResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   private async fetchAttributesMetadata() {

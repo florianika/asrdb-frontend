@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonBuildingService } from '../service/common-building.service';
-import { CommonBuildingRegisterHelper } from '../service/common-helper.service';
+import { CommonRegisterHelperService } from '../service/common-helper.service';
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -197,7 +197,7 @@ export class RegisterViewDetailsComponent {
 
   constructor(
     private commonBuildingService: CommonBuildingService,
-    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matSnack: MatSnackBar,
     private activatedRoute: ActivatedRoute) {}
 

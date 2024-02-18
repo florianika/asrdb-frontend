@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BuildingFilter } from '../model/building';
-import { CommonBuildingRegisterHelper } from '../service/common-helper.service';
+import { CommonRegisterHelperService } from '../service/common-helper.service';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { BehaviorSubject } from 'rxjs';
 
@@ -30,7 +30,7 @@ export class RegisterFilterService {
 
   private fields: never[] = [];
 
-  constructor(private commonBuildingRegisterHelper: CommonBuildingRegisterHelper) {
+  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService) {
   }
 
   setBuildingGlobalIdFilter(globalId: string) {

@@ -17,7 +17,7 @@ import { CommonEntranceService } from '../../../service/common-entrance.service'
 import { DwellingFilter } from '../../../model/dwelling';
 import { QueryFilter } from '../../../model/query-filter';
 import { CommonDwellingService } from '../../../service/common-dwellings.service';
-import { CommonBuildingRegisterHelper } from '../../../service/common-helper.service';
+import { CommonRegisterHelperService } from '../../../service/common-helper.service';
 import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
 
 @Component({
@@ -72,7 +72,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   constructor(
     private commonDwellingBuildingService: CommonDwellingService,
     private commonEntranceBuildingService: CommonEntranceService,
-    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
     private router: Router,
     private activatedRoute: ActivatedRoute) {

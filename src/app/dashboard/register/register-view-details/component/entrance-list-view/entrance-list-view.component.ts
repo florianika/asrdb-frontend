@@ -15,7 +15,7 @@ import { EntranceListViewFilterComponent } from './entrance-list-view-filter/ent
 import { EntranceFilter } from '../../../model/entrance';
 import { QueryFilter } from '../../../model/query-filter';
 import { CommonEntranceService } from '../../../service/common-entrance.service';
-import { CommonBuildingRegisterHelper } from '../../../service/common-helper.service';
+import { CommonRegisterHelperService } from '../../../service/common-helper.service';
 import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
 
 @Component({
@@ -65,7 +65,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   constructor(
     private commonEntranceBuildingService: CommonEntranceService,
-    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
     private router: Router,
     private activatedRoute: ActivatedRoute) {

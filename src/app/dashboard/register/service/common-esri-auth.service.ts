@@ -6,6 +6,33 @@ import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs/internal/Subject';
 
+type Credential = {
+  'userId': string;
+  'server': string;
+  'token': string;
+  'expires': number;
+  'validity': number;
+  'ssl': boolean;
+  'creationTime': number;
+  'scope': string;
+  'resources': string[];
+};
+
+type ServerInfo = {
+  'adminTokenServiceUrl': string;
+  'currentVersion': number;
+  'hasServer': boolean;
+  'owningSystemUrl': string;
+  'server': string;
+  'tokenServiceUrl': string;
+};
+
+type Credentials = {
+  'serverInfos': ServerInfo[],
+  'oAuthInfos': [],
+  'credentials': Credential[]
+}
+
 @Injectable()
 export class CommonEsriAuthService implements OnDestroy {
   private ESRI_AUTH_KEY = 'ESRI-AUTH';
@@ -27,6 +54,16 @@ export class CommonEsriAuthService implements OnDestroy {
   ngOnDestroy(): void {
     this.subscription.next(true);
     this.subscription.complete();
+  }
+
+  getTokenForResource(url: string): string {
+    const credentials = localStorage.getItem(this.ESRI_AUTH_KEY);
+    if (credentials) {
+      const parsedCredentials: Credentials = JSON.parse(credentials);
+      const credential = parsedCredentials.credentials.find((c) => c.resources.includes(url));
+      return credential ? credential.token : '';
+    }
+    return '';
   }
 
   private inizializeAuth(): void {

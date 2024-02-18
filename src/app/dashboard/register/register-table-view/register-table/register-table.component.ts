@@ -13,7 +13,7 @@ import { Subject, merge, takeUntil, startWith, switchMap, catchError, of } from 
 import { BuildingFilter } from '../../model/building';
 import { QueryFilter } from '../../model/query-filter';
 import { CommonBuildingService } from '../../service/common-building.service';
-import { CommonBuildingRegisterHelper } from '../../service/common-helper.service';
+import { CommonRegisterHelperService } from '../../service/common-helper.service';
 import { Router } from '@angular/router';
 import { RegisterFilterComponent } from '../register-filter/register-filter.component';
 import { RegisterFilterService } from '../register-filter.service';
@@ -76,7 +76,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   constructor(
     private commonBuildingService: CommonBuildingService,
-    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
     private matDialog: MatDialog,
     private changeDetectionRef: ChangeDetectorRef,

@@ -6,7 +6,7 @@ import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
 import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
 import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
 import { CommonEntranceService } from 'src/app/dashboard/register/service/common-entrance.service';
-import { CommonBuildingRegisterHelper } from 'src/app/dashboard/register/service/common-helper.service';
+import { CommonRegisterHelperService } from 'src/app/dashboard/register/service/common-helper.service';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -101,7 +101,7 @@ export class EntranceDetailsComponent implements OnInit {
 
   constructor(
     private commonEntranceService: CommonEntranceService,
-    private commonBuildingRegisterHelper: CommonBuildingRegisterHelper,
+    private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matSnack: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: string) {
       this.id = this.data;

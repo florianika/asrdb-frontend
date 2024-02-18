@@ -1,35 +1,26 @@
 <mat-stepper [linear]="true" #stepper>
-  <mat-step [stepControl]="buildingPoly">
+  <mat-step [stepControl]="mapDetails">
     <ng-template matStepLabel i18n>Building pollygon</ng-template>
-    <asrdb-building-creation [formGroup]="buildingPoly"></asrdb-building-creation>
+    <asrdb-building-creation [formGroup]="mapDetails"></asrdb-building-creation>
     <div style="margin-top: 20px;">
-      <button mat-button matStepperNext i18n>Next</button>
+      <button mat-flat-button color="primary" matStepperNext i18n>Next <mat-icon iconPositionEnd>navigate_next</mat-icon></button>
     </div>
   </mat-step>
-  <!-- <mat-step [stepControl]="entrancePoint">
-    <ng-template matStepLabel i18n>Entrance position</ng-template>
-    <asrdb-entrance-creation [formGroup]="entrancePoint"></asrdb-entrance-creation>
-    <div>
-      <button mat-button matStepperPrevious i18n>Back</button>
-      <button mat-button matStepperNext i18n>Next</button>
-    </div>
-  </mat-step> -->
   <mat-step [stepControl]="buildingDetails">
     <ng-template matStepLabel i18n>Building details</ng-template>
     <asrdb-building-details-form [formGroup]="buildingDetails"></asrdb-building-details-form>
     <div>
-      <button mat-button matStepperPrevious i18n>Back</button>
-      <button mat-button matStepperNext i18n>Next</button>
+      <button mat-flat-button matStepperPrevious i18n>Back <mat-icon iconPositionBefore>navigate_before</mat-icon></button>
+      <button mat-flat-button color="primary" matStepperNext i18n>Next <mat-icon iconPositionEnd>navigate_next</mat-icon></button>
     </div>
   </mat-step>
   <mat-step [stepControl]="entranceDetails">
     <ng-template matStepLabel i18n>Entrance details</ng-template>
     <asrdb-entrance-details-form [formGroup]="entranceDetails"></asrdb-entrance-details-form>
     <div class="quality-action-button">
-      <button mat-button matStepperPrevious i18n [disabled]="isSaving | async">Back</button>
-      <button mat-button color="warn" (click)="reset(stepper)" i18n [disabled]="isSaving | async">Reset</button>
+      <button mat-flat-button matStepperPrevious i18n [disabled]="isSaving | async">Back <mat-icon iconPositionBefore>navigate_before</mat-icon></button>
       <span></span>
-      <button mat-raised-button color="primary" (click)="save()" i18n [disabled]="isSaving | async">Save</button>
+      <button mat-flat-button color="primary" (click)="save()" style="float: right;" i18n [disabled]="isSaving | async">Save changes</button>
     </div>
   </mat-step>
 </mat-stepper>

@@ -16,7 +16,7 @@ import { CommonBuildingService } from './service/common-building.service';
 import { CommonEntranceService } from './service/common-entrance.service';
 import { CommonDwellingService } from './service/common-dwellings.service';
 import { CommonEsriAuthService } from './service/common-esri-auth.service';
-import { CommonBuildingRegisterHelper } from './service/common-helper.service';
+import { CommonRegisterHelperService } from './service/common-helper.service';
 import { RegisterFilterService } from './register-table-view/register-filter.service';
 
 
@@ -42,7 +42,7 @@ import { RegisterFilterService } from './register-table-view/register-filter.ser
     CommonEntranceService,
     CommonDwellingService,
     CommonEsriAuthService,
-    CommonBuildingRegisterHelper,
+    CommonRegisterHelperService,
     RegisterFilterService
   ]
 })

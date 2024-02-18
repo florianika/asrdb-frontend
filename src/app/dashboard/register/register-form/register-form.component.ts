@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatStepperModule } from '@angular/material/stepper';
 import { BuildingCreationComponent } from './building-creation/building-creation.component';
 import { BuildingDetailsFormComponent } from './building-details-form/building-details-form.component';
-import { EntranceCreationComponent } from './entrance-creation/entrance-creation.component';
 import { EntranceDetailsFormComponent } from './entrance-details-form/entrance-details-form.component';
 import { CommonBuildingService } from '../service/common-building.service';
 import { CommonEntranceService } from '../service/common-entrance.service';
 import { of } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { EntityManagementService } from './entity-creation.service';
+import { MapFormData } from '../model/map-data';
+import { Building } from '../model/building';
+import { Entrance } from '../model/entrance';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'asrdb-register-form',
@@ -20,49 +25,35 @@ import { MatButtonModule } from '@angular/material/button';
     MatStepperModule,
     BuildingCreationComponent,
     BuildingDetailsFormComponent,
-    EntranceCreationComponent,
     EntranceDetailsFormComponent,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule
   ],
+  providers: [EntityManagementService],
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css']
 })
-export class RegisterFormComponent implements OnInit{
-  isSaving = of(false);
-  constructor(private buildingService: CommonBuildingService, private entranceService: CommonEntranceService) {
+export class RegisterFormComponent {
+  isSaving = this.entityManagementService.isSavingObservable;
+  constructor(private entityManagementService: EntityManagementService, private matSnackBar: MatSnackBar) {
   }
 
-  ngOnInit(): void {
-    this.buildingService.getAttributesMetadata().subscribe((fileds: any[]) => {
-      fileds.forEach(field => {
-        this.buildingDetails.addControl(field.name, new FormControl());
-      });
-    });
-    this.entranceService.getAttributesMetadata().subscribe((fileds: any[]) => {
-      fileds.forEach(field => {
-        this.entranceDetails.addControl(field.name, new FormControl());
-      });
-    });
-  }
-
-  buildingPoly = new FormGroup({
-    buildingPoly: new FormControl(null, [Validators.required]),
-    mapPoint: new FormControl([], [Validators.required, Validators.minLength(1)])
-  });
-
-  buildingDetails = new FormGroup({
-
-  });
-
-  entranceDetails = new FormGroup({
-
-  });
-
-  reset(stepper: MatStepper) {
-    console.log(stepper);
-  }
+  mapDetails = new FormGroup({});
+  buildingDetails = new FormGroup({});
+  entranceDetails = new FormGroup({});
 
   save() {
-    console.log();
+    if (this.mapDetails.invalid || this.buildingDetails.invalid || this.entranceDetails.invalid) {
+      this.matSnackBar.open('Data cannot be saved. Please check the form for invalid data.', 'Ok', {
+        duration: 3000
+      });
+      this.mapDetails.markAllAsTouched();
+      this.buildingDetails.markAllAsTouched();
+      this.entranceDetails.markAllAsTouched();
+    }
+    this.entityManagementService.createBuildingEntity(this.mapDetails.value as MapFormData,
+      this.buildingDetails.value as Building,
+      this.entranceDetails.value as Entrance);
   }
 }
