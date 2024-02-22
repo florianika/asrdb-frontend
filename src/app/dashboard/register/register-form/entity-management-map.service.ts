@@ -33,7 +33,7 @@ export class EntityCreationMapService {
   }
 
   public async initBuildingCreationmap(mapViewEl: ElementRef, editingGeometry?: any[]) {
-    const availableCreateTools = editingGeometry ? ['point'] : ['polygon', 'point'];
+    const availableCreateTools = editingGeometry?.length ? ['point'] : ['polygon', 'point'];
     return this.init(mapViewEl, availableCreateTools, editingGeometry);
   }
 
