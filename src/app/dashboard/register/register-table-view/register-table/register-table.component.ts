@@ -148,12 +148,8 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + globalId);
   }
 
-  viewEntrances(globalId: string) {
-    // this.router.navigateByUrl('/dashboard/buildings-register/entrance?building=' + globalId);
-  }
-
-  viewDwellings(globalId: string) {
-    // this.router.navigateByUrl('/dashboard/buildings-register/dwelling?building=' + globalId);
+  editBuildingDetails(globalId: string) {
+    this.router.navigateByUrl('/dashboard/register/form/' + globalId);
   }
 
   addNewBuilding() {
@@ -164,6 +160,11 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     const filterCopy = JSON.parse(JSON.stringify(this.filterConfig));
     (filterCopy as any).filter['GlobalID'] = GlobalID;
     this.registerFilterService.updateFilter(filterCopy);
+  }
+
+  stopClickEventFiltering(event: Event) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
   }
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
