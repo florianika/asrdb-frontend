@@ -10,6 +10,7 @@ import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { RegisterFilterService } from '../register-filter.service';
+import TopFeaturesQuery from '@arcgis/core/rest/support/TopFeaturesQuery';
 
 @Injectable()
 export class RegisterMapService {
@@ -116,7 +117,10 @@ export class RegisterMapService {
     (await view.whenLayerView(this.bldlayer)).filter = new FeatureFilter({
       where: whereCondition,
     });
-    view.goTo(this.bldlayer.fullExtent);
+    const query = this.bldlayer.createQuery();
+    query.where = whereCondition;
+    const extend = await this.bldlayer.queryExtent(query);
+    view.goTo(extend.extent);
   }
 
   async filterEntranceData(view: MapView, whereCondition: string) {
