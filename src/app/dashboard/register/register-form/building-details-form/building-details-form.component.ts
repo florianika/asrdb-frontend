@@ -32,12 +32,23 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   formStructure: FormObject[] = [];
 
+  private readonly EDITABLE_PROP = 'editable';
+  private readonly ALIAS_PROP = 'alias';
+  private readonly DOMAIN_PROP = 'domain';
+  private readonly TYPE_PROP = 'type';
+  private readonly NAME_PROP = 'name';
+  private readonly LENGTH_PROP = 'length';
+  private readonly DEFAULT_VALUE_PROP = 'defaultValue';
+  private readonly NULLABLE_PROP = 'nullable';
+
+  private readonly HIDDEN_FIELDS = ['last_edited_user', 'last_edited_date', 'created_user', 'created_date', 'BldLatitude', 'BldLongitude'];
+
   constructor(private buildingService: CommonBuildingService) {
   }
 
   ngOnInit(): void {
     this.buildingService.getAttributesMetadata().subscribe((fields: never[]) => {
-      fields = fields.filter(field => field['editable'] && !['last_edited_user', 'last_edited_date', 'created_user', 'created_date'].includes(field['alias']));
+      fields = fields.filter(field => field[this.EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[this.ALIAS_PROP]));
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
@@ -49,26 +60,26 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   private createFormObject(field: never) {
-    const fieldType = field['domain'] ? 'select' : getFormObjectType(field['type'], field['length'] ?? 0);
-    const fieldOptions = getFormObjectOptions(fieldType, field['domain']);
+    const fieldType = field[this.DOMAIN_PROP] ? 'select' : getFormObjectType(field[this.TYPE_PROP], field[this.LENGTH_PROP] ?? 0);
+    const fieldOptions = getFormObjectOptions(fieldType, field[this.DOMAIN_PROP]);
     this.formStructure.push({
-      name: field['name'],
-      alias: field['alias'],
-      type: field['domain'] ? 'select' : getFormObjectType(field['type'], field['length'] ?? 0),
+      name: field[this.NAME_PROP],
+      alias: field[this.ALIAS_PROP],
+      type: field[this.DOMAIN_PROP] ? 'select' : getFormObjectType(field[this.TYPE_PROP], field[this.LENGTH_PROP] ?? 0),
       selectOptions: fieldOptions
     });
   }
 
   private createFormControlForField(field: never) {
-    const fieldName = field['name'];
+    const fieldName = field[this.NAME_PROP];
     const value = (this.existingBuildingDetails as any)?.[fieldName];
-    const defaultValue = field['defaultValue'] ?? '';
+    const defaultValue = field[this.DEFAULT_VALUE_PROP] ?? '';
     const control = new FormControl(value ? value : defaultValue);
-    if (!field['nullable']) {
+    if (!field[this.NULLABLE_PROP]) {
       control.addValidators(Validators.required);
     }
-    if (field['length']) {
-      control.addValidators(Validators.maxLength(field['length']));
+    if (field[this.LENGTH_PROP]) {
+      control.addValidators(Validators.maxLength(field[this.LENGTH_PROP]));
     }
     this.formGroup.addControl(fieldName, control);
   }

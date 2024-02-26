@@ -11,7 +11,7 @@ import { Subject, map, takeUntil, zip } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BuildingManagementService } from './building-creation.service';
-import { MapFormData } from '../model/map-data';
+import { Centroid, MapFormData } from '../model/map-data';
 import { Building } from '../model/building';
 import { Entrance } from '../model/entrance';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -104,6 +104,13 @@ export class RegisterFormComponent implements OnInit {
     if (index !== 0) {
       this.setEntranceIds();
     }
+  }
+
+  updateCentoid(centoid: Centroid) {
+    this.buildingDetails.patchValue({
+      BldLatitude: centoid.latitude,
+      BldLongitude: centoid.longitude
+    });
   }
 
   save() {

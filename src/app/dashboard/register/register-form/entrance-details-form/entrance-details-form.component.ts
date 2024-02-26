@@ -52,7 +52,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy, OnChange
     const previousValue = idsChanges.previousValue as string[];
     if (idsChanges) {
       const idsToAdd = currentValue.filter(id => !previousValue.includes(id));
-      const idsToRemove = previousValue.filter(id => !currentValue.includes(id));
+      const idsToRemove = previousValue?.filter(id => !currentValue.includes(id));
 
       idsToAdd.forEach(id => {
         this.fields.forEach(field => {
@@ -61,7 +61,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy, OnChange
         });
       });
 
-      idsToRemove.forEach(id => {
+      idsToRemove?.forEach(id => {
         this.removeFormControlFields(id);
         this.removeFormObjects(id);
       });

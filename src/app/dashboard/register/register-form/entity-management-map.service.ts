@@ -5,7 +5,6 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
 import { Subject } from 'rxjs';
-import { CommonBuildingService } from '../service/common-building.service';
 import { MapData } from '../model/map-data';
 import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
@@ -100,7 +99,7 @@ export class EntityCreationMapService {
 
   private registerDeleteEvent(sketch: Sketch) {
     sketch.on('delete', (event) => {
-      if (event.graphics[0].attributes.id.toString().startsWith('{')) {
+      if (event.graphics[0].attributes.id?.toString().startsWith('{')) {
         // stop the delete by adding back the graphic in the layer
         setTimeout(() => {
           this.addExistingGraphics([{
@@ -131,7 +130,8 @@ export class EntityCreationMapService {
         console.log(event.graphics[0].geometry.toJSON());
         this.valueUpdate.next({
           ...event.graphics[0].geometry.toJSON(),
-          id: event.graphics[0].attributes.id
+          id: event.graphics[0].attributes.id,
+          centroid: (event.graphics[0].geometry as any)['centroid']
         });
       }
     });
@@ -145,7 +145,8 @@ export class EntityCreationMapService {
         const id = event.graphic.geometry.type === 'polygon' ? null : ('New (' + Math.random() + ')');
         this.valueUpdate.next({
           ...event.graphic.geometry.toJSON(),
-          id: id
+          id: id,
+          centroid: (event.graphic.geometry as any)['centroid']
         });
         event.graphic.attributes = {
           id: id
@@ -160,6 +161,7 @@ export class EntityCreationMapService {
 
   private addExistingGraphics(editingGeometry: any[] | undefined, graphicsLayer: GraphicsLayer) {
     let mainGraphic: Graphic | null = null;
+
     editingGeometry?.forEach(g => {
       const geometry = g.type === 'point'
         ? new Point({
@@ -199,6 +201,25 @@ export class EntityCreationMapService {
       }
       graphicsLayer.add(graphic);
     });
+
     return mainGraphic;
+  }
+
+  private addCentoidPoint(graphic: Graphic, graphicsLayer: GraphicsLayer) {
+    const pointTest = new Graphic({
+      geometry: new Point({
+        x: graphic.geometry.extent.center.x,
+        y: graphic.geometry.extent.center.y
+      }),
+      symbol: new SimpleMarkerSymbol({
+        style: 'circle',
+        outline: {
+          width: '1px'
+        },
+        size: 6,
+        color: 'red'
+      })
+    });
+    graphicsLayer.add(pointTest);
   }
 }

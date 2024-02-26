@@ -2,13 +2,17 @@ export type MapData = {
   rings: Ring,
   x: number,
   y: number,
-  id: number | string
+  id?: number | string,
+  centroid?: Centroid
 };
 export type MapFormData = {
   buildingPoly: Ring,
   entrancePoints: Point[]
 };
-
+export type Centroid = {
+  latitude: number,
+  longitude: number
+};
 export type Ring = number[][];
 export type Point = {
   x: number,

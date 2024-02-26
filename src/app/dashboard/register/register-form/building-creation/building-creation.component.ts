@@ -1,13 +1,11 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import MapView from '@arcgis/core/views/MapView';
-import { RegisterFilterService } from '../../register-table-view/register-filter.service';
 import { EntityCreationMapService } from '../entity-management-map.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { Point } from '../../model/map-data';
-import Geometry from '@arcgis/core/geometry/Geometry';
+import { Centroid, Point } from '../../model/map-data';
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -25,11 +23,12 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
   @Input() formGroup!: FormGroup;
   @Input() existingBuildingGeometry?: any;
   @Input() existingEntrancesGeometry?: any[];
+  @Output() centoidUpdated = new EventEmitter<Centroid>();
 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
 
-  constructor(private mapService: EntityCreationMapService, private registerFilterService: RegisterFilterService) { }
+  constructor(private mapService: EntityCreationMapService) { }
 
   ngOnInit(): void {
     if (!this.formGroup) {
@@ -59,6 +58,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
         this.formGroup.patchValue({
           buildingPoly: value.rings
         });
+        this.centoidUpdated.emit(value.centroid);
       } else if (value.x && value.y) {
         const currentMapPoint = this.formGroup.value.entrancePoints.filter((mp: Point) => mp.id !== value.id);
         currentMapPoint.push({
