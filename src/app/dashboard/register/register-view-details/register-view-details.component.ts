@@ -12,6 +12,7 @@ import { CommonBuildingService } from '../service/common-building.service';
 import { CommonRegisterHelperService } from '../service/common-helper.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Entrance } from '../model/entrance';
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -194,6 +195,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       ]
     }
   ];
+  loadedEntrances: Entrance[] = [];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -229,6 +231,10 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   editBuilding(globalId: string) {
     this.router.navigateByUrl('dashboard/register/form/' + globalId);
+  }
+
+  setEntrances(entrances: Entrance[]) {
+    this.loadedEntrances = entrances;
   }
 
   private prepareWhereCase() {

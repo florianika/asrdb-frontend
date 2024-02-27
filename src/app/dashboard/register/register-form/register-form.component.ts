@@ -124,8 +124,14 @@ export class RegisterFormComponent implements OnInit {
       return;
     }
 
+    const buildingDetails = this.buildingDetails.value as Building;
     const entrancesDetails = this.entranceDetails.value;
     const entrances: Entrance[] = [];
+
+    if (this.buildingId) {
+      buildingDetails['GlobalID'] = this.buildingId;
+    }
+
     this.entranceIds.forEach(id => {
       const entrance = {} as any;
       Object.entries(entrancesDetails).forEach(([key, value]: [string, any]) => {
@@ -134,14 +140,13 @@ export class RegisterFormComponent implements OnInit {
           entrance[entranceKey] = value;
         }
       });
-      if (!id.startsWith('{')) { // new element
-        entrance['GlobalId'] = id; // This value will be deleted later on when request is being send
-      }
+      entrance['GlobalId'] = id;
       entrances.push(entrance);
     });
 
-    this.entityManagementService.saveBuilding(this.mapDetails.value as MapFormData,
-      this.buildingDetails.value as Building,
-      entrances as Entrance[]);
+    this.entityManagementService.saveBuilding(
+      this.mapDetails.value as MapFormData,
+      buildingDetails,
+      entrances);
   }
 }

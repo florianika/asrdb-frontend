@@ -1,1 +1,35 @@
-<p>dwelling-details-form works!</p>
+<h1 mat-dialog-title i18n *ngIf="!id">Create dwelling</h1>
+<h1 mat-dialog-title i18n *ngIf="id">Update dwelling</h1>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="formGroup">
+    <ng-container *ngFor="let formItem of formStructure">
+      <mat-form-field class="full-width">
+        <mat-label>{{formItem.alias}}</mat-label>
+        <input *ngIf="formItem.type !== 'select'" matInput [formControlName]="formItem.name" [type]="formItem.type">
+
+        <mat-select *ngIf="formItem.type === 'select'" [formControlName]="formItem.name">
+          <mat-option *ngFor="let option of formItem.selectOptions" [value]="option.value">{{ option.text
+            }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" i18n>Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" i18n>Save data</button>
+</mat-dialog-actions>
+
+<ng-template #cancelConfirmDialog>
+  <h1 mat-dialog-title i18n *ngIf="!id">Cancel creating dwelling</h1>
+  <h1 mat-dialog-title i18n *ngIf="id">Update editing dwelling</h1>
+  <mat-dialog-content class="mat-typography" i18n>
+    Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone!
+    <br>
+    Do you want to continue
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close i18n>Cancel</button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="true" i18n>Close dialog</button>
+  </mat-dialog-actions>
+</ng-template>

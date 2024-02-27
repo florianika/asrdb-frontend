@@ -19,6 +19,8 @@ import { QueryFilter } from '../../../model/query-filter';
 import { CommonDwellingService } from '../../../service/common-dwellings.service';
 import { CommonRegisterHelperService } from '../../../service/common-helper.service';
 import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
+import { DwellingDetailsFormComponent } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
+import { Entrance } from '../../../model/entrance';
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -30,6 +32,7 @@ import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.co
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() buildingGlobalId?: string;
+  @Input() entrances: Entrance[] = [];
   buildingIdQueryParam?: string | null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -137,6 +140,14 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       }).afterClosed().subscribe((newFilterConfig: DwellingFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
+  addDwelling() {
+    this.matDialog.open(DwellingDetailsFormComponent, {
+      data: {
+        entrances: this.entrances
+      }
+    });
+  }
+
   reload() {
     this.loadDwellings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
   }
@@ -150,7 +161,15 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.matDialog.open(DwellingDetailsComponent, {
       data: globalId
     });
-    // this.router.navigateByUrl('/dashboard/buildings-register/dwelling/details/' + globalId);
+  }
+
+  editDwellingDetails(globalId: string) {
+    this.matDialog.open(DwellingDetailsFormComponent, {
+      data: {
+        entrances: this.entrances,
+        id: globalId
+      }
+    });
   }
 
   private handlePopupClose(newFilterConfig: DwellingFilter | null) {
@@ -242,7 +261,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     })
       .pipe(takeUntil(this.subscriber))
       .subscribe((res => {
-        if (res.data.count) {
+        if (res.count) {
           const condition = res.data.features
             .map((feature: any) => feature.attributes)
             .reduce((currentValue: string[], item: any) => {

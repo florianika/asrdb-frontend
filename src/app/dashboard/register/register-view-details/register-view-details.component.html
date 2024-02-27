@@ -28,10 +28,10 @@
   </mat-card>
 
   <div class="full-width">
-    <asrdb-entrance-list-view [buildingGlobalId]="building.GlobalID"></asrdb-entrance-list-view>
+    <asrdb-entrance-list-view [buildingGlobalId]="building.GlobalID" (entrancesLoaded)="setEntrances($event)"></asrdb-entrance-list-view>
   </div>
 
   <div class="full-width">
-    <asrdb-dwelling-list-view [buildingGlobalId]="building.GlobalID"></asrdb-dwelling-list-view>
+    <asrdb-dwelling-list-view [buildingGlobalId]="building.GlobalID" [entrances]="loadedEntrances"></asrdb-dwelling-list-view>
   </div>
 </div>

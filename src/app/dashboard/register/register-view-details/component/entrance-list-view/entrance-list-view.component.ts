@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, isDevMode } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -12,7 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { EntranceListViewFilterComponent } from './entrance-list-view-filter/entrance-list-view-filter.component';
-import { EntranceFilter } from '../../../model/entrance';
+import { Entrance, EntranceFilter } from '../../../model/entrance';
 import { QueryFilter } from '../../../model/query-filter';
 import { CommonEntranceService } from '../../../service/common-entrance.service';
 import { CommonRegisterHelperService } from '../../../service/common-helper.service';
@@ -28,6 +28,7 @@ import { EntranceDetailsComponent } from './entrance-details/entrance-details.co
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() buildingGlobalId?: string;
+  @Output() entrancesLoaded = new EventEmitter<Entrance[]>();
   buildingIdQueryParam?: string | null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -190,6 +191,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.data = res.data.features.map((feature: any) => feature.attributes);
     this.isLoadingResults = false;
     this.prepareFilter();
+    this.entrancesLoaded.emit(this.data);
   }
 
   private prepareFilter() {

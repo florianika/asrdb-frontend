@@ -79,7 +79,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy, OnChange
     this.formStructure.push({
       name: id + '_' + field['name'],
       alias: field['alias'],
-      type: field['domain'] ? 'select' : getFormObjectType(field['type'], field['length'] ?? 0),
+      type: fieldType,
       selectOptions: fieldOptions
     });
   }

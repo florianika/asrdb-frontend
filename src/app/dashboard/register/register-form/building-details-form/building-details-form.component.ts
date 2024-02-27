@@ -6,9 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonBuildingService } from '../../service/common-building.service';
 import { Subject } from 'rxjs';
-import { CommonRegisterHelperService } from '../../service/common-helper.service';
 import { FormObject, getFormObjectOptions, getFormObjectType } from '../../model/form-object';
 import { Building } from '../../model/building';
+import { EDITABLE_PROP, ALIAS_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, NAME_PROP, NULLABLE_PROP, DEFAULT_VALUE_PROP } from '../../constant/common-constants';
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -32,15 +32,6 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   formStructure: FormObject[] = [];
 
-  private readonly EDITABLE_PROP = 'editable';
-  private readonly ALIAS_PROP = 'alias';
-  private readonly DOMAIN_PROP = 'domain';
-  private readonly TYPE_PROP = 'type';
-  private readonly NAME_PROP = 'name';
-  private readonly LENGTH_PROP = 'length';
-  private readonly DEFAULT_VALUE_PROP = 'defaultValue';
-  private readonly NULLABLE_PROP = 'nullable';
-
   private readonly HIDDEN_FIELDS = ['last_edited_user', 'last_edited_date', 'created_user', 'created_date', 'BldLatitude', 'BldLongitude'];
 
   constructor(private buildingService: CommonBuildingService) {
@@ -48,7 +39,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.buildingService.getAttributesMetadata().subscribe((fields: never[]) => {
-      fields = fields.filter(field => field[this.EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[this.ALIAS_PROP]));
+      fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[ALIAS_PROP]));
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
@@ -60,26 +51,26 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   private createFormObject(field: never) {
-    const fieldType = field[this.DOMAIN_PROP] ? 'select' : getFormObjectType(field[this.TYPE_PROP], field[this.LENGTH_PROP] ?? 0);
-    const fieldOptions = getFormObjectOptions(fieldType, field[this.DOMAIN_PROP]);
+    const fieldType = field[DOMAIN_PROP] ? 'select' : getFormObjectType(field[TYPE_PROP], field[LENGTH_PROP] ?? 0);
+    const fieldOptions = getFormObjectOptions(fieldType, field[DOMAIN_PROP]);
     this.formStructure.push({
-      name: field[this.NAME_PROP],
-      alias: field[this.ALIAS_PROP],
-      type: field[this.DOMAIN_PROP] ? 'select' : getFormObjectType(field[this.TYPE_PROP], field[this.LENGTH_PROP] ?? 0),
+      name: field[NAME_PROP],
+      alias: field[ALIAS_PROP],
+      type: fieldType,
       selectOptions: fieldOptions
     });
   }
 
   private createFormControlForField(field: never) {
-    const fieldName = field[this.NAME_PROP];
+    const fieldName = field[NAME_PROP];
     const value = (this.existingBuildingDetails as any)?.[fieldName];
-    const defaultValue = field[this.DEFAULT_VALUE_PROP] ?? '';
+    const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
     const control = new FormControl(value ? value : defaultValue);
-    if (!field[this.NULLABLE_PROP]) {
+    if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
     }
-    if (field[this.LENGTH_PROP]) {
-      control.addValidators(Validators.maxLength(field[this.LENGTH_PROP]));
+    if (field[LENGTH_PROP]) {
+      control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
     }
     this.formGroup.addControl(fieldName, control);
   }
