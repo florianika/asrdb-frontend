@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import MapView from '@arcgis/core/views/MapView';
 import { RegisterMapService } from './register-map.service';
@@ -13,13 +13,18 @@ import { RegisterFilterService } from '../register-filter.service';
   styleUrls: ['./register-map.component.css']
 })
 export class RegisterMapComponent implements OnInit, OnDestroy {
-  @Input() enableEdditing = false;
+  @Input() enableFilter = true;
+  @Input() buildingGlobalId?: string;
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
 
   constructor(private registerMapService: RegisterMapService, private registerFilterService: RegisterFilterService) { }
 
   ngOnInit(): void {
+
+    this.registerFilterService.setBuildingGlobalIdFilter(this.buildingGlobalId ?? '');
+    this.registerFilterService.updateGlobalIds([this.buildingGlobalId ?? '']);
+
     // Initialize MapView and return an instance of MapView
     this.initializeMap().then(() => {
       console.log('The map is ready.');
@@ -42,6 +47,10 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
   }
 
   async initializeMap(): Promise<any> {
-    this.view = await this.registerMapService.init(this.mapViewEl, this.enableEdditing);
+    this.view = await this.registerMapService.init(this.mapViewEl, {
+      enableFilter: this.enableFilter,
+      bldWhereCase: this.registerFilterService.prepareWhereCase(),
+      entWhereCase: this.registerFilterService.prepareWhereCaseForEntrance()
+    });
   }
 }

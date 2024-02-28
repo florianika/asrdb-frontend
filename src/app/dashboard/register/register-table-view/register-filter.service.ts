@@ -72,6 +72,9 @@ export class RegisterFilterService {
   }
 
   prepareWhereCaseForEntrance() {
+    if (!this.globalIds.getValue()?.length) {
+      return '1=1';
+    }
     return `fk_buildings in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
   }
 

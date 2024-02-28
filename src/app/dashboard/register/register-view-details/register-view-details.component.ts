@@ -13,6 +13,8 @@ import { CommonRegisterHelperService } from '../service/common-helper.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Entrance } from '../model/entrance';
+import { RegisterMapComponent } from '../register-table-view/register-map/register-map.component';
+import { RegisterFilterService } from '../register-table-view/register-filter.service';
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -24,7 +26,8 @@ import { Entrance } from '../model/entrance';
     MatIconModule,
     BuildingDetailComponent,
     EntranceListViewComponent,
-    DwellingListViewComponent
+    DwellingListViewComponent,
+    RegisterMapComponent
   ],
   templateUrl: './register-view-details.component.html',
   styleUrls: ['./register-view-details.component.css']
@@ -32,6 +35,7 @@ import { Entrance } from '../model/entrance';
 export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   isLoadingResults = true;
   building: any;
+  id?: string = '';
 
   sections = [
     {
@@ -199,17 +203,17 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   private subscriber = new Subject();
   private fields: any[] = [];
-  private id: string | null = '';
 
   constructor(
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private registerFilterService: RegisterFilterService,
     private matSnack: MatSnackBar,
     private router: Router,
     private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '';
     this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
   }
   ngOnDestroy(): void {

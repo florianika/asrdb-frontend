@@ -13,19 +13,23 @@
       </section>
     </mat-card-content>
   </mat-card>
-  <mat-card class="building-last-modified-card">
-    <mat-card-content>
-      <h2 i18n>History details</h2>
-      <div>
-        <span i18n>Created by: </span>
-        <span>{{building.created_user}} - {{building.created_date}}</span>
-      </div>
-      <div>
-        <span i18n>Last edited by: </span>
-        <span>{{building.last_edited_user}} - {{building.last_edited_date}}</span>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <div class="building-last-modified-card">
+    <mat-card>
+      <mat-card-content>
+        <h2 i18n>History details</h2>
+        <div>
+          <span i18n>Created by: </span>
+          <span>{{building.created_user}} - {{building.created_date}}</span>
+        </div>
+        <div>
+          <span i18n>Last edited by: </span>
+          <span>{{building.last_edited_user}} - {{building.last_edited_date}}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <asrdb-register-map [enableFilter]="false" [buildingGlobalId]="id"></asrdb-register-map>
+  </div>
 
   <div class="full-width">
     <asrdb-entrance-list-view [buildingGlobalId]="building.GlobalID" (entrancesLoaded)="setEntrances($event)"></asrdb-entrance-list-view>

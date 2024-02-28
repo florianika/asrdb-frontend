@@ -16,8 +16,13 @@
 
 .building-last-modified-card {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   margin-bottom: 15px;
+}
+
+.building-last-modified-card > mat-card {
+  margin-bottom: 20px;
 }
 
 .details-header {

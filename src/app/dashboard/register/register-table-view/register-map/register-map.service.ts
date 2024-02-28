@@ -1,16 +1,20 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { ElementRef, Injectable, isDevMode } from '@angular/core';
 
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
-import Sketch from '@arcgis/core/widgets/Sketch';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import WebMap from '@arcgis/core/WebMap';
 import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { RegisterFilterService } from '../register-filter.service';
-import TopFeaturesQuery from '@arcgis/core/rest/support/TopFeaturesQuery';
+
+export type MapInitOptions = {
+  enableFilter: boolean,
+  bldWhereCase: string,
+  entWhereCase: string
+}
 
 @Injectable()
 export class RegisterMapService {
@@ -22,11 +26,11 @@ export class RegisterMapService {
     private entranceService: CommonEntranceService,
     private registerFilterService: RegisterFilterService,
     private esriAuthService: CommonEsriAuthService) {
-      this.bldlayer = this.buildingService.bldLayer;
-      this.entlayer = this.entranceService.entLayer;
-    }
+    this.bldlayer = this.buildingService.bldLayer;
+    this.entlayer = this.entranceService.entLayer;
+  }
 
-  async init(mapViewEl: ElementRef, enableEdditing: boolean): Promise<MapView> {
+  async init(mapViewEl: ElementRef, options: MapInitOptions): Promise<MapView> {
     const container = mapViewEl.nativeElement;
     const graphicsLayer = new GraphicsLayer();
 
@@ -60,52 +64,31 @@ export class RegisterMapService {
     });
 
     view.when(() => {
-      // const centerPoint = this.view?.center.clone();
-      if (enableEdditing) {
-        const sketch = new Sketch({
-          layer: graphicsLayer,
-          view: view,
-          // graphic will be selected as soon as it is created
-          creationMode: 'update',
-        });
-
-        sketch.on('create', (event) => {
-          if (event.state === 'complete') {
-            console.log(event.graphic.geometry.toJSON());
-          }
-        });
-
-        sketch.on('update', (event) => {
-          if (event.state === 'complete') {
-            console.log(event.graphics[0].geometry.toJSON());
-          }
-        });
-
-        view.ui.add(sketch, 'top-right');
-      }
-
       view.popup.set('dockOptions', {
         breakpoint: false,
         buttonEnabled: false,
         position: 'top-left'
       });
     });
+    if (options.enableFilter) {
+      view.on('click', () => {
+        // event is the event handle returned after the event fires.
+        setTimeout(() => {
+          if (isDevMode()) {
+            console.log(view.popup.selectedFeature);
+          }
+          if (!view.popup.selectedFeature) {
+            this.registerFilterService.setBuildingGlobalIdFilter('');
+            return;
+          }
+          const globalId = view.popup.selectedFeature.attributes['GlobalID'];
+          this.registerFilterService.setBuildingGlobalIdFilter(globalId);
+        }, 100);
+      });
+    }
 
-    view.on('click', () => {
-      // event is the event handle returned after the event fires.
-      setTimeout(() => {
-        console.log(view.popup.selectedFeature);
-        if (!view.popup.selectedFeature) {
-          this.registerFilterService.setBuildingGlobalIdFilter('');
-          return;
-        }
-        const globalId = view.popup.selectedFeature.attributes['GlobalID'];
-        this.registerFilterService.setBuildingGlobalIdFilter(globalId);
-      }, 100);
-    });
-
-    await view.whenLayerView(this.bldlayer);
-    view.goTo(this.bldlayer.fullExtent);
+    this.filterBuildingData(view, options.bldWhereCase);
+    this.filterEntranceData(view, options.entWhereCase);
 
     return view;
   }
