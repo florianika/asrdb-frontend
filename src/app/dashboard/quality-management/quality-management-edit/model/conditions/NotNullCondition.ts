@@ -1,8 +1,8 @@
-import { Condition, ICondition } from './ICondition';
+import { ICondition } from './ICondition';
 
 export class NotNullCondition implements ICondition {
   id: string;
-  condition = 'isNull()';
+  condition = 'notnull()';
   isValueRequired = false;
 
   constructor() {
@@ -17,13 +17,13 @@ export class NotNullCondition implements ICondition {
     return 'text';
   }
 
-  buildExpression(variable: string, value?: string | number): string {
+  buildExpression(variable: string): string {
     if (!variable) {
       console.log('Variable is required for the condition');
-      throw new Error('Variable is required')
+      throw new Error('Variable is required');
     }
 
-    return `not ${variable}.${this.condition}`;
+    return `${variable}.${this.condition}`;
   }
 
   getCondition(): string {
