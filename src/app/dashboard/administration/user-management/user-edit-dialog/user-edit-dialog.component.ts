@@ -10,7 +10,13 @@ import { User } from 'src/app/model/User.model';
 })
 export class UserEditDialogComponent {
   role: Role = 'ADMIN';
+  newRole: Role = 'ADMIN';
   constructor(@Inject(MAT_DIALOG_DATA) public data: User) {
     this.role = data.accountRole;
+    this.newRole = data.accountRole;
+  }
+
+  updateRole(role: Role) {
+    this.newRole = role;
   }
 }

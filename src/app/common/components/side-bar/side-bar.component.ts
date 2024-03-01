@@ -70,7 +70,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false
         },
       ],
-      visible: true
+      visible: this.isAdmin
     },
     {
       sectionTitle: 'Administration',

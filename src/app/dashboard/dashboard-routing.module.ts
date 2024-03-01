@@ -7,7 +7,7 @@ const routes: Routes = [
   {path: '',   redirectTo: '/dashboard/overview', pathMatch: 'full'},
   {path: 'overview', loadChildren: () => import('./overview/overview.module').then(m => m.OverviewModule), canActivate: [GuardService]},
   {path: 'buildings-register', loadChildren: () => import('./buildings-register/buildings-register.module').then(m => m.BuildingsRegisterModule), canActivate: [GuardService]},
-  {path: 'quality-management', loadChildren: () => import('./quality-management/quality-management.module').then(m => m.QualityManagementModule), canActivate: [GuardService]},
+  {path: 'quality-management', loadChildren: () => import('./quality-management/quality-management.module').then(m => m.QualityManagementModule), canActivate: [GuardAdminService]},
   {path: 'administration', loadChildren: () => import('./administration/administration.module').then(m => m.AdministrationModule), canActivate: [GuardAdminService]},
 ];
 

@@ -1,8 +1,8 @@
 <h1 mat-dialog-title i18n>Update user {{data.name}} {{data.lastName}}</h1>
 <div mat-dialog-content>
-  <asrdb-role-selector [role]="role"></asrdb-role-selector>
+  <asrdb-role-selector [role]="role" (roleChange)="updateRole($event)"></asrdb-role-selector>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close] i18n>Cancel</button>
-  <button mat-button color="primary" [mat-dialog-close]="role" cdkFocusInitial i18n>Ok</button>
+  <button mat-button color="primary" [mat-dialog-close]="newRole" cdkFocusInitial i18n>Ok</button>
 </div>
