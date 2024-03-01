@@ -1,10 +1,10 @@
-import {Injectable, isDevMode, OnDestroy} from '@angular/core';
-import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
-import {JwtHelperService} from '@auth0/angular-jwt';
-import {JWT, SigninResponse} from 'src/app/model/JWT.model';
-import {Router} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
+import { Injectable, isDevMode, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { JWT, SigninResponse } from 'src/app/model/JWT.model';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { Role } from 'src/app/model/RolePermissions.model';
 
 @Injectable({
@@ -37,16 +37,16 @@ export class AuthStateService implements OnDestroy {
   }
 
   logout() {
-    // this.httpClient.post(environment.base_url + this.SIGNOUT_URL, {
-    //   'UserId': this.getNameId()
-    // }).pipe(takeUntil(this.subscription)).subscribe({
-    //   next: () => {
-    //     this.logoutUser();
-    //   },
-    //   error: () => {
-    //     this.logoutUser();
-    //   }
-    // });
+    this.httpClient.post(environment.base_url + this.SIGNOUT_URL, {
+      'UserId': this.getNameId()
+    }).pipe(takeUntil(this.subscription)).subscribe({
+      next: () => {
+        this.logoutUser();
+      },
+      error: () => {
+        this.logoutUser();
+      }
+    });
   }
 
   refreshToken() {
@@ -154,7 +154,7 @@ export class AuthStateService implements OnDestroy {
     let isTokenValid = false;
     try {
       isTokenValid = !!this.tokens && !this.helper.isTokenExpired(this.tokens.idToken);
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
     return isTokenValid;

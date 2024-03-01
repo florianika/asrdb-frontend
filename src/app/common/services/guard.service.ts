@@ -15,10 +15,10 @@ export class GuardService {
 
   public canActivate(): boolean {
     return true;
-    // const isLoggedIn = this.authStateService.isTokenValid();
-    // if (!isLoggedIn) {
-    //   this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
-    // }
-    // return isLoggedIn;
+    const isLoggedIn = this.authStateService.isTokenValid();
+    if (!isLoggedIn) {
+      this.router.navigateByUrl(this.SIGNIN_PAGE_URL);
+    }
+    return isLoggedIn;
   }
 }

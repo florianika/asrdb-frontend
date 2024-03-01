@@ -39,8 +39,8 @@ export class QualityManagementFormComponent implements OnInit {
     this.secondFormGroup = new FormGroup({
       qualityAction: new FormControl<QualityAction>(this.rule?.qualityAction ?? 'AUT', [Validators.required]),
       ruleStatus: new FormControl<RuleStatus>(this.rule?.ruleStaus ?? 'ACTIVE', [Validators.required]),
-      ruleRequirement: new FormControl<string>(this.rule?.localId ?? ''),
-      remark: new FormControl<string>(this.rule?.ruleRequirement ?? ''),
+      ruleRequirement: new FormControl<string>(this.rule?.ruleRequirement ?? ''),
+      remark: new FormControl<string>(this.rule?.remark ?? ''),
       qualityMessageAl: new FormControl<string>(this.rule?.qualityMessageAl ?? '', [Validators.required]),
       qualityMessageEn: new FormControl<string>(this.rule?.qualityMessageEn ?? '', [Validators.required]),
     }, { updateOn: 'blur' });
