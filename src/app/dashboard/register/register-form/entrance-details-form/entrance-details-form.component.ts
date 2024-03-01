@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Entrance } from '../../model/entrance';
+import { NAME_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, ALIAS_PROP, NULLABLE_PROP, DEFAULT_VALUE_PROP } from '../../constant/common-constants';
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -34,12 +35,14 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy, OnChange
 
   formStructure: FormObject[] = [];
 
+  private readonly HIDDEN_FIELDS = ['last_edited_user', 'last_edited_date', 'fk_buildings', 'created_user', 'created_date', 'EntLongitude', 'EntLatitude'];
+
   constructor(private entranceService: CommonEntranceService) {
   }
 
   ngOnInit(): void {
     this.entranceService.getAttributesMetadata().subscribe((fields: never[]) => {
-      this.fields = fields.filter(field => field['editable'] && !['last_edited_user', 'last_edited_date', 'fk_buildings', 'created_user', 'created_date'].includes(field['name']));
+      this.fields = fields.filter(field => field['editable'] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]));
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
@@ -74,34 +77,34 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy, OnChange
   }
 
   private createFormObject(field: never, id: string) {
-    const fieldType = field['domain'] ? 'select' : getFormObjectType(field['type'], field['length'] ?? 0);
-    const fieldOptions = getFormObjectOptions(fieldType, field['domain']);
+    const fieldType = field[DOMAIN_PROP] ? 'select' : getFormObjectType(field[TYPE_PROP], field[LENGTH_PROP] ?? 0);
+    const fieldOptions = getFormObjectOptions(fieldType, field[DOMAIN_PROP]);
     this.formStructure.push({
-      name: id + '_' + field['name'],
-      alias: field['alias'],
+      name: id + '_' + field[NAME_PROP],
+      alias: field[ALIAS_PROP],
       type: fieldType,
       selectOptions: fieldOptions
     });
   }
 
   private createFormControlForField(field: never, id: string) {
-    const fieldName = field['name'];
+    const fieldName = field[NAME_PROP];
     const value = (this.existingEntrancesDetails?.filter(o => o.GlobalID === id) as any)?.[fieldName];
-    const defaultValue = field['defaultValue'] ?? '';
+    const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
 
     const control = new FormControl(value ? value : defaultValue);
-    if (!field['nullable']) {
+    if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
     }
-    if (field['length']) {
-      control.addValidators(Validators.maxLength(field['length']));
+    if (field[LENGTH_PROP]) {
+      control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
     }
-    this.formGroup.addControl(id + '_' + field['name'], control);
+    this.formGroup.addControl(id + '_' + field[NAME_PROP], control);
   }
 
   private removeFormControlFields(id: string) {
     this.fields.forEach(field => {
-      this.formGroup.removeControl(id + '_' + field['name']);
+      this.formGroup.removeControl(id + '_' + field[NAME_PROP]);
     });
   }
 

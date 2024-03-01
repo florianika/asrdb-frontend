@@ -113,7 +113,6 @@ export class EntityCreationMapService {
         });
         return;
       }
-      console.log(event.graphics[0].geometry.toJSON());
       this.valueDelete.next({
         ...event.graphics[0].geometry.toJSON(),
         id: event.graphics[0].attributes.id
@@ -127,11 +126,16 @@ export class EntityCreationMapService {
   private registerUpdateEvent(sketch: Sketch) {
     sketch.on('update', (event) => {
       if (event.state === 'complete') {
-        console.log(event.graphics[0].geometry.toJSON());
+        const centroid = event.graphics[0].geometry.type === 'polygon'
+        ? (event.graphics[0].geometry as any)['centroid']
+        : {
+          latitude: (event.graphics[0].geometry as any).latitude,
+          longitude: (event.graphics[0].geometry as any).longitude
+        };
         this.valueUpdate.next({
           ...event.graphics[0].geometry.toJSON(),
           id: event.graphics[0].attributes.id,
-          centroid: (event.graphics[0].geometry as any)['centroid']
+          centroid: centroid
         });
       }
     });
@@ -140,13 +144,17 @@ export class EntityCreationMapService {
   private registerCreateEvent(sketch: Sketch) {
     sketch.on('create', (event) => {
       if (event.state === 'complete') {
-        console.log(event.graphic.geometry.toJSON());
-
         const id = event.graphic.geometry.type === 'polygon' ? null : ('New (' + Math.random() + ')');
+        const centroid = event.graphic.geometry.type === 'polygon'
+        ? (event.graphic.geometry as any)['centroid']
+        : {
+          latitude: (event.graphic.geometry as any).latitude,
+          longitude: (event.graphic.geometry as any).longitude
+        };
         this.valueUpdate.next({
           ...event.graphic.geometry.toJSON(),
           id: id,
-          centroid: (event.graphic.geometry as any)['centroid']
+          centroid: centroid
         });
         event.graphic.attributes = {
           id: id

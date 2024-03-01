@@ -64,6 +64,7 @@ export class RegisterFormComponent implements OnInit {
   entranceIds: string[] = [];
 
   private subscriber = new Subject();
+  private entranceCentroids: Centroid[] = [];
 
   constructor(
     private entityManagementService: BuildingManagementService,
@@ -106,11 +107,15 @@ export class RegisterFormComponent implements OnInit {
     }
   }
 
-  updateCentoid(centoid: Centroid) {
-    this.buildingDetails.patchValue({
-      BldLatitude: centoid.latitude,
-      BldLongitude: centoid.longitude
-    });
+  updateCentoid(centroid: Centroid) {
+    if (this.buildingId === centroid.id || !centroid.id) {
+      this.buildingDetails.patchValue({
+        BldLatitude: centroid.latitude,
+        BldLongitude: centroid.longitude
+      });
+    } else if (centroid.id) {
+      this.entranceCentroids.push(centroid);
+    }
   }
 
   save() {
@@ -134,6 +139,7 @@ export class RegisterFormComponent implements OnInit {
 
     this.entranceIds.forEach(id => {
       const entrance = {} as any;
+      const centroid = this.entranceCentroids.find(centroid => centroid.id === id);
       Object.entries(entrancesDetails).forEach(([key, value]: [string, any]) => {
         if (key.includes(id)) {
           const entranceKey = key.replace(id + '_', '');
@@ -141,6 +147,8 @@ export class RegisterFormComponent implements OnInit {
         }
       });
       entrance['GlobalId'] = id;
+      entrance['EntLatitude'] = centroid?.latitude;
+      entrance['EntLongitude'] = centroid?.longitude;
       entrances.push(entrance);
     });
 

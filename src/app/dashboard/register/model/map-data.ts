@@ -10,8 +10,9 @@ export type MapFormData = {
   entrancePoints: Point[]
 };
 export type Centroid = {
-  latitude: number,
-  longitude: number
+  id?: string | number,
+  latitude?: number,
+  longitude?: number
 };
 export type Ring = number[][];
 export type Point = {
