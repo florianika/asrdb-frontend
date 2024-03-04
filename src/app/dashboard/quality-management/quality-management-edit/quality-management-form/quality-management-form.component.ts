@@ -30,7 +30,7 @@ export class QualityManagementFormComponent implements OnInit {
       localId: new FormControl<string>({value: this.rule?.localId ?? '', disabled: !!this.id}, [Validators.required]),
       entityType: new FormControl<EntityType>({ value: this.rule?.entityType ?? 'BUILDING', disabled: true }, [Validators.required]),
       variable: new FormControl<string>(this.rule?.variable ?? '', [Validators.required]),
-      nameAl: new FormControl<string>(this.rule?.nameAl ?? '', [Validators.required]),
+      nameAl: new FormControl<string>(this.rule?.nameAl ?? ''),
       nameEn: new FormControl<string>(this.rule?.nameEn ?? ''),
       descriptionAl: new FormControl<string>(this.rule?.descriptionAl ?? ''),
       descriptionEn: new FormControl<string>(this.rule?.descriptionEn ?? ''),

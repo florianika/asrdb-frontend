@@ -1,4 +1,4 @@
-import { Condition, ConditionsMap, ICondition, getCondition, getConditionByConditionString, getConditionById } from "./conditions/ICondition";
+import { Condition, ICondition, getCondition, getConditionByConditionString, getConditionById } from './conditions/ICondition';
 
 export interface FlatRule {
   id: string;
@@ -18,8 +18,8 @@ export interface ExpressionForm {
 }
 
 export enum Operator {
-  AND = "&",
-  OR = "|"
+  AND = 'and',
+  OR = 'or'
 }
 
 export const OperatorsMap = new Map<Operator, string>([
@@ -28,8 +28,8 @@ export const OperatorsMap = new Map<Operator, string>([
 ]);
 
 export const OperatorsToExpressionMap = new Map<Operator, string>([
-  [Operator.AND, '&'],
-  [Operator.OR, '|'],
+  [Operator.AND, 'and'],
+  [Operator.OR, 'or'],
 ]);
 
 export class Expression {
@@ -62,9 +62,9 @@ export class Expression {
   }
 
   static fromString(expressionString: string, prevExpression?: Expression): Expression {
-    let isNotCondtition = false;
     let index = Expression.getOperatorIndex(expressionString);
-    const operator = index === -1 ? undefined : expressionString.substring(index, index + 1) as Operator;
+    const endOfOperator = expressionString.indexOf(' ', index);
+    const operator = index === -1 ? undefined : expressionString.substring(index, endOfOperator) as Operator;
 
     if (index === -1) {
       index = expressionString.length;
@@ -76,18 +76,17 @@ export class Expression {
 
     if (subString.startsWith('not') || subString.startsWith('(not')) {
       subString = subString.replace('not ', '').trim();
-      isNotCondtition = true;
     }
 
-    const parts = subString.split(" ");
+    const parts = subString.split(' ');
 
     const { variable, group } = Expression.getVariableAndGroup(parts[0] as string);
-    const condition = Expression.getCondition(subString, parts, isNotCondtition);
+    const condition = Expression.getCondition(subString, parts);
     const value = Expression.getValue(subString, parts, condition);
 
     const rule = new Rule(variable, condition, value, group);
     const expression = new Expression(rule, operator);
-    const nextExpression: Expression | undefined = operator ? Expression.fromString(expressionString.substring(index + 2), expression) : undefined;
+    const nextExpression: Expression | undefined = operator ? Expression.fromString(expressionString.substring(endOfOperator + 1), expression) : undefined;
 
     expression.nextRule = nextExpression;
     expression.prevRule = prevExpression;
@@ -104,7 +103,7 @@ export class Expression {
   }
 
   toString(closeBrackets = 0): string {
-    let expression = this.buildExpression();
+    const expression = this.buildExpression();
 
     if (this.operator == undefined && this.nextRule != undefined) {
       throw new Error('Operator must be provided');
@@ -127,9 +126,9 @@ export class Expression {
 
   updateValues(id: string, values: Partial<ExpressionForm>) {
     if (this.firstRule.id === id) {
-      this.firstRule.variable = values.variable ?? "";
+      this.firstRule.variable = values.variable ?? '';
       this.firstRule.condition = values.condition ? getConditionById(values.condition) : getCondition(Condition.EQUALS);
-      this.firstRule.value = values.value ?? "";
+      this.firstRule.value = values.value ?? '';
       this.firstRule.group = (values.group ?? false) && values.operator === Operator.OR;
       this.operator = values.operator as Operator ?? undefined;
     } else {
@@ -147,11 +146,11 @@ export class Expression {
     if (nextRule.nextRule) {
       const nextOperator = nextRule.operator;
       if (nextOperator == undefined) {
-        throw new Error("Operator must be provided");
+        throw new Error('Operator must be provided');
       }
       if (nextOperator === Operator.AND && closeBrackets) {
         for (let index = 0; index < closeBrackets; index++) {
-          combinedExpression += ")";
+          combinedExpression += ')';
         }
         closeBrackets = 0;
       }
@@ -159,7 +158,7 @@ export class Expression {
     }
     if (closeBrackets) {
       for (let index = 0; index < closeBrackets; index++) {
-        combinedExpression += ")";
+        combinedExpression += ')';
       }
       closeBrackets = 0;
     }
@@ -167,8 +166,8 @@ export class Expression {
   }
 
   private static getOperatorIndex(expression: string) {
-    const andIndex = expression.indexOf(OperatorsToExpressionMap.get(Operator.AND) ?? "-99999");
-    const orIndex = expression.indexOf(OperatorsToExpressionMap.get(Operator.OR) ?? "-99999");
+    const andIndex = expression.indexOf(OperatorsToExpressionMap.get(Operator.AND) ?? '-99999');
+    const orIndex = expression.indexOf(OperatorsToExpressionMap.get(Operator.OR) ?? '-99999');
 
     if (andIndex === -1) {
       return orIndex;
@@ -182,28 +181,35 @@ export class Expression {
   }
 
   private static getVariableAndGroup(variable: string) {
-    const condition = getCondition(Condition.IS_NULL).getCondition();
-    let variableName = variable.includes(condition) ? variable.substring(0, variable.lastIndexOf('.')) : variable;
+    const nullCondition = getCondition(Condition.IS_NULL).getCondition();
+    const notNullCondition = getCondition(Condition.IS_NOT_NULL).getCondition();
+    const isNullOrNotNull = variable.includes(nullCondition) || variable.includes(notNullCondition);
+
+    let variableName = isNullOrNotNull ? variable.substring(0, variable.lastIndexOf('.')) : variable;
     let group = false;
-    if (variable.startsWith("(")) {
+    if (variable.startsWith('(')) {
       variableName = variableName.substring(1);
       group = true;
     }
     return {
       variable: variableName,
       group
-    }
+    };
   }
 
-  private static getCondition(subString: string, parts: string[], isNotCondition: boolean): ICondition {
-    const isNullCondition = getCondition(Condition.IS_NULL).getCondition();
+  private static getCondition(subString: string, parts: string[]): ICondition {
     const notInCondition = getCondition(Condition.NOT_IN).getCondition();
+    const notNullCondition = getCondition(Condition.IS_NOT_NULL).getCondition();
+    const nullCondition = getCondition(Condition.IS_NULL).getCondition();
 
-    if (subString.includes(isNullCondition)) {
-      return isNotCondition ? ConditionsMap.get(Condition.IS_NOT_NULL)! : ConditionsMap.get(Condition.IS_NULL)!;
-    }
     if (subString.includes(notInCondition)) {
       return getCondition(Condition.NOT_IN);
+    }
+    if (subString.includes(notNullCondition)) {
+      return getCondition(Condition.IS_NOT_NULL);
+    }
+    if (subString.includes(nullCondition)) {
+      return getCondition(Condition.IS_NULL);
     }
     return getConditionByConditionString(parts[1] as string);
   }
@@ -225,8 +231,8 @@ export class Expression {
     }
     value = value?.trim();
 
-    if (value?.endsWith(")") && !subString.includes(isNullCondition)) {
-      let index = value.indexOf(')');
+    if (value?.endsWith(')') && !subString.includes(isNullCondition)) {
+      const index = value.indexOf(')');
       let startIndex = 0;
       if ([inCondition, notInCondition].includes(condition.getCondition())) {
         startIndex++;
