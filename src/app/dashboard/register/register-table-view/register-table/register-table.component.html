@@ -12,6 +12,9 @@
     <button mat-icon-button (click)="reload()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
+    <button mat-icon-button (click)="viewLogsForSelected()" [disabled]="isLoadingResults">
+      <mat-icon style="cursor: pointer;">text_snippet</mat-icon>
+    </button>
   </div>
 
   <div style="padding: 0px 10px;">
@@ -24,6 +27,10 @@
 
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="data" class="asrbd-table" matSort>
+      <ng-container matColumnDef="selection">
+        <th mat-header-cell *matHeaderCellDef> <mat-checkbox (click)="stopClickEventFiltering($event)" (change)="handleSelectAll($event)"></mat-checkbox> </th>
+        <td mat-cell *matCellDef="let element"> <mat-checkbox [checked]="this.selectedBuildings.includes(element.GlobalID)" (click)="stopClickEventFiltering($event)" (change)="handleSelect(element.GlobalID)"></mat-checkbox> </td>
+      </ng-container>
       <ng-container matColumnDef="GlobalID">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('GlobalID')}}</th>
         <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
@@ -39,10 +46,6 @@
       <ng-container matColumnDef="BldType">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldType')}}</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldType', element.BldType)}} </td>
-      </ng-container>
-      <ng-container matColumnDef="BldFloorsAbove">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldFloorsAbove')}}</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldFloorsAbove', element.BldFloorsAbove)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldEntranceRecs">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldEntranceRecs')}}</th>
@@ -63,6 +66,8 @@
               View building details</button>
             <button mat-menu-item i18n (click)="editBuildingDetails(element.GlobalID)"><mat-icon>edit</mat-icon>
               Edit building details</button>
+            <button mat-menu-item i18n (click)="viewLogs(element.GlobalID)"><mat-icon>text_snippet</mat-icon>
+              View quality logs</button>
           </mat-menu>
         </td>
       </ng-container>

@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { RegisterFilterComponent } from '../register-filter/register-filter.component';
 import { RegisterFilterService } from '../register-filter.service';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'asrdb-register-table',
@@ -33,7 +34,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     MatDialogModule,
     ChipComponent,
-    MatDividerModule
+    MatDividerModule,
+    MatCheckboxModule
   ],
   templateUrl: './register-table.component.html',
   styleUrls: ['./register-table.component.css'],
@@ -43,15 +45,16 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  private columns = ['GlobalID', 'BldMunicipality', 'BldStatus', 'BldType', 'BldFloorsAbove', 'BldEntranceRecs', 'BldDwellingRecs'];
+  private columns = ['GlobalID', 'BldMunicipality', 'BldStatus', 'BldType', 'BldEntranceRecs', 'BldDwellingRecs'];
   private subscriber = new Subject();
   private initialized = false;
 
-  displayedColumns: string[] = this.columns.concat(['actions']);
+  displayedColumns: string[] = ['selection'].concat(this.columns.concat(['actions']));
   data: never[] = [];
   fields: never[] = [];
   resultsLength = 0;
   isLoadingResults = true;
+  selectedBuildings: string[] = [];
 
   filterConfig: BuildingFilter = {
     filter: {
@@ -127,6 +130,18 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
   }
 
+  handleSelect(globalId: string) {
+    if (this.selectedBuildings.includes(globalId)) {
+      this.selectedBuildings = this.selectedBuildings.filter(selectedBuilding => selectedBuilding !== globalId);
+    } else {
+      this.selectedBuildings.push(globalId);
+    }
+  }
+
+  handleSelectAll(event: MatCheckboxChange) {
+    this.selectedBuildings = event.checked ? this.data.map(el => el['GlobalID']) : [];
+  }
+
   openFilter() {
     this.matDialog
       .open(RegisterFilterComponent, {
@@ -152,6 +167,14 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.router.navigateByUrl('/dashboard/register/form/' + globalId);
   }
 
+  viewLogs(globalId: string) {
+    this.router.navigateByUrl('/dashboard/register/logs?buildings=' + globalId);
+  }
+
+  viewLogsForSelected() {
+    this.router.navigateByUrl('/dashboard/register/logs?buildings=' + this.selectedBuildings.join(','));
+  }
+
   addNewBuilding() {
     this.router.navigateByUrl('/dashboard/register/form');
   }
@@ -164,7 +187,6 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   stopClickEventFiltering(event: Event) {
     event.stopImmediatePropagation();
-    event.preventDefault();
   }
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
