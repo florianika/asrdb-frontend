@@ -58,7 +58,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
         this.formGroup.patchValue({
           buildingPoly: value.rings
         });
-        this.centoidUpdated.emit({...value.centroid});
+        this.centoidUpdated.emit({ latitude: value.centroid?.latitude, longitude: value.centroid?.longitude });
       } else if (value.x && value.y) {
         const currentMapPoint = this.formGroup.value.entrancePoints.filter((mp: Point) => mp.id !== value.id);
         currentMapPoint.push({
@@ -70,7 +70,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           entrancePoints: currentMapPoint
         });
 
-        this.centoidUpdated.emit({...value.centroid, id: value.id});
+        this.centoidUpdated.emit({ latitude: value.centroid?.latitude, longitude: value.centroid?.longitude, id: value.id });
       }
       if (isDevMode()) {
         console.log(this.formGroup.value);

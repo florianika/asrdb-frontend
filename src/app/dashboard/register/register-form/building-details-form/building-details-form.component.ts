@@ -39,7 +39,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.buildingService.getAttributesMetadata().subscribe((fields: never[]) => {
-      fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[ALIAS_PROP]));
+      fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]));
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
