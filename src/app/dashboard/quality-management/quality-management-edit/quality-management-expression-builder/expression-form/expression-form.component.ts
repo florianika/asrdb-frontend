@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Condition, ConditionsMap, ICondition } from '../../model/conditions/ICondition';
-import { ExpressionForm, Operator } from '../../model/quality-expression';
+import { Condition, ConditionsMap } from '../../model/conditions/ICondition';
+import { Operator } from '../../model/quality-expression';
 import { MatDialog } from '@angular/material/dialog';
 import { EntityType } from '../../../quality-management-config';
 

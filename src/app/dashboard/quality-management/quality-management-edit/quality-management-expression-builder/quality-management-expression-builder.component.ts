@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { EntityType } from '../../quality-management-config';
 import { Expression, Operator, Rule } from '../model/quality-expression';
 import { Condition, ConditionsMap, ICondition, getCondition, getConditionById } from '../model/conditions/ICondition';
@@ -38,18 +38,23 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
         condition: new FormControl(element.condition.id, [Validators.required]),
         value: new FormControl(element.value, valueValidators),
         group: new FormControl(element.group),
-        operator: new FormControl(element.operator, (index !== expressionMap.length - 1 ) ? [Validators.required] : [])
+        operator: new FormControl(element.operator, (index !== expressionMap.length - 1) ? [Validators.required] : [])
       };
       if (valueValidators.length === 0) {
         form.value.disable();
       }
-      const newFormGroup = new FormGroup(form, { updateOn: 'change' });
 
+      const newFormGroup = new FormGroup(form, { updateOn: 'change' });
       newFormGroup.valueChanges.subscribe((ruleValues) => {
         this.expression.updateValues(element.id, ruleValues);
-        this.expressionString = this.buildExpressionString();
-        this.formGroup.setValue({expression: this.expressionString});
-        const condition = getConditionById(ruleValues.condition!);
+        if (newFormGroup.invalid) {
+          this.formGroup.setValue({ expression: null });
+          this.expressionString = '';
+        } else {
+          this.expressionString = this.buildExpressionString();
+          this.formGroup.setValue({ expression: this.expressionString });
+        }
+        const condition = getConditionById(ruleValues.condition as string);
         const existingForm = this.expressionFormGroup.find(f => f.value.id === ruleValues.id);
         if (existingForm) {
           const valueFormElement = existingForm.controls['value'];
@@ -64,7 +69,10 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
           }
         }
       });
-
+      newFormGroup.markAllAsTouched();
+      setTimeout(() => {
+        newFormGroup.patchValue({});
+      }, 200);
       this.expressionFormGroup.push(newFormGroup);
     });
     this.expressionString = this.buildExpressionString();
@@ -82,13 +90,13 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
       undefined,
     ));
     this.toForm();
-    this.formGroup.setValue({expression: this.expressionString});
+    this.formGroup.setValue({ expression: this.expressionString });
   }
 
   removeRule(id: string) {
     this.expression.removeRule(id);
     this.toForm();
-    this.formGroup.setValue({expression: this.expressionString});
+    this.formGroup.setValue({ expression: this.expressionString });
   }
 
   buildExpressionFromString() {
@@ -107,10 +115,11 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   }
 
   private getValueValidations(condition: ICondition) {
+    const validators = [this.valueValidation()];
     if (this.hasValue(condition.condition)) {
-      return [Validators.required];
+      validators.push(Validators.required);
     }
-    return [];
+    return validators;
   }
 
   private hasValue(condition: string | undefined | null) {
@@ -121,5 +130,18 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  private valueValidation(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      const inputValue: string = control.value;
+      const regex = /^[0-9,.]+$/;
+
+      if (!inputValue || regex.test(inputValue)) {
+        return null; // Return null if the input value is valid
+      } else {
+        return { 'invalidInput': true }; // Return an error object if the input value is invalid
+      }
+    };
   }
 }

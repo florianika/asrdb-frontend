@@ -19,6 +19,7 @@
     <mat-form-field class="full-width">
       <mat-label i18n>Value</mat-label>
       <input matInput formControlName="value">
+      <mat-error *ngIf="rule.controls['value'].errors?.['invalidInput']" i18n>Please make sure you only use numbers, "," and "."</mat-error>
     </mat-form-field>
     <div *ngIf="showDeleteButton">
       <button mat-icon-button (click)="openDeleteConditionDialog()"><mat-icon>delete</mat-icon></button>
@@ -44,7 +45,6 @@
   <mat-dialog-content i18n>This will delete the rule and cannot be undone.</mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>
-    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
     <button mat-raised-button color="warn" [mat-dialog-close]="true">Delete</button>
   </mat-dialog-actions>
 </ng-template>

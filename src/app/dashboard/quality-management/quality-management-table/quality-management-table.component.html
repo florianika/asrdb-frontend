@@ -75,6 +75,6 @@
     </table>
   </div>
 
-  <mat-paginator [disabled]="isLoadingResults" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
+  <mat-paginator [disabled]="isLoadingResults | async" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
     showFirstLastButtons></mat-paginator>
 </div>

@@ -4,6 +4,8 @@ import { EntityType, QualityAction, QualityRule, RuleStatus } from '../../qualit
 import { QualityManagementService } from '../../quality-management.service';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'asrdb-quality-management-form',
@@ -23,12 +25,19 @@ export class QualityManagementFormComponent implements OnInit {
   public secondFormGroup!: FormGroup;
   public thirdFormGroup!: FormGroup;
 
-  constructor(private qualityManagementService: QualityManagementService, private matDialog: MatDialog) { }
+  constructor(
+    private qualityManagementService: QualityManagementService,
+    private matDialog: MatDialog,
+    private matSnackBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute
+  ) {
+
+  }
 
   ngOnInit(): void {
     this.firstFormGroup = new FormGroup({
-      localId: new FormControl<string>({value: this.rule?.localId ?? '', disabled: !!this.id}, [Validators.required]),
-      entityType: new FormControl<EntityType>({ value: this.rule?.entityType ?? 'BUILDING', disabled: true }, [Validators.required]),
+      localId: new FormControl<string>({ value: this.rule?.localId ?? '', disabled: !!this.id }, [Validators.required]),
+      entityType: new FormControl<EntityType>({ value: this.rule?.entityType ?? this.qualityType, disabled: true }, [Validators.required]),
       variable: new FormControl<string>(this.rule?.variable ?? '', [Validators.required]),
       nameAl: new FormControl<string>(this.rule?.nameAl ?? ''),
       nameEn: new FormControl<string>(this.rule?.nameEn ?? ''),
@@ -52,6 +61,9 @@ export class QualityManagementFormComponent implements OnInit {
 
   save() {
     if (this.firstFormGroup.invalid || this.secondFormGroup.invalid || this.thirdFormGroup.invalid) {
+      this.matSnackBar.open('Please check the form for invalid fields marked in red', 'Ok', {
+        duration: 5000
+      });
       return;
     }
     const rule = {
