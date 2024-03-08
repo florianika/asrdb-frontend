@@ -5,7 +5,6 @@ import SketchViewModel from "@arcgis/core/widgets/Sketch/SketchViewModel";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
 import {Injectable} from "@angular/core";
 import Geometry from "@arcgis/core/geometry/Geometry";
-import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
 import {CommonBuildingService} from "../../../service/common-building.service";
 import {CommonEntranceService} from "../../../service/common-entrance.service";
 import {RegisterFilterService} from "../../register-filter.service";
@@ -39,7 +38,7 @@ export class FeatureSelectionService {
 
     // Once user is done drawing a rectangle on the map
     // use the rectangle to select features on the map and table
-    sketchViewModel.on("create", async (event) => {
+    const unsubscribe = sketchViewModel.on("create", async (event) => {
       if (event.state === "complete") {
         // this polygon will be used to query features that intersect it
         const geometries = polygonGraphicsLayer.graphics.map(function (graphic) {
@@ -49,16 +48,28 @@ export class FeatureSelectionService {
         await this.selectFeatures(view, queryGeometry);
       }
     });
+    eventsCleanupCallbacks.push(() => {
+      unsubscribe.remove();
+    });
 
-    featureSelection.addEventListener("click", () => {
+    const featureSelectionListener = () => {
       view.closePopup();
       polygonGraphicsLayer.removeAll();
       sketchViewModel.create("rectangle");
-    });
-    eraseSelection.addEventListener("click", () => {
+    };
+    featureSelection.addEventListener("click", featureSelectionListener);
+    eventsCleanupCallbacks.push(() => {
+      featureSelection.removeEventListener('click', featureSelectionListener);
+    })
+
+    const eraseSelectionListener = () => {
       polygonGraphicsLayer.removeAll();
       this.registerFilterService.setBuildingsGlobalIdFilter([]);
-    });
+    };
+    eraseSelection.addEventListener("click", eraseSelectionListener);
+    eventsCleanupCallbacks.push(() => {
+      eraseSelection.removeEventListener('click', eraseSelectionListener);
+    })
 
     view.ui.add(featureSelection, "top-left");
     view.ui.add(eraseSelection, "top-left");
