@@ -1,39 +1,52 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { Subject, takeUntil, catchError, of as observableOf, merge, startWith, switchMap } from 'rxjs';
-import { ChipComponent, Chip } from 'src/app/common/standalone-components/chip/chip.component';
-import { EntranceListViewFilterComponent } from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DwellingListViewFilterComponent } from './dwelling-list-view-filter/dwelling-list-view-filter.component';
-import { CommonEntranceService } from '../../../service/common-entrance.service';
-import { DwellingFilter } from '../../../model/dwelling';
-import { QueryFilter } from '../../../model/query-filter';
-import { CommonDwellingService } from '../../../service/common-dwellings.service';
-import { CommonRegisterHelperService } from '../../../service/common-helper.service';
-import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
-import { DwellingDetailsFormComponent } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
-import { Entrance } from '../../../model/entrance';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component,
+  Input,
+  isDevMode,
+  OnChanges,
+  OnDestroy,
+  OnInit, SimpleChanges,
+  ViewChild
+} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
+import {catchError, merge, of as observableOf, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chip.component';
+import {
+  EntranceListViewFilterComponent
+} from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
+import {DwellingListViewFilterComponent} from './dwelling-list-view-filter/dwelling-list-view-filter.component';
+import {CommonEntranceService} from '../../../service/common-entrance.service';
+import {DwellingFilter} from '../../../model/dwelling';
+import {QueryFilter} from '../../../model/query-filter';
+import {CommonDwellingService} from '../../../service/common-dwellings.service';
+import {CommonRegisterHelperService} from '../../../service/common-helper.service';
+import {DwellingDetailsComponent} from './dwelling-details/dwelling-details.component';
+import {
+  DwellingDetailsFormComponent
+} from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
+import {Entrance} from '../../../model/entrance';
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
   templateUrl: './dwelling-list-view.component.html',
   styleUrls: ['./dwelling-list-view.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [CommonDwellingService, CommonEntranceService],
   imports: [MatIconModule, MatDialogModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
 })
-export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() buildingGlobalId?: string;
+export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+  @Input() entranceId?: string;
   @Input() entrances: Entrance[] = [];
-  buildingIdQueryParam?: string | null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -45,8 +58,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   data: any[] = [];
   fields: any[] = [];
   resultsLength = 0;
-  isLoadingResults = true;
-  entranceConditionCreated = false;
+  isLoadingResults = false;
 
   // TODO: Add correct filter
   filterConfig: DwellingFilter = {
@@ -69,40 +81,33 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     return Object
       .entries(this.filterConfig.filter)
       .filter(([, value]) => !!value)
-      .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
+      .map(([key, value]): any => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
   }
 
   constructor(
     private commonDwellingBuildingService: CommonDwellingService,
     private commonEntranceBuildingService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
-    private matDialog: MatDialog,
-    private router: Router,
-    private activatedRoute: ActivatedRoute) {
+    private changeDetectorRef: ChangeDetectorRef,
+    private matDialog: MatDialog) {
   }
 
   ngOnInit() {
-    let buildingId;
-    const entranceId = this.activatedRoute.snapshot.queryParamMap.get('entrance');
-
-    this.buildingIdQueryParam = this.activatedRoute.snapshot.queryParamMap.get('building');
-    if (this.buildingIdQueryParam) {
-      buildingId = this.buildingIdQueryParam?.replace('{', '').replace('}', '');
-    } else if (this.buildingGlobalId) {
-      buildingId = this.buildingGlobalId?.replace('{', '').replace('}', '');
-    }
-
-    if (buildingId) {
-      this.loadDwellingsForBuilding(buildingId);
-    } else if (entranceId) {
-      this.loadDwellingsForEntrances(entranceId);
+    if (this.entranceId) {
+      this.loadDwellingsForEntrances(this.entranceId);
+      this.loadDwellings().pipe(
+        takeUntil(this.subscriber),
+        switchMap(() => this.loadDwellings()),
+      ).subscribe((res) => this.handleResponse(res));
+    } else {
+      this.isLoadingResults = false;
     }
   }
 
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    if (this.buildingGlobalId || this.buildingIdQueryParam) {
+    if (this.entranceId) {
       merge(this.sort.sortChange, this.paginator.page)
         .pipe(
           takeUntil(this.subscriber),
@@ -114,10 +119,19 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
         takeUntil(this.subscriber),
-        startWith({}),
         switchMap(() => this.loadDwellings()),
       )
       .subscribe((res) => this.handleResponse(res));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['entranceId'] && changes['entranceId'].currentValue !== changes['entranceId'].previousValue) {
+      this.loadDwellingsForEntrances(changes['entranceId'].currentValue);
+      this.loadDwellings().pipe(
+        takeUntil(this.subscriber),
+        switchMap(() => this.loadDwellings()),
+      ).subscribe((res) => this.handleResponse(res));
+    }
   }
 
   ngOnDestroy(): void {
@@ -136,7 +150,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   openFilter() {
     this.matDialog
       .open(DwellingListViewFilterComponent, {
-        data: { filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.buildingGlobalId }
+        data: { filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.entranceId }
       }).afterClosed().subscribe((newFilterConfig: DwellingFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
@@ -183,9 +197,9 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     const conditions: string[] = [];
     Object
       .entries(this.filterConfig.filter)
-      .filter(([, value]) => !!value)
-      .map(([key, value]) => ({ column: key, value } as Chip))
-      .forEach(filter => {
+      .filter(([, value]: any) => !!value)
+      .map(([key, value]: any) => ({ column: key, value } as Chip))
+      .forEach((filter: any) => {
         if (filter.column === 'fk_entrance') {
           conditions.push(filter.column + ' in ' + filter.value);
         } else {
@@ -205,11 +219,9 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       start: this.paginator.pageIndex * this.paginator.pageSize,
       num: this.paginator.pageSize,
       outFields: this.columns,
-      where: this.prepareWhereCase()
+      where: this.prepareWhereCase(),
+      orderByFields: this.sort.active ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()] : undefined
     } as Partial<QueryFilter>;
-    if (this.sort.active) {
-      filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
-    }
     return this.commonDwellingBuildingService.getDwellings(filter).pipe(catchError((err) => {
       console.log(err);
       return observableOf(null);
@@ -221,6 +233,9 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       console.log('Dwellings: ', res);
     }
     if (!res) {
+      this.isLoadingResults = false;
+      this.data = [];
+      this.changeDetectorRef.markForCheck();
       return;
     }
     if (res.data.fields.length) {
@@ -230,6 +245,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.data = res.data.features.map((feature: any) => feature.attributes);
     this.isLoadingResults = false;
     this.prepareFilter();
+    this.changeDetectorRef.markForCheck();
   }
 
   private prepareFilter() {
@@ -255,29 +271,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     });
   }
 
-  private loadDwellingsForBuilding(buildingId: string) {
-    this.commonEntranceBuildingService.getEntranceData({
-      where: `fk_buildings='${buildingId?.replace('{', '').replace('}', '')}'`
-    })
-      .pipe(takeUntil(this.subscriber))
-      .subscribe((res => {
-        if (res.count) {
-          const condition = res.data.features
-            .map((feature: any) => feature.attributes)
-            .reduce((currentValue: string[], item: any) => {
-              currentValue.push(`'${item.GlobalID.replace('{', '').replace('}', '')}'`);
-              return currentValue;
-            }, [])
-            .join(', ');
-          this.filterConfig.filter.fk_entrance = `(${condition})`;
-          this.reload();
-        } else {
-          this.isLoadingResults = false;
-        }
-      }));
-  }
-
   private loadDwellingsForEntrances(entranceId: string) {
-    this.filterConfig.filter.fk_entrance = `('${entranceId.replace('{', '').replace('}', '')}')`;
+    this.filterConfig.filter.fk_entrance = `('${entranceId}')`;
   }
 }

@@ -35,6 +35,7 @@ import { RegisterFilterService } from '../register-table-view/register-filter.se
 export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   isLoadingResults = true;
   building: any;
+  selectedEntrance: string | undefined;
   id?: string = '';
 
   sections = [
@@ -239,6 +240,10 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   setEntrances(entrances: Entrance[]) {
     this.loadedEntrances = entrances;
+  }
+
+  setSelectedEntrance(entranceId: string) {
+    this.selectedEntrance = entranceId;
   }
 
   private prepareWhereCase() {

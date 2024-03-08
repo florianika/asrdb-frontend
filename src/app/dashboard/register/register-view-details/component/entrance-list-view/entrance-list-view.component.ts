@@ -29,10 +29,13 @@ import { EntranceDetailsComponent } from './entrance-details/entrance-details.co
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() buildingGlobalId?: string;
   @Output() entrancesLoaded = new EventEmitter<Entrance[]>();
-  buildingIdQueryParam?: string | null;
+  @Output() entranceSelected = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  buildingIdQueryParam?: string | null;
+  selectedEntrance: string | undefined;
 
   private columns = ['GlobalID', 'EntBuildingNumber', 'EntEntranceNumber', 'EntTown', 'EntZipCode', 'EntPointStatus', 'EntDwellingRecs', 'EntDwellingExpec'];
   private subscriber = new Subject();
@@ -135,6 +138,11 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   editBuilding(globalId: string) {
     this.router.navigateByUrl('dashboard/register/form/' + globalId);
+  }
+
+  selectEntrance(entranceId: string) {
+    this.entranceSelected.emit(entranceId);
+    this.selectedEntrance = entranceId;
   }
 
   private handlePopupClose(newFilterConfig: EntranceFilter | null) {

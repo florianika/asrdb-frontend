@@ -1,2 +1,6 @@
 @import 'https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/light/main.css';
 @import '../../../../style/table.css';
+
+.selected-entrance-row {
+  background: lightgray;
+}
