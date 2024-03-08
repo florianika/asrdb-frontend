@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { BuildingFilter } from '../model/building';
-import { CommonRegisterHelperService } from '../service/common-helper.service';
-import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
-import { BehaviorSubject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {BuildingFilter} from '../model/building';
+import {CommonRegisterHelperService} from '../service/common-helper.service';
+import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable()
 export class RegisterFilterService {
@@ -18,7 +18,7 @@ export class RegisterFilterService {
       BldMunicipality: '',
       BldStatus: '',
       BldType: '',
-      GlobalID: ''
+      GlobalID: '',
     },
     options: {
       BldMunicipality: [] as never[],
@@ -31,6 +31,12 @@ export class RegisterFilterService {
   private fields: never[] = [];
 
   constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService) {
+  }
+
+  setBuildingsGlobalIdFilter(globalIds: string[]) {
+    const filterValue = JSON.parse(JSON.stringify(this.filter.getValue()));
+    filterValue.filter.GlobalID = globalIds.map(id => (`'${id}'`)).join(',');
+    this.filter.next(filterValue);
   }
 
   setBuildingGlobalIdFilter(globalId: string) {
@@ -66,7 +72,11 @@ export class RegisterFilterService {
       .filter(([, value]) => !!value)
       .map(([key, value]) => ({ column: key, value } as Chip))
       .forEach(filter => {
-        conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
+        if (filter.column === 'GlobalID') {
+          conditions.push(filter.column + ' in (' + filter.value + ')');
+        } else {
+          conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
+        }
       });
     return conditions.length ? conditions.join(' and ') : '1=1';
   }

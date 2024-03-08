@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import MapView from '@arcgis/core/views/MapView';
 import { RegisterMapService } from './register-map.service';
 import { RegisterFilterService } from '../register-filter.service';
+import {BaseMapChangeService} from "./custom-map-logic/basemap-change";
+import {FeatureSelectionService} from "./custom-map-logic/feature-selection";
 
 @Component({
   selector: 'asrdb-register-map',
   standalone: true,
   imports: [CommonModule],
-  providers: [RegisterMapService],
+  providers: [RegisterMapService, BaseMapChangeService, FeatureSelectionService],
   templateUrl: './register-map.component.html',
   styleUrls: ['./register-map.component.css']
 })

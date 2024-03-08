@@ -9,7 +9,8 @@ import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { RegisterFilterService } from '../register-filter.service';
-import {createBasemapChangeAction} from "./custom-map-logic/basemap-change";
+import { FeatureSelectionService } from "./custom-map-logic/feature-selection";
+import { BaseMapChangeService } from "./custom-map-logic/basemap-change";
 
 export type MapInitOptions = {
   enableFilter: boolean,
@@ -27,6 +28,8 @@ export class RegisterMapService {
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
     private registerFilterService: RegisterFilterService,
+    private baseMapChangeService: BaseMapChangeService,
+    private featureSelectionService: FeatureSelectionService,
     private esriAuthService: CommonEsriAuthService) {
     this.bldlayer = this.buildingService.bldLayer;
     this.entlayer = this.entranceService.entLayer;
@@ -89,11 +92,11 @@ export class RegisterMapService {
         }, 100);
       });
     }
-
     this.filterBuildingData(view, options.bldWhereCase);
     this.filterEntranceData(view, options.entWhereCase);
 
-    createBasemapChangeAction(view, webmap, this.eventsCleanupCallbacks);
+    this.baseMapChangeService.createBasemapChangeAction(view, webmap, this.eventsCleanupCallbacks);
+    this.featureSelectionService.createFeatureSelection(view, webmap, this.eventsCleanupCallbacks);
 
     return view;
   }
