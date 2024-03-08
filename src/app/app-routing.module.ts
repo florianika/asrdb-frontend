@@ -4,6 +4,7 @@ import { NotAuthorizedComponent } from './common/components/not-authorized/not-a
 import { NotFoundComponent } from './common/components/not-found/not-found.component';
 
 const routes: Routes = [
+  {path: '', pathMatch: 'full', redirectTo: 'dashboard'},
   {path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)},
   {path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
   {path: '403', component: NotAuthorizedComponent},

@@ -115,7 +115,8 @@ export class QualityManagementExpressionBuilderComponent implements OnInit {
   }
 
   private getValueValidations(condition: ICondition) {
-    const validators = [this.valueValidation()];
+    // const validators = [this.valueValidation()];
+    const validators = [];
     if (this.hasValue(condition.condition)) {
       validators.push(Validators.required);
     }
