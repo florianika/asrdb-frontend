@@ -9,6 +9,7 @@ import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { RegisterFilterService } from '../register-filter.service';
+import {createBasemapChangeAction} from "./custom-map-logic/basemap-change";
 
 export type MapInitOptions = {
   enableFilter: boolean,
@@ -20,6 +21,7 @@ export type MapInitOptions = {
 export class RegisterMapService {
   private bldlayer;
   private entlayer;
+  private eventsCleanupCallbacks: (() => void)[] = [];
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -64,6 +66,7 @@ export class RegisterMapService {
     });
 
     view.when(() => {
+      view.popupEnabled = true;
       view.popup.set('dockOptions', {
         breakpoint: false,
         buttonEnabled: false,
@@ -90,7 +93,13 @@ export class RegisterMapService {
     this.filterBuildingData(view, options.bldWhereCase);
     this.filterEntranceData(view, options.entWhereCase);
 
+    createBasemapChangeAction(view, webmap, this.eventsCleanupCallbacks);
+
     return view;
+  }
+
+  cleanup() {
+    this.eventsCleanupCallbacks.forEach(event => event());
   }
 
   async filterBuildingData(view: MapView, whereCondition: string) {

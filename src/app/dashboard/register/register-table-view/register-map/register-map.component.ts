@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import MapView from '@arcgis/core/views/MapView';
 import { RegisterMapService } from './register-map.service';
@@ -44,6 +44,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
       // destroy the map view
       this.view.destroy();
     }
+    this.registerMapService.cleanup();
   }
 
   async initializeMap(): Promise<any> {
