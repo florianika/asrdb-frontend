@@ -7,7 +7,7 @@
 .asrbd-table-container {
   position: relative;
   min-height: 200px;
-  max-height: 700px;
+  max-height: calc(100vh - 202px);
   overflow: auto;
 }
 

@@ -1,0 +1,3 @@
+<div #mapViewNode></div>
+<mat-error *ngIf="formGroup.controls['buildingPoly']?.invalid" class="custom-error-message" i18n><mat-icon inline>error</mat-icon> Please draw the building to continue!</mat-error>
+<mat-error *ngIf="formGroup.controls['entrancePoints']?.invalid" class="custom-error-message" i18n><mat-icon inline>error</mat-icon> Please draw at least one entrance point to continue!</mat-error>

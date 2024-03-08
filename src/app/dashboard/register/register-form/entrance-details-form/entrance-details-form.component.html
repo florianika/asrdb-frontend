@@ -1,0 +1,25 @@
+<form [formGroup]="formGroup" style="padding: 10px 15px;">
+  <mat-accordion multi>
+    <mat-expansion-panel *ngFor="let id of ids; let index = index" [expanded]="index === 0">
+      <mat-expansion-panel-header>
+        <mat-panel-title i18n>
+          Entrance {{id}}
+        </mat-panel-title>
+        <mat-panel-description i18n>
+          Please, fill as mutch of the data as possible
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <ng-container *ngFor="let formItem of formStructure">
+        <mat-form-field class="full-width" *ngIf="formItem.name.includes(id)">
+          <mat-label>{{formItem.alias}}</mat-label>
+          <input *ngIf="formItem.type !== 'select'" matInput [formControlName]="formItem.name" [type]="formItem.type">
+
+          <mat-select *ngIf="formItem.type === 'select'" [formControlName]="formItem.name">
+            <mat-option *ngFor="let option of formItem.selectOptions" [value]="option.value">{{ option.text
+              }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</form>

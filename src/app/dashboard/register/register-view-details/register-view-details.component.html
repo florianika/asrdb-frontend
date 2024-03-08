@@ -1,0 +1,41 @@
+<div *ngIf="!isLoadingResults" class="building-details-container">
+  <mat-card class="building-details-card">
+    <mat-card-content>
+      <button mat-icon-button style="float: right;" (click)="editBuilding(building.GlobalID)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <h2 class="details-header" i18n>Details for building: {{building.GlobalID}}</h2>
+      <span class="details-subheader" i18n>Quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
+      <section *ngFor="let section of sections">
+        <h3>{{section.title}}</h3>
+        <asrdb-building-detail *ngFor="let entry of section.entries" [title]="entry.title" [value]="entry.value"></asrdb-building-detail>
+        <hr>
+      </section>
+    </mat-card-content>
+  </mat-card>
+  <div class="building-last-modified-card">
+    <mat-card>
+      <mat-card-content>
+        <h2 i18n>History details</h2>
+        <div>
+          <span i18n>Created by: </span>
+          <span>{{building.created_user}} - {{building.created_date}}</span>
+        </div>
+        <div>
+          <span i18n>Last edited by: </span>
+          <span>{{building.last_edited_user}} - {{building.last_edited_date}}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <asrdb-register-map [enableFilter]="false" [buildingGlobalId]="id"></asrdb-register-map>
+  </div>
+
+  <div class="full-width">
+    <asrdb-entrance-list-view [buildingGlobalId]="building.GlobalID" (entrancesLoaded)="setEntrances($event)"></asrdb-entrance-list-view>
+  </div>
+
+  <div class="full-width">
+    <asrdb-dwelling-list-view [buildingGlobalId]="building.GlobalID" [entrances]="loadedEntrances"></asrdb-dwelling-list-view>
+  </div>
+</div>

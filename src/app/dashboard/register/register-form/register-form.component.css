@@ -1,0 +1,9 @@
+@import 'https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/light/main.css';
+
+.entity-action-button {
+  display: flex;
+}
+
+.entity-action-button > span {
+  flex-grow: 1;
+}

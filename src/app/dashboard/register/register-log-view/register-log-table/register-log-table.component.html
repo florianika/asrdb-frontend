@@ -1,0 +1,91 @@
+<div class="asrbd-container mat-elevation-z8" style="background-color: white; margin-bottom: 20px;">
+  <div class="header-container">
+    <h1 i18n class="header-title">Rule Execution {{building}}</h1>
+    <span class="spacer"></span>
+    <ng-container *ngIf="executionStatus | async as isExecuting">
+      <button mat-raised-button color="primary" style="margin-right: 10px;" [disabled]="isExecuting | logExecution">
+        <ng-container *ngIf="isExecuting | logExecution">
+          <mat-spinner diameter="20" style="display: inline-block; vertical-align: middle;"></mat-spinner>
+          <span>
+            Execution in progress
+          </span>
+        </ng-container>
+
+        <ng-container *ngIf="!(isExecuting | logExecution)">
+          <mat-icon style="vertical-align: middle;">play_arrow</mat-icon>
+          <span i18n>
+            Start execution
+          </span>
+        </ng-container>
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="asrbd-loading-shade" *ngIf="isLoadingResults | async">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="asrbd-table-container">
+    <table class="asrbd-table" mat-table matSort [dataSource]="(dataSourceObservable | async) ?? []">
+      <ng-container matColumnDef="ruleId">
+        <th mat-header-cell *matHeaderCellDef>Rule ID</th>
+        <td mat-cell *matCellDef="let row">{{row.ruleId}}</td>
+      </ng-container>
+      <ng-container matColumnDef="bldId">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Building ID</th>
+        <td mat-cell *matCellDef="let row" [matTooltip]="row.bldId">{{row.bldId | concatinateMessage}}</td>
+      </ng-container>
+      <ng-container matColumnDef="entId">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Entrance ID</th>
+        <td mat-cell *matCellDef="let row" [matTooltip]="row.entId">{{row.entId | concatinateMessage}}</td>
+      </ng-container>
+      <ng-container matColumnDef="dwlId">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Dwelling ID</th>
+        <td mat-cell *matCellDef="let row" [matTooltip]="row.dwlId">{{row.dwlId | concatinateMessage}}</td>
+      </ng-container>
+      <ng-container matColumnDef="qualityMessageAl">
+        <th mat-header-cell *matHeaderCellDef>Message</th>
+        <td mat-cell *matCellDef="let row" [matTooltip]="row.qualityMessageAl">{{row.qualityMessageAl |
+          concatinateMessage:20}}</td>
+      </ng-container>
+      <ng-container matColumnDef="entityType">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Entity type</th>
+        <td mat-cell *matCellDef="let row">{{row.entityType}}</td>
+      </ng-container>
+      <ng-container matColumnDef="variable">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Variable</th>
+        <td mat-cell *matCellDef="let row">{{row.variable}}</td>
+      </ng-container>
+      <ng-container matColumnDef="qualityStatus">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let row">{{row.qualityStatus}}</td>
+      </ng-container>
+      <ng-container matColumnDef="qualityAction">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Quality action</th>
+        <td mat-cell *matCellDef="let row">{{row.qualityAction}}</td>
+      </ng-container>
+      <ng-container matColumnDef="errorLevel">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Error level</th>
+        <td mat-cell *matCellDef="let row">{{row.errorLevel}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="isLoadingResults | async">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <!-- <button mat-menu-item (click)="viewUser(row)" i18n>View</button>
+            <button mat-menu-item (click)="editUser(row)" i18n>Edit</button>
+            <button mat-menu-item (click)="toggleAccountStatus(row)" i18n>{{ row.accountStatus === "ACTIVE" ?
+              "Terminate" : "Activate" }}</button> -->
+          </mat-menu>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <mat-paginator [length]="resultsLength" [pageSize]="5" [pageSizeOptions]="[5, 30, 100]"></mat-paginator>
+</div>

@@ -24,27 +24,15 @@ export class SideBarComponent implements AfterViewInit {
       visible: true
     },
     {
-      sectionTitle: 'Registers',
+      sectionTitle: '',
       sectionElements: [
         {
           title: 'Building register',
-          path: '/dashboard/buildings-register',
+          path: '/dashboard/register',
           pathMatch: true,
           icon: 'domainm',
           selected: false,
         },
-        {
-          title: 'Entrance register',
-          path: '/dashboard/buildings-register/entrance',
-          icon: 'directions_walk',
-          selected: false,
-        },
-        {
-          title: 'Dwelling register',
-          path: '/dashboard/buildings-register/dwelling',
-          icon: 'meeting_room',
-          selected: false,
-        }
       ],
       visible: true
     },
@@ -111,7 +99,7 @@ export class SideBarComponent implements AfterViewInit {
   private setSelected() {
     for (const sideBarElement of this.sideBarElements) {
       for (const sectionElement of sideBarElement.sectionElements) {
-        sectionElement.selected = this.isSelected(sectionElement.path, !!sectionElement.pathMatch);
+        sectionElement.selected = this.isSelected(sectionElement.path);
       }
     }
   }

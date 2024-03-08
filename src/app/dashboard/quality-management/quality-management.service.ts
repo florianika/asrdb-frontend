@@ -67,6 +67,11 @@ export class QualityManagementService {
     });
   }
 
+  cancleEdit() {
+    this.isSaving.next(false);
+    this.qualityRule.next(null);
+  }
+
   public save(rule: any, qualityType: string) {
     this.isSaving.next(true);
     this.httpClient.post(environment.base_url + SAVE_URL, JSON.stringify(rule), {
@@ -76,6 +81,7 @@ export class QualityManagementService {
     }).subscribe({
       next: (value) => {
         this.isSaving.next(false);
+        this.qualityRule.next(null);
         this.router.navigateByUrl('/dashboard/quality-management/' + qualityType);
         this.snack.open('Quality rule was saved', 'Ok', {
           duration: 3000
@@ -135,6 +141,6 @@ export class QualityManagementService {
           duration: 3000
         });
       },
-    })
+    });
   }
 }

@@ -1,0 +1,34 @@
+<mat-stepper [linear]="true" #stepper *ngIf="!isLoadingData" (selectedIndexChange)="onSelectionChanged($event)">
+  <mat-step [stepControl]="mapDetails">
+    <ng-template matStepLabel i18n>Building pollygon</ng-template>
+    <asrdb-building-creation [formGroup]="mapDetails" [existingBuildingGeometry]="existingBuildingGeometry"
+      [existingEntrancesGeometry]="existingEntrancesGeometry" (centoidUpdated)="updateCentoid($event)"></asrdb-building-creation>
+    <div style="margin-top: 20px;">
+      <button mat-flat-button color="primary" matStepperNext i18n>Next <mat-icon
+          iconPositionEnd>navigate_next</mat-icon></button>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]="buildingDetails">
+    <ng-template matStepLabel i18n>Building details</ng-template>
+    <asrdb-building-details-form [formGroup]="buildingDetails"
+      [existingBuildingDetails]="existingBuildingDetails"></asrdb-building-details-form>
+    <div style="padding-top: 20px;">
+      <button mat-flat-button matStepperPrevious i18n>Back <mat-icon
+          iconPositionBefore>navigate_before</mat-icon></button>
+      <button mat-flat-button color="primary" matStepperNext (click)="setEntranceIds()" i18n>Next <mat-icon
+          iconPositionEnd>navigate_next</mat-icon></button>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]="entranceDetails">
+    <ng-template matStepLabel i18n>Entrance details</ng-template>
+    <asrdb-entrance-details-form [formGroup]="entranceDetails" [ids]="entranceIds"
+      [existingEntrancesDetails]="existingEntrancesDetails"></asrdb-entrance-details-form>
+    <div class="entity-action-button" style="padding-top: 18px;">
+      <button mat-flat-button matStepperPrevious i18n [disabled]="isSaving | async">Back <mat-icon
+          iconPositionBefore>navigate_before</mat-icon></button>
+      <span></span>
+      <button mat-flat-button color="primary" (click)="save()" i18n [disabled]="isSaving | async">Save changes <mat-icon
+          iconPositionBefore>save</mat-icon></button>
+    </div>
+  </mat-step>
+</mat-stepper>

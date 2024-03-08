@@ -1,0 +1,12 @@
+<form [formGroup]="formGroup">
+  <ng-container *ngFor="let formItem of formStructure">
+    <mat-form-field class="full-width">
+      <mat-label>{{formItem.alias}}</mat-label>
+      <input *ngIf="formItem.type !== 'select'" matInput [formControlName]="formItem.name" [type]="formItem.type">
+
+      <mat-select *ngIf="formItem.type === 'select'" [formControlName]="formItem.name">
+        <mat-option *ngFor="let option of formItem.selectOptions" [value]="option.value">{{ option.text }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+</form>
