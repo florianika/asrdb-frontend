@@ -18,7 +18,7 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
-import {catchError, merge, of as observableOf, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {catchError, merge, of as observableOf, Subject, switchMap, takeUntil} from 'rxjs';
 import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chip.component';
 import {
   EntranceListViewFilterComponent

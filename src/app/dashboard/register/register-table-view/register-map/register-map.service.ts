@@ -35,7 +35,7 @@ export class RegisterMapService {
     const graphicsLayer = new GraphicsLayer();
 
     const webmap = new WebMap({
-      basemap: 'hybrid',
+      basemap: 'osm',
       layers: [graphicsLayer, this.bldlayer, this.entlayer],
       applicationProperties: {
         viewing: {
