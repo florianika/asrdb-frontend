@@ -40,21 +40,11 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   sections = [
     {
-      title: 'General details',
+      title: 'Technical variables',
       entries: [
         {
           title: '',
-          propName: 'BldMunicipality',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldCadastralZone',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldAddressID',
+          propName: 'BldID',
           value: ''
         },
         {
@@ -64,7 +54,87 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         },
         {
           title: '',
+          propName: 'BldAddressID',
+          value: ''
+        },
+      ]
+    },
+    {
+      title: 'Identifying variables',
+      entries: [
+        {
+          title: '',
+          propName: 'BldMunicipality',
+          value: ''
+        },
+        {
+          title: '',
           propName: 'BldEnumArea',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldLatitude',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldLongitude',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldCentroidStatus',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldCadastralZone',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldProperty',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldPermitNumber',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldPermitDate',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldDwellingRecs',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldEntranceRecs',
+          value: ''
+        },
+      ]
+    },
+    {
+      title: 'Describing variables',
+      entries: [
+        {
+          title: '',
+          propName: 'BldStatus',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldYearConstruction',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldYearDemolition',
           value: ''
         },
         {
@@ -74,37 +144,12 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         },
         {
           title: '',
-          propName: 'BldStatus',
-          value: ''
-        },
-        {
-          title: '',
           propName: 'BldClass',
           value: ''
         },
         {
           title: '',
-          propName: 'BldProperty',
-          value: ''
-        },
-      ]
-    },
-    {
-      title: 'Building measurements',
-      entries: [
-        {
-          title: '',
           propName: 'BldArea',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldVolume',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldHeight',
           value: ''
         },
         {
@@ -119,42 +164,22 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         },
         {
           title: '',
+          propName: 'BldHeight',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'BldVolume',
+          value: ''
+        },
+        {
+          title: '',
           propName: 'BldDwellingRecs',
           value: ''
         },
         {
           title: '',
           propName: 'BldEntranceRecs',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldLatitude',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldLongitude',
-          value: ''
-        },
-      ]
-    },
-    {
-      title: 'Building utilities',
-      entries: [
-        {
-          title: '',
-          propName: 'BldElectricity',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldElevator',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldPipedGas',
           value: ''
         },
         {
@@ -172,29 +197,19 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
           propName: 'BldWasteWater',
           value: ''
         },
-      ]
-    },
-    {
-      title: 'Other details',
-      entries: [
         {
           title: '',
-          propName: 'BldYearConstruction',
+          propName: 'BldElectricity',
           value: ''
         },
         {
           title: '',
-          propName: 'BldYearDemolition',
+          propName: 'BldPipedGas',
           value: ''
         },
         {
           title: '',
-          propName: 'BldPermitDate',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'BldPermitNumber',
+          propName: 'BldElevator',
           value: ''
         },
       ]

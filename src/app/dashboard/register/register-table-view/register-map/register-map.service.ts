@@ -77,7 +77,7 @@ export class RegisterMapService {
       });
     });
     if (options.enableFilter) {
-      view.on('click', () => {
+      const cleanup = view.on('click', () => {
         // event is the event handle returned after the event fires.
         setTimeout(() => {
           if (isDevMode()) {
@@ -91,9 +91,12 @@ export class RegisterMapService {
           this.registerFilterService.setBuildingGlobalIdFilter(globalId);
         }, 100);
       });
+      this.eventsCleanupCallbacks.push(() => {
+        cleanup.remove();
+      });
     }
-    this.filterBuildingData(view, options.bldWhereCase);
-    this.filterEntranceData(view, options.entWhereCase);
+    void this.filterBuildingData(view, options.bldWhereCase);
+    void this.filterEntranceData(view, options.entWhereCase);
 
     this.baseMapChangeService.createBasemapChangeAction(view, webmap, this.eventsCleanupCallbacks);
     this.featureSelectionService.createFeatureSelection(view, webmap, this.eventsCleanupCallbacks);

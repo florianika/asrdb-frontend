@@ -29,16 +29,46 @@ export class EntranceDetailsComponent implements OnInit {
 
   sections = [
     {
-      title: 'General details',
+      title: 'Technical variables',
       entries: [
         {
           title: '',
-          propName: 'EntTown',
+          propName: 'EntID',
           value: ''
         },
         {
           title: '',
           propName: 'EntBuildingID',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'EntAddressID',
+          value: ''
+        },
+      ]
+    },
+    {
+      title: 'Identifying variables',
+      entries: [
+        {
+          title: '',
+          propName: 'EntLatitude',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'EntLongitude',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'EntPointStatus',
+          value: ''
+        },
+        {
+          title: '',
+          propName: 'EntStreetCode',
           value: ''
         },
         {
@@ -53,24 +83,19 @@ export class EntranceDetailsComponent implements OnInit {
         },
         {
           title: '',
+          propName: 'EntTown',
+          value: ''
+        },
+        {
+          title: '',
           propName: 'EntZipCode',
           value: ''
         },
-        {
-          title: '',
-          propName: 'EntAddressID',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'EntStreetCode',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'EntPointStatus',
-          value: ''
-        },
+      ]
+    },
+    {
+      title: 'Describing variables',
+      entries: [
         {
           title: '',
           propName: 'EntDwellingRecs',
@@ -79,16 +104,6 @@ export class EntranceDetailsComponent implements OnInit {
         {
           title: '',
           propName: 'EntDwellingExpec',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'EntLatitude',
-          value: ''
-        },
-        {
-          title: '',
-          propName: 'EntLongitude',
           value: ''
         },
       ]

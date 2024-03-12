@@ -29,8 +29,13 @@ export class DwellingDetailsComponent implements OnInit {
 
   sections = [
     {
-      title: 'General details',
+      title: 'Technical variables',
       entries: [
+        {
+          title: '',
+          propName: 'DwlID',
+          value: ''
+        },
         {
           title: '',
           propName: 'DwlEntranceID',
@@ -45,7 +50,12 @@ export class DwellingDetailsComponent implements OnInit {
           title: '',
           propName: 'DwlAddressID',
           value: ''
-        },
+        }
+      ],
+    },
+    {
+      title: 'Identifying variables',
+      entries: [
         {
           title: '',
           propName: 'DwlFloor',
@@ -55,7 +65,12 @@ export class DwellingDetailsComponent implements OnInit {
           title: '',
           propName: 'DwlApartNumber',
           value: ''
-        },
+        }
+      ]
+    },
+    {
+      title: 'Describing variables',
+      entries: [
         {
           title: '',
           propName: 'DwlStatus',
@@ -91,11 +106,6 @@ export class DwellingDetailsComponent implements OnInit {
           propName: 'DwlSurface',
           value: ''
         },
-      ],
-    },
-    {
-      title: 'Facilities',
-      entries: [
         {
           title: '',
           propName: 'DwlWaterSupply',
@@ -130,7 +140,7 @@ export class DwellingDetailsComponent implements OnInit {
           title: '',
           propName: 'DwlSolarPanel',
           value: ''
-        },
+        }
       ]
     }
   ];
