@@ -63,8 +63,10 @@ export class Expression {
 
   static fromString(expressionString: string, prevExpression?: Expression): Expression {
     let index = Expression.getOperatorIndex(expressionString);
-    const endOfOperator = expressionString.indexOf(' ', index);
-    const operator = index === -1 ? undefined : expressionString.substring(index, endOfOperator) as Operator;
+    const endOfOperator = expressionString.indexOf(' ', index + 1);
+    const operator = index === -1
+      ? undefined
+      : expressionString.substring(index, endOfOperator).trim() as Operator;
 
     if (index === -1) {
       index = expressionString.length;
@@ -166,8 +168,10 @@ export class Expression {
   }
 
   private static getOperatorIndex(expression: string) {
-    const andIndex = expression.indexOf(OperatorsToExpressionMap.get(Operator.AND) ?? '-99999');
-    const orIndex = expression.indexOf(OperatorsToExpressionMap.get(Operator.OR) ?? '-99999');
+    const andOperator = ` ${OperatorsToExpressionMap.get(Operator.AND)} `;
+    const orOperator = ` ${OperatorsToExpressionMap.get(Operator.OR)} `;
+    const andIndex = expression.indexOf(andOperator ?? '-99999');
+    const orIndex = expression.indexOf(orOperator ?? '-99999');
 
     if (andIndex === -1) {
       return orIndex;
@@ -177,7 +181,7 @@ export class Expression {
       return andIndex;
     }
 
-    return Math.min(andIndex, orIndex);
+    return Math.min(andIndex + 1, orIndex + 1);
   }
 
   private static getVariableAndGroup(variable: string) {
