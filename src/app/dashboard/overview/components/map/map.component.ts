@@ -79,10 +79,6 @@ export class MapComponent implements OnInit, OnDestroy {
         position: 'top-left'
       });
     });
-
-    (await this.view.whenLayerView(this.bldlayer)).filter = new FeatureFilter({
-      where: 'BldType > 2'
-    });
     this.view.goTo(this.bldlayer.fullExtent);
   }
 }

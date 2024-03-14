@@ -15,7 +15,11 @@ export class RegisterFilterService {
 
   private filter = new BehaviorSubject<BuildingFilter>({
     filter: {
-      BldMunicipality: '',
+      // add default value if possible
+      // default value will be Unknown
+      // This is done to prevent any value to be loaded on init.
+      // user can change this to load what they want
+      BldMunicipality: '99',
       BldStatus: '',
       BldType: '',
       GlobalID: '',
