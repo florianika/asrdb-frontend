@@ -29,7 +29,7 @@
     Do you want to continue
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close i18n>Cancel</button>
-    <button mat-raised-button color="warn" [mat-dialog-close]="true" i18n>Close dialog</button>
+    <button mat-button mat-dialog-close i18n [disabled]="!!(isSaving | async)" >Cancel</button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="true" [disabled]="!!(isSaving | async)" i18n>Close dialog</button>
   </mat-dialog-actions>
 </ng-template>

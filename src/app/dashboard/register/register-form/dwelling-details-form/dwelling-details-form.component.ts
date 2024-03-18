@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, TemplateRef, ViewChild, isDevMode } from '@angular/core';
+import { Component, Inject, OnDestroy, TemplateRef, ViewChild, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -125,7 +125,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   private createFormControlForField(field: never) {
     const fieldName = field[NAME_PROP];
     const value = this.dwelling?.[fieldName];
-    const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
+    const defaultValue = fieldName === 'fk_entrance' ? undefined: (field[DEFAULT_VALUE_PROP] ?? '');
     const control = new FormControl(value ? value : defaultValue);
     if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
@@ -183,6 +183,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     const dwelling = this.formGroup.value as Dwelling;
     if (this.dwelling) {
       dwelling.GlobalID = this.dwelling.GlobalID;
+      dwelling.OBJECTID = this.dwelling.OBJECTID;
     }
     this.dwellingCreationService.saveDwelling(dwelling);
   }

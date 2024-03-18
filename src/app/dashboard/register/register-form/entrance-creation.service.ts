@@ -17,13 +17,13 @@ export class EntranceManagementService {
 
   private responseHandler = () => ({
     next: (response: EntityManageResponse) => {
-      if (!response['addResults']?.[0]?.success && response['updateResults']?.[0]?.success) {
+      if (!response['addResults']?.[0]?.success && !response['updateResults']?.[0]?.success) {
         this.snackBar.open('Could not save entrance data', 'Ok', {
           duration: 3000
         });
-        this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + this.buildingId);
       }
       this.isSaving.next(false);
+      this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + this.buildingId);
     },
     error: () => {
       this.isSaving.next(false);

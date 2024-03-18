@@ -159,10 +159,15 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       data: {
         entrances: this.entrances
       }
+    }).afterClosed().subscribe(() => {
+      this.reload();
     });
   }
 
   reload() {
+    if (!this.filterConfig.filter.fk_entrance) {
+      return;
+    }
     this.loadDwellings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
   }
 
@@ -183,6 +188,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         entrances: this.entrances,
         id: globalId
       }
+    }).afterClosed().subscribe(() => {
+      this.reload();
     });
   }
 

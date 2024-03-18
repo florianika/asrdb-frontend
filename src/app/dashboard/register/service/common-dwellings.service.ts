@@ -43,9 +43,10 @@ export class CommonDwellingService {
     const addFeatureLayerURL = environment.dwelling_url
     + '/addFeatures?token='
     + this.esriAuthService.getTokenForResource(environment.dwelling_url);
-    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+    const body = this.createRequestBody(features);
+    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
   }
@@ -54,9 +55,10 @@ export class CommonDwellingService {
     const addFeatureLayerURL = environment.dwelling_url
     + '/updateFeatures?token='
     + this.esriAuthService.getTokenForResource(environment.dwelling_url);
-    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+    const body = this.createRequestBody(features);
+    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
   }
@@ -94,5 +96,12 @@ export class CommonDwellingService {
     } catch (e) {
       return null;
     }
+  }
+
+  private createRequestBody(features: any[]) {
+    const data = [];
+    data.push(encodeURIComponent('features') + '=' + encodeURIComponent(JSON.stringify(features)));
+    data.push(encodeURIComponent('f') + '=' + encodeURIComponent('json'));
+    return data.join('&');
   }
 }

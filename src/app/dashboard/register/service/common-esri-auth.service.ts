@@ -61,7 +61,7 @@ export class CommonEsriAuthService implements OnDestroy {
     if (credentials) {
       const parsedCredentials: Credentials = JSON.parse(credentials);
       const credential = parsedCredentials.credentials.find((c) => c.resources.includes(url));
-      return credential ? credential.token : '';
+      return credential ? credential.token : parsedCredentials.credentials[0].token;
     }
     return '';
   }

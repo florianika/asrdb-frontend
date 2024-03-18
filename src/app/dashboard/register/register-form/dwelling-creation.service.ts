@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { EntityManageResponse } from '../model/entity-req-res';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonDwellingService } from '../service/common-dwellings.service';
-import { Dwelling } from '../model/dwelling';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {EntityManageResponse} from '../model/entity-req-res';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {CommonDwellingService} from '../service/common-dwellings.service';
+import {Dwelling} from '../model/dwelling';
 
 @Injectable()
 export class DwellingManagementService {
@@ -14,7 +14,7 @@ export class DwellingManagementService {
 
   private responseHandler = () => ({
     next: (response: EntityManageResponse) => {
-      if (!response['addResults']?.[0]?.success && response['updateResults']?.[0]?.success) {
+      if (!response['addResults']?.[0]?.success && !response['updateResults']?.[0]?.success) {
         this.snackBar.open('Could not save dwelling data', 'Ok', {
           duration: 3000
         });
@@ -31,7 +31,6 @@ export class DwellingManagementService {
 
   constructor(private dwellingService: CommonDwellingService, private snackBar: MatSnackBar) {
   }
-
 
   public saveDwelling(dwellingDetails: Dwelling) {
     if (dwellingDetails.GlobalID) {
@@ -59,11 +58,10 @@ export class DwellingManagementService {
         (cleanedAttributes as any)[key] = value;
       }
     });
-    const features = [
+    return [
       {
         'attributes': cleanedAttributes
       },
     ];
-    return features;
   }
 }

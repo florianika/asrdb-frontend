@@ -45,7 +45,7 @@ export class RegisterFormComponent implements OnInit {
   isSaving = zip([this.isSavingBuilding, this.isSavingEntrance])
     .pipe(
       map(([isSavingBuilding, isSavingEntrance]) => {
-        return isSavingBuilding && isSavingEntrance;
+        return isSavingBuilding || isSavingEntrance;
       })
     );
 
@@ -87,8 +87,15 @@ export class RegisterFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.buildingId = this.activatedRoute.snapshot.paramMap.get('id') ?? undefined;
     this.entityType = this.activatedRoute.snapshot.paramMap.get('entity') as EntityType ?? undefined;
+    if (!this.entityType) {
+      this.router.navigateByUrl('dashboard/register');
+      this.matSnackBar.open('No entity type provided', 'Ok', {
+        duration: 3000
+      });
+      return;
+    }
+    this.buildingId = this.activatedRoute.snapshot.paramMap.get('id') ?? undefined;
 
     if (this.entityType === 'ENTRANCE' && !this.buildingId) {
       this.matSnackBar.open('Creating an entrance before a building is not permitted', 'Ok', {

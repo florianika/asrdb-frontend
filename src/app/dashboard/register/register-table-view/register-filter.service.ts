@@ -57,6 +57,12 @@ export class RegisterFilterService {
     this.filter.next(filter);
   }
 
+  removeDefaultValue() {
+    const filterValue = JSON.parse(JSON.stringify(this.filter.getValue()));
+    filterValue.filter.BldMunicipality = '';
+    this.filter.next(filterValue);
+  }
+
   prepareFilter(fields: never[]) {
     this.fields = fields;
     this.filter.next({

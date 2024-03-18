@@ -250,7 +250,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   }
 
   editBuilding(globalId: string) {
-    this.router.navigateByUrl('dashboard/register/form/' + globalId);
+    this.router.navigateByUrl('dashboard/register/form/BUILDING/' + globalId);
   }
 
   setEntrances(entrances: Entrance[]) {

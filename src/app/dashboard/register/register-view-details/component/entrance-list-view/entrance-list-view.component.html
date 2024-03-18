@@ -4,7 +4,7 @@
 
     <div class="spacer"></div>
 
-    <button mat-icon-button [disabled]="isLoadingResults" (click)="editBuilding(buildingGlobalId!)">
+    <button mat-icon-button [disabled]="isLoadingResults" (click)="createEntrance(buildingGlobalId!)">
       <mat-icon style="cursor: pointer;">add</mat-icon>
     </button>
     <button *ngIf="!buildingGlobalId" mat-icon-button (click)="openFilter()" [disabled]="isLoadingResults">
@@ -65,6 +65,7 @@
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item i18n (click)="viewEntranceDetails(element.GlobalID)"><mat-icon>directions_walk</mat-icon> View entrance details</button>
+            <button mat-menu-item i18n (click)="editEntrance(buildingGlobalId!, element.GlobalID)"><mat-icon>edit</mat-icon> Edit entrance details</button>
           </mat-menu>
         </td>
       </ng-container>

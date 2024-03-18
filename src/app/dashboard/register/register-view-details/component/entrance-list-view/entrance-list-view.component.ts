@@ -136,8 +136,13 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
-  editBuilding(globalId: string) {
-    this.router.navigateByUrl('dashboard/register/form/' + globalId);
+  createEntrance(buildingId: string) {
+    this.router.navigateByUrl('dashboard/register/form/ENTRANCE/' + buildingId);
+  }
+
+
+  editEntrance(buildingId: string, globalId: string) {
+    this.router.navigateByUrl('dashboard/register/form/ENTRANCE/' + buildingId + '?entranceId=' + globalId);
   }
 
   selectEntrance(entranceId: string) {
