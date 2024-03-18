@@ -16,6 +16,7 @@ import {FeatureSelectionService} from "./custom-map-logic/feature-selection";
 })
 export class RegisterMapComponent implements OnInit, OnDestroy {
   @Input() enableFilter = true;
+  @Input() enableSelection = true;
   @Input() buildingGlobalId?: string;
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
@@ -52,6 +53,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
   async initializeMap(): Promise<any> {
     this.view = await this.registerMapService.init(this.mapViewEl, {
       enableFilter: this.enableFilter,
+      enableSelection: this.enableSelection,
       bldWhereCase: this.registerFilterService.prepareWhereCase(),
       entWhereCase: this.registerFilterService.prepareWhereCaseForEntrance()
     });

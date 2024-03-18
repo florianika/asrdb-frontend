@@ -14,6 +14,7 @@ import { BaseMapChangeService } from "./custom-map-logic/basemap-change";
 
 export type MapInitOptions = {
   enableFilter: boolean,
+  enableSelection: boolean,
   bldWhereCase: string,
   entWhereCase: string
 }
@@ -98,8 +99,10 @@ export class RegisterMapService {
     void this.filterBuildingData(view, options.bldWhereCase);
     void this.filterEntranceData(view, options.entWhereCase);
 
+    if (options.enableSelection) {
+      this.featureSelectionService.createFeatureSelection(view, webmap, this.eventsCleanupCallbacks);
+    }
     this.baseMapChangeService.createBasemapChangeAction(view, webmap, this.eventsCleanupCallbacks);
-    this.featureSelectionService.createFeatureSelection(view, webmap, this.eventsCleanupCallbacks);
 
     return view;
   }

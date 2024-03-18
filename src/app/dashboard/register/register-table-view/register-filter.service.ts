@@ -77,7 +77,7 @@ export class RegisterFilterService {
       .map(([key, value]) => ({ column: key, value } as Chip))
       .forEach(filter => {
         if (filter.column === 'GlobalID') {
-          conditions.push(filter.column + ' in (' + filter.value + ')');
+          conditions.push(filter.column + ' in (\'' + filter.value + '\')');
         } else {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
         }
