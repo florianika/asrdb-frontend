@@ -12,6 +12,8 @@ import Point from '@arcgis/core/geometry/Point';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {EntityType} from "../../quality-management/quality-management-config";
+import {ActivatedRoute} from "@angular/router";
 
 @Injectable()
 export class EntityCreationMapService {
@@ -25,14 +27,27 @@ export class EntityCreationMapService {
     return this.valueDelete.asObservable();
   }
 
+  private readonly entranceId: string | null;
+
   constructor(
     private esriAuthService: CommonEsriAuthService,
-    private matSnackBar: MatSnackBar
+    private matSnackBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute
   ) {
+    this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId');
   }
 
-  public async initBuildingCreationmap(mapViewEl: ElementRef, editingGeometry?: any[]) {
-    const availableCreateTools = editingGeometry?.length ? ['point'] : ['polygon', 'point'];
+  public async initBuildingCreationMap(mapViewEl: ElementRef, entityType?: EntityType, editingGeometry?: any[]) {
+    const availableCreateTools = [];
+    if (entityType === 'BUILDING' && !editingGeometry?.length) {
+      availableCreateTools.push('polygon');
+    }
+    if (entityType === 'ENTRANCE') {
+      const existingEntrances = editingGeometry!.filter(geometry => geometry.type === 'point');
+      if (!existingEntrances) {
+        availableCreateTools.push('point');
+      }
+    }
     return this.init(mapViewEl, availableCreateTools, editingGeometry);
   }
 
@@ -117,9 +132,8 @@ export class EntityCreationMapService {
         ...event.graphics[0].geometry.toJSON(),
         id: event.graphics[0].attributes.id
       });
-      if (event.graphics[0].geometry.type === 'polygon') {
-        sketch.availableCreateTools = ['polygon', 'point'];
-      }
+
+      sketch.availableCreateTools = [event.graphics[0].geometry.type];
     });
   }
 
@@ -144,7 +158,8 @@ export class EntityCreationMapService {
   private registerCreateEvent(sketch: Sketch) {
     sketch.on('create', (event) => {
       if (event.state === 'complete') {
-        const id = event.graphic.geometry.type === 'polygon' ? null : ('New (' + Math.random() + ')');
+        const type = event.graphic.geometry.type;
+        const id = type === 'polygon' ? null : ('New (' + Math.random() + ')');
         const centroid = event.graphic.geometry.type === 'polygon'
         ? (event.graphic.geometry as any)['centroid']
         : {
@@ -160,9 +175,7 @@ export class EntityCreationMapService {
           id: id
         };
 
-        if (event.graphic.geometry.type === 'polygon') {
-          sketch.availableCreateTools = ['point'];
-        }
+        sketch.availableCreateTools = sketch.availableCreateTools.filter(tool => tool !== type);
       }
     });
   }
@@ -189,7 +202,7 @@ export class EntityCreationMapService {
             width: '1px'
           },
           size: 6,
-          color: 'white'
+          color: this.entranceId === g.id ? 'white' : 'red'
         })
         : new SimpleFillSymbol({
           style: 'forward-diagonal',
@@ -213,7 +226,7 @@ export class EntityCreationMapService {
     return mainGraphic;
   }
 
-  private addCentoidPoint(graphic: Graphic, graphicsLayer: GraphicsLayer) {
+  private addCentroidPoint(graphic: Graphic, graphicsLayer: GraphicsLayer) {
     const pointTest = new Graphic({
       geometry: new Point({
         x: graphic.geometry.extent.center.x,
@@ -225,7 +238,7 @@ export class EntityCreationMapService {
           width: '1px'
         },
         size: 6,
-        color: 'red'
+        color: this.entranceId ? 'white' : 'red'
       })
     });
     graphicsLayer.add(pointTest);

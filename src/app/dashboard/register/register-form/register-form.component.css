@@ -1,9 +1,14 @@
 @import 'https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/light/main.css';
 
-.entity-action-button {
+#entity-management {
   display: flex;
 }
 
-.entity-action-button > span {
-  flex-grow: 1;
+.entity-management-section {
+  display: inline-block;
+  width: 50%;
+}
+
+.entity-management-form {
+  margin-left: 20px;
 }

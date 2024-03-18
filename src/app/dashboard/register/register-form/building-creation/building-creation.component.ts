@@ -6,6 +6,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Centroid, Point } from '../../model/map-data';
+import {EntityType} from "../../../quality-management/quality-management-config";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -23,30 +25,43 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
   @Input() formGroup!: FormGroup;
   @Input() existingBuildingGeometry?: any;
   @Input() existingEntrancesGeometry?: any[];
-  @Output() centoidUpdated = new EventEmitter<Centroid>();
+  @Input() entityType?: EntityType;
+  @Output() centroidUpdated = new EventEmitter<Centroid>();
 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
 
-  constructor(private mapService: EntityCreationMapService) { }
+  get isBuilding() {
+    return this.entityType === 'BUILDING';
+  }
+
+  get isEntrance() {
+    return this.entityType === 'ENTRANCE';
+  }
+
+  constructor(private mapService: EntityCreationMapService, private matSnackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     if (!this.formGroup) {
       this.formGroup = new FormGroup({});
     }
-    this.formGroup.addControl(
-      'buildingPoly', new FormControl(this.existingBuildingGeometry ? this.existingBuildingGeometry.rings : null, [Validators.required])
-    );
-    this.formGroup.addControl(
-      'entrancePoints', new FormControl(this.existingEntrancesGeometry
-        ? this.existingEntrancesGeometry.map(o => ({
-          x: o.x,
-          y: o.y,
-          id: o.id
-        }))
-        : [],
-        [Validators.required, Validators.minLength(1)])
-    );
+    if (this.isBuilding) {
+      this.formGroup.addControl(
+        'buildingPoly', new FormControl(this.existingBuildingGeometry ? this.existingBuildingGeometry.rings : null, [Validators.required])
+      );
+    }
+    if (this.isEntrance) {
+      this.formGroup.addControl(
+        'entrancePoints', new FormControl(this.existingEntrancesGeometry
+            ? this.existingEntrancesGeometry.map(o => ({
+              x: o.x,
+              y: o.y,
+              id: o.id
+            }))
+            : [],
+          [Validators.required, Validators.minLength(1)])
+      );
+    }
 
     // Initialize MapView and return an instance of MapView
     this.initializeMap().then(() => {
@@ -54,11 +69,24 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     });
 
     this.mapService.valueChanged.subscribe((value) => {
+      if (value.rings && !this.isBuilding) {
+        this.matSnackBar
+          .open('You have changed the building polygon while in "Entrance" mode. ' +
+            'This operation is not allowed and changes will not be saved. ' +
+            'To modify the building polygon, please edit the building.', 'Ok');
+        return;
+      } else if (value.x && value.y && !this.isEntrance) {
+        this.matSnackBar
+          .open('You have changed the entrance point while in "Building" mode. ' +
+            'This operation is not allowed and changes will not be saved. ' +
+            'To modify the entrance point, please edit the entrance.', 'Ok');
+        return;
+      }
       if (value.rings) {
         this.formGroup.patchValue({
           buildingPoly: value.rings
         });
-        this.centoidUpdated.emit({ latitude: value.centroid?.latitude, longitude: value.centroid?.longitude });
+        this.centroidUpdated.emit({ latitude: value.centroid?.latitude, longitude: value.centroid?.longitude });
       } else if (value.x && value.y) {
         const currentMapPoint = this.formGroup.value.entrancePoints.filter((mp: Point) => mp.id !== value.id);
         currentMapPoint.push({
@@ -70,7 +98,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           entrancePoints: currentMapPoint
         });
 
-        this.centoidUpdated.emit({ latitude: value.centroid?.latitude, longitude: value.centroid?.longitude, id: value.id });
+        this.centroidUpdated.emit({ latitude: value.centroid?.latitude, longitude: value.centroid?.longitude, id: value.id });
       }
       if (isDevMode()) {
         console.log(this.formGroup.value);
@@ -109,6 +137,6 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     if (this.existingEntrancesGeometry) {
       this.existingEntrancesGeometry.forEach(el => editingGeometry.push(el));
     }
-    this.view = await this.mapService.initBuildingCreationmap(this.mapViewEl, editingGeometry);
+    this.view = await this.mapService.initBuildingCreationMap(this.mapViewEl, this.entityType, editingGeometry);
   }
 }

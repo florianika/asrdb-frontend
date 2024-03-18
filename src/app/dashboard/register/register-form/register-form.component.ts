@@ -15,9 +15,10 @@ import { Centroid, MapFormData } from '../model/map-data';
 import { Building } from '../model/building';
 import { Entrance } from '../model/entrance';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import Geometry from '@arcgis/core/geometry/Geometry';
 import { EntranceManagementService } from './entrance-creation.service';
+import {EntityType} from "../../quality-management/quality-management-config";
 
 @Component({
   selector: 'asrdb-register-form',
@@ -51,6 +52,7 @@ export class RegisterFormComponent implements OnInit {
   isLoadingData = true;
 
   buildingId?: string;
+  entityType?: EntityType;
   existingBuildingDetails?: Building;
   existingBuildingGeometry?: Geometry;
   existingEntrancesDetails?: Entrance[];
@@ -66,16 +68,35 @@ export class RegisterFormComponent implements OnInit {
   private subscriber = new Subject();
   private entranceCentroids: Centroid[] = [];
 
+  get isBuilding() {
+    return this.entityType === 'BUILDING';
+  }
+
+  get isEntrance() {
+    return this.entityType === 'ENTRANCE';
+  }
+
   constructor(
     private entityManagementService: BuildingManagementService,
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     private matSnackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
     this.buildingId = this.activatedRoute.snapshot.paramMap.get('id') ?? undefined;
+    this.entityType = this.activatedRoute.snapshot.paramMap.get('entity') as EntityType ?? undefined;
+
+    if (this.entityType === 'ENTRANCE' && !this.buildingId) {
+      this.matSnackBar.open('Creating an entrance before a building is not permitted', 'Ok', {
+        duration: 3000
+      });
+      void this.router.navigateByUrl('dashboard/register');
+      return;
+    }
+
     if (this.buildingId) {
       const getBuildingRequest = this.buildingService
         .getBuildingData({ returnGeometry: true, where: `globalID='${this.buildingId}'` })
@@ -107,7 +128,7 @@ export class RegisterFormComponent implements OnInit {
     }
   }
 
-  updateCentoid(centroid: Centroid) {
+  updateCentroid(centroid: Centroid) {
     if (this.buildingId === centroid.id || !centroid.id) {
       this.buildingDetails.patchValue({
         BldLatitude: centroid.latitude,

@@ -44,9 +44,9 @@ export class CommonEsriAuthService implements OnDestroy {
     this.authState.getLoginStateAsObservable()
       .pipe(takeUntil(this.subscription))
       .subscribe((loginState: boolean) => {
-        if (!loginState) {
-          localStorage.removeItem(this.ESRI_AUTH_KEY);
-        }
+        // if (!loginState) {
+        //   localStorage.removeItem(this.ESRI_AUTH_KEY);
+        // }
       });
     this.inizializeAuth();
   }

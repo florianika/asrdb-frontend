@@ -164,7 +164,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   editBuildingDetails(globalId: string) {
-    this.router.navigateByUrl('/dashboard/register/form/' + globalId);
+    this.router.navigateByUrl('/dashboard/register/form/BUILDING/' + globalId);
   }
 
   viewLogs(globalId: string) {
@@ -176,7 +176,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   addNewBuilding() {
-    this.router.navigateByUrl('/dashboard/register/form');
+    this.router.navigateByUrl('/dashboard/register/form/BUILDING');
   }
 
   filterBuilding(GlobalID: string) {
