@@ -4,7 +4,7 @@ import { Observable, defer, from } from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
 import { environment } from 'src/environments/environment';
-import { EntityCreateResponse } from '../model/entity-req-res';
+import { EntityManageResponse } from '../model/entity-req-res';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -39,22 +39,22 @@ export class CommonDwellingService {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
 
-  createFeature(features: any): Observable<EntityCreateResponse> {
+  createFeature(features: any): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.dwelling_url
     + '/addFeatures?token='
     + this.esriAuthService.getTokenForResource(environment.dwelling_url);
-    return this.httpClient.post<EntityCreateResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
       headers: {
         'Content-Type': 'application/json'
       }
     });
   }
 
-  updateFeature(features: any): Observable<EntityCreateResponse> {
+  updateFeature(features: any): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.dwelling_url
     + '/updateFeatures?token='
     + this.esriAuthService.getTokenForResource(environment.dwelling_url);
-    return this.httpClient.post<EntityCreateResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
       headers: {
         'Content-Type': 'application/json'
       }

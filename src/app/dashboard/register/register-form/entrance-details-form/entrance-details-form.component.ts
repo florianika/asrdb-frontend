@@ -47,7 +47,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
-      fields.forEach(field => {
+      this.fields.forEach(field => {
         this.createFormControlForField(field);
         this.createFormObject(field);
       });

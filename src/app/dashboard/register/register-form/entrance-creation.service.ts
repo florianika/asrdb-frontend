@@ -3,8 +3,9 @@ import { CommonEntranceService } from '../service/common-entrance.service';
 import { BehaviorSubject } from 'rxjs';
 import { DEFAULR_SPARTIAL_REF, Point } from '../model/map-data';
 import { Entrance } from '../model/entrance';
-import { EntityCreateResponse } from '../model/entity-req-res';
+import { EntityManageResponse } from '../model/entity-req-res';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {Router} from "@angular/router";
 
 @Injectable()
 export class EntranceManagementService {
@@ -12,13 +13,15 @@ export class EntranceManagementService {
   get isSavingObservable() {
     return this.isSaving.asObservable();
   }
+  private buildingId: string = '';
 
   private responseHandler = () => ({
-    next: (response: EntityCreateResponse) => {
-      if (!response.addResults.success) {
+    next: (response: EntityManageResponse) => {
+      if (!response['addResults']?.[0]?.success && response['updateResults']?.[0]?.success) {
         this.snackBar.open('Could not save entrance data', 'Ok', {
           duration: 3000
         });
+        this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + this.buildingId);
       }
       this.isSaving.next(false);
     },
@@ -30,31 +33,25 @@ export class EntranceManagementService {
     }
   });
 
-  constructor(private entranceService: CommonEntranceService, private snackBar: MatSnackBar) {
+  constructor(private entranceService: CommonEntranceService, private snackBar: MatSnackBar, private router: Router) {
   }
 
-  public saveEntrancesEntity(geometry: Point[], entrances: Entrance[], buildingGlobalId: string) {
-    const createFeatures: any[] = [];
-    const updateFeatures: any[] = [];
-    geometry.forEach(point => {
-      const attributes = this.cleanAttributes(entrances, point, buildingGlobalId);
-      const feature = {
-        'geometry': {
-          'x': point.x,
-          'y': point.y,
-          spatialReference: DEFAULR_SPARTIAL_REF
-        },
-        'attributes': attributes
-      };
-      if (attributes?.GlobalID) {
-        updateFeatures.push(feature);
-      } else {
-        createFeatures.push(feature);
-      }
-    });
-
-    this.createEntrance(createFeatures);
-    this.updateEntrance(updateFeatures);
+  public saveEntranceEntity(geometry: Point, entrance: Entrance, buildingGlobalId: string) {
+    this.buildingId = buildingGlobalId;
+    const attributes = this.cleanAttributes(entrance, geometry, buildingGlobalId);
+    const feature = {
+      'geometry': {
+        'x': geometry.x,
+        'y': geometry.y,
+        spatialReference: geometry.spatialReference ?? DEFAULR_SPARTIAL_REF
+      },
+      'attributes': attributes
+    };
+    if (attributes?.GlobalID) {
+      this.updateEntrance([feature]);
+    } else {
+      this.createEntrance([feature]);
+    }
   }
 
   private createEntrance(features: {geometry: any, attributes: Entrance}[]) {
@@ -65,14 +62,17 @@ export class EntranceManagementService {
     this.entranceService.updateFeature(features).subscribe(this.responseHandler());
   }
 
-  private cleanAttributes(entrances: Entrance[], point: Point, buildingGlobalId: string) {
-    const attributes = entrances.find(entrance => entrance.GlobalID === point.id);
-    if (attributes) {
-      attributes.fk_buildings = buildingGlobalId;
-      if (!point.id.toString().startsWith('{')) {
-        attributes.GlobalID = ''; // clean the temp globalID of new items
-      }
+  private cleanAttributes(entrance: Entrance, point: Point, buildingGlobalId: string) {
+    entrance.fk_buildings = buildingGlobalId;
+    if (!point.id.toString().startsWith('{')) {
+      entrance.GlobalID = ''; // clean the temp globalID of new items
     }
-    return attributes;
+    const cleanedObject = {} as any;
+    Object.entries(entrance as any).forEach(([key, value]) => {
+      if (value && key !== 'Point') {
+        cleanedObject[key] = value;
+      }
+    });
+    return cleanedObject as Entrance;
   }
 }

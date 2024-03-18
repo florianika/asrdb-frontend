@@ -27,14 +27,14 @@ export class EntityCreationMapService {
     return this.valueDelete.asObservable();
   }
 
-  private readonly entranceId: string | null;
+  private readonly entranceId: string;
 
   constructor(
     private esriAuthService: CommonEsriAuthService,
     private matSnackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute
   ) {
-    this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId');
+    this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
   }
 
   public async initBuildingCreationMap(mapViewEl: ElementRef, entityType?: EntityType, editingGeometry?: any[]) {
@@ -43,8 +43,7 @@ export class EntityCreationMapService {
       availableCreateTools.push('polygon');
     }
     if (entityType === 'ENTRANCE') {
-      const existingEntrances = editingGeometry!.filter(geometry => geometry.type === 'point');
-      if (!existingEntrances) {
+      if (!this.entranceId) {
         availableCreateTools.push('point');
       }
     }
@@ -57,7 +56,7 @@ export class EntityCreationMapService {
     const mainGraphic: Graphic | null = this.addExistingGraphics(editingGeometry, graphicsLayer);
 
     const webmap = new WebMap({
-      basemap: 'hybrid',
+      basemap: 'osm',
       layers: [graphicsLayer],
       applicationProperties: {
         viewing: {
@@ -149,7 +148,11 @@ export class EntityCreationMapService {
         this.valueUpdate.next({
           ...event.graphics[0].geometry.toJSON(),
           id: event.graphics[0].attributes.id,
-          centroid: centroid
+          centroid: centroid,
+          spatialReference: {
+            latestWkid: (event.graphics[0].geometry.spatialReference as any)['latestWkid'],
+            wkid: event.graphics[0].geometry.spatialReference.wkid
+          }
         });
       }
     });
@@ -169,7 +172,11 @@ export class EntityCreationMapService {
         this.valueUpdate.next({
           ...event.graphic.geometry.toJSON(),
           id: id,
-          centroid: centroid
+          centroid: centroid,
+          spatialReference: {
+            latestWkid: (event.graphic.geometry.spatialReference as any)['latestWkid'],
+            wkid: event.graphic.geometry.spatialReference.wkid
+          }
         });
         event.graphic.attributes = {
           id: id

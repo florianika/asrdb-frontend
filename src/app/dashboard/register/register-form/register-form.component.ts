@@ -1,23 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatStepperModule } from '@angular/material/stepper';
-import { BuildingCreationComponent } from './building-creation/building-creation.component';
-import { BuildingDetailsFormComponent } from './building-details-form/building-details-form.component';
-import { EntranceDetailsFormComponent } from './entrance-details-form/entrance-details-form.component';
-import { CommonBuildingService } from '../service/common-building.service';
-import { CommonEntranceService } from '../service/common-entrance.service';
-import { Subject, map, takeUntil, zip } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { BuildingManagementService } from './building-creation.service';
-import { Centroid, MapFormData } from '../model/map-data';
-import { Building } from '../model/building';
-import { Entrance } from '../model/entrance';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {MatStepperModule} from '@angular/material/stepper';
+import {BuildingCreationComponent} from './building-creation/building-creation.component';
+import {BuildingDetailsFormComponent} from './building-details-form/building-details-form.component';
+import {EntranceDetailsFormComponent} from './entrance-details-form/entrance-details-form.component';
+import {CommonBuildingService} from '../service/common-building.service';
+import {CommonEntranceService} from '../service/common-entrance.service';
+import {map, Subject, takeUntil, zip} from 'rxjs';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {BuildingManagementService} from './building-creation.service';
+import {Centroid, Point} from '../model/map-data';
+import {Building} from '../model/building';
+import {Entrance} from '../model/entrance';
+import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import Geometry from '@arcgis/core/geometry/Geometry';
-import { EntranceManagementService } from './entrance-creation.service';
+import {EntranceManagementService} from './entrance-creation.service';
 import {EntityType} from "../../quality-management/quality-management-config";
 
 @Component({
@@ -39,8 +39,8 @@ import {EntityType} from "../../quality-management/quality-management-config";
   styleUrls: ['./register-form.component.css']
 })
 export class RegisterFormComponent implements OnInit {
-  private isSavingBuilding = this.entityManagementService.isSavingObservable;
-  private isSavingEntrance = this.entityManagementService.isSavingObservable;
+  private isSavingBuilding = this.buildingManagementService.isSavingObservable;
+  private isSavingEntrance = this.entranceManagementService.isSavingObservable;
 
   isSaving = zip([this.isSavingBuilding, this.isSavingEntrance])
     .pipe(
@@ -63,10 +63,9 @@ export class RegisterFormComponent implements OnInit {
   buildingDetails = new FormGroup({});
   entranceDetails = new FormGroup({});
 
-  entranceIds: string[] = [];
-
   private subscriber = new Subject();
   private entranceCentroids: Centroid[] = [];
+  private readonly entranceId: string | null;
 
   get isBuilding() {
     return this.entityType === 'BUILDING';
@@ -77,12 +76,14 @@ export class RegisterFormComponent implements OnInit {
   }
 
   constructor(
-    private entityManagementService: BuildingManagementService,
+    private buildingManagementService: BuildingManagementService,
+    private entranceManagementService: EntranceManagementService,
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private matSnackBar: MatSnackBar) {
+    this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
   }
 
   ngOnInit(): void {
@@ -118,16 +119,6 @@ export class RegisterFormComponent implements OnInit {
     }
   }
 
-  setEntranceIds() {
-    this.entranceIds = (this.mapDetails.value as MapFormData).entrancePoints.map(o => o.id.toString());
-  }
-
-  onSelectionChanged(index: number) {
-    if (index !== 0) {
-      this.setEntranceIds();
-    }
-  }
-
   updateCentroid(centroid: Centroid) {
     if (this.buildingId === centroid.id || !centroid.id) {
       this.buildingDetails.patchValue({
@@ -150,32 +141,61 @@ export class RegisterFormComponent implements OnInit {
       return;
     }
 
-    const buildingDetails = this.buildingDetails.value as Building;
+    const buildingDetails = this.prepareBuildingDetails();
+    const entranceDetails = this.prepareEntranceDetails();
+
+    if (this.isBuilding) {
+      const buildingPoly = (this.mapDetails.value as any)['buildingPoly'];
+      this.buildingManagementService.saveBuilding(buildingPoly, buildingDetails);
+    } else if (this.isEntrance && this.buildingId) {
+      const entranceToSave = this.getEntrancePointToSave();
+      this.entranceManagementService.saveEntranceEntity(entranceToSave as Point, entranceDetails, this.buildingId);
+    }
+  }
+
+  private getEntrancePointToSave() {
+    const mapDetails = this.mapDetails.value;
+    const entrancePoints = (mapDetails as any)['entrancePoints'];
+    return entrancePoints.find((entrancePoint: any) => {
+      if (this.entranceId) {
+        return entrancePoint.id === this.entranceId;
+      }
+      return !entrancePoint.id.toString().startsWith('{');
+    });
+  }
+
+  private prepareEntranceDetails() {
     const entrancesDetails = this.entranceDetails.value;
-    const entrances: Entrance[] = [];
+    const entrance = {} as any;
+    const centroid = this.entranceCentroids.find(centroid => {
+      if (!centroid.id) {
+        throw new Error("Centroid must have an id for the entrance");
+      }
+      if (this.entranceId) {
+        return centroid.id === this.entranceId;
+      }
+      return !centroid.id.toString().startsWith('{');
+    });
+
+    Object.entries(entrancesDetails).forEach(([key, value]: [string, any]) => {
+      if (key.includes(this.entranceId + '_')) {
+        const entranceKey = key.replace(this.entranceId + '_', '');
+        entrance[entranceKey] = value;
+      }
+    });
+    entrance['GlobalID'] = this.entranceId ?? undefined;
+    entrance['EntLatitude'] = centroid?.latitude;
+    entrance['EntLongitude'] = centroid?.longitude;
+    return entrance;
+  }
+
+  private prepareBuildingDetails() {
+    const buildingDetails = this.buildingDetails.value as Building;
 
     if (this.buildingId) {
       buildingDetails['GlobalID'] = this.buildingId;
+      buildingDetails['OBJECTID'] = this.existingBuildingDetails!.OBJECTID;
     }
-
-    this.entranceIds.forEach(id => {
-      const entrance = {} as any;
-      const centroid = this.entranceCentroids.find(centroid => centroid.id === id);
-      Object.entries(entrancesDetails).forEach(([key, value]: [string, any]) => {
-        if (key.includes(id)) {
-          const entranceKey = key.replace(id + '_', '');
-          entrance[entranceKey] = value;
-        }
-      });
-      entrance['GlobalId'] = id;
-      entrance['EntLatitude'] = centroid?.latitude;
-      entrance['EntLongitude'] = centroid?.longitude;
-      entrances.push(entrance);
-    });
-
-    this.entityManagementService.saveBuilding(
-      this.mapDetails.value as MapFormData,
-      buildingDetails,
-      entrances);
+    return buildingDetails;
   }
 }

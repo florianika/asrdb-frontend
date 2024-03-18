@@ -3,10 +3,15 @@ export type MapData = {
   x: number,
   y: number,
   id?: number | string,
-  centroid?: Centroid
+  centroid?: Centroid,
+  spatialReference: any
+};
+export type BuildingPoly = {
+  rings: Ring,
+  spatialReference: any
 };
 export type MapFormData = {
-  buildingPoly: Ring,
+  buildingPoly: BuildingPoly,
   entrancePoints: Point[]
 };
 export type Centroid = {
@@ -18,10 +23,11 @@ export type Ring = number[][];
 export type Point = {
   x: number,
   y: number,
-  id: number | string
+  id: number | string,
+  spatialReference: any
 };
 
 export const DEFAULR_SPARTIAL_REF = {
-  'latestWkid': 3857,
-  'wkid': 102100
+  "latestWkid": 25834,
+  "wkid": 25834
 };

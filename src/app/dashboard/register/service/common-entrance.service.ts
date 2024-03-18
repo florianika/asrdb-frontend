@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import { Observable, defer, from } from 'rxjs';
-import { QueryFilter } from '../model/query-filter';
-import { CommonEsriAuthService } from './common-esri-auth.service';
-import { environment } from 'src/environments/environment';
-import { EntityCreateResponse } from '../model/entity-req-res';
-import { HttpClient } from '@angular/common/http';
+import {defer, from, Observable} from 'rxjs';
+import {QueryFilter} from '../model/query-filter';
+import {CommonEsriAuthService} from './common-esri-auth.service';
+import {environment} from 'src/environments/environment';
+import {EntityManageResponse} from '../model/entity-req-res';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -39,24 +39,26 @@ export class CommonEntranceService {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
 
-  createFeature(features: any[]): Observable<EntityCreateResponse> {
+  createFeature(features: any[]): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.entrance_url
     + '/addFeatures?token='
     + this.esriAuthService.getTokenForResource(environment.entrance_url);
-    return this.httpClient.post<EntityCreateResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+    const body = this.createRequestBody(features);
+    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
   }
 
-  updateFeature(features: any[]): Observable<EntityCreateResponse> {
+  updateFeature(features: any[]): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.entrance_url
-    + '/updateFeatures?token='
-    + this.esriAuthService.getTokenForResource(environment.entrance_url);
-    return this.httpClient.post<EntityCreateResponse>(addFeatureLayerURL, JSON.stringify({ features, format: 'json' }), {
+    + '/updateFeatures'
+    + '?token=' + this.esriAuthService.getTokenForResource(environment.entrance_url);
+    const body = this.createRequestBody(features);
+    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
   }
@@ -93,5 +95,12 @@ export class CommonEntranceService {
     } catch (e) {
       return null;
     }
+  }
+
+  private createRequestBody(features: any[]) {
+    const data = [];
+    data.push(encodeURIComponent('features') + '=' + encodeURIComponent(JSON.stringify(features)));
+    data.push(encodeURIComponent('f') + '=' + encodeURIComponent('json'));
+    return data.join('&');
   }
 }

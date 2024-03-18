@@ -10,7 +10,11 @@
     </asrdb-building-creation>
   </div>
   <div class="entity-management-section entity-management-form">
-    <h1 i18n>Please fill all the details</h1>
+    <h1 i18n>
+      Please fill all the details for the
+      <span *ngIf="isEntrance"> entrance</span>
+      <span *ngIf="isBuilding"> building</span>
+    </h1>
     <asrdb-building-details-form
       *ngIf="isBuilding"
       [formGroup]="buildingDetails"

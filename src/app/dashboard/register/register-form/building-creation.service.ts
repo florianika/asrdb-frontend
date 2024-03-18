@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
-import { CommonBuildingService } from '../service/common-building.service';
-import { BehaviorSubject } from 'rxjs';
-import { DEFAULR_SPARTIAL_REF, MapFormData } from '../model/map-data';
-import { Building } from '../model/building';
-import { Entrance } from '../model/entrance';
-import { EntityCreateResponse } from '../model/entity-req-res';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { EntranceManagementService } from './entrance-creation.service';
+import {Injectable} from '@angular/core';
+import {CommonBuildingService} from '../service/common-building.service';
+import {BehaviorSubject} from 'rxjs';
+import {BuildingPoly, DEFAULR_SPARTIAL_REF, MapFormData, Ring} from '../model/map-data';
+import {Building} from '../model/building';
+import {EntityManageResponse} from '../model/entity-req-res';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Router} from "@angular/router";
 
 @Injectable()
 export class BuildingManagementService {
@@ -15,11 +14,12 @@ export class BuildingManagementService {
     return this.isSaving.asObservable();
   }
 
-  private responseHandler = (mapFormData: MapFormData, entrancesDetails: Entrance[]) => ({
-    next: (response: EntityCreateResponse) => {
-      if (response.addResults.success) {
-        this.entranceService.saveEntrancesEntity(mapFormData.entrancePoints, entrancesDetails, response.addResults.globalId);
+  private responseHandler = () => ({
+    next: (response: EntityManageResponse) => {
+      const responseData = response['addResults']?.[0] ?? response['updateResults']?.[0];
+      if (responseData?.success) {
         this.isSaving.next(false);
+        this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + responseData.globalId);
       } else {
         this.snackBar.open('Could not save building data', 'Ok', {
           duration: 3000
@@ -35,28 +35,31 @@ export class BuildingManagementService {
     }
   });
 
-  constructor(private buildingService: CommonBuildingService, private entranceService: EntranceManagementService, private snackBar: MatSnackBar) {
+  constructor(private buildingService: CommonBuildingService,
+              private snackBar: MatSnackBar,
+              private router: Router
+              ) {
   }
 
-  public saveBuilding(mapFormData: MapFormData, buildingDetails: Building, entrancesDetails: Entrance[]) {
+  public saveBuilding(mapFormData: BuildingPoly, buildingDetails: Building) {
     if (buildingDetails.GlobalID) {
-      this.updateBuilding(mapFormData, buildingDetails, entrancesDetails);
+      this.updateBuilding(mapFormData, buildingDetails);
     } else {
-      this.createBuilding(mapFormData, buildingDetails, entrancesDetails);
+      this.createBuilding(mapFormData, buildingDetails);
     }
   }
 
-  private createBuilding(mapFormData: MapFormData, buildingDetails: Building, entrancesDetails: Entrance[]) {
+  private createBuilding(mapFormData: BuildingPoly, buildingDetails: Building) {
     const features = this.createFeatures(buildingDetails, mapFormData);
-    this.buildingService.createFeature(features).subscribe(this.responseHandler(mapFormData, entrancesDetails));
+    this.buildingService.createFeature(features).subscribe(this.responseHandler());
   }
 
-  private updateBuilding(mapFormData: MapFormData, buildingDetails: Building, entrancesDetails: Entrance[]) {
+  private updateBuilding(mapFormData: BuildingPoly, buildingDetails: Building) {
     const features = this.createFeatures(buildingDetails, mapFormData);
-    this.buildingService.updateFeature(features).subscribe(this.responseHandler(mapFormData, entrancesDetails));
+    this.buildingService.updateFeature(features).subscribe(this.responseHandler());
   }
 
-  private createFeatures(buildingDetails: Building, mapFormData: MapFormData) {
+  private createFeatures(buildingDetails: Building, mapFormData: BuildingPoly) {
     this.isSaving.next(true);
     const cleanedAttributes = {} as Partial<Building>;
     Object.entries(buildingDetails).forEach(([key, value]) => {
@@ -64,15 +67,14 @@ export class BuildingManagementService {
         (cleanedAttributes as any)[key] = value;
       }
     });
-    const features = [
+    return [
       {
         'geometry': {
-          rings: mapFormData.buildingPoly,
-          spatialReference: DEFAULR_SPARTIAL_REF
+          rings: mapFormData.rings,
+          spatialReference: mapFormData.spatialReference ?? DEFAULR_SPARTIAL_REF
         },
         'attributes': cleanedAttributes
       },
     ];
-    return features;
   }
 }
