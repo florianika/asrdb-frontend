@@ -93,7 +93,6 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
       }
       this.filterConfig = filter;
       if (!this.initialized) {
-        this.initialized = true;
         return;
       }
       this.reload();
@@ -212,7 +211,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     }));
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Data', res);
     }
@@ -228,6 +227,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.registerFilterService.updateGlobalIds(res.globalIds);
     if (!this.initialized) {
       this.registerFilterService.prepareFilter(this.fields);
+      this.initialized = true;
     }
     this.changeDetectionRef.markForCheck();
   }
