@@ -180,20 +180,20 @@ export class AuthStateService implements OnDestroy {
   }
 
   private checkTokenValidity() {
-    // if (this.interval) {
-    //   clearInterval(this.interval);
-    // }
-    // this.interval = setInterval(() => {
-    //   if (isDevMode()) {
-    //     console.log(`Token is valid: ${this.isTokenValidInternal()}`);
-    //     console.log(`Subscription is: ${this.subscription.closed}`);
-    //   }
-    //   if (this.tokenInNearExpired() && !this.router.url.includes('/auth/')) {
-    //     if (isDevMode()) {
-    //       console.log('Reloaded token');
-    //     }
-    //     this.refreshToken();
-    //   }
-    // }, 3000) as any;
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+    this.interval = setInterval(() => {
+      if (isDevMode()) {
+        console.log(`Token is valid: ${this.isTokenValidInternal()}`);
+        console.log(`Subscription is: ${this.subscription.closed}`);
+      }
+      if (this.tokenInNearExpired() && !this.router.url.includes('/auth/')) {
+        if (isDevMode()) {
+          console.log('Reloaded token');
+        }
+        this.refreshToken();
+      }
+    }, 3000) as any;
   }
 }

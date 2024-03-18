@@ -14,7 +14,6 @@ export class GuardAdminService {
   ) { }
 
   public canActivate(): boolean {
-    return true;
     const isLoggedIn = this.authStateService.isTokenValid();
     const isAdmin = this.authStateService.isAdmin();
     if (!isLoggedIn) {
