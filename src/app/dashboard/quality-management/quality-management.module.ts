@@ -21,23 +21,25 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
-import { QualityManagementExpressionBuilderComponent } from './quality-management-edit/quality-management-expression-builder/quality-management-expression-builder.component';
 import {MatListModule} from '@angular/material/list';
-import { ExpressionFormComponent } from './quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { QualityManagementVariableSelectionComponent } from './quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component';
 import { QualityManagementTableFitlerComponent } from './quality-management-table/quality-management-table-fitler/quality-management-table-fitler.component';
 import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
+import {ACE_CONFIG, AceConfigInterface, AceModule} from "ngx-ace-wrapper";
+import {
+  QualityManagementVariableSelectionComponent
+} from "./quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component";
+
+const DEFAULT_ACE_CONFIG: AceConfigInterface = {
+};
 
 @NgModule({
   declarations: [
     QualityManagementTableComponent,
     QualityManagementEditComponent,
     QualityManagementFormComponent,
-    QualityManagementExpressionBuilderComponent,
-    ExpressionFormComponent,
-    QualityManagementVariableSelectionComponent,
-    QualityManagementTableFitlerComponent
+    QualityManagementTableFitlerComponent,
+    QualityManagementVariableSelectionComponent
   ],
   imports: [
     CommonModule,
@@ -60,10 +62,15 @@ import { VariableSelectorComponent } from 'src/app/common/standalone-components/
     ReactiveFormsModule,
     MatCheckboxModule,
     FormsModule,
-    VariableSelectorComponent
+    VariableSelectorComponent,
+    AceModule
   ],
   providers: [
-    QualityManagementService
+    QualityManagementService,
+    {
+      provide: ACE_CONFIG,
+      useValue: DEFAULT_ACE_CONFIG
+    }
   ]
 })
 export class QualityManagementModule { }

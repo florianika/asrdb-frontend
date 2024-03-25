@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { EntityType, QualityRule } from '../quality-management-config';
 import { Observable } from 'rxjs/internal/Observable';
 
@@ -16,8 +16,7 @@ export class QualityManagementEditComponent implements OnInit, OnDestroy {
   public id: string | null;
 
   constructor(private qualityManagementService: QualityManagementService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router) {
+    private activatedRoute: ActivatedRoute) {
     this.qualityRuleObservable = this.qualityManagementService.qualityRuleAsObservable;
     this.isLoadingResults = this.qualityManagementService.loadingResultsAsObservable;
     this.qualityType = this.activatedRoute.snapshot.paramMap.get('entity') as EntityType ?? 'BUILDING';

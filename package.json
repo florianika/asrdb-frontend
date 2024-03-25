@@ -28,6 +28,7 @@
     "@arcgis/core": "~4.28.0",
     "@auth0/angular-jwt": "^5.1.2",
     "angular-plotly.js": "^5.2.2",
+    "ngx-ace-wrapper": "^16.0.0",
     "plotly.js-dist-min": "^2.26.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

@@ -4,8 +4,10 @@ import { EntityType, QualityAction, QualityRule, RuleStatus } from '../../qualit
 import { QualityManagementService } from '../../quality-management.service';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import 'brace';
+import 'brace/mode/text';
+import 'brace/theme/github';
 
 @Component({
   selector: 'asrdb-quality-management-form',
@@ -28,8 +30,7 @@ export class QualityManagementFormComponent implements OnInit {
   constructor(
     private qualityManagementService: QualityManagementService,
     private matDialog: MatDialog,
-    private matSnackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute
+    private matSnackBar: MatSnackBar
   ) {
 
   }

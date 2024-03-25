@@ -1,7 +1,7 @@
 <mat-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel i18n>General</ng-template>
+      <ng-template matStepLabel><span i18n>General</span></ng-template>
       <mat-form-field class="full-width">
         <mat-label i18n>Reference</mat-label>
         <input matInput formControlName="localId">
@@ -40,7 +40,7 @@
   </mat-step>
 
   <mat-step [stepControl]="secondFormGroup">
-    <ng-template matStepLabel i18n>Details</ng-template>
+    <ng-template matStepLabel><span i18n>Details</span></ng-template>
     <form [formGroup]="secondFormGroup">
       <mat-form-field class="full-width">
         <mat-label i18n>Quality action</mat-label>
@@ -82,10 +82,9 @@
   </mat-step>
 
   <mat-step [stepControl]="thirdFormGroup">
-    <ng-template matStepLabel i18n>Expression</ng-template>
+    <ng-template matStepLabel><span i18n>Expression</span></ng-template>
     <ng-template matStepContent>
-      <asrdb-quality-management-expression-builder [formGroup]="thirdFormGroup" [entityType]="qualityType"
-        [variable]="firstFormGroup.value.variable"></asrdb-quality-management-expression-builder>
+      <ace [mode]="'sql'" [theme]="'github'" formControlName="expression"></ace>
       <div class="quality-action-button">
         <button mat-button matStepperPrevious i18n [disabled]="isSaving | async">Back</button>
         <button mat-button color="warn" (click)="reset(stepper)" i18n [disabled]="isSaving | async">Reset</button>
