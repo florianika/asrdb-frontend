@@ -32,7 +32,18 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   formStructure: FormObject[] = [];
 
-  private readonly HIDDEN_FIELDS = ['last_edited_user', 'last_edited_date', 'created_user', 'created_date', 'BldLatitude', 'BldLongitude'];
+  private readonly HIDDEN_FIELDS = [
+    'last_edited_user',
+    'last_edited_date',
+    'created_user',
+    'created_date',
+    'BldLatitude',
+    'BldLongitude',
+    'external_creator',
+    'external_editor',
+    'external_creation_date',
+    'external_edited_date',
+  ];
 
   constructor(private buildingService: CommonBuildingService) {
   }

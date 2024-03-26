@@ -34,7 +34,16 @@ import { DwellingManagementService } from '../dwelling-creation.service';
   styleUrls: ['./dwelling-details-form.component.css']
 })
 export class DwellingDetailsFormComponent implements OnDestroy {
-  private readonly HIDDEN_FIELDS = ['last_edited_user', 'last_edited_date', 'created_user', 'created_date'];
+  private readonly HIDDEN_FIELDS = [
+    'last_edited_user',
+    'last_edited_date',
+    'created_user',
+    'created_date',
+    'external_creator',
+    'external_editor',
+    'external_creation_date',
+    'external_edited_date',
+  ];
   private onDestroy = new Subject();
   private initialized = false;
   private dwelling?: Dwelling;

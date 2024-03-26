@@ -35,7 +35,19 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   formStructure: FormObject[] = [];
 
-  private readonly HIDDEN_FIELDS = ['last_edited_user', 'last_edited_date', 'fk_buildings', 'created_user', 'created_date', 'EntLongitude', 'EntLatitude'];
+  private readonly HIDDEN_FIELDS = [
+    'last_edited_user',
+    'last_edited_date',
+    'fk_buildings',
+    'created_user',
+    'created_date',
+    'EntLongitude',
+    'EntLatitude',
+    'external_creator',
+    'external_editor',
+    'external_creation_date',
+    'external_edited_date',
+  ];
 
   constructor(private entranceService: CommonEntranceService, private activatedRoute: ActivatedRoute) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId');
