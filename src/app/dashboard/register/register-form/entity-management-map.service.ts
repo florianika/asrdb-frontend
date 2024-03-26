@@ -18,6 +18,7 @@ import {ActivatedRoute} from "@angular/router";
 @Injectable()
 export class EntityCreationMapService {
   private valueUpdate = new Subject<MapData>();
+  private graphicsLayer!: GraphicsLayer;
   get valueChanged() {
     return this.valueUpdate.asObservable();
   }
@@ -50,14 +51,20 @@ export class EntityCreationMapService {
     return this.init(mapViewEl, availableCreateTools, editingGeometry);
   }
 
+  public getCreatedGraphic() {
+    return this.graphicsLayer.graphics.map(function (graphic) {
+      return graphic.geometry;
+    });
+  }
+
   private async init(mapViewEl: ElementRef, availableTools: string[], editingGeometry?: any[]): Promise<MapView> {
     const container = mapViewEl.nativeElement;
-    const graphicsLayer = new GraphicsLayer();
-    const mainGraphic: Graphic | null = this.addExistingGraphics(editingGeometry, graphicsLayer);
+    this.graphicsLayer = new GraphicsLayer();
+    const mainGraphic: Graphic | null = this.addExistingGraphics(editingGeometry, this.graphicsLayer);
 
     const webmap = new WebMap({
       basemap: 'osm',
-      layers: [graphicsLayer],
+      layers: [this.graphicsLayer],
       applicationProperties: {
         viewing: {
           search: {
@@ -74,7 +81,7 @@ export class EntityCreationMapService {
 
     view.when(() => {
       const sketch = new Sketch({
-        layer: graphicsLayer,
+        layer: this.graphicsLayer,
         view: view,
         // graphic will be selected as soon as it is created
         creationMode: 'update',
@@ -231,23 +238,5 @@ export class EntityCreationMapService {
     });
 
     return mainGraphic;
-  }
-
-  private addCentroidPoint(graphic: Graphic, graphicsLayer: GraphicsLayer) {
-    const pointTest = new Graphic({
-      geometry: new Point({
-        x: graphic.geometry.extent.center.x,
-        y: graphic.geometry.extent.center.y
-      }),
-      symbol: new SimpleMarkerSymbol({
-        style: 'circle',
-        outline: {
-          width: '1px'
-        },
-        size: 6,
-        color: this.entranceId ? 'white' : 'red'
-      })
-    });
-    graphicsLayer.add(pointTest);
   }
 }

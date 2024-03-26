@@ -1,11 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import { Observable, defer, from } from 'rxjs';
-import { QueryFilter } from '../model/query-filter';
-import { CommonEsriAuthService } from './common-esri-auth.service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { EntityManageResponse } from '../model/entity-req-res';
+import {defer, from, Observable} from 'rxjs';
+import {QueryFilter} from '../model/query-filter';
+import {CommonEsriAuthService} from './common-esri-auth.service';
+import {HttpClient} from '@angular/common/http';
+import {environment} from 'src/environments/environment';
+import {EntityManageResponse} from '../model/entity-req-res';
+import MapView from "@arcgis/core/views/MapView";
+import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
+import Collection from "@arcgis/core/core/Collection";
+import Geometry from "@arcgis/core/geometry/Geometry";
 
 @Injectable({
   providedIn: 'root'
@@ -137,6 +141,18 @@ export class CommonBuildingService {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
+  }
+
+  // This function is called when user completes drawing a rectangle
+  // on the map. Use the rectangle to select features in the layer and table
+  async checkIntersectingBuildings(view: MapView, geometries: Collection<Geometry>) {
+    const query = this.bldLayer.createQuery();
+    query.geometry = await geometryEngine.union(geometries.toArray());
+    query.outFields = ['GlobalID'];
+    return (await (await this.bldLayer.queryFeatures(query)).toJSON())
+      .features
+      .map((o: any) => o.attributes['GlobalID'])
+      .length;
   }
 
   private async fetchAttributesMetadata() {

@@ -9,6 +9,7 @@ import {BuildingPoly, Centroid, Point} from '../../model/map-data';
 import {EntityType} from "../../../quality-management/quality-management-config";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute} from "@angular/router";
+import {CommonBuildingService} from "../../service/common-building.service";
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -31,7 +32,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
-
+  public intersectsBuilding = false;
   get isBuilding() {
     return this.entityType === 'BUILDING';
   }
@@ -43,6 +44,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
   private readonly entranceId: string;
 
   constructor(private mapService: EntityCreationMapService,
+              private buildingService: CommonBuildingService,
               private matSnackBar: MatSnackBar,
               private activatedRoute: ActivatedRoute) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
@@ -84,31 +86,52 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
       console.log('The map is ready.');
     });
 
-    this.mapService.valueChanged.subscribe((value) => {
+    this.mapService.valueChanged.subscribe(async (value) => {
+      this.intersectsBuilding = true;
       if (value.rings && !this.isBuilding) {
         this.matSnackBar
           .open('You have changed the building polygon while in "Entrance" mode. ' +
             'This operation is not allowed and changes will not be saved. ' +
-            'To modify the building polygon, please edit the building.', 'Ok');
+            'To modify the building polygon, please edit the building.', 'Ok', {
+            duration: 5000
+          });
         return;
       } else if (value.x && value.y && !this.isEntrance) {
         this.matSnackBar
           .open('You have changed the entrance point while in "Building" mode. ' +
             'This operation is not allowed and changes will not be saved. ' +
-            'To modify the entrance point, please edit the entrance.', 'Ok');
+            'To modify the entrance point, please edit the entrance.', 'Ok', {
+            duration: 5000
+          });
         return;
       } else if (value.x && value.y && this.isEntrance) {
         if (this.entranceId && value.id!.toString() !== this.entranceId) {
           this.matSnackBar.open('You have changed the position of an entrance which is not the one being edited. ' +
-            'The change will not be saved. Please only work with the entrance colored in white.', 'Ok');
+            'The change will not be saved. Please only work with the entrance colored in white.', 'Ok', {
+            duration: 5000
+          });
           return;
         } else if (!this.entranceId && value.id!.toString().startsWith('{')) {
           this.matSnackBar.open('You have changed the position of an entrance which is not the one being created. ' +
-            'The change will not be saved. Please only work with the entrance colored in white.', 'Ok');
+            'The change will not be saved. Please only work with the entrance colored in white.', 'Ok', {
+            duration: 5000
+          });
           return;
         }
       }
       if (value.rings) {
+        if (await this.buildingService.checkIntersectingBuildings(this.view, this.mapService.getCreatedGraphic())) {
+          this.intersectsBuilding = true;
+          this.matSnackBar.open('The polygon you created/edited intersects with an exiting one. ' +
+            'Changes will not be applied.' +
+            'Please move the polygon so it does not intersect with anything.', 'Ok', {
+            duration: 5000
+          });
+          this.formGroup.patchValue({
+            buildingPoly: undefined // remove value to make form invalid
+          });
+          return;
+        }
         this.formGroup.patchValue({
           buildingPoly: {
             rings: value.rings,
