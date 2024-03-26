@@ -1,4 +1,10 @@
 {
+  "/mode-sql.js":  {
+    "target": "http://localhost:4200",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "*/**": {
     "target": "http://51.107.11.117:9090",
     "secure": false,

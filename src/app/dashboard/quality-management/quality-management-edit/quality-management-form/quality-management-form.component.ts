@@ -6,7 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import 'brace';
-import 'brace/mode/text';
+import 'brace/mode/sql.js';
 import 'brace/theme/github';
 
 @Component({
@@ -26,6 +26,10 @@ export class QualityManagementFormComponent implements OnInit {
   public firstFormGroup!: FormGroup;
   public secondFormGroup!: FormGroup;
   public thirdFormGroup!: FormGroup;
+
+  get existingExpression(): string {
+    return this.rule?.expression ?? '';
+  }
 
   constructor(
     private qualityManagementService: QualityManagementService,
@@ -58,6 +62,15 @@ export class QualityManagementFormComponent implements OnInit {
     this.thirdFormGroup = new FormGroup({
       expression: new FormControl<string>(this.rule?.expression ?? '', [Validators.required])
     }, { updateOn: 'blur' });
+  }
+
+  updateExpression(event: string) {
+    console.log(event)
+    this.thirdFormGroup.setValue({
+      'expression': event
+    }, {
+      emitEvent: false
+    })
   }
 
   save() {

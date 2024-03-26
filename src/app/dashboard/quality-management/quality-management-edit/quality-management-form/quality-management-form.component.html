@@ -84,7 +84,16 @@
   <mat-step [stepControl]="thirdFormGroup">
     <ng-template matStepLabel><span i18n>Expression</span></ng-template>
     <ng-template matStepContent>
-      <ace [mode]="'sql'" [theme]="'github'" formControlName="expression"></ace>
+      <form [formGroup]="thirdFormGroup">
+        <ace
+          [mode]="'sql'"
+          [theme]="'github'"
+          style="height: 400px"
+          [value]="thirdFormGroup.controls['expression'].value"
+          (valueChange)="updateExpression($event)"
+        ></ace>
+        <input type="text" formControlName="expression" hidden/>
+      </form>
       <div class="quality-action-button">
         <button mat-button matStepperPrevious i18n [disabled]="isSaving | async">Back</button>
         <button mat-button color="warn" (click)="reset(stepper)" i18n [disabled]="isSaving | async">Reset</button>

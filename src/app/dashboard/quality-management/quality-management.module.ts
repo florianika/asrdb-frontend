@@ -31,6 +31,8 @@ import {
 } from "./quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component";
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
+  readOnly: false,
+  minLines: 20
 };
 
 @NgModule({
