@@ -43,6 +43,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     'external_editor',
     'external_creation_date',
     'external_edited_date',
+    'DwlQuality'
   ];
   private onDestroy = new Subject();
   private initialized = false;

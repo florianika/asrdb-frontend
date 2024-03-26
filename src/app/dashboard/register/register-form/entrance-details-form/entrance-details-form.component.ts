@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -47,6 +47,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     'external_editor',
     'external_creation_date',
     'external_edited_date',
+    'EntQuality'
   ];
 
   constructor(private entranceService: CommonEntranceService, private activatedRoute: ActivatedRoute) {
@@ -96,15 +97,5 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
     }
     this.formGroup.addControl((this.entranceId ?? '') + '_' + field[NAME_PROP], control);
-  }
-
-  private removeFormControlFields(id: string) {
-    this.fields.forEach(field => {
-      this.formGroup.removeControl(id + '_' + field[NAME_PROP]);
-    });
-  }
-
-  private removeFormObjects(id: string) {
-    this.formStructure = this.formStructure.filter(formObject => !formObject.name.includes(id));
   }
 }

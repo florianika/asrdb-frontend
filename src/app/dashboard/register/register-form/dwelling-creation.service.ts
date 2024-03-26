@@ -58,6 +58,7 @@ export class DwellingManagementService {
         (cleanedAttributes as any)[key] = value;
       }
     });
+    dwelling.DwlQuality = 9;
     return [
       {
         'attributes': cleanedAttributes

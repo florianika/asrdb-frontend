@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {CommonBuildingService} from '../service/common-building.service';
 import {BehaviorSubject} from 'rxjs';
-import {BuildingPoly, DEFAULR_SPARTIAL_REF, MapFormData, Ring} from '../model/map-data';
+import {BuildingPoly, DEFAULR_SPARTIAL_REF} from '../model/map-data';
 import {Building} from '../model/building';
 import {EntityManageResponse} from '../model/entity-req-res';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -67,6 +67,7 @@ export class BuildingManagementService {
         (cleanedAttributes as any)[key] = value;
       }
     });
+    buildingDetails.BldQuality = 9
     return [
       {
         'geometry': {

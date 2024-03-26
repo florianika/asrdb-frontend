@@ -47,6 +47,7 @@ export class EntranceManagementService {
       },
       'attributes': attributes
     };
+    attributes.EntQuality = 9;
     if (attributes?.GlobalID) {
       this.updateEntrance([feature]);
     } else {
