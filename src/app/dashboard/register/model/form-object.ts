@@ -5,7 +5,7 @@ export type FormObject = {
   selectOptions: FormObjectSelectOption[] | null
 }
 
-export type FormObjectType = 'number' | 'text' | 'text-area' | 'select';
+export type FormObjectType = 'number' | 'text' | 'text-area' | 'select' | 'date';
 export type FormObjectSelectOption = {
   text: string,
   value: string | number
@@ -18,6 +18,9 @@ export type EsriDomain = {
 export type EsriCodedValue = { code: number, name: string };
 
 export function getFormObjectType(esriType: string, length = 0): FormObjectType {
+  if (esriType === 'esriFieldTypeDate') {
+    return 'date';
+  }
   if (esriType === 'esriFieldTypeString') {
     return length < 40 ? 'text' : 'text-area';
   }
