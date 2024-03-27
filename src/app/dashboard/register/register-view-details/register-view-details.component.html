@@ -19,11 +19,11 @@
         <h2 i18n>History details</h2>
         <div>
           <span i18n>Created by: </span>
-          <span>{{building.created_user}} - {{building.created_date}}</span>
+          <span>{{building.created_user}} - {{getDate(building.created_date)}}</span>
         </div>
         <div>
           <span i18n>Last edited by: </span>
-          <span>{{building.last_edited_user}} - {{building.last_edited_date}}</span>
+          <span>{{building.last_edited_user}} - {{getDate(building.last_edited_date)}}</span>
         </div>
       </mat-card-content>
     </mat-card>

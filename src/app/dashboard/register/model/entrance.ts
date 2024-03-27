@@ -24,6 +24,10 @@ export type Entrance = {
     X: number;
     Y: number;
   }
+  external_creator: string;
+  external_creation_date: string;
+  external_updater: string;
+  external_updated_date: string;
 }
 
 export type EntranceFilter = {

@@ -28,6 +28,10 @@ export type Dwelling = {
   last_edited_user: string,
   last_edited_date: number,
   fk_entrance: string,
+  external_creator: string,
+  external_creation_date: string,
+  external_updater: string,
+  external_updated_date: string,
 }
 
 export type DwellingFilter = {

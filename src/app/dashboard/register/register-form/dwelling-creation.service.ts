@@ -4,6 +4,7 @@ import {EntityManageResponse} from '../model/entity-req-res';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CommonDwellingService} from '../service/common-dwellings.service';
 import {Dwelling} from '../model/dwelling';
+import {AuthStateService} from "../../../common/services/auth-state.service";
 
 @Injectable()
 export class DwellingManagementService {
@@ -29,7 +30,10 @@ export class DwellingManagementService {
     }
   });
 
-  constructor(private dwellingService: CommonDwellingService, private snackBar: MatSnackBar) {
+  constructor(
+    private dwellingService: CommonDwellingService,
+    private snackBar: MatSnackBar,
+    private authState: AuthStateService) {
   }
 
   public saveDwelling(dwellingDetails: Dwelling) {
@@ -41,11 +45,15 @@ export class DwellingManagementService {
   }
 
   private createDwelling(dwelling: Dwelling) {
+    dwelling.external_creator = this.authState.getNameId() ?? '';
+    dwelling.external_creation_date = String(Date.now());
     const features = this.createFeatures(dwelling);
     this.dwellingService.createFeature(features).subscribe(this.responseHandler());
   }
 
   private updateDwelling(dwelling: Dwelling) {
+    dwelling.external_updater = this.authState.getNameId() ?? '';
+    dwelling.external_updated_date = String(Date.now());
     const features = this.createFeatures(dwelling);
     this.dwellingService.updateFeature(features).subscribe(this.responseHandler());
   }

@@ -6,6 +6,7 @@ import { Entrance } from '../model/entrance';
 import { EntityManageResponse } from '../model/entity-req-res';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {Router} from "@angular/router";
+import {AuthStateService} from "../../../common/services/auth-state.service";
 
 @Injectable()
 export class EntranceManagementService {
@@ -33,7 +34,11 @@ export class EntranceManagementService {
     }
   });
 
-  constructor(private entranceService: CommonEntranceService, private snackBar: MatSnackBar, private router: Router) {
+  constructor(
+    private entranceService: CommonEntranceService,
+    private snackBar: MatSnackBar,
+    private authState: AuthStateService,
+    private router: Router) {
   }
 
   public saveEntranceEntity(geometry: Point, entrance: Entrance, buildingGlobalId: string) {
@@ -49,8 +54,12 @@ export class EntranceManagementService {
     };
     attributes.EntQuality = 9;
     if (attributes?.GlobalID) {
+      entrance.external_creator = this.authState.getNameId() ?? '';
+      entrance.external_creation_date = String(Date.now());
       this.updateEntrance([feature]);
     } else {
+      entrance.external_updater = this.authState.getNameId() ?? '';
+      entrance.external_updated_date = String(Date.now());
       this.createEntrance([feature]);
     }
   }
