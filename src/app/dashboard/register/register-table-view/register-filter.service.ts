@@ -39,7 +39,7 @@ export class RegisterFilterService {
 
   setBuildingsGlobalIdFilter(globalIds: string[]) {
     const filterValue = JSON.parse(JSON.stringify(this.filter.getValue()));
-    filterValue.filter.GlobalID = globalIds.map(id => (`'${id}'`)).join(',');
+    filterValue.filter.GlobalID = globalIds.join(',');
     this.filter.next(filterValue);
   }
 
@@ -83,7 +83,9 @@ export class RegisterFilterService {
       .map(([key, value]) => ({ column: key, value } as Chip))
       .forEach(filter => {
         if (filter.column === 'GlobalID') {
-          conditions.push(filter.column + ' in (\'' + filter.value + '\')');
+          const globalIds = filter.value.split(',');
+          const globalIdsCondition = globalIds.map(globalId => `'${globalId}'`).join(',');
+          conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
         } else {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
         }

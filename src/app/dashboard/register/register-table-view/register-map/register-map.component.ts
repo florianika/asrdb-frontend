@@ -33,12 +33,12 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
       console.log('The map is ready.');
     });
 
-    this.registerFilterService.filterObservable.subscribe(() => {
-      this.registerMapService.filterBuildingData(this.view, this.registerFilterService.prepareWhereCase());
+    this.registerFilterService.filterObservable.subscribe(async () => {
+      await this.registerMapService.filterBuildingData(this.view, this.registerFilterService.prepareWhereCase());
     });
 
-    this.registerFilterService.globalIdsObservable.subscribe(() => {
-      this.registerMapService.filterEntranceData(this.view, this.registerFilterService.prepareWhereCaseForEntrance());
+    this.registerFilterService.globalIdsObservable.subscribe(async () => {
+      await this.registerMapService.filterEntranceData(this.view, this.registerFilterService.prepareWhereCaseForEntrance());
     });
   }
 
