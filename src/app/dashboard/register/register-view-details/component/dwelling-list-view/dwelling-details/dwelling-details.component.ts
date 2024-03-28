@@ -9,6 +9,8 @@ import { BuildingDetailComponent } from '../../building-detail/building-detail.c
 import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
 import { CommonDwellingService } from 'src/app/dashboard/register/service/common-dwellings.service';
 import { CommonRegisterHelperService } from 'src/app/dashboard/register/service/common-helper.service';
+import {getDate} from "../../../../model/common-utils";
+import {RegisterLogService} from "../../../../register-log-view/register-log-table/register-log.service";
 
 @Component({
   selector: 'asrdb-dwelling-details',
@@ -34,22 +36,26 @@ export class DwellingDetailsComponent implements OnInit {
         {
           title: '',
           propName: 'DwlID',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlEntranceID',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlCensus2023',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlAddressID',
-          value: ''
+          value: '',
+          log: ''
         }
       ],
     },
@@ -59,12 +65,14 @@ export class DwellingDetailsComponent implements OnInit {
         {
           title: '',
           propName: 'DwlFloor',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlApartNumber',
-          value: ''
+          value: '',
+          log: ''
         }
       ]
     },
@@ -74,72 +82,86 @@ export class DwellingDetailsComponent implements OnInit {
         {
           title: '',
           propName: 'DwlStatus',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlYearConstruction',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlYearElimination',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlType',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlOwnership',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlOccupancy',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlSurface',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlWaterSupply',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlToilet',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlBath',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlHeatingFacility',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlHeatingEnergy',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlAirConditioner',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'DwlSolarPanel',
-          value: ''
+          value: '',
+          log: ''
         }
       ]
     }
@@ -152,12 +174,18 @@ export class DwellingDetailsComponent implements OnInit {
   constructor(
     private commonEntranceService: CommonDwellingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private registerLogService: RegisterLogService,
     private matSnack: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: string) {
       this.id = this.data;
     }
 
   ngOnInit(): void {
+    this.registerLogService.logs.subscribe(() => {
+      if (this.fields.length) {
+        this.fillSections();
+      }
+    });
     this.loadDwelling().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
   }
 
@@ -193,6 +221,8 @@ export class DwellingDetailsComponent implements OnInit {
       section.entries.forEach(entry => {
         entry.title = this.getTitle(entry.propName);
         entry.value = this.getValueFromStatus(entry.propName);
+        entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
+          ?.QualityMessageEn ?? '';
       });
     });
   }
@@ -210,4 +240,6 @@ export class DwellingDetailsComponent implements OnInit {
       return observableOf(null);
     }));
   }
+
+  protected readonly getDate = getDate;
 }

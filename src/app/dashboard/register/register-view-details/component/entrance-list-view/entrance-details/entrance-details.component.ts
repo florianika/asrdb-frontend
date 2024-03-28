@@ -9,6 +9,8 @@ import { CommonEntranceService } from 'src/app/dashboard/register/service/common
 import { CommonRegisterHelperService } from 'src/app/dashboard/register/service/common-helper.service';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import {getDate} from "../../../../model/common-utils";
+import {RegisterLogService} from "../../../../register-log-view/register-log-table/register-log.service";
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -34,17 +36,20 @@ export class EntranceDetailsComponent implements OnInit {
         {
           title: '',
           propName: 'EntID',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntBuildingID',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntAddressID',
-          value: ''
+          value: '',
+          log: ''
         },
       ]
     },
@@ -54,42 +59,50 @@ export class EntranceDetailsComponent implements OnInit {
         {
           title: '',
           propName: 'EntLatitude',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntLongitude',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntPointStatus',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntStreetCode',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntBuildingNumber',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntEntranceNumber',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntTown',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntZipCode',
-          value: ''
+          value: '',
+          log: ''
         },
       ]
     },
@@ -99,12 +112,14 @@ export class EntranceDetailsComponent implements OnInit {
         {
           title: '',
           propName: 'EntDwellingRecs',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'EntDwellingExpec',
-          value: ''
+          value: '',
+          log: ''
         },
       ]
     }
@@ -117,12 +132,18 @@ export class EntranceDetailsComponent implements OnInit {
   constructor(
     private commonEntranceService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private registerLogService: RegisterLogService,
     private matSnack: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: string) {
       this.id = this.data;
     }
 
   ngOnInit(): void {
+    this.registerLogService.logs.subscribe(() => {
+      if (this.fields.length) {
+        this.fillSections();
+      }
+    });
     this.loadEntrance().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
   }
 
@@ -158,6 +179,8 @@ export class EntranceDetailsComponent implements OnInit {
       section.entries.forEach(entry => {
         entry.title = this.getTitle(entry.propName);
         entry.value = this.getValueFromStatus(entry.propName);
+        entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
+          ?.QualityMessageEn ?? '';
       });
     });
   }
@@ -175,4 +198,6 @@ export class EntranceDetailsComponent implements OnInit {
       return observableOf(null);
     }));
   }
+
+  protected readonly getDate = getDate;
 }

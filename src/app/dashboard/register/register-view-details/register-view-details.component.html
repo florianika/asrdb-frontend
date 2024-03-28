@@ -8,7 +8,7 @@
       <span class="details-subheader" i18n>Quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
       <section *ngFor="let section of sections">
         <h3>{{section.title}}</h3>
-        <asrdb-building-detail *ngFor="let entry of section.entries" [title]="entry.title" [value]="entry.value"></asrdb-building-detail>
+        <asrdb-building-detail *ngFor="let entry of section.entries" [title]="entry.title" [value]="entry.value" [log]="entry.log"></asrdb-building-detail>
         <hr>
       </section>
     </mat-card-content>

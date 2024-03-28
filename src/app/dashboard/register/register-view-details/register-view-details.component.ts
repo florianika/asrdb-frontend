@@ -6,7 +6,7 @@ import { EntranceListViewComponent } from './component/entrance-list-view/entran
 import { DwellingListViewComponent } from './component/dwelling-list-view/dwelling-list-view.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil, catchError, of } from 'rxjs';
+import {Subject, takeUntil, catchError, of} from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonBuildingService } from '../service/common-building.service';
 import { CommonRegisterHelperService } from '../service/common-helper.service';
@@ -15,6 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Entrance } from '../model/entrance';
 import { RegisterMapComponent } from '../register-table-view/register-map/register-map.component';
 import { RegisterFilterService } from '../register-table-view/register-filter.service';
+import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
+import {getDate} from "../model/common-utils";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -28,6 +30,9 @@ import { RegisterFilterService } from '../register-table-view/register-filter.se
     EntranceListViewComponent,
     DwellingListViewComponent,
     RegisterMapComponent
+  ],
+  providers: [
+    RegisterLogService
   ],
   templateUrl: './register-view-details.component.html',
   styleUrls: ['./register-view-details.component.css']
@@ -45,17 +50,20 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         {
           title: '',
           propName: 'BldID',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldCensus2023',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldAddressID',
-          value: ''
+          value: '',
+          log: ''
         },
       ]
     },
@@ -65,57 +73,68 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         {
           title: '',
           propName: 'BldMunicipality',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldEnumArea',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldLatitude',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldLongitude',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldCentroidStatus',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldCadastralZone',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldProperty',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldPermitNumber',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldPermitDate',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldDwellingRecs',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldEntranceRecs',
-          value: ''
+          value: '',
+          log: ''
         },
       ]
     },
@@ -125,92 +144,110 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         {
           title: '',
           propName: 'BldStatus',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldYearConstruction',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldYearDemolition',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldType',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldClass',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldArea',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldFloorsAbove',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldFloorsUnder',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldHeight',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldVolume',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldDwellingRecs',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldEntranceRecs',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldPipedWater',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldRainWater',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldWasteWater',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldElectricity',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldPipedGas',
-          value: ''
+          value: '',
+          log: ''
         },
         {
           title: '',
           propName: 'BldElevator',
-          value: ''
+          value: '',
+          log: ''
         },
       ]
     }
@@ -224,13 +261,22 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
+    private registerLogService: RegisterLogService,
     private matSnack: MatSnackBar,
     private router: Router,
     private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '';
-    this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    if (this.id) {
+      this.registerLogService.loadLogs(this.id);
+      this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    }
+    this.registerLogService.logs.subscribe(() => {
+      if (this.fields.length) {
+        this.fillSections();
+      }
+    });
   }
   ngOnDestroy(): void {
     this.subscriber.next(true);
@@ -261,15 +307,6 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.selectedEntrance = entranceId;
   }
 
-  getDate(date: string) {
-    const d = new Date(date);
-    return d.getDate().toString().padStart(2, '0')
-      + '/'
-      + (d.getMonth() + 1).toString().padStart(2, '0')
-      + '/'
-      + d.getFullYear();
-  }
-
   private prepareWhereCase() {
     return `GlobalID='${this.id}'`;
   }
@@ -294,6 +331,8 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       section.entries.forEach(entry => {
         entry.title = this.getTitle(entry.propName);
         entry.value = entry.propName === 'BldMunicipality' ? this.getMunicipality() : this.getValueFromStatus(entry.propName);
+        entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
+          ?.QualityMessageEn ?? '';
       });
     });
   }
@@ -311,4 +350,6 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       return of(null);
     }));
   }
+
+  protected readonly getDate = getDate;
 }

@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import {EXECUTING} from "./register-log.service";
 
 @Pipe({
   standalone: true,
@@ -6,10 +7,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class LogExecutionPipe implements PipeTransform {
   transform(value?: number): boolean {
-
-    if (value === 1) {
-      return true;
-    }
-    return false;
+    return value === EXECUTING;
   }
 }

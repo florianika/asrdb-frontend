@@ -1,4 +1,13 @@
 <div class="detail-container">
   <span i18n>{{title}}: </span>
-  <span>{{value}}</span>
+  <span>
+    <span class="detail-value-container">
+      {{value}}
+    </span>
+    <span class="detail-error-icon">
+      <ng-container *ngIf="log">
+        <mat-icon [matTooltip]="log" style="color: grey">info</mat-icon>
+      </ng-container>
+    </span>
+  </span>
 </div>

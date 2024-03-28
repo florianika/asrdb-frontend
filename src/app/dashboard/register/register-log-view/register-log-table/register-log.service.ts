@@ -3,6 +3,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Log } from '../model/log';
 import { environment } from 'src/environments/environment';
+import {EntityType} from "../../../quality-management/quality-management-config";
+
+export const EXECUTING = 1;
+export const NOT_EXECUTING = 2;
 
 @Injectable()
 export class RegisterLogService {
@@ -33,12 +37,7 @@ export class RegisterLogService {
       .get<boolean>(environment.base_url + this.EXECUTION_STATUS_URL + buildingId.replace('{', '').replace('}', ''))
       .subscribe({
         next: (status) => {
-          // TODO: Remove this
-          const s = Math.ceil(Math.random() + 0.5);
-
-
-          // End of TODO
-          this.isExecuting.next(s);
+          this.isExecuting.next(status ? EXECUTING : NOT_EXECUTING);
         },
         error: (err) => {
           console.log(err);
@@ -61,5 +60,9 @@ export class RegisterLogService {
           this.isLoading.next(false);
         },
       });
+  }
+
+  public getLogForVariable(entityType: EntityType, variable: string): Log | undefined {
+    return this.loadedLogs.value.find(log => log.EntityType === entityType && log.Variable === variable);
   }
 }
