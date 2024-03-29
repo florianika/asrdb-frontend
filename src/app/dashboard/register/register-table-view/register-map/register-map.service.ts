@@ -85,7 +85,7 @@ export class RegisterMapService {
             console.log(view.popup.selectedFeature);
           }
           if (!view.popup.selectedFeature) {
-            this.registerFilterService.setBuildingGlobalIdFilter('');
+            // this.registerFilterService.setBuildingGlobalIdFilter('');
             return;
           }
           const globalId = view.popup.selectedFeature.attributes['GlobalID'];

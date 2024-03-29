@@ -102,7 +102,7 @@ export class CommonBuildingService {
   getSymbol(color: string) {
     return {
       type: 'simple-fill', // autocasts as new SimpleFillSymbol()
-      color: color,
+      color: 'transparent',
       outline: {
         // autocasts as new SimpleLineSymbol()
         color: color,
