@@ -24,7 +24,6 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
   constructor(private registerMapService: RegisterMapService, private registerFilterService: RegisterFilterService) { }
 
   ngOnInit(): void {
-    this.registerFilterService.removeDefaultValue();
     this.registerFilterService.setBuildingGlobalIdFilter(this.buildingGlobalId ?? '');
     this.registerFilterService.updateGlobalIds([this.buildingGlobalId ?? '']);
 

@@ -121,7 +121,7 @@ export class RegisterMapService {
     const query = this.bldlayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
-    view.goTo(extend.extent);
+    view.goTo(extend.extent ?? this.bldlayer.fullExtent);
   }
 
   async filterEntranceData(view: MapView, whereCondition: string) {

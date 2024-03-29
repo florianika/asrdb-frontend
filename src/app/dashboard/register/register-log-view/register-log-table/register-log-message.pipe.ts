@@ -2,9 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   standalone: true,
-  name: 'concatinateMessage'
+  name: 'concatenateMessage'
 })
-export class ConcatinateMessage implements PipeTransform {
+export class ConcatenateMessagePipe implements PipeTransform {
   transform(value?: string, lenght = 10): string {
     if (!value) {
       return '-';

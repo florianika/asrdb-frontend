@@ -1,5 +1,5 @@
 <div class="chips-container">
   <div class="chip" *ngFor="let chip of chips">
-    {{chip.column}}: {{chip.value}} <mat-icon *ngIf="clearable" class="chip-close-icon" (click)="removeChip(chip)">cancel</mat-icon>
+    {{chip.column}}: <span>{{chip.value | concatenateMessage}}</span> <mat-icon *ngIf="clearable" class="chip-close-icon" (click)="removeChip(chip)">cancel</mat-icon>
   </div>
 </div>

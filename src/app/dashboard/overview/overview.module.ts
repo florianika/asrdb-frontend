@@ -5,13 +5,9 @@ import { OverviewRoutingModule } from './overview-routing.module';
 import { OverviewComponent } from './overview.component';
 import { PlotlyModule } from 'angular-plotly.js';
 import * as PlotlyJS from 'plotly.js-dist-min';
-import { GraphsComponent } from './components/graphs/graphs.component';
 import { MatCardModule } from '@angular/material/card';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatTableModule } from '@angular/material/table';
-import { MapComponent } from './components/map/map.component';
-import { OverviewService } from './components/service/overview.service';
-import { GraphsService } from './components/graphs/graphs.service';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
@@ -19,14 +15,17 @@ import {MatIconModule} from '@angular/material/icon';
 import { CommonBuildingService } from '../register/service/common-building.service';
 import { CommonEntranceService } from '../register/service/common-entrance.service';
 import { CommonEsriAuthService } from '../register/service/common-esri-auth.service';
+import {RegisterMapComponent} from "../register/register-table-view/register-map/register-map.component";
+import {RegisterFilterService} from "../register/register-table-view/register-filter.service";
+import {CommonRegisterHelperService} from "../register/service/common-helper.service";
+import {ChipComponent} from "../../common/standalone-components/chip/chip.component";
+import {MatDialogModule} from "@angular/material/dialog";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @NgModule({
   declarations: [
     OverviewComponent,
-    GraphsComponent,
-    MapComponent
   ],
   imports: [
     CommonModule,
@@ -38,14 +37,17 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatPaginatorModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule,
+    RegisterMapComponent,
+    ChipComponent,
   ],
   providers: [
-    OverviewService,
-    GraphsService,
     CommonEsriAuthService,
     CommonBuildingService,
-    CommonEntranceService
+    CommonEntranceService,
+    RegisterFilterService,
+    CommonRegisterHelperService
   ]
 })
 export class OverviewModule { }

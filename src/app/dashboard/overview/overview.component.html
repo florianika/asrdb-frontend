@@ -1,12 +1,25 @@
-<div style="padding: 5px 15px;">
-  <h2>Welcome, <span style="text-transform: capitalize;">{{user}}</span></h2>
-  <asrdb-map></asrdb-map>
+<div style="padding: 5px 15px; height: calc(100% - 150px)">
+  <div class="header-container">
+    <h1 i18n class="header-title">Welcome, <span style="text-transform: capitalize;">{{user}}</span></h1>
+
+    <div class="spacer"></div>
+    <button mat-icon-button (click)="addNewBuilding()">
+      <mat-icon style="cursor: pointer;">add</mat-icon>
+    </button>
+    <button mat-icon-button (click)="openFilter()">
+      <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
+    </button>
+  </div>
+
+  <div style="padding: 0 10px 20px" *ngIf="filterObservable | async as filters">
+    <asrdb-chip (remove)="remove($event)" [chips]="getFilterChips(filters)" [clearable]="true"></asrdb-chip>
+  </div>
+
+  <asrdb-register-map></asrdb-register-map>
   <div class="row">
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
-      <asrdb-graphs [type]="'pie'"></asrdb-graphs>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
-      <asrdb-graphs [type]="'bar'"></asrdb-graphs>
     </div>
   </div>
 </div>

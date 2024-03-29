@@ -194,6 +194,11 @@ export class RegisterFormComponent implements OnInit {
       }
     });
     entrance['GlobalID'] = this.entranceId ?? undefined;
+    if (this.entranceId) {
+      entrance['OBJECTID'] = this.existingEntrancesDetails
+        ?.find(ent => ent.GlobalID === this.entranceId as string)
+        ?.OBJECTID ?? '';
+    }
     entrance['EntLatitude'] = centroid?.latitude;
     entrance['EntLongitude'] = centroid?.longitude;
     return entrance;

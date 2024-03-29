@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RegisterLogService } from './register-log.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +13,7 @@ import { map } from 'rxjs/internal/operators/map';
 import { Observable } from 'rxjs/internal/Observable';
 import { Log } from '../model/log';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ConcatinateMessage as ConcatinateMessagePipe } from './register-log-message.pipe';
+import { ConcatenateMessagePipe as ConcatinateMessagePipe } from './register-log-message.pipe';
 import { LogExecutionPipe } from './register-log-execution.pipe';
 
 @Component({

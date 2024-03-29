@@ -9,6 +9,7 @@ export class RegisterFilterService {
   get filterObservable() {
     return this.filter.asObservable();
   }
+
   get globalIdsObservable() {
     return this.globalIds.asObservable();
   }
@@ -16,10 +17,10 @@ export class RegisterFilterService {
   private filter = new BehaviorSubject<BuildingFilter>({
     filter: {
       // add default value if possible
-      // default value will be Unknown
+      // default value will be Tirane
       // This is done to prevent any value to be loaded on init.
       // user can change this to load what they want
-      BldMunicipality: '99',
+      BldMunicipality: '53',
       BldStatus: '',
       BldType: '',
       GlobalID: '',
@@ -94,10 +95,14 @@ export class RegisterFilterService {
   }
 
   prepareWhereCaseForEntrance() {
-    if (!this.globalIds.getValue()?.length) {
+    if (!this.globalIds.getValue()?.length && this.noFilterApplied()) {
       return '1=1';
     }
     return `fk_buildings in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
+  }
+
+  getFilter() {
+    return this.filter.value;
   }
 
   private getOptions(column: string) {
@@ -115,5 +120,12 @@ export class RegisterFilterService {
 
   private getWhereConditionValue(value: string | number) {
     return (typeof value == 'number') ? value : `'${value}'`;
+  }
+
+  private noFilterApplied() {
+    return !this.filter.value.filter.BldMunicipality
+      && !this.filter.value.filter.BldType
+      && !this.filter.value.filter.BldStatus
+      && !this.filter.value.filter.GlobalID;
   }
 }
