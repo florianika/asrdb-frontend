@@ -17,6 +17,7 @@ import { QueryFilter } from '../../../model/query-filter';
 import { CommonEntranceService } from '../../../service/common-entrance.service';
 import { CommonRegisterHelperService } from '../../../service/common-helper.service';
 import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
+import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
 
 @Component({
   selector: 'asrdb-entrance-list-view',
@@ -71,6 +72,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     private commonEntranceBuildingService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
+    private registerLogService: RegisterLogService,
     private router: Router,
     private activatedRoute: ActivatedRoute) {
   }
@@ -132,7 +134,10 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   viewEntranceDetails(globalId: string) {
     this.matDialog.open(EntranceDetailsComponent, {
-      data: globalId
+      data: {
+        globalId,
+        logs: this.registerLogService.getAllLogs('ENTRANCE')
+      }
     });
   }
 

@@ -5,12 +5,20 @@
     <ng-container *ngFor="let formItem of formStructure">
       <mat-form-field class="full-width">
         <mat-label>{{formItem.alias}}</mat-label>
-        <input *ngIf="formItem.type !== 'select'" matInput [formControlName]="formItem.name" [type]="formItem.type">
+        <input *ngIf="formItem.type !== 'select' && formItem.type !== 'date'" matInput [formControlName]="formItem.name" [type]="formItem.type">
 
         <mat-select *ngIf="formItem.type === 'select'" [formControlName]="formItem.name">
-          <mat-option *ngFor="let option of formItem.selectOptions" [value]="option.value">{{ option.text
-            }}</mat-option>
+          <mat-option *ngFor="let option of formItem.selectOptions" [value]="option.value">{{ option.text }}</mat-option>
         </mat-select>
+
+        <ng-container *ngIf="formItem.type === 'date'">
+          <input matInput [matDatepicker]="picker" (click)="picker.open()" [formControlName]="formItem.name" readonly>
+          <mat-datepicker #picker></mat-datepicker>
+        </ng-container>
+        <mat-hint *ngIf="getLogForField(formItem.name) as log" style="font-size: 14px; padding-bottom: 10px">
+          <mat-icon>info</mat-icon>
+          <span style="margin-left: 5px">{{log}}</span>
+        </mat-hint>
       </mat-form-field>
     </ng-container>
   </form>

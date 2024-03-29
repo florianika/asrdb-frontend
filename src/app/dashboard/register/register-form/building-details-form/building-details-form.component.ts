@@ -15,18 +15,9 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-
-const MY_FORMATS = {
-  parse: {
-    dateInput: 'LL',
-  },
-  display: {
-    dateInput: 'DD/MM/YYYY',
-    monthYearLabel: 'YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'YYYY',
-  },
-};
+import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MY_FORMATS} from "../../model/common-utils";
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -40,7 +31,8 @@ const MY_FORMATS = {
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ],
   providers: [
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
@@ -72,7 +64,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     'BldQuality'
   ];
 
-  constructor(private buildingService: CommonBuildingService) {
+  constructor(private buildingService: CommonBuildingService, private registerLogService: RegisterLogService) {
   }
 
   ngOnInit(): void {
@@ -116,5 +108,10 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.onDestroy.next(true);
     this.onDestroy.complete();
+  }
+
+  getLogForField(variable: string): string {
+    return this.registerLogService.getLogForVariable('BUILDING', variable)?.QualityMessageEn
+      ?? '';
   }
 }

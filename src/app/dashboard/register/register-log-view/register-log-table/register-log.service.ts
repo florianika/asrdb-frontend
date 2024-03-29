@@ -65,4 +65,13 @@ export class RegisterLogService {
   public getLogForVariable(entityType: EntityType, variable: string): Log | undefined {
     return this.loadedLogs.value.find(log => log.EntityType === entityType && log.Variable === variable);
   }
+
+  public getAllLogs(entityType?: EntityType): Log[] {
+    return this.loadedLogs.value.filter(log => {
+      if (entityType) {
+        return log.EntityType === entityType;
+      }
+      return true;
+    });
+  }
 }

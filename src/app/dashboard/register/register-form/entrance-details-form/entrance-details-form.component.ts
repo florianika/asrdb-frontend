@@ -11,6 +11,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { Entrance } from '../../model/entrance';
 import { NAME_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, ALIAS_PROP, NULLABLE_PROP, DEFAULT_VALUE_PROP } from '../../constant/common-constants';
 import {ActivatedRoute} from "@angular/router";
+import {MatIconModule} from "@angular/material/icon";
+import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
+import {MomentDateAdapter} from "@angular/material-moment-adapter";
+import {MY_FORMATS} from "../../model/common-utils";
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -21,7 +27,14 @@ import {ActivatedRoute} from "@angular/router";
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
+  providers: [
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
   templateUrl: './entrance-details-form.component.html',
   styleUrls: ['./entrance-details-form.component.css']
@@ -50,7 +63,10 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     'EntQuality'
   ];
 
-  constructor(private entranceService: CommonEntranceService, private activatedRoute: ActivatedRoute) {
+  constructor(
+    private entranceService: CommonEntranceService,
+    private activatedRoute: ActivatedRoute,
+    private registerLogService: RegisterLogService) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId');
   }
 
@@ -97,5 +113,11 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
     }
     this.formGroup.addControl((this.entranceId ?? '') + '_' + field[NAME_PROP], control);
+  }
+
+  getLogForField(variable: string): string {
+    const variableName = variable.split('_')[1];
+    return this.registerLogService.getLogForVariable('ENTRANCE', variableName)?.QualityMessageEn
+      ?? '';
   }
 }

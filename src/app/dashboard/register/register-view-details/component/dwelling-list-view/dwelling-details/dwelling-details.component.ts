@@ -10,7 +10,7 @@ import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
 import { CommonDwellingService } from 'src/app/dashboard/register/service/common-dwellings.service';
 import { CommonRegisterHelperService } from 'src/app/dashboard/register/service/common-helper.service';
 import {getDate} from "../../../../model/common-utils";
-import {RegisterLogService} from "../../../../register-log-view/register-log-table/register-log.service";
+import {Log} from "../../../../register-log-view/model/log";
 
 @Component({
   selector: 'asrdb-dwelling-details',
@@ -170,22 +170,18 @@ export class DwellingDetailsComponent implements OnInit {
   private subscriber = new Subject();
   private fields: any[] = [];
   private id: string | null = '';
+  private logs: Log[] = [];
 
   constructor(
     private commonEntranceService: CommonDwellingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
-    private registerLogService: RegisterLogService,
     private matSnack: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: string) {
-      this.id = this.data;
+    @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[]}) {
+      this.id = this.data.globalId;
+      this.logs = this.data.logs;
     }
 
   ngOnInit(): void {
-    this.registerLogService.logs.subscribe(() => {
-      if (this.fields.length) {
-        this.fillSections();
-      }
-    });
     this.loadDwelling().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
   }
 
@@ -221,7 +217,7 @@ export class DwellingDetailsComponent implements OnInit {
       section.entries.forEach(entry => {
         entry.title = this.getTitle(entry.propName);
         entry.value = this.getValueFromStatus(entry.propName);
-        entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
+        entry.log = this.logs.find(log => log.Variable === entry.propName)
           ?.QualityMessageEn ?? '';
       });
     });

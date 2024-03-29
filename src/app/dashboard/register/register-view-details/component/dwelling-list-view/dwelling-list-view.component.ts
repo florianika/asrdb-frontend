@@ -7,7 +7,7 @@ import {
   OnChanges,
   OnDestroy,
   OnInit, SimpleChanges,
-  ViewChild
+  ViewChild, ViewContainerRef
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
@@ -23,7 +23,6 @@ import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chi
 import {
   EntranceListViewFilterComponent
 } from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
-import {DwellingListViewFilterComponent} from './dwelling-list-view-filter/dwelling-list-view-filter.component';
 import {CommonEntranceService} from '../../../service/common-entrance.service';
 import {DwellingFilter} from '../../../model/dwelling';
 import {QueryFilter} from '../../../model/query-filter';
@@ -34,6 +33,7 @@ import {
   DwellingDetailsFormComponent
 } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
 import {Entrance} from '../../../model/entrance';
+import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -89,6 +89,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     private commonEntranceBuildingService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private changeDetectorRef: ChangeDetectorRef,
+    private registerLogService: RegisterLogService,
+    private viewContainerRef: ViewContainerRef,
     private matDialog: MatDialog) {
   }
 
@@ -147,18 +149,12 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
   }
 
-  openFilter() {
-    this.matDialog
-      .open(DwellingListViewFilterComponent, {
-        data: { filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.entranceId }
-      }).afterClosed().subscribe((newFilterConfig: DwellingFilter | null) => this.handlePopupClose(newFilterConfig));
-  }
-
   addDwelling() {
     this.matDialog.open(DwellingDetailsFormComponent, {
       data: {
-        entrances: this.entrances
-      }
+        entrances: this.entrances,
+        logs: this.registerLogService.getAllLogs('DWELLING')
+      },
     }).afterClosed().subscribe(() => {
       this.reload();
     });
@@ -178,7 +174,10 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
 
   viewDwellingDetails(globalId: string) {
     this.matDialog.open(DwellingDetailsComponent, {
-      data: globalId
+      data: {
+        globalId,
+        logs: this.registerLogService.getAllLogs('DWELLING')
+      },
     });
   }
 
@@ -186,18 +185,12 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.matDialog.open(DwellingDetailsFormComponent, {
       data: {
         entrances: this.entrances,
-        id: globalId
+        id: globalId,
+        logs: this.registerLogService.getAllLogs('DWELLING')
       }
     }).afterClosed().subscribe(() => {
       this.reload();
     });
-  }
-
-  private handlePopupClose(newFilterConfig: DwellingFilter | null) {
-    if (newFilterConfig) {
-      this.filterConfig = newFilterConfig;
-      this.reload();
-    }
   }
 
   private prepareWhereCase() {

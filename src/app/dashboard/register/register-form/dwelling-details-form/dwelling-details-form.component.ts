@@ -14,6 +14,12 @@ import { Dwelling } from '../../model/dwelling';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { DwellingManagementService } from '../dwelling-creation.service';
+import {MatIconModule} from "@angular/material/icon";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
+import {MomentDateAdapter} from "@angular/material-moment-adapter";
+import {MY_FORMATS} from "../../model/common-utils";
+import {Log} from "../../register-log-view/model/log";
 
 @Component({
   selector: 'asrdb-dwelling-details-form',
@@ -25,10 +31,15 @@ import { DwellingManagementService } from '../dwelling-creation.service';
     MatInputModule,
     MatSelectModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   providers: [
-    DwellingManagementService
+    DwellingManagementService,
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
   templateUrl: './dwelling-details-form.component.html',
   styleUrls: ['./dwelling-details-form.component.css']
@@ -48,6 +59,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   private onDestroy = new Subject();
   private initialized = false;
   private dwelling?: Dwelling;
+  private logs: Log[] = [];
 
   @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
 
@@ -60,7 +72,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
 
   constructor(
     private dwellingService: CommonDwellingService,
-    @Inject(MAT_DIALOG_DATA) public data: { id?: string, entrances: Entrance[] },
+    @Inject(MAT_DIALOG_DATA) public data: { id?: string, entrances: Entrance[], logs: Log[] },
     public dialogRef: MatDialogRef<DwellingDetailsFormComponent>,
     private matDialog: MatDialog,
     private matSnackBar: MatSnackBar,
@@ -69,6 +81,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.loadDwellingById(data.id);
 
     this.entrances = this.data.entrances;
+    this.logs = this.data.logs;
     this.isSaving = this.dwellingCreationService.isSavingObservable;
     this.isSaving.pipe(takeUntil(this.onDestroy)).subscribe(saving => {
       if (!saving && this.initialized) {
@@ -196,5 +209,10 @@ export class DwellingDetailsFormComponent implements OnDestroy {
       dwelling.OBJECTID = this.dwelling.OBJECTID;
     }
     this.dwellingCreationService.saveDwelling(dwelling);
+  }
+
+  getLogForField(variable: string): string {
+    return this.logs.find(log => log.Variable === variable)?.QualityMessageEn
+      ?? '';
   }
 }

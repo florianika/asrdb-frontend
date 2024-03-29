@@ -12,6 +12,10 @@
         <input matInput [matDatepicker]="picker" (click)="picker.open()" [formControlName]="formItem.name" readonly>
         <mat-datepicker #picker></mat-datepicker>
       </ng-container>
+      <mat-hint *ngIf="getLogForField(formItem.name) as log" style="font-size: 14px; padding-bottom: 10px">
+        <mat-icon>info</mat-icon>
+        <span style="margin-left: 5px">{{log}}</span>
+      </mat-hint>
     </mat-form-field>
   </ng-container>
 </form>

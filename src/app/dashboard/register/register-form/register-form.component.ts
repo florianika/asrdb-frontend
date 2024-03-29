@@ -19,6 +19,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import Geometry from '@arcgis/core/geometry/Geometry';
 import {EntranceManagementService} from './entrance-creation.service';
 import {EntityType} from "../../quality-management/quality-management-config";
+import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 
 @Component({
   selector: 'asrdb-register-form',
@@ -34,7 +35,7 @@ import {EntityType} from "../../quality-management/quality-management-config";
     MatIconModule,
     MatSnackBarModule
   ],
-  providers: [BuildingManagementService, EntranceManagementService],
+  providers: [BuildingManagementService, EntranceManagementService, RegisterLogService],
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css']
 })
@@ -80,6 +81,7 @@ export class RegisterFormComponent implements OnInit {
     private entranceManagementService: EntranceManagementService,
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
+    private registerLogService: RegisterLogService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private matSnackBar: MatSnackBar) {
@@ -106,6 +108,7 @@ export class RegisterFormComponent implements OnInit {
     }
 
     if (this.buildingId) {
+      this.registerLogService.loadLogs(this.buildingId);
       const getBuildingRequest = this.buildingService
         .getBuildingData({ returnGeometry: true, where: `globalID='${this.buildingId}'` })
         .pipe(takeUntil(this.subscriber));
