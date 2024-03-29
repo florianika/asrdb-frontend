@@ -20,12 +20,14 @@ import {RegisterFilterService} from "../register/register-table-view/register-fi
 import {CommonRegisterHelperService} from "../register/service/common-helper.service";
 import {ChipComponent} from "../../common/standalone-components/chip/chip.component";
 import {MatDialogModule} from "@angular/material/dialog";
+import { PieGraphComponent } from './components/pie-graph/pie-graph.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @NgModule({
   declarations: [
     OverviewComponent,
+    PieGraphComponent,
   ],
   imports: [
     CommonModule,

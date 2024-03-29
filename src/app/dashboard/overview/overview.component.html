@@ -16,10 +16,16 @@
   </div>
 
   <asrdb-register-map></asrdb-register-map>
-  <div class="row">
-    <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
+  <div class="row" style="margin-top: 20px; padding-bottom: 20px" *ngIf="fields.length">
+    <h1 i18n>Statistics</h1>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+      <asrdb-building-quality-graph [fields]="fields" title="Building quality" variable="BldQuality"></asrdb-building-quality-graph>
     </div>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+      <asrdb-building-quality-graph [fields]="fields" title="Building status" variable="BldStatus"></asrdb-building-quality-graph>
+    </div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+      <asrdb-building-quality-graph [fields]="fields" title="Building type" variable="BldType"></asrdb-building-quality-graph>
     </div>
   </div>
 </div>

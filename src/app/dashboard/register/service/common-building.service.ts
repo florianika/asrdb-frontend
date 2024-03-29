@@ -115,6 +115,10 @@ export class CommonBuildingService {
     return defer(() => from(this.fetchBuildingData(filter)));
   }
 
+  getBuildingStats(filter: Partial<QueryFilter>): Observable<any> {
+    return defer(() => from(this.getStats(filter)));
+  }
+
   getAttributesMetadata() {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
@@ -196,6 +200,21 @@ export class CommonBuildingService {
       console.log(e);
       return null;
     }
+  }
+
+  private async getStats(filter: Partial<QueryFilter>) {
+    const query = this.bldLayer.createQuery();
+    query.where = filter.where ?? '1=1';
+    query.outFields = filter.outFields ?? ['*'];
+    query.returnGeometry = false;
+    query.groupByFieldsForStatistics = filter.groupByFieldsForStatistics ?? ['BldStatus'];
+    query.orderByFields = filter.orderByFields ?? ['BldStatus'];
+    query.outStatistics = filter.outStatistics ?? [{
+      statisticType: 'count',
+      onStatisticField: 'BldStatus',
+      outStatisticFieldName: 'value'
+    }] as __esri.StatisticDefinition[];
+    return await this.bldLayer.queryFeatures();
   }
 
   private createRequestBody(features: any[]) {

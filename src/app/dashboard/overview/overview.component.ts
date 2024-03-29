@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {AuthStateService} from 'src/app/common/services/auth-state.service';
 import {Chip} from "../../common/standalone-components/chip/chip.component";
 import {BuildingFilter} from "../register/model/building";
@@ -18,9 +18,8 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class OverviewComponent implements OnDestroy {
 
-  private fields = [];
   private destroy = new Subject();
-
+  public fields = [];
   public filterObservable = this.registerFilterService.filterObservable;
 
   constructor(
@@ -29,6 +28,7 @@ export class OverviewComponent implements OnDestroy {
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
+    private changeDetectionRef: ChangeDetectorRef,
     private router: Router
   ) {
     this.commonBuildingService.getAttributesMetadata()
@@ -36,6 +36,7 @@ export class OverviewComponent implements OnDestroy {
       .subscribe(fields => {
         this.fields = fields;
         registerFilterService.prepareFilter(fields);
+        this.changeDetectionRef.detectChanges();
       });
   }
 
