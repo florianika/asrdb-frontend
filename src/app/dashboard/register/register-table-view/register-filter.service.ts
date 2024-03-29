@@ -23,12 +23,14 @@ export class RegisterFilterService {
       BldMunicipality: '53',
       BldStatus: '',
       BldType: '',
+      BldQuality: '',
       GlobalID: '',
     },
     options: {
       BldMunicipality: [] as never[],
       BldStatus: [] as never[],
       BldType: [] as never[],
+      BldQuality: [] as never[],
     }
   });
   private globalIds = new BehaviorSubject<string[]>([]);
@@ -72,6 +74,7 @@ export class RegisterFilterService {
         BldMunicipality: this.getOptions('BldMunicipality').length ? this.getOptions('BldMunicipality') : this.filter.value.options.BldMunicipality,
         BldStatus: this.getOptions('BldStatus').length ? this.getOptions('BldStatus') : this.filter.value.options.BldStatus,
         BldType: this.getOptions('BldType').length ? this.getOptions('BldType') : this.filter.value.options.BldType,
+        BldQuality: this.getOptions('BldQuality').length ? this.getOptions('BldQuality') : this.filter.value.options.BldQuality,
       }
     });
   }

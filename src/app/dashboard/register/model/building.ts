@@ -49,11 +49,13 @@ export type BuildingFilter = {
     BldMunicipality: string;
     BldStatus: string;
     BldType: string;
+    BldQuality: string;
     GlobalID: string;
   };
   options: {
     BldMunicipality: any[];
     BldStatus: any[];
     BldType: any[];
+    BldQuality: any[];
   }
 }

@@ -56,23 +56,9 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   isLoadingResults = true;
   selectedBuildings: string[] = [];
 
-  filterConfig: BuildingFilter = {
-    filter: {
-      BldMunicipality: '',
-      BldStatus: '',
-      BldType: '',
-      GlobalID: ''
-    },
-    options: {
-      BldMunicipality: [] as any[],
-      BldStatus: [] as any[],
-      BldType: [] as any[],
-    }
-  };
-
   get filterChips(): Chip[] {
     return Object
-      .entries(this.filterConfig.filter)
+      .entries(this.registerFilterService.getFilter().filter)
       .filter(([, value]) => !!value)
       .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value) }));
   }
@@ -88,13 +74,6 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit(): void {
     this.registerFilterService.filterObservable.subscribe((filter) => {
-      if (JSON.stringify(filter) == JSON.stringify(this.filterConfig)) {
-        return;
-      }
-      this.filterConfig = filter;
-      if (!this.initialized) {
-        return;
-      }
       this.reload();
     });
   }
@@ -144,7 +123,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   openFilter() {
     this.matDialog
       .open(RegisterFilterComponent, {
-        data: JSON.parse(JSON.stringify(this.filterConfig))
+        data: JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
       }).afterClosed().subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
@@ -153,7 +132,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   remove($event: Chip) {
-    const filterCopy = JSON.parse(JSON.stringify(this.filterConfig));
+    const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
     (filterCopy as any).filter[$event.column] = '';
     this.registerFilterService.updateFilter(filterCopy);
   }
@@ -179,7 +158,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   filterBuilding(GlobalID: string) {
-    const filterCopy = JSON.parse(JSON.stringify(this.filterConfig));
+    const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
     (filterCopy as any).filter['GlobalID'] = GlobalID;
     this.registerFilterService.updateFilter(filterCopy);
   }

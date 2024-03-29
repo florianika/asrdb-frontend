@@ -22,6 +22,12 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Quality</mat-label>
+    <mat-select [value]="filterConfig.filter.BldQuality" (selectionChange)="changeValue($event, 'BldQuality')">
+      <mat-option *ngFor="let type of filterConfig.options.BldQuality" [value]="type.code">{{type.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>PK Buildings (Global ID)</mat-label>
     <input matInput [(ngModel)]="filterConfig.filter.GlobalID"/>
   </mat-form-field>
