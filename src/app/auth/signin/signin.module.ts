@@ -34,5 +34,5 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     SigninService,
   ]
-} as NgModule)
+})
 export class SigninModule { }
