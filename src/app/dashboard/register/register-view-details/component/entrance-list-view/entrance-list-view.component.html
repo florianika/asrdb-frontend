@@ -4,13 +4,13 @@
 
     <div class="spacer"></div>
 
-    <button mat-icon-button [disabled]="isLoadingResults" (click)="createEntrance(buildingGlobalId!)">
+    <button mat-icon-button [matTooltip]="'Add new entrance'" [disabled]="isLoadingResults" (click)="createEntrance(buildingGlobalId!)">
       <mat-icon style="cursor: pointer;">add</mat-icon>
     </button>
     <button *ngIf="!buildingGlobalId" mat-icon-button (click)="openFilter()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
     </button>
-    <button mat-icon-button (click)="reload()" [disabled]="isLoadingResults">
+    <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
   </div>

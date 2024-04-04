@@ -3,16 +3,16 @@
     <h1 i18n class="header-title">Building List</h1>
 
     <div class="spacer"></div>
-    <button mat-icon-button (click)="addNewBuilding()" [disabled]="isLoadingResults">
+    <button mat-icon-button [matTooltip]="'Create a new building'" (click)="addNewBuilding()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">add</mat-icon>
     </button>
-    <button mat-icon-button (click)="openFilter()" [disabled]="isLoadingResults">
+    <button mat-icon-button [matTooltip]="'Filter buildings'" (click)="openFilter()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
     </button>
-    <button mat-icon-button (click)="reload()" [disabled]="isLoadingResults">
+    <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
-    <button mat-icon-button (click)="viewLogsForSelected()" [disabled]="isLoadingResults">
+    <button mat-icon-button *ngIf="selectedBuildings.length" [matTooltip]="'Open log view for selected building(s)'" (click)="viewLogsForSelected()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">text_snippet</mat-icon>
     </button>
   </div>

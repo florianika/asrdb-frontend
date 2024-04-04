@@ -21,6 +21,7 @@ import {CommonRegisterHelperService} from "../register/service/common-helper.ser
 import {ChipComponent} from "../../common/standalone-components/chip/chip.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import { PieGraphComponent } from './components/pie-graph/pie-graph.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -43,6 +44,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatDialogModule,
     RegisterMapComponent,
     ChipComponent,
+    MatTooltipModule
   ],
   providers: [
     CommonEsriAuthService,

@@ -34,6 +34,7 @@ import {
 } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
 import {Entrance} from '../../../model/entrance';
 import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -42,7 +43,20 @@ import {RegisterLogService} from "../../../register-log-view/register-log-table/
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [CommonDwellingService, CommonEntranceService],
-  imports: [MatIconModule, MatDialogModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
+  imports: [
+    MatIconModule,
+    MatDialogModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatButtonModule,
+    MatMenuModule,
+    ChipComponent,
+    MatProgressSpinnerModule,
+    CommonModule,
+    EntranceListViewFilterComponent,
+    MatTooltipModule
+  ]
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   @Input() entranceId?: string;

@@ -4,10 +4,10 @@
 
     <div class="spacer"></div>
 
-    <button mat-icon-button (click)="addDwelling()" [disabled]="isLoadingResults">
+    <button mat-icon-button [matTooltip]="'Add new dwelling'" (click)="addDwelling()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">add</mat-icon>
     </button>
-    <button mat-icon-button (click)="reload()" [disabled]="isLoadingResults">
+    <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
   </div>

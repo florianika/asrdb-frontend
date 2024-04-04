@@ -4,13 +4,13 @@
 
     <div class="spacer"></div>
 
-    <button mat-icon-button (click)="openFilter()" [disabled]="isLoadingResults | async">
-      <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
-    </button>
-    <button mat-icon-button (click)="add()" [disabled]="isLoadingResults | async">
+    <button mat-icon-button matTooltip="Add new quality rule" (click)="add()" [disabled]="isLoadingResults | async">
       <mat-icon style="cursor: pointer;">add</mat-icon>
     </button>
-    <button mat-icon-button (click)="reload()" [disabled]="isLoadingResults | async">
+    <button mat-icon-button matTooltip="Filter rules" (click)="openFilter()" [disabled]="isLoadingResults | async">
+      <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Reload table data" (click)="reload()" [disabled]="isLoadingResults | async">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
   </div>

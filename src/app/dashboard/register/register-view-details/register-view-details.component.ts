@@ -17,6 +17,7 @@ import { RegisterMapComponent } from '../register-table-view/register-map/regist
 import { RegisterFilterService } from '../register-table-view/register-filter.service';
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 import {getDate} from "../model/common-utils";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -29,7 +30,8 @@ import {getDate} from "../model/common-utils";
     BuildingDetailComponent,
     EntranceListViewComponent,
     DwellingListViewComponent,
-    RegisterMapComponent
+    RegisterMapComponent,
+    MatTooltipModule
   ],
   providers: [
     RegisterLogService

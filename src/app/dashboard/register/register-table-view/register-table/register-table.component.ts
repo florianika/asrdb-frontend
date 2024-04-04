@@ -19,6 +19,7 @@ import { RegisterFilterComponent } from '../register-filter/register-filter.comp
 import { RegisterFilterService } from '../register-filter.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @Component({
   selector: 'asrdb-register-table',
@@ -35,7 +36,8 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
     MatDialogModule,
     ChipComponent,
     MatDividerModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule
   ],
   templateUrl: './register-table.component.html',
   styleUrls: ['./register-table.component.css'],

@@ -29,6 +29,7 @@ import {ACE_CONFIG, AceConfigInterface, AceModule} from "ngx-ace-wrapper";
 import {
   QualityManagementVariableSelectionComponent
 } from "./quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
   readOnly: false,
@@ -65,7 +66,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatCheckboxModule,
     FormsModule,
     VariableSelectorComponent,
-    AceModule
+    AceModule,
+    MatTooltipModule
   ],
   providers: [
     QualityManagementService,

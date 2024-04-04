@@ -1,23 +1,34 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, isDevMode } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { Subject, merge, takeUntil, startWith, switchMap, catchError, of as observableOf } from 'rxjs';
-import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CommonModule } from '@angular/common';
-import { EntranceListViewFilterComponent } from './entrance-list-view-filter/entrance-list-view-filter.component';
-import { Entrance, EntranceFilter } from '../../../model/entrance';
-import { QueryFilter } from '../../../model/query-filter';
-import { CommonEntranceService } from '../../../service/common-entrance.service';
-import { CommonRegisterHelperService } from '../../../service/common-helper.service';
-import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+  isDevMode
+} from '@angular/core';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {Subject, merge, takeUntil, startWith, switchMap, catchError, of as observableOf} from 'rxjs';
+import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chip.component';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTableModule} from '@angular/material/table';
+import {MatButtonModule} from '@angular/material/button';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {CommonModule} from '@angular/common';
+import {EntranceListViewFilterComponent} from './entrance-list-view-filter/entrance-list-view-filter.component';
+import {Entrance, EntranceFilter} from '../../../model/entrance';
+import {QueryFilter} from '../../../model/query-filter';
+import {CommonEntranceService} from '../../../service/common-entrance.service';
+import {CommonRegisterHelperService} from '../../../service/common-helper.service';
+import {EntranceDetailsComponent} from './entrance-details/entrance-details.component';
 import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @Component({
   selector: 'asrdb-entrance-list-view',
@@ -25,7 +36,20 @@ import {RegisterLogService} from "../../../register-log-view/register-log-table/
   styleUrls: ['./entrance-list-view.component.css'],
   standalone: true,
   providers: [CommonEntranceService],
-  imports: [MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatMenuModule, MatDialogModule, ChipComponent, MatProgressSpinnerModule, CommonModule, EntranceListViewFilterComponent]
+  imports: [
+    MatIconModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatDialogModule,
+    ChipComponent,
+    MatProgressSpinnerModule,
+    CommonModule,
+    EntranceListViewFilterComponent,
+    MatTooltipModule
+  ]
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() buildingGlobalId?: string;
@@ -65,7 +89,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     return Object
       .entries(this.filterConfig.filter)
       .filter(([, value]) => !!value)
-      .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value.toString()) }));
+      .map(([key, value]) => ({column: key, value: this.getValueFromStatus(key, value.toString())}));
   }
 
   constructor(
@@ -119,7 +143,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   openFilter() {
     this.matDialog
       .open(EntranceListViewFilterComponent, {
-        data: { filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.buildingGlobalId }
+        data: {filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.buildingGlobalId}
       }).afterClosed().subscribe((newFilterConfig: EntranceFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
@@ -167,7 +191,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     Object
       .entries(this.filterConfig.filter)
       .filter(([, value]) => !!value)
-      .map(([key, value]) => ({ column: key, value } as Chip))
+      .map(([key, value]) => ({column: key, value} as Chip))
       .forEach(filter => {
         conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
       });

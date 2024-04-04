@@ -26,6 +26,7 @@ import { PermissionSelectorComponent } from 'src/app/common/standalone-component
 import { RoleSelectorComponent } from 'src/app/common/standalone-components/role-selector/role-selector.component';
 import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
 import { RoleDeleteDialogComponent } from './role-delete-dialog/role-delete-dialog.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { RoleDeleteDialogComponent } from './role-delete-dialog/role-delete-dial
     RoleSelectorComponent,
     EntityTypeSelectorComponent,
     VariableSelectorComponent,
-    PermissionSelectorComponent
+    PermissionSelectorComponent,
+    MatTooltipModule
   ],
   providers: [
     RoleManagementService
