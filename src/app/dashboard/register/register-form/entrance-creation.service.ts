@@ -44,23 +44,30 @@ export class EntranceManagementService {
   public saveEntranceEntity(geometry: Point, entrance: Entrance, buildingGlobalId: string) {
     this.buildingId = buildingGlobalId;
     const attributes = this.cleanAttributes(entrance, geometry, buildingGlobalId);
-    const feature = {
-      'geometry': {
-        'x': geometry.x,
-        'y': geometry.y,
-        spatialReference: geometry.spatialReference ?? DEFAULR_SPARTIAL_REF
-      },
-      'attributes': attributes
-    };
     attributes.EntQuality = 9;
+
     if (attributes?.GlobalID) {
-      entrance.external_creator = this.authState.getNameId() ?? '';
-      entrance.external_creation_date = String(Date.now());
-      this.updateEntrance([feature]);
+      attributes.external_updater = `{${this.authState.getNameId()}}` ?? '';
+      attributes.external_updated_date = String(Date.now());
+      this.updateEntrance([{
+        'geometry': {
+          'x': geometry.x,
+          'y': geometry.y,
+          spatialReference: geometry.spatialReference ?? DEFAULR_SPARTIAL_REF
+        },
+        'attributes': attributes
+      }]);
     } else {
-      entrance.external_updater = this.authState.getNameId() ?? '';
-      entrance.external_updated_date = String(Date.now());
-      this.createEntrance([feature]);
+      attributes.external_creator = `{${this.authState.getNameId()}}` ?? '';
+      attributes.external_creation_date = String(Date.now());
+      this.createEntrance([{
+        'geometry': {
+          'x': geometry.x,
+          'y': geometry.y,
+          spatialReference: geometry.spatialReference ?? DEFAULR_SPARTIAL_REF
+        },
+        'attributes': attributes
+      }]);
     }
   }
 

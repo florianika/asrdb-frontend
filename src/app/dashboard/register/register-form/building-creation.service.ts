@@ -52,14 +52,14 @@ export class BuildingManagementService {
   }
 
   private createBuilding(mapFormData: BuildingPoly, buildingDetails: Building) {
-    buildingDetails.external_creator = this.authState.getNameId() ?? '';
+    buildingDetails.external_creator = `{${this.authState.getNameId()}}` ?? '';
     buildingDetails.external_creation_date = String(Date.now());
     const features = this.createFeatures(buildingDetails, mapFormData);
     this.buildingService.createFeature(features).subscribe(this.responseHandler());
   }
 
   private updateBuilding(mapFormData: BuildingPoly, buildingDetails: Building) {
-    buildingDetails.external_updater = this.authState.getNameId() ?? '';
+    buildingDetails.external_updater = `{${this.authState.getNameId()}}` ?? '';
     buildingDetails.external_updated_date = String(Date.now());
     const features = this.createFeatures(buildingDetails, mapFormData);
     this.buildingService.updateFeature(features).subscribe(this.responseHandler());
