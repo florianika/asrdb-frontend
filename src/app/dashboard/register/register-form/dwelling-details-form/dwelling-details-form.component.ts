@@ -95,7 +95,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   private initForm() {
     this.isLoadingResults = true;
     this.dwellingService.getAttributesMetadata().subscribe((fields: never[]) => {
-      fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[ALIAS_PROP]));
+      fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]));
       fields.forEach(field => {
         this.createFormControlForField(field);
         this.createFormObject(field);
