@@ -3,7 +3,7 @@
 <mat-dialog-content *ngIf="!isLoadingResults" class="building-details-container mat-typography" style="color: initial; margin: 10px;">
   <mat-card class="building-details-card">
     <mat-card-content>
-      <h2 class="details-header" i18n>Details for building: {{dwelling.GlobalID}}</h2>
+      <h2 class="details-header" i18n>Details for dwelling: {{dwelling.GlobalID}}</h2>
       <span class="details-subheader" i18n>Quality: <span
           style="font-weight: bold;">{{getValueFromStatus('DwlQuality')}}</span></span>
       <section *ngFor="let section of sections">

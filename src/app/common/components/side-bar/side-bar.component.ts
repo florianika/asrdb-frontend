@@ -27,7 +27,7 @@ export class SideBarComponent implements AfterViewInit {
       sectionTitle: '',
       sectionElements: [
         {
-          title: 'Building register',
+          title: 'Building List',
           path: '/dashboard/register',
           pathMatch: true,
           icon: 'domainm',
