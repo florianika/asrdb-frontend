@@ -6,7 +6,6 @@ import {RegisterFilterService} from "../register/register-table-view/register-fi
 import {CommonRegisterHelperService} from "../register/service/common-helper.service";
 import {CommonBuildingService} from "../register/service/common-building.service";
 import {Subject, takeUntil} from "rxjs";
-import {Router} from "@angular/router";
 import {RegisterFilterComponent} from "../register/register-table-view/register-filter/register-filter.component";
 import {MatDialog} from "@angular/material/dialog";
 
@@ -29,7 +28,6 @@ export class OverviewComponent implements OnDestroy {
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
     private changeDetectionRef: ChangeDetectorRef,
-    private router: Router
   ) {
     this.commonBuildingService.getAttributesMetadata()
       .pipe(takeUntil(this.destroy))
@@ -71,10 +69,6 @@ export class OverviewComponent implements OnDestroy {
 
   getValueFromStatus(column: string, code: string) {
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
-  }
-
-  addNewBuilding() {
-    this.router.navigateByUrl('/dashboard/register/form/BUILDING');
   }
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
