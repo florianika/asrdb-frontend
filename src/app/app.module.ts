@@ -45,5 +45,5 @@ import { AuthInterceptor } from './common/services/auth-interceptor';
   providers: [AuthStateService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },],
   bootstrap: [AppComponent]
-} as NgModule)
+})
 export class AppModule { }
