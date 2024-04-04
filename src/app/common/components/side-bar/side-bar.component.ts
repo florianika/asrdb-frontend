@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { AuthStateService } from '../../services/auth-state.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/internal/operators/filter';
@@ -18,7 +18,7 @@ export class SideBarComponent implements AfterViewInit {
           title: 'Dashboard',
           path: 'dashboard/overview',
           icon: 'dashboard',
-          selected: false
+          selected: true
         },
       ],
       visible: true
