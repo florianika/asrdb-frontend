@@ -10,6 +10,7 @@ import {EntityType} from "../../../quality-management/quality-management-config"
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute} from "@angular/router";
 import {CommonBuildingService} from "../../service/common-building.service";
+import {BaseMapChangeService} from "../../register-table-view/register-map/custom-map-logic/basemap-change";
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -19,7 +20,7 @@ import {CommonBuildingService} from "../../service/common-building.service";
     MatFormFieldModule,
     MatIconModule
   ],
-  providers: [EntityCreationMapService],
+  providers: [EntityCreationMapService, BaseMapChangeService],
   templateUrl: './building-creation.component.html',
   styleUrls: ['./building-creation.component.css']
 })

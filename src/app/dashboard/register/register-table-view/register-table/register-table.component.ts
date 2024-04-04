@@ -42,6 +42,9 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly DEFAULT_PAGE = 0;
+  private readonly DEFAULT_SIZE = 10;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -175,9 +178,10 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private loadBuildings() {
     this.isLoadingResults = true;
+    const start = (this.paginator?.pageIndex ?? this.DEFAULT_PAGE) * (this.paginator?.pageSize ?? this.DEFAULT_SIZE);
     const filter = {
-      start: this.paginator.pageIndex * this.paginator.pageSize,
-      num: this.paginator.pageSize,
+      start: start,
+      num: this.paginator?.pageSize ?? this.DEFAULT_SIZE,
       outFields: this.columns,
       where: this.registerFilterService.prepareWhereCase()
     } as Partial<QueryFilter>;

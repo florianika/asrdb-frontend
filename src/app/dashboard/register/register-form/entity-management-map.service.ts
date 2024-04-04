@@ -14,11 +14,14 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {EntityType} from "../../quality-management/quality-management-config";
 import {ActivatedRoute} from "@angular/router";
+import {BaseMapChangeService} from "../register-table-view/register-map/custom-map-logic/basemap-change";
 
 @Injectable()
 export class EntityCreationMapService {
   private valueUpdate = new Subject<MapData>();
   private graphicsLayer!: GraphicsLayer;
+  private eventsCleanupCallbacks: (() => void)[] = [];
+
   get valueChanged() {
     return this.valueUpdate.asObservable();
   }
@@ -33,7 +36,8 @@ export class EntityCreationMapService {
   constructor(
     private esriAuthService: CommonEsriAuthService,
     private matSnackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private basemapService: BaseMapChangeService
   ) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
   }
@@ -63,7 +67,7 @@ export class EntityCreationMapService {
     const mainGraphic: Graphic | null = this.addExistingGraphics(editingGeometry, this.graphicsLayer);
 
     const webmap = new WebMap({
-      basemap: 'osm',
+      basemap: 'hybrid',
       layers: [this.graphicsLayer],
       applicationProperties: {
         viewing: {
@@ -115,11 +119,13 @@ export class EntityCreationMapService {
         });
       }
     });
+
+    this.basemapService.createBasemapChangeAction(view, webmap, this.eventsCleanupCallbacks);
     return view;
   }
 
   private registerDeleteEvent(sketch: Sketch) {
-    sketch.on('delete', (event) => {
+    const cleanup = sketch.on('delete', (event) => {
       if (event.graphics[0].attributes.id?.toString().startsWith('{')) {
         // stop the delete by adding back the graphic in the layer
         setTimeout(() => {
@@ -141,10 +147,13 @@ export class EntityCreationMapService {
 
       sketch.availableCreateTools = [event.graphics[0].geometry.type];
     });
+    this.eventsCleanupCallbacks.push(() => {
+      cleanup.remove();
+    });
   }
 
   private registerUpdateEvent(sketch: Sketch) {
-    sketch.on('update', (event) => {
+    const cleanup = sketch.on('update', (event) => {
       if (event.state === 'complete') {
         const centroid = event.graphics[0].geometry.type === 'polygon'
         ? (event.graphics[0].geometry as any)['centroid']
@@ -163,10 +172,13 @@ export class EntityCreationMapService {
         });
       }
     });
+    this.eventsCleanupCallbacks.push(() => {
+      cleanup.remove();
+    });
   }
 
   private registerCreateEvent(sketch: Sketch) {
-    sketch.on('create', (event) => {
+    const cleanup = sketch.on('create', (event) => {
       if (event.state === 'complete') {
         const type = event.graphic.geometry.type;
         const id = type === 'polygon' ? null : ('New (' + Math.random() + ')');
@@ -191,6 +203,10 @@ export class EntityCreationMapService {
 
         sketch.availableCreateTools = sketch.availableCreateTools.filter(tool => tool !== type);
       }
+    });
+
+    this.eventsCleanupCallbacks.push(() => {
+      cleanup.remove();
     });
   }
 
