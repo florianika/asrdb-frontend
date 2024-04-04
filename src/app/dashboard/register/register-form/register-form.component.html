@@ -32,5 +32,28 @@
             (click)="save()" i18n>Save changes
       <mat-icon iconPositionBefore>save</mat-icon>
     </button>
+    <button mat-flat-button
+            style="float: right; margin-top: 20px; margin-right: 10px"
+            [disabled]="isSaving | async"
+            (click)="cancel()" i18n>Cancel
+      <mat-icon iconPositionBefore>close</mat-icon>
+    </button>
   </div>
 </section>
+
+<ng-template #cancelConfirmDialog>
+  <h1 mat-dialog-title i18n *ngIf="isBuilding && !buildingId">Cancel creating building?</h1>
+  <h1 mat-dialog-title i18n *ngIf="isBuilding && buildingId">Cancel editing dwelling?</h1>
+
+  <h1 mat-dialog-title i18n *ngIf="isEntrance && !entranceId">Cancel creating entrance?</h1>
+  <h1 mat-dialog-title i18n *ngIf="isEntrance && entranceId">Cancel editing entrance?</h1>
+  <mat-dialog-content class="mat-typography" i18n>
+    Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone!
+    <br>
+    Do you want to continue?
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close i18n [disabled]="!!(isSaving | async)">No, close dialog</button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="true" [disabled]="!!(isSaving | async)" i18n>Yes, cancel editing</button>
+  </mat-dialog-actions>
+</ng-template>

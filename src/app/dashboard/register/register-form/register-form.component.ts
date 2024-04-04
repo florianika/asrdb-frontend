@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatStepperModule} from '@angular/material/stepper';
@@ -20,6 +20,7 @@ import Geometry from '@arcgis/core/geometry/Geometry';
 import {EntranceManagementService} from './entrance-creation.service';
 import {EntityType} from "../../quality-management/quality-management-config";
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 
 @Component({
   selector: 'asrdb-register-form',
@@ -33,13 +34,16 @@ import {RegisterLogService} from "../register-log-view/register-log-table/regist
     EntranceDetailsFormComponent,
     MatButtonModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule
   ],
   providers: [BuildingManagementService, EntranceManagementService, RegisterLogService],
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css']
 })
 export class RegisterFormComponent implements OnInit {
+  @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
+
   private isSavingBuilding = this.buildingManagementService.isSavingObservable;
   private isSavingEntrance = this.entranceManagementService.isSavingObservable;
 
@@ -66,7 +70,7 @@ export class RegisterFormComponent implements OnInit {
 
   private subscriber = new Subject();
   private entranceCentroids: Centroid[] = [];
-  private readonly entranceId: string | null;
+  readonly entranceId: string | null;
 
   get isBuilding() {
     return this.entityType === 'BUILDING';
@@ -84,6 +88,7 @@ export class RegisterFormComponent implements OnInit {
     private registerLogService: RegisterLogService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    private matDialog: MatDialog,
     private matSnackBar: MatSnackBar) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
   }
@@ -140,6 +145,17 @@ export class RegisterFormComponent implements OnInit {
     }
   }
 
+  cancel() {
+    if (!this.cancelConfirmDialog) {
+      return this.closeDialog();
+    }
+    this.matDialog.open(this.cancelConfirmDialog).afterClosed().subscribe(confirm => {
+      if (confirm) {
+        this.closeDialog()
+      }
+    });
+  }
+
   save() {
     if (this.mapDetails.invalid || this.buildingDetails.invalid || this.entranceDetails.invalid) {
       this.matSnackBar.open('Data cannot be saved. Please check the form for invalid data.', 'Ok', {
@@ -161,6 +177,18 @@ export class RegisterFormComponent implements OnInit {
       const entranceToSave = this.getEntrancePointToSave();
       this.entranceManagementService.saveEntranceEntity(entranceToSave as Point, entranceDetails, this.buildingId);
     }
+  }
+
+  private closeDialog() {
+    this.matSnackBar.open('All changes were discarded', 'Ok', {
+      duration: 3000
+    });
+    if (this.buildingId) {
+      this.router.navigateByUrl('dashboard/register/details/BUILDING/' + this.buildingId);
+    } else {
+      this.router.navigateByUrl('dashboard/register');
+    }
+    return;
   }
 
   private getEntrancePointToSave() {

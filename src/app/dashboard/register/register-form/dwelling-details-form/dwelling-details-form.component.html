@@ -29,15 +29,15 @@
 </mat-dialog-actions>
 
 <ng-template #cancelConfirmDialog>
-  <h1 mat-dialog-title i18n *ngIf="!id">Cancel creating dwelling</h1>
-  <h1 mat-dialog-title i18n *ngIf="id">Update editing dwelling</h1>
+  <h1 mat-dialog-title i18n *ngIf="!id">Cancel creating dwelling?</h1>
+  <h1 mat-dialog-title i18n *ngIf="id">Cancel editing dwelling?</h1>
   <mat-dialog-content class="mat-typography" i18n>
     Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone!
     <br>
     Do you want to continue
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close i18n [disabled]="!!(isSaving | async)" >Cancel</button>
+    <button mat-button mat-dialog-close i18n [disabled]="!!(isSaving | async)">Cancel</button>
     <button mat-raised-button color="warn" [mat-dialog-close]="true" [disabled]="!!(isSaving | async)" i18n>Close dialog</button>
   </mat-dialog-actions>
 </ng-template>

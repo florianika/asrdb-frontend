@@ -61,7 +61,8 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     'external_editor',
     'external_creation_date',
     'external_edited_date',
-    'BldQuality'
+    'BldQuality',
+    'BldID'
   ];
 
   constructor(private buildingService: CommonBuildingService, private registerLogService: RegisterLogService) {

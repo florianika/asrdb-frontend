@@ -60,7 +60,8 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     'external_editor',
     'external_creation_date',
     'external_edited_date',
-    'EntQuality'
+    'EntQuality',
+    'EntID'
   ];
 
   constructor(
