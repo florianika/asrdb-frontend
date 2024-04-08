@@ -188,7 +188,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.matDialog.open(DwellingDetailsFormComponent, {
       data: {
         entrances: this.entrances,
-        logs: this.registerLogService.getAllLogs('DWELLING')
+        logs: this.registerLogService.getAllLogs('DWELLING'),
+        entranceId: this.entranceId
       },
     }).afterClosed().subscribe(() => {
       this.reload();

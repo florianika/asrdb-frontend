@@ -68,12 +68,13 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   formStructure: FormObject[] = [];
   id?: string;
   entrances: Entrance[] = [];
+  entranceId = '';
   isSaving: Observable<boolean>;
   isLoadingResults = false;
 
   constructor(
     private dwellingService: CommonDwellingService,
-    @Inject(MAT_DIALOG_DATA) public data: { id?: string, entrances: Entrance[], logs: Log[] },
+    @Inject(MAT_DIALOG_DATA) public data: { id?: string, entrances: Entrance[], logs: Log[], entranceId: string },
     public dialogRef: MatDialogRef<DwellingDetailsFormComponent>,
     private matDialog: MatDialog,
     private matSnackBar: MatSnackBar,
@@ -81,6 +82,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   ) {
     this.loadDwellingById(data.id);
 
+    this.entranceId = data.entranceId;
     this.entrances = this.data.entrances;
     this.logs = this.data.logs;
     this.isSaving = this.dwellingCreationService.isSavingObservable;
@@ -91,6 +93,10 @@ export class DwellingDetailsFormComponent implements OnDestroy {
         this.initialized = true;
       }
     });
+
+    if (!data.id && this.entranceId) {
+      this.HIDDEN_FIELDS.push('fk_entrance');
+    }
   }
 
   private initForm() {
@@ -197,7 +203,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   }
 
   save() {
-    if (this.formGroup.invalid) {
+    if (this.formGroup.invalid || (!this.id && !this.entranceId)) {
       this.matSnackBar.open('Data cannot be saved. Please check the form for invalid data.', 'Ok', {
         duration: 3000
       });
@@ -208,6 +214,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     if (this.dwelling) {
       dwelling.GlobalID = this.dwelling.GlobalID;
       dwelling.OBJECTID = this.dwelling.OBJECTID;
+    } else {
+      dwelling.fk_entrance = this.entranceId;
     }
     this.dwellingCreationService.saveDwelling(dwelling);
   }
