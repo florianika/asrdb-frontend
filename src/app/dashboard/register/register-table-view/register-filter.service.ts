@@ -3,6 +3,10 @@ import {BuildingFilter} from '../model/building';
 import {CommonRegisterHelperService} from '../service/common-helper.service';
 import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
+import {Router} from "@angular/router";
+
+export const FILTER_DASHBOARD = 'FILTER_DASHBOARD';
+export const FILTER_REGISTER = 'FILTER_REGISTER';
 
 @Injectable()
 export class RegisterFilterService {
@@ -14,7 +18,7 @@ export class RegisterFilterService {
     return this.globalIds.asObservable();
   }
 
-  private filter = new BehaviorSubject<BuildingFilter>({
+  private readonly defaultFilter = {
     filter: {
       // add default value if possible
       // default value will be Tirane
@@ -32,12 +36,28 @@ export class RegisterFilterService {
       BldType: [] as never[],
       BldQuality: [] as never[],
     }
-  });
+  }
+  private filter = new BehaviorSubject<BuildingFilter>(this.defaultFilter);
   private globalIds = new BehaviorSubject<string[]>([]);
 
   private fields: never[] = [];
 
-  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService) {
+  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService, private router: Router) {
+    const url = router.url;
+    let savedFilterJSON;
+    if (url.includes('overview')) {
+      savedFilterJSON = sessionStorage.getItem(FILTER_DASHBOARD);
+    } else if (url.includes(('register'))) {
+      savedFilterJSON = sessionStorage.getItem(FILTER_REGISTER);
+    }
+
+    if (savedFilterJSON) {
+      try {
+        this.filter.next(JSON.parse(savedFilterJSON));
+      } catch (e) {
+        console.log('Filter could not be initialised');
+      }
+    }
   }
 
   setBuildingsGlobalIdFilter(globalIds: string[]) {
@@ -113,12 +133,23 @@ export class RegisterFilterService {
     if (!field) {
       return [];
     }
-    return field.domain?.codedValues?.map((codeValue: { name: string, code: string }) => {
+    return field
+      .domain
+      ?.codedValues
+      ?.map((codeValue: { name: string, code: string }) => {
       return {
         name: codeValue.name,
         code: codeValue.code,
       };
-    });
+    })
+      ?.sort((a: { name: string, code: string }, b: { name: string, code: string }) => {
+        if (a.name > b.name) {
+          return 1;
+        } else if (a.name < b.name) {
+          return -1;
+        }
+        return 0;
+      });
   }
 
   private getWhereConditionValue(value: string | number) {

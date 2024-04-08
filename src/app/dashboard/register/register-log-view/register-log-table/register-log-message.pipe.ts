@@ -9,7 +9,7 @@ export class ConcatenateMessagePipe implements PipeTransform {
     if (!value) {
       return '-';
     }
-    if (value.trim().length > lenght) {
+    if (value.toString().trim().length > lenght) {
       return value.substring(0, lenght) + '...';
     }
     return value;

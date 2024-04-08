@@ -9,7 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Subject, merge, takeUntil, startWith, switchMap, catchError, of } from 'rxjs';
+import {Subject, merge, takeUntil, startWith, switchMap, catchError, of, distinctUntilChanged} from 'rxjs';
 import { BuildingFilter } from '../../model/building';
 import { QueryFilter } from '../../model/query-filter';
 import { CommonBuildingService } from '../../service/common-building.service';
@@ -89,6 +89,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
+        distinctUntilChanged(),
         takeUntil(this.subscriber),
         startWith({}),
         switchMap(() => this.loadBuildings()),
