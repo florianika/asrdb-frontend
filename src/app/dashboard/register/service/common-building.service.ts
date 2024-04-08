@@ -64,10 +64,11 @@ export class CommonBuildingService {
         defaultSymbol: this.getSymbol('#FAFAFA'),
         defaultLabel: 'Other',
         field: 'BldStatus',
-        uniqueValueInfos: this.uniqueValueInfos
+        uniqueValueInfos: this.uniqueValueInfos,
       } as __esri.RendererProperties,
       minScale: 0,
       maxScale: 0,
+      legendEnabled: true,
       // create a new popupTemplate for the layer
       popupTemplate: {
         // autocasts as new PopupTemplate()

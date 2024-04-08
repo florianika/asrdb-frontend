@@ -11,12 +11,14 @@ import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { RegisterFilterService } from '../register-filter.service';
 import { FeatureSelectionService } from "./custom-map-logic/feature-selection";
 import { BaseMapChangeService } from "./custom-map-logic/basemap-change";
+import Legend from "@arcgis/core/widgets/Legend";
 
 export type MapInitOptions = {
   enableFilter: boolean,
   enableSelection: boolean,
   bldWhereCase: string,
-  entWhereCase: string
+  entWhereCase: string,
+  enableLegend: boolean
 }
 
 @Injectable()
@@ -98,6 +100,11 @@ export class RegisterMapService {
     }
     void this.filterBuildingData(view, options.bldWhereCase);
     void this.filterEntranceData(view, options.entWhereCase);
+    let legend = new Legend({
+      view: view,
+      visible: options.enableLegend
+    });
+    view.ui.add(legend, "bottom-right");
 
     if (options.enableSelection) {
       this.featureSelectionService.createFeatureSelection(view, webmap, this.eventsCleanupCallbacks);

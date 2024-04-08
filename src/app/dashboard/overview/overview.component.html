@@ -12,7 +12,7 @@
     <asrdb-chip (remove)="remove($event)" [chips]="getFilterChips(filters)" [clearable]="true"></asrdb-chip>
   </div>
 
-  <asrdb-register-map></asrdb-register-map>
+  <asrdb-register-map [enableLegend]="true"></asrdb-register-map>
   <div class="row" style="margin-top: 20px; padding-bottom: 20px" *ngIf="fields.length">
     <h1 i18n>Statistics</h1>
     <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">

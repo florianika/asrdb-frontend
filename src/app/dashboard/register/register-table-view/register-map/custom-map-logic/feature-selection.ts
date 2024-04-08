@@ -46,6 +46,7 @@ export class FeatureSelectionService {
         });
         const queryGeometry = await geometryEngine.union(geometries.toArray());
         await this.selectFeatures(view, queryGeometry);
+        polygonGraphicsLayer.removeAll();
       }
     });
     eventsCleanupCallbacks.push(() => {
