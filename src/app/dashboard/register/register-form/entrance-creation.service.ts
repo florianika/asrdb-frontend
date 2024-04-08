@@ -22,6 +22,8 @@ export class EntranceManagementService {
         this.snackBar.open('Could not save entrance data', 'Ok', {
           duration: 3000
         });
+        this.isSaving.next(false);
+        return;
       }
       this.isSaving.next(false);
       this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + this.buildingId);

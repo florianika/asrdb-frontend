@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import {FormGroup, FormControl, Validators, ReactiveFormsModule, AbstractControl} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FormObject, getFormObjectType, getFormObjectOptions } from '../../model/form-object';
 import { CommonEntranceService } from '../../service/common-entrance.service';
@@ -61,7 +61,8 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     'external_creation_date',
     'external_edited_date',
     'EntQuality',
-    'EntID'
+    'EntID',
+    'EntBuildingID'
   ];
 
   constructor(
@@ -120,5 +121,12 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     const variableName = variable.split('_')[1];
     return this.registerLogService.getLogForVariable('ENTRANCE', variableName)?.QualityMessageEn
       ?? '';
+  }
+
+  getError(control: AbstractControl) {
+    if (control.errors?.['maxlength']) {
+      return 'Value should not be longer than ' + control.errors?.['maxlength'].requiredLength;
+    }
+    return '';
   }
 }

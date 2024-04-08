@@ -16,6 +16,7 @@
         <mat-icon>info</mat-icon>
         <span style="margin-left: 5px">{{log}}</span>
       </mat-hint>
+      <mat-error *ngIf="formGroup.controls[formItem.name].invalid">{{getError(formGroup.controls[formItem.name])}}</mat-error>
     </mat-form-field>
   </ng-container>
 </form>

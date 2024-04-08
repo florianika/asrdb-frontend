@@ -160,12 +160,7 @@ export class RegisterFormComponent implements OnInit {
 
   save() {
     if (this.mapDetails.invalid || this.buildingDetails.invalid || this.entranceDetails.invalid) {
-      this.matSnackBar.open('Data cannot be saved. Please check the form for invalid data.', 'Ok', {
-        duration: 3000
-      });
-      this.mapDetails.markAllAsTouched();
-      this.buildingDetails.markAllAsTouched();
-      this.entranceDetails.markAllAsTouched();
+      this.showErrorMessage();
       return;
     }
 
@@ -177,8 +172,21 @@ export class RegisterFormComponent implements OnInit {
       this.buildingManagementService.saveBuilding(buildingPoly, buildingDetails);
     } else if (this.isEntrance && this.buildingId) {
       const entranceToSave = this.getEntrancePointToSave();
+      if (!entranceToSave) {
+        this.showErrorMessage();
+        return;
+      }
       this.entranceManagementService.saveEntranceEntity(entranceToSave as Point, entranceDetails, this.buildingId);
     }
+  }
+
+  private showErrorMessage() {
+    this.matSnackBar.open('Data cannot be saved. Please check the form for invalid data.', 'Ok', {
+      duration: 3000
+    });
+    this.mapDetails.markAllAsTouched();
+    this.buildingDetails.markAllAsTouched();
+    this.entranceDetails.markAllAsTouched();
   }
 
   private closeDialog() {
