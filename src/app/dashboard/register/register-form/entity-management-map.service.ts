@@ -17,6 +17,8 @@ import {ActivatedRoute} from "@angular/router";
 import {BaseMapChangeService} from "../register-table-view/register-map/custom-map-logic/basemap-change";
 import {CommonBuildingService} from "../service/common-building.service";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 
 @Injectable()
 export class EntityCreationMapService {
@@ -50,7 +52,8 @@ export class EntityCreationMapService {
     private buildingService: CommonBuildingService
   ) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
-    this.bldLayer = this.buildingService.bldLayer;
+    this.bldLayer = this.buildingService.bldLayer as FeatureLayer;
+    (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];
     this.municipalityObservable.subscribe(municipality => {
       if (municipality && municipality !== '99') {
         void this.filterBuildingData(this.view, `BldMunicipality='${municipality}'`);

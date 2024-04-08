@@ -84,13 +84,13 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
         this.createFormControlForField(field);
         this.createFormObject(field);
       });
-    });
 
-    this.formGroup.valueChanges
-      .pipe(takeUntil(this.onDestroy), distinctUntilChanged())
-      .subscribe(data => {
-        this.mapService.setMunicipality(data.BldMunicipality);
-      })
+      this.formGroup.controls['BldMunicipality'].valueChanges
+        .pipe(takeUntil(this.onDestroy), distinctUntilChanged())
+        .subscribe(data => {
+          this.mapService.setMunicipality(data);
+        })
+    });
   }
 
   private createFormObject(field: never) {
