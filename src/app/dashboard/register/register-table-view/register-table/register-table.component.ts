@@ -16,7 +16,7 @@ import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonRegisterHelperService } from '../../service/common-helper.service';
 import { Router } from '@angular/router';
 import { RegisterFilterComponent } from '../register-filter/register-filter.component';
-import { RegisterFilterService } from '../register-filter.service';
+import {FILTER_REGISTER, RegisterFilterService} from '../register-filter.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import {MatTooltipModule} from "@angular/material/tooltip";
@@ -140,7 +140,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   remove($event: Chip) {
     const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
     (filterCopy as any).filter[$event.column] = '';
-    this.registerFilterService.updateFilter(filterCopy);
+    this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 
   viewBuildingDetails(globalId: string) {
@@ -166,7 +166,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   filterBuilding(GlobalID: string) {
     const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
     (filterCopy as any).filter['GlobalID'] = GlobalID;
-    this.registerFilterService.updateFilter(filterCopy);
+    this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 
   stopClickEventFiltering(event: Event) {
@@ -175,7 +175,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
     if (newFilterConfig) {
-      this.registerFilterService.updateFilter(newFilterConfig);
+      this.registerFilterService.updateFilter(newFilterConfig, FILTER_REGISTER);
     }
   }
 

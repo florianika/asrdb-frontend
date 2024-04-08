@@ -76,8 +76,9 @@ export class RegisterFilterService {
     this.globalIds.next(globalIds);
   }
 
-  updateFilter(filter: BuildingFilter) {
+  updateFilter(filter: BuildingFilter, key: string) {
     this.filter.next(filter);
+    sessionStorage.setItem(key, JSON.stringify(filter));
   }
 
   removeDefaultValue() {

@@ -215,7 +215,7 @@ export class CommonBuildingService {
       onStatisticField: 'BldStatus',
       outStatisticFieldName: 'value'
     }] as __esri.StatisticDefinition[];
-    return await this.bldLayer.queryFeatures();
+    return await this.bldLayer.queryFeatures(query);
   }
 
   private createRequestBody(features: any[]) {

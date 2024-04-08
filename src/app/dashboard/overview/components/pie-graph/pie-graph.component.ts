@@ -26,7 +26,16 @@ export class PieGraphComponent implements OnInit, OnDestroy {
     private commonBuildingService: CommonBuildingService,
     private filterService: RegisterFilterService,
     private changeDetectionRef: ChangeDetectorRef
-  ) {
+  ) {}
+
+  ngOnInit() {
+    const field = this.fields?.find(field => field['name'] === this.variable);
+    if (!field) {
+      return;
+    }
+    this.uniqueValueInfos = field['domain']?.['codedValues'];
+
+
     this.filterService.filterObservable
       .pipe(takeUntil(this.destroy))
       .subscribe((filter) => {
@@ -36,14 +45,6 @@ export class PieGraphComponent implements OnInit, OnDestroy {
         this.existingFilter = filter;
         this.reload();
       });
-  }
-
-  ngOnInit() {
-    const field = this.fields?.find(field => field['name'] === this.variable);
-    if (!field) {
-      return;
-    }
-    this.uniqueValueInfos = field['domain']?.['codedValues'];
   }
 
   ngOnDestroy() {
@@ -75,7 +76,7 @@ export class PieGraphComponent implements OnInit, OnDestroy {
         this.graph = {
           data: [{
             type: 'pie',
-            // values: data,
+            values: data,
             labels: labels,
           }],
           layout: {
