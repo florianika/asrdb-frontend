@@ -50,7 +50,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  private columns = ['GlobalID', 'BldMunicipality', 'BldStatus', 'BldType', 'BldEntranceRecs', 'BldDwellingRecs'];
+  private columns = ['GlobalID', 'BldMunicipality', 'BldEnumArea', 'BldStatus', 'BldType', 'BldEntranceRecs', 'BldDwellingRecs' , 'BldQuality'];
   private subscriber = new Subject();
   private initialized = false;
 

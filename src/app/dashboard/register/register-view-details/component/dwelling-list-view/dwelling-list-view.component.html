@@ -23,36 +23,40 @@
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="data" class="asrbd-table" matSort>
       <ng-container matColumnDef="GlobalID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('GlobalID')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Dwelling</th>
         <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
       </ng-container>
-      <ng-container matColumnDef="DwlEntranceID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('DwlEntranceID')}}</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlEntranceID', element.DwlEntranceID)}} </td>
+      <ng-container matColumnDef="StreetName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Street name</th>
+        <td mat-cell *matCellDef="let element"> {{streetName}} </td>
       </ng-container>
-      <ng-container matColumnDef="DwlCensus2023">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('DwlCensus2023')}}</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlCensus2023', element.DwlCensus2023)}} </td>
+      <ng-container matColumnDef="BldNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Building number</th>
+        <td mat-cell *matCellDef="let element"> {{buildingNumber ?? '-'}} </td>
       </ng-container>
-      <ng-container matColumnDef="DwlAddressID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('DwlAddressID')}}</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlAddressID', element.DwlAddressID)}} </td>
+      <ng-container matColumnDef="EntNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Entrance number</th>
+        <td mat-cell *matCellDef="let element"> {{entranceNumber}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlFloor">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('DwlFloor')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Floor</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlFloor', element.DwlFloor)}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlApartNumber">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('DwlApartNumber')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Apartment number</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlApartNumber', element.DwlApartNumber)}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlStatus">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('DwlStatus')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Dwelling status</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlStatus', element.DwlStatus)}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlType">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('DwlType')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Dwelling type</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlType', element.DwlType)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="DwlQuality">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Dwelling quality</th>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlQuality', element.DwlQuality)}} </td>
       </ng-container>
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef i18n>Actions</th>

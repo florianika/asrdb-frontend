@@ -3,7 +3,7 @@ export type Entrance = {
   GlobalID: string;
   EntID: number;
   EntBuildingID: number;
-  EntAddressID: number;
+  EntAddressID: string;
   EntQuality: number;
   EntLatitude: number;
   EntLongitude: number;

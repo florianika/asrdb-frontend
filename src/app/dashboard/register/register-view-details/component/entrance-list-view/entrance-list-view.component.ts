@@ -62,7 +62,16 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   buildingIdQueryParam?: string | null;
   selectedEntrance: string | undefined;
 
-  private columns = ['GlobalID', 'EntBuildingNumber', 'EntEntranceNumber', 'EntTown', 'EntZipCode', 'EntPointStatus', 'EntDwellingRecs', 'EntDwellingExpec'];
+  private columns = [
+    'fk_buildings',
+    'GlobalID',
+    'EntStreetCode',
+    'EntBuildingNumber',
+    'EntEntranceNumber',
+    'EntDwellingRecs',
+    'EntDwellingExpec',
+    'EntQuality',
+  ];
   private subscriber = new Subject();
 
   displayedColumns: string[] = this.columns.concat(['actions']);
@@ -130,10 +139,6 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   getTitle(column: string) {
     return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
-  }
-
-  getMunicipality(column: string, code: string) {
-    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, column, code);
   }
 
   getValueFromStatus(column: string, code: string) {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class CommonRegisterHelperService {
@@ -18,7 +18,10 @@ export class CommonRegisterHelperService {
     return codeValues.code + ' - ' + codeValues.name;
   }
 
-  getValueFromStatus(fields: any[], column: string, code: string) {
+  getValueFromStatus(fields: any[], column: string, code: string | number) {
+    if (this.isUnknownValue(code)) {
+      return 'Unknown';
+    }
     const codeValues = this.getCodeValues(fields, column, code);
     if (!codeValues) {
       return code;
@@ -30,9 +33,12 @@ export class CommonRegisterHelperService {
     return fields?.find(field => field.name === column);
   }
 
-  getCodeValues(fields: any[], column: string, code: string) {
+  getCodeValues(fields: any[], column: string, code: string | number) {
     const field = this.getField(fields, column);
-    const codeValues = field?.domain?.codedValues?.find((o: any) => o.code === code);
-    return codeValues;
+    return field?.domain?.codedValues?.find((o: any) => o.code === code);
+  }
+
+  private isUnknownValue(code: string | number) {
+    return (!code && code !== 0) || /^9+$/.test(code.toString());
   }
 }

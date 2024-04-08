@@ -32,28 +32,36 @@
         <td mat-cell *matCellDef="let element"> <mat-checkbox [checked]="this.selectedBuildings.includes(element.GlobalID)" (click)="stopClickEventFiltering($event)" (change)="handleSelect(element.GlobalID)"></mat-checkbox> </td>
       </ng-container>
       <ng-container matColumnDef="GlobalID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('GlobalID')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Building</th>
         <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
       </ng-container>
       <ng-container matColumnDef="BldMunicipality">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldMunicipality')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Municipality</th>
         <td mat-cell *matCellDef="let element"> {{getMunicipality('BldMunicipality', element.BldMunicipality)}} </td>
       </ng-container>
+      <ng-container matColumnDef="BldEnumArea">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Enumeration area</th>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldEnumArea', element.BldEnumArea)}} </td>
+      </ng-container>
       <ng-container matColumnDef="BldStatus">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldStatus')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Building status</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldStatus', element.BldStatus)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldType">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldType')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Building type</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldType', element.BldType)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldEntranceRecs">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldEntranceRecs')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Entrances</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldEntranceRecs', element.BldEntranceRecs)}} </td>
       </ng-container>
       <ng-container matColumnDef="BldDwellingRecs">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getTitle('BldDwellingRecs')}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Dwellings</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldDwellingRecs', element.BldDwellingRecs)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="BldQuality">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Data quality</th>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('BldQuality', element.BldQuality)}} </td>
       </ng-container>
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef i18n>Actions</th>

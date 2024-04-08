@@ -18,6 +18,7 @@ import { RegisterFilterService } from '../register-table-view/register-filter.se
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 import {getDate} from "../model/common-utils";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {Building} from "../model/building";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -290,7 +291,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   }
 
   getMunicipality() {
-    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, 'BldMunicipality', this.building.BldMunicipality);
+    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, 'BldMunicipality', this.building.BldMunicipality.toString());
   }
 
   getValueFromStatus(column: string) {

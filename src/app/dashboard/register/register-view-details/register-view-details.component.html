@@ -36,6 +36,10 @@
   </div>
 
   <div class="full-width">
-    <asrdb-dwelling-list-view [entranceId]="selectedEntrance" [entrances]="loadedEntrances"></asrdb-dwelling-list-view>
+    <asrdb-dwelling-list-view
+      [entranceId]="selectedEntrance"
+      [entrances]="loadedEntrances"
+      [buildingNumber]="building.BldProperty"
+    ></asrdb-dwelling-list-view>
   </div>
 </div>

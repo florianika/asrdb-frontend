@@ -60,12 +60,32 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   @Input() entranceId?: string;
+  @Input() buildingNumber?: number;
   @Input() entrances: Entrance[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  private columns = ['GlobalID', 'DwlEntranceID', 'DwlCensus2023', 'DwlAddressID', 'DwlFloor', 'DwlApartNumber', 'DwlStatus', 'DwlType'];
+  private columns = [
+    'GlobalID',
+    'StreetName',
+    'BldNumber',
+    'EntNumber',
+    'DwlFloor',
+    'DwlApartNumber',
+    'DwlStatus',
+    'DwlType',
+    'DwlQuality'
+  ];
+
+  private readonly DWL_FIELDS = [
+    'GlobalID',
+    'DwlFloor',
+    'DwlApartNumber',
+    'DwlStatus',
+    'DwlType',
+    'DwlQuality'
+  ];
   private subscriber = new Subject();
 
   displayedColumns: string[] = this.columns.concat(['actions']);
@@ -73,6 +93,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   fields: any[] = [];
   resultsLength = 0;
   isLoadingResults = false;
+  streetName: string = '';
+  entranceNumber: string = '';
 
   // TODO: Add correct filter
   filterConfig: DwellingFilter = {
@@ -147,16 +169,15 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         takeUntil(this.subscriber),
         switchMap(() => this.loadDwellings()),
       ).subscribe((res) => this.handleResponse(res));
+      const entrance = this.entrances.find(e => e.GlobalID === changes['entranceId'].currentValue);
+      this.streetName = entrance?.EntAddressID ?? 'Unknown';
+      this.entranceNumber = entrance?.EntEntranceNumber?.toString() ?? 'Unknown';
     }
   }
 
   ngOnDestroy(): void {
     this.subscriber.next(true);
     this.subscriber.complete();
-  }
-
-  getTitle(column: string) {
-    return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
   }
 
   getValueFromStatus(column: string, code: string) {
@@ -232,7 +253,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     const filter = {
       start: this.paginator.pageIndex * this.paginator.pageSize,
       num: this.paginator.pageSize,
-      outFields: this.columns,
+      outFields: this.DWL_FIELDS,
       where: this.prepareWhereCase(),
       orderByFields: this.sort.active ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()] : undefined
     } as Partial<QueryFilter>;
