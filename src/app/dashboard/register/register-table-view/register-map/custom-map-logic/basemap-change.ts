@@ -104,6 +104,7 @@ export class BaseMapChangeService {
     const span = document.createElement('span');
     basemap.id = "basemap-selection";
     basemap.className = "esri-widget esri-widget--button esri-widget esri-interactive";
+    basemap.title = 'Change map type';
     span.className = "esri-icon-basemap";
     basemap.appendChild(span);
     return basemap;

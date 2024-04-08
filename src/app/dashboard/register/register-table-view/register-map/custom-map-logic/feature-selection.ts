@@ -94,6 +94,7 @@ export class FeatureSelectionService {
     const span = document.createElement('span');
     selection.id = "feature-selection";
     selection.className = "esri-widget esri-widget--button esri-widget esri-interactive";
+    selection.title = 'Select buildings';
     span.className = "esri-icon-checkbox-unchecked";
     selection.appendChild(span);
     return selection;
@@ -104,6 +105,7 @@ export class FeatureSelectionService {
     const span = document.createElement('span');
     erase.id = "feature-selection";
     erase.className = "esri-widget esri-widget--button esri-widget esri-interactive";
+    erase.title = 'Erase selection';
     span.className = "esri-icon-erase";
     erase.appendChild(span);
     return erase;
