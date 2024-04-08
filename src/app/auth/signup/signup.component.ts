@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SignupForm, SignupFormValue, SignupService } from './signup.service';
+import {SignupForm, SignupFormValue, SignupService} from './signup.service';
 
 @Component({
   selector: 'asrdb-signup',

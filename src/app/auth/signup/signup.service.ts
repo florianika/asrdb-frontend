@@ -8,14 +8,16 @@ import { environment } from 'src/environments/environment';
 
 export type SignupForm = FormGroup<{
     email: FormControl<string | null>;
-    fullName: FormControl<string | null>;
+    firstName: FormControl<string | null>;
+    lastName: FormControl<string | null>;
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
 }>;
 
 export type SignupFormValue = Partial<{
   email: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   password: string;
   confirmPassword: string;
 }>;
@@ -42,7 +44,8 @@ export class SignupService {
   createSignupForm(): SignupForm {
     return new FormGroup({
       email: new FormControl('', [Validators.email, Validators.required]),
-      fullName: new FormControl('', [Validators.required, Validators.pattern(/^[a-z][a-z]+(?: [a-z][a-z]+)+$/i)]),
+      firstName: new FormControl('', [Validators.required, Validators.pattern(/^[a-z]+$/i)]),
+      lastName: new FormControl('', [Validators.pattern(/^[a-z]+$/i)]),
       password: new FormControl('', [Validators.required, Validators.minLength(8)]),
       confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
     });
@@ -50,10 +53,9 @@ export class SignupService {
 
   signup(signupForm: SignupFormValue) {
     this.signingUp.next(true);
-    const nameArray = signupForm.fullName!.split(' ');
     const data = {
-      name: nameArray[0],
-      lastName: nameArray[1],
+      name: signupForm.firstName,
+      lastName: signupForm.lastName ?? '',
       email: signupForm.email,
       password: signupForm.password
     };

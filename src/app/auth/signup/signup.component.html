@@ -7,11 +7,18 @@
     <mat-card-content class="signup-card-content">
       <form [formGroup]="signupFormGroup">
         <mat-form-field appearance="fill" class="full-width">
-          <mat-label i18n>Full name</mat-label>
-          <input matInput i18n-placeholder placeholder="Enter your full name" formControlName="fullName"
+          <mat-label i18n>First name</mat-label>
+          <input matInput i18n-placeholder placeholder="Enter your first name" formControlName="firstName"
             (keyup.enter)="signup()">
           <mat-icon matPrefix>account_circle</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls.fullName.invalid" i18n>Please provide your full name</mat-error>
+          <mat-error *ngIf="signupFormGroup.controls.firstName.invalid" i18n>Please provide your first name</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label i18n>Last name</mat-label>
+          <input matInput i18n-placeholder placeholder="Enter your last name" formControlName="lastName"
+            (keyup.enter)="signup()">
+          <mat-icon matPrefix>account_circle</mat-icon>
+          <mat-error *ngIf="signupFormGroup.controls.lastName.invalid" i18n>Please provide your last name</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
