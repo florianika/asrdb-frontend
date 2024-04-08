@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonBuildingService } from '../../service/common-building.service';
-import { Subject } from 'rxjs';
+import {distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import { FormObject, getFormObjectOptions, getFormObjectType } from '../../model/form-object';
 import { Building } from '../../model/building';
 import { EDITABLE_PROP, ALIAS_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, NAME_PROP, NULLABLE_PROP, DEFAULT_VALUE_PROP } from '../../constant/common-constants';
@@ -18,6 +18,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MY_FORMATS} from "../../model/common-utils";
+import {EntityCreationMapService} from "../entity-management-map.service";
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -65,11 +66,16 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     'BldID'
   ];
 
-  constructor(private buildingService: CommonBuildingService, private registerLogService: RegisterLogService) {
+  constructor(
+    private buildingService: CommonBuildingService,
+    private registerLogService: RegisterLogService,
+    private mapService: EntityCreationMapService
+  ) {
   }
 
   ngOnInit(): void {
-    this.buildingService.getAttributesMetadata().subscribe((fields: never[]) => {
+    this.buildingService.getAttributesMetadata()
+      .pipe(takeUntil(this.onDestroy)).subscribe((fields: never[]) => {
       fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]));
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
@@ -79,6 +85,12 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
         this.createFormObject(field);
       });
     });
+
+    this.formGroup.valueChanges
+      .pipe(takeUntil(this.onDestroy), distinctUntilChanged())
+      .subscribe(data => {
+        this.mapService.setMunicipality(data.BldMunicipality);
+      })
   }
 
   private createFormObject(field: never) {

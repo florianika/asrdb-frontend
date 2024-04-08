@@ -4,7 +4,7 @@ import WebMap from '@arcgis/core/WebMap';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
-import { Subject } from 'rxjs';
+import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
 import { MapData } from '../model/map-data';
 import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
@@ -15,15 +15,24 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {EntityType} from "../../quality-management/quality-management-config";
 import {ActivatedRoute} from "@angular/router";
 import {BaseMapChangeService} from "../register-table-view/register-map/custom-map-logic/basemap-change";
+import {CommonBuildingService} from "../service/common-building.service";
+import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
 
 @Injectable()
 export class EntityCreationMapService {
   private valueUpdate = new Subject<MapData>();
   private graphicsLayer!: GraphicsLayer;
   private eventsCleanupCallbacks: (() => void)[] = [];
+  private readonly bldLayer;
+  private municipality = new BehaviorSubject('99');
+  private view!: MapView;
 
   get valueChanged() {
     return this.valueUpdate.asObservable();
+  }
+
+  get municipalityObservable() {
+    return this.municipality.asObservable();
   }
 
   private valueDelete = new Subject<Partial<MapData>>();
@@ -37,9 +46,20 @@ export class EntityCreationMapService {
     private esriAuthService: CommonEsriAuthService,
     private matSnackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute,
-    private basemapService: BaseMapChangeService
+    private basemapService: BaseMapChangeService,
+    private buildingService: CommonBuildingService
   ) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
+    this.bldLayer = this.buildingService.bldLayer;
+    this.municipalityObservable.subscribe(municipality => {
+      if (municipality && municipality !== '99') {
+        void this.filterBuildingData(this.view, `BldMunicipality='${municipality}'`);
+      }
+    });
+  }
+
+  public setMunicipality(municipality: string) {
+    this.municipality.next(municipality);
   }
 
   public async initBuildingCreationMap(mapViewEl: ElementRef, entityType?: EntityType, editingGeometry?: any[]) {
@@ -65,10 +85,13 @@ export class EntityCreationMapService {
     const container = mapViewEl.nativeElement;
     this.graphicsLayer = new GraphicsLayer();
     const mainGraphic: Graphic | null = this.addExistingGraphics(editingGeometry, this.graphicsLayer);
-
+    const layers: any[] = [this.graphicsLayer];
+    if (availableTools.includes('polygon')) {
+      layers.push(this.bldLayer);
+    }
     const webmap = new WebMap({
       basemap: 'hybrid',
-      layers: [this.graphicsLayer],
+      layers: layers,
       applicationProperties: {
         viewing: {
           search: {
@@ -78,15 +101,15 @@ export class EntityCreationMapService {
       }
     });
 
-    const view = new MapView({
+    this.view = new MapView({
       container,
       map: webmap
     });
 
-    view.when(() => {
+    void this.view.when(() => {
       const sketch = new Sketch({
         layer: this.graphicsLayer,
-        view: view,
+        view: this.view,
         // graphic will be selected as soon as it is created
         creationMode: 'update',
         availableCreateTools: availableTools,
@@ -109,19 +132,19 @@ export class EntityCreationMapService {
       this.registerUpdateEvent(sketch);
       this.registerDeleteEvent(sketch);
 
-      view.ui.add(sketch, 'top-right');
+      this.view.ui.add(sketch, 'top-right');
       if (mainGraphic) {
-        view.goTo(mainGraphic);
+        this.view.goTo(mainGraphic);
       } else {
-        view.goTo({
+        this.view.goTo({
           center: [19.83, 41.33],
           zoom: 9
         });
       }
     });
-
-    this.basemapService.createBasemapChangeAction(view, webmap, this.eventsCleanupCallbacks);
-    return view;
+    void this.filterBuildingData(this.view, `BldMunicipality=53`);
+    this.basemapService.createBasemapChangeAction(this.view, webmap, this.eventsCleanupCallbacks);
+    return this.view;
   }
 
   private registerDeleteEvent(sketch: Sketch) {
@@ -254,5 +277,18 @@ export class EntityCreationMapService {
     });
 
     return mainGraphic;
+  }
+
+  async filterBuildingData(view: MapView, whereCondition: string) {
+    if (!view) {
+      return;
+    }
+    (await view.whenLayerView(this.bldLayer)).filter = new FeatureFilter({
+      where: whereCondition,
+    });
+    const query = this.bldLayer.createQuery();
+    query.where = whereCondition;
+    const extend = await this.bldLayer.queryExtent(query);
+    view.goTo(extend.extent ?? this.bldLayer.fullExtent);
   }
 }

@@ -21,6 +21,8 @@ import {EntranceManagementService} from './entrance-creation.service';
 import {EntityType} from "../../quality-management/quality-management-config";
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {EntityCreationMapService} from "./entity-management-map.service";
+import {BaseMapChangeService} from "../register-table-view/register-map/custom-map-logic/basemap-change";
 
 @Component({
   selector: 'asrdb-register-form',
@@ -37,7 +39,7 @@ import {MatDialog, MatDialogModule} from "@angular/material/dialog";
     MatSnackBarModule,
     MatDialogModule
   ],
-  providers: [BuildingManagementService, EntranceManagementService, RegisterLogService],
+  providers: [BuildingManagementService, EntranceManagementService, RegisterLogService, EntityCreationMapService, BaseMapChangeService],
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css']
 })

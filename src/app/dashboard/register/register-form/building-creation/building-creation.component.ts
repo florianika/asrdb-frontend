@@ -10,7 +10,6 @@ import {EntityType} from "../../../quality-management/quality-management-config"
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute} from "@angular/router";
 import {CommonBuildingService} from "../../service/common-building.service";
-import {BaseMapChangeService} from "../../register-table-view/register-map/custom-map-logic/basemap-change";
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -20,7 +19,6 @@ import {BaseMapChangeService} from "../../register-table-view/register-map/custo
     MatFormFieldModule,
     MatIconModule
   ],
-  providers: [EntityCreationMapService, BaseMapChangeService],
   templateUrl: './building-creation.component.html',
   styleUrls: ['./building-creation.component.css']
 })
@@ -191,6 +189,10 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     if (this.existingEntrancesGeometry) {
       this.existingEntrancesGeometry.forEach(el => editingGeometry.push(el));
     }
-    this.view = await this.mapService.initBuildingCreationMap(this.mapViewEl, this.entityType, editingGeometry);
+    this.view = await this.mapService.initBuildingCreationMap(
+      this.mapViewEl,
+      this.entityType,
+      editingGeometry
+    );
   }
 }
