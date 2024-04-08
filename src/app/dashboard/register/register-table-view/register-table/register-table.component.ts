@@ -101,17 +101,17 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.subscriber.complete();
   }
 
-  getTitle(column: string) {
-    return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
-  }
-
   getMunicipality(column: string, code: string) {
     return this.commonBuildingRegisterHelper.getMunicipality(this.fields, column, code);
   }
 
   getValueFromStatus(column: string, code: string) {
+    if (column === 'BldMunicipality') {
+      return this.getMunicipality(column, code);
+    }
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
   }
+
 
   handleSelect(globalId: string) {
     if (this.selectedBuildings.includes(globalId)) {

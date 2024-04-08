@@ -68,7 +68,14 @@ export class OverviewComponent implements OnDestroy {
   }
 
   getValueFromStatus(column: string, code: string) {
+    if (column === 'BldMunicipality') {
+      return this.getMunicipality(column, code);
+    }
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
+  }
+
+  getMunicipality(column: string, code: string) {
+    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, column, code);
   }
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {

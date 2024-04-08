@@ -19,10 +19,10 @@ export class CommonRegisterHelperService {
   }
 
   getValueFromStatus(fields: any[], column: string, code: string | number) {
-    if (this.isUnknownValue(code)) {
+    const codeValues = this.getCodeValues(fields, column, code);
+    if (!codeValues && this.isUnknownValue(code)) {
       return 'Unknown';
     }
-    const codeValues = this.getCodeValues(fields, column, code);
     if (!codeValues) {
       return code;
     }
