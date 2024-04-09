@@ -25,9 +25,9 @@
 
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="data" class="asrbd-table" matSort>
-      <ng-container matColumnDef="fk_buildings">
+      <ng-container matColumnDef="EntBuildingId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Building</th>
-        <td mat-cell *matCellDef="let element"> {{element.fk_buildings}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.EntBuildingId}} </td>
       </ng-container>
       <ng-container matColumnDef="GlobalID">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Entrance</th>

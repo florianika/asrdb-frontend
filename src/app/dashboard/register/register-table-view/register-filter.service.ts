@@ -122,7 +122,7 @@ export class RegisterFilterService {
     if (!this.globalIds.getValue()?.length && this.noFilterApplied()) {
       return '1=1';
     }
-    return `fk_buildings in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
+    return `EntBuildingId in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
   }
 
   getFilter() {

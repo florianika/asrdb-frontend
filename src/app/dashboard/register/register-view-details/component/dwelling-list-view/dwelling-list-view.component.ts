@@ -105,7 +105,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       GlobalID: '',
       DwlStatus: '',
       DwlType: '',
-      fk_entrance: ''
+      DwlEntranceId: ''
     },
     options: {
       DwlStatus: [] as any[],
@@ -197,7 +197,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   reload() {
-    if (!this.filterConfig.filter.fk_entrance) {
+    if (!this.filterConfig.filter.DwlEntranceId) {
       return;
     }
     this.loadDwellings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
@@ -236,7 +236,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       .filter(([, value]: any) => !!value)
       .map(([key, value]: any) => ({ column: key, value } as Chip))
       .forEach((filter: any) => {
-        if (filter.column === 'fk_entrance') {
+        if (filter.column === 'DwlEntranceId') {
           conditions.push(filter.column + ' in ' + filter.value);
         } else {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
@@ -308,6 +308,6 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private loadDwellingsForEntrances(entranceId: string) {
-    this.filterConfig.filter.fk_entrance = `('${entranceId}')`;
+    this.filterConfig.filter.DwlEntranceId = `('${entranceId}')`;
   }
 }

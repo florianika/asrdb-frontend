@@ -16,7 +16,7 @@ export type Entrance = {
   last_edited_user: number;
   last_edited_date: number;
   EntStreetCode: number;
-  fk_buildings: string;
+  EntBuildingId: string;
   EntPointStatus: number;
   EntDwellingRecs: number;
   EntDwellingExpec: number;
@@ -36,7 +36,7 @@ export type EntranceFilter = {
     EntEntranceNumber: number,
     EntPointStatus: string,
     GlobalID: string,
-    fk_buildings?: string
+    EntBuildingId?: string
   };
   options: {
     EntPointStatus: any[];

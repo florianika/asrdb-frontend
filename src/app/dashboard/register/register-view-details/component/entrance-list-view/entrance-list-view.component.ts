@@ -63,7 +63,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   selectedEntrance: string | undefined;
 
   private columns = [
-    'fk_buildings',
+    'EntBuildingId',
     'GlobalID',
     'EntStreetCode',
     'EntBuildingNumber',
@@ -87,7 +87,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       EntEntranceNumber: 0,
       EntPointStatus: '',
       GlobalID: '',
-      fk_buildings: ''
+      EntBuildingId: ''
     },
     options: {
       EntPointStatus: [] as any[],
@@ -113,9 +113,9 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit() {
     this.buildingIdQueryParam = this.activatedRoute.snapshot.queryParamMap.get('building');
     if (this.buildingIdQueryParam) {
-      this.filterConfig.filter.fk_buildings = this.buildingIdQueryParam?.replace('{', '').replace('}', '');
+      this.filterConfig.filter.EntBuildingId = this.buildingIdQueryParam?.replace('{', '').replace('}', '');
     } else if (this.buildingGlobalId) {
-      this.filterConfig.filter.fk_buildings = this.buildingGlobalId?.replace('{', '').replace('}', '');
+      this.filterConfig.filter.EntBuildingId = this.buildingGlobalId?.replace('{', '').replace('}', '');
     }
   }
 

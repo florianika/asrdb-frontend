@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Filter data</h2>
+<h2 mat-dialog-title i18n>Filter data</h2>
 <mat-dialog-content style="padding-top: 10px;">
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Municipality</mat-label>
@@ -33,7 +33,7 @@
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button mat-dialog-close i18n>Cancel</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button mat-button color="primary" [mat-dialog-close]="filterConfig">Filter</button>
+  <button mat-button color="primary" [mat-dialog-close]="filterConfig" i18n>Filter</button>
 </mat-dialog-actions>

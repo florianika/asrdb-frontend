@@ -51,7 +51,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
   private readonly HIDDEN_FIELDS = [
     'last_edited_user',
     'last_edited_date',
-    'fk_buildings',
+    'EntBuildingId',
     'created_user',
     'created_date',
     'EntLongitude',

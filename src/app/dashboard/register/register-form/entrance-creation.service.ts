@@ -82,7 +82,7 @@ export class EntranceManagementService {
   }
 
   private cleanAttributes(entrance: Entrance, point: Point, buildingGlobalId: string) {
-    entrance.fk_buildings = buildingGlobalId;
+    entrance.EntBuildingId = buildingGlobalId;
     if (!point.id.toString().startsWith('{')) {
       entrance.GlobalID = ''; // clean the temp globalID of new items
     }

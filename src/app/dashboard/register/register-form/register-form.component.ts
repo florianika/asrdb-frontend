@@ -120,7 +120,7 @@ export class RegisterFormComponent implements OnInit {
         .getBuildingData({ returnGeometry: true, where: `globalID='${this.buildingId}'` })
         .pipe(takeUntil(this.subscriber));
       const getEntranceRequest = this.entranceService
-        .getEntranceData({ returnGeometry: true, where: `fk_buildings='${this.buildingId}'` })
+        .getEntranceData({ returnGeometry: true, where: `EntBuildingId='${this.buildingId}'` })
         .pipe(takeUntil(this.subscriber));
 
       zip([getBuildingRequest, getEntranceRequest]).subscribe(([building, entrances]) => {
