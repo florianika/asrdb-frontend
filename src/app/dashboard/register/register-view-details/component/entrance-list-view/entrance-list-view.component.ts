@@ -65,7 +65,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   selectedEntrance: string | undefined;
 
   private columns = [
-    'EntBuildingId',
+    'EntBuildingID',
     'GlobalID',
     'EntStreet',
     'EntBuildingNumber',

@@ -52,8 +52,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     'created_date',
     'external_creator',
     'external_editor',
-    'external_creation_date',
-    'external_edited_date',
+    'external_creator_date',
+    'external_editor_date',
     'DwlQuality',
     'DwlID'
   ];
