@@ -29,13 +29,17 @@ export class DwellingDetailsComponent implements OnInit {
   isLoadingResults = true;
   dwelling: any;
 
+  private readonly STREET_NAME = 'Street name';
+  private readonly BUILDING_NUMBER = 'Building number';
+  private readonly ENTRANCE_NUMBER = 'Entrance number';
+
   sections = [
     {
       title: 'Technical variables',
       entries: [
         {
           title: '',
-          propName: 'DwlID',
+          propName: 'GlobalID',
           value: '',
           log: ''
         },
@@ -62,6 +66,24 @@ export class DwellingDetailsComponent implements OnInit {
     {
       title: 'Identifying variables',
       entries: [
+        {
+          title: this.STREET_NAME,
+          propName: '',
+          value: '',
+          log: ''
+        },
+        {
+          title: this.BUILDING_NUMBER,
+          propName: '',
+          value: '',
+          log: ''
+        },
+        {
+          title: this.ENTRANCE_NUMBER,
+          propName: '',
+          value: '',
+          log: ''
+        },
         {
           title: '',
           propName: 'DwlFloor',
@@ -176,7 +198,7 @@ export class DwellingDetailsComponent implements OnInit {
     private commonEntranceService: CommonDwellingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matSnack: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[]}) {
+    @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[], streetName: string, buildingNumber: string, entranceNumber: string}) {
       this.id = this.data.globalId;
       this.logs = this.data.logs;
     }
@@ -217,10 +239,18 @@ export class DwellingDetailsComponent implements OnInit {
   private fillSections() {
     this.sections.forEach(section => {
       section.entries.forEach(entry => {
-        entry.title = this.getTitle(entry.propName);
-        entry.value = this.getValueFromStatus(entry.propName);
-        entry.log = this.logs.find(log => log.Variable === entry.propName)
-          ?.QualityMessageEn ?? '';
+        if (entry.propName !== '') {
+          entry.title = this.getTitle(entry.propName);
+          entry.value = this.getValueFromStatus(entry.propName);
+          entry.log = this.logs.find(log => log.Variable === entry.propName)
+            ?.QualityMessageEn ?? '';
+        } else if (entry.title === this.STREET_NAME) {
+          entry.value = this.data.streetName;
+        } else if (entry.title === this.BUILDING_NUMBER) {
+          entry.value = this.data.buildingNumber;
+        } else if (entry.title === this.ENTRANCE_NUMBER) {
+          entry.value = this.data.entranceNumber;
+        }
       });
     });
   }

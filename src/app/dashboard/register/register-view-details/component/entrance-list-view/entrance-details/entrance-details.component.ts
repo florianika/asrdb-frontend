@@ -35,13 +35,7 @@ export class EntranceDetailsComponent implements OnInit {
       entries: [
         {
           title: '',
-          propName: 'EntID',
-          value: '',
-          log: ''
-        },
-        {
-          title: '',
-          propName: 'EntBuildingID',
+          propName: 'EntCensus2023',
           value: '',
           log: ''
         },
@@ -56,18 +50,6 @@ export class EntranceDetailsComponent implements OnInit {
     {
       title: 'Identifying variables',
       entries: [
-        {
-          title: '',
-          propName: 'EntLatitude',
-          value: '',
-          log: ''
-        },
-        {
-          title: '',
-          propName: 'EntLongitude',
-          value: '',
-          log: ''
-        },
         {
           title: '',
           propName: 'EntPointStatus',

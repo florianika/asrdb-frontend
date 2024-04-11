@@ -216,7 +216,10 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.matDialog.open(DwellingDetailsComponent, {
       data: {
         globalId,
-        logs: this.registerLogService.getAllLogs('DWELLING')
+        logs: this.registerLogService.getAllLogs('DWELLING'),
+        streetName: this.streetName,
+        buildingNumber: this.buildingNumber,
+        entranceNumber: this.entranceNumber
       },
     });
   }
