@@ -1,13 +1,14 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, isDevMode, OnDestroy} from '@angular/core';
 import {AuthStateService} from 'src/app/common/services/auth-state.service';
 import {Chip} from "../../common/standalone-components/chip/chip.component";
 import {BuildingFilter} from "../register/model/building";
 import {FILTER_REGISTER, RegisterFilterService} from "../register/register-table-view/register-filter.service";
 import {CommonRegisterHelperService} from "../register/service/common-helper.service";
 import {CommonBuildingService} from "../register/service/common-building.service";
-import {Subject, takeUntil} from "rxjs";
+import {catchError, of, Subject, takeUntil} from "rxjs";
 import {RegisterFilterComponent} from "../register/register-table-view/register-filter/register-filter.component";
 import {MatDialog} from "@angular/material/dialog";
+import {QueryFilter} from "../register/model/query-filter";
 
 @Component({
   selector: 'asrdb-overview',
@@ -36,6 +37,10 @@ export class OverviewComponent implements OnDestroy {
         registerFilterService.prepareFilter(fields);
         this.changeDetectionRef.detectChanges();
       });
+
+    this.registerFilterService.filterObservable.subscribe((filter) => {
+      this.reload();
+    });
   }
 
   ngOnDestroy() {
@@ -76,6 +81,32 @@ export class OverviewComponent implements OnDestroy {
 
   getMunicipality(column: string, code: string) {
     return this.commonBuildingRegisterHelper.getMunicipality(this.fields, column, code);
+  }
+
+  private reload() {
+    this.loadBuildings().pipe(takeUntil(this.destroy)).subscribe((res) => this.handleResponse(res));
+  }
+
+  private loadBuildings() {
+    const filter = {
+      where: this.registerFilterService.prepareWhereCase()
+    } as Partial<QueryFilter>;
+    return this.commonBuildingService.getBuildingData(filter).pipe(catchError((err) => {
+      console.log(err);
+      return of(null);
+    }));
+  }
+
+  private handleResponse(res: any) {
+    if (isDevMode()) {
+      console.log('Data', res);
+    }
+    if (!res) {
+      // this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      return;
+    }
+    this.registerFilterService.updateGlobalIds(res.globalIds);
+    this.changeDetectionRef.markForCheck();
   }
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {

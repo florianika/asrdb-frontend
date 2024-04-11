@@ -87,11 +87,12 @@ export class RegisterMapService {
             console.log(view.popup.selectedFeature);
           }
           if (!view.popup.selectedFeature) {
-            // this.registerFilterService.setBuildingGlobalIdFilter('');
             return;
           }
-          const globalId = view.popup.selectedFeature.attributes['GlobalID'];
-          this.registerFilterService.setBuildingGlobalIdFilter(globalId);
+          if (view.popup.selectedFeature.layer.title === 'ASRDB Buildings') {
+            const globalId = view.popup.selectedFeature.attributes['GlobalID'];
+            this.registerFilterService.setBuildingGlobalIdFilter(globalId);
+          }
         }, 100);
       });
       this.eventsCleanupCallbacks.push(() => {
