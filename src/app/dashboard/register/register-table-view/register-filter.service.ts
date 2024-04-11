@@ -41,10 +41,8 @@ export class RegisterFilterService {
 
   private fields: never[] = [];
 
-  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService, private router: Router) {
-    const url = router.url;
-    let savedFilterJSON;
-    savedFilterJSON = sessionStorage.getItem(FILTER_REGISTER);
+  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService) {
+    const savedFilterJSON = sessionStorage.getItem(FILTER_REGISTER);
 
     if (savedFilterJSON) {
       try {
@@ -72,7 +70,8 @@ export class RegisterFilterService {
   }
 
   updateGlobalIds(globalIds: string[]) {
-    this.globalIds.next(globalIds);
+    const globalIdsToStore = globalIds.filter(globalId => !!globalId);
+    this.globalIds.next(globalIdsToStore);
   }
 
   updateFilter(filter: BuildingFilter, key: string) {
@@ -118,7 +117,7 @@ export class RegisterFilterService {
   }
 
   prepareWhereCaseForEntrance() {
-    if (!this.globalIds.getValue()?.length && this.noFilterApplied()) {
+    if (!this.globalIds.getValue()?.length || this.noFilterApplied()) {
       return '1=1';
     }
     return `EntBuildingId in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
