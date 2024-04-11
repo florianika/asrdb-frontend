@@ -5,16 +5,15 @@
     <ng-container *ngFor="let formItem of formStructure">
       <mat-form-field class="full-width">
         <mat-label>{{formItem.alias}}</mat-label>
-        <ng-container *ngIf="formItem.type !== 'select' && formItem.type !== 'date'">
-          <input
-            matInput
-            #input
-            [formControlName]="formItem.name"
-            [type]="formItem.type"
-            [maxlength]="formItem.maxLength ?? null"
-          >
-          <mat-hint align="end" *ngIf="formItem.maxLength">{{input.value.length}}/{{formItem.maxLength}}</mat-hint>
-        </ng-container>
+        <input
+          *ngIf="formItem.type !== 'select' && formItem.type !== 'date'"
+          matInput
+          [formControlName]="formItem.name"
+          [type]="formItem.type"
+          [maxlength]="formItem.maxLength ?? null"
+        >
+        <span matTextSuffix *ngIf="formItem.maxLength">{{formGroup.controls[formItem.name]?.value?.length ?? 0}}/{{formItem.maxLength}}</span>
+
         <mat-select *ngIf="formItem.type === 'select'" [formControlName]="formItem.name">
           <mat-option *ngFor="let option of formItem.selectOptions" [value]="option.value">{{ option.text }}</mat-option>
         </mat-select>
