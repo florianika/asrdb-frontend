@@ -29,9 +29,9 @@ export type Dwelling = {
   last_edited_date: number,
   DwlEntranceId: string,
   external_creator: string,
-  external_creation_date: string,
-  external_updater: string,
-  external_updated_date: string,
+  external_creator_date: string,
+  external_editor: string,
+  external_editor_date: string,
 }
 
 export type DwellingFilter = {

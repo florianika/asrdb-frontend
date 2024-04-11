@@ -49,8 +49,8 @@ export class EntranceManagementService {
     attributes.EntQuality = 9;
 
     if (attributes?.GlobalID) {
-      attributes.external_updater = `{${this.authState.getNameId()}}` ?? '';
-      attributes.external_updated_date = String(Date.now());
+      attributes.external_editor = `{${this.authState.getNameId()}}` ?? '';
+      attributes.external_editor_date = String(Date.now());
       this.updateEntrance([{
         'geometry': {
           'x': geometry.x,
@@ -61,7 +61,7 @@ export class EntranceManagementService {
       }]);
     } else {
       attributes.external_creator = `{${this.authState.getNameId()}}` ?? '';
-      attributes.external_creation_date = String(Date.now());
+      attributes.external_creator_date = String(Date.now());
       this.createEntrance([{
         'geometry': {
           'x': geometry.x,
