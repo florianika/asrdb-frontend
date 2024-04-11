@@ -12,9 +12,15 @@
     <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
-    <button mat-icon-button *ngIf="selectedBuildings.length" [matTooltip]="'Open log view for selected building(s)'" (click)="viewLogsForSelected()" [disabled]="isLoadingResults">
-      <mat-icon style="cursor: pointer;">text_snippet</mat-icon>
-    </button>
+    <ng-container *ngIf="selectedBuildings.length">
+      <div style="border-left: 1px solid lightgray; width: 1px; height: 20px"></div>
+      <button mat-icon-button [matTooltip]="'Open log view for selected building(s)'" (click)="viewLogsForSelected()" [disabled]="isLoadingResults">
+        <mat-icon style="cursor: pointer;">rule</mat-icon>
+      </button>
+      <button mat-icon-button [matTooltip]="'Filter map for selected building(s)'" (click)="filterSelectedBuildings()" [disabled]="isLoadingResults">
+        <mat-icon style="cursor: pointer;">map</mat-icon>
+      </button>
+    </ng-container>
   </div>
 
   <div style="padding: 0 10px;">

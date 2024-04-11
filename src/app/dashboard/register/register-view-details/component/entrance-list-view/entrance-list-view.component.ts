@@ -29,6 +29,7 @@ import {CommonRegisterHelperService} from '../../../service/common-helper.servic
 import {EntranceDetailsComponent} from './entrance-details/entrance-details.component';
 import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'asrdb-entrance-list-view',
@@ -48,7 +49,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatProgressSpinnerModule,
     CommonModule,
     EntranceListViewFilterComponent,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ]
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -65,7 +67,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   private columns = [
     'EntBuildingId',
     'GlobalID',
-    'EntStreetCode',
+    'EntStreet',
     'EntBuildingNumber',
     'EntEntranceNumber',
     'EntDwellingRecs',
@@ -105,6 +107,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     private commonEntranceBuildingService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
+    private matSnack: MatSnackBar,
     private registerLogService: RegisterLogService,
     private router: Router,
     private activatedRoute: ActivatedRoute) {
@@ -229,6 +232,8 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       console.log('Entrances: ', res);
     }
     if (!res) {
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.isLoadingResults = false;
       return;
     }
     if (res.data.fields.length) {

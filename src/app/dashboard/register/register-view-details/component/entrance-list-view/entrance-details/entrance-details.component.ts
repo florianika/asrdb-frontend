@@ -160,6 +160,8 @@ export class EntranceDetailsComponent implements OnInit {
       console.log('Entrance', res);
     }
     if (!res) {
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.isLoadingResults = false;
       return;
     }
     if (res.data.fields.length) {

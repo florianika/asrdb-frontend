@@ -2,7 +2,8 @@ export type FormObject = {
   name: string,
   alias: string,
   type: FormObjectType,
-  selectOptions: FormObjectSelectOption[] | null
+  selectOptions: FormObjectSelectOption[] | null,
+  maxLength?: number
 }
 
 export type FormObjectType = 'number' | 'text' | 'text-area' | 'select' | 'date';

@@ -318,6 +318,8 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       console.log('Data', res);
     }
     if (!res) {
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.isLoadingResults = false;
       return;
     }
     if (res.data.fields.length) {

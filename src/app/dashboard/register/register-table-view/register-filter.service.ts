@@ -5,7 +5,6 @@ import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
 import {Router} from "@angular/router";
 
-export const FILTER_DASHBOARD = 'FILTER_DASHBOARD';
 export const FILTER_REGISTER = 'FILTER_REGISTER';
 
 @Injectable()
@@ -45,11 +44,7 @@ export class RegisterFilterService {
   constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService, private router: Router) {
     const url = router.url;
     let savedFilterJSON;
-    if (url.includes('overview')) {
-      savedFilterJSON = sessionStorage.getItem(FILTER_DASHBOARD);
-    } else if (url.includes(('register'))) {
-      savedFilterJSON = sessionStorage.getItem(FILTER_REGISTER);
-    }
+    savedFilterJSON = sessionStorage.getItem(FILTER_REGISTER);
 
     if (savedFilterJSON) {
       try {
@@ -58,6 +53,10 @@ export class RegisterFilterService {
         console.log('Filter could not be initialised');
       }
     }
+  }
+
+  get municipality(): string {
+    return this.filter.value.filter?.BldMunicipality ?? '';
   }
 
   setBuildingsGlobalIdFilter(globalIds: string[]) {

@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, TemplateRef, ViewChild, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -64,7 +64,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
 
   @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
 
-  formGroup = new FormGroup({});
+  formGroup: FormGroup<any> = new FormGroup({});
   formStructure: FormObject[] = [];
   id?: string;
   entrances: Entrance[] = [];
@@ -128,6 +128,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
           console.log('Dwellings: ', res);
         }
         if (!res) {
+          this.matSnackBar.open('Could not load result. Please try again');
+          this.isLoadingResults = false;
           return;
         }
         this.dwelling = res.data.features.map((feature: any) => feature.attributes)[0];
@@ -148,7 +150,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
       name: field[NAME_PROP],
       alias: field[ALIAS_PROP],
       type: fieldType,
-      selectOptions: fieldOptions
+      selectOptions: fieldOptions,
+      maxLength: field[LENGTH_PROP]
     });
   }
 
@@ -223,5 +226,12 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   getLogForField(variable: string): string {
     return this.logs.find(log => log.Variable === variable)?.QualityMessageEn
       ?? '';
+  }
+
+  getError(control: AbstractControl) {
+    if (control.errors?.['maxlength']) {
+      return 'Value should not be longer than ' + control.errors?.['maxlength'].requiredLength;
+    }
+    return '';
   }
 }

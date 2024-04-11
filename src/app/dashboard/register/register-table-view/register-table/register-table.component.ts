@@ -20,6 +20,7 @@ import {FILTER_REGISTER, RegisterFilterService} from '../register-filter.service
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'asrdb-register-table',
@@ -37,7 +38,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     ChipComponent,
     MatDividerModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ],
   templateUrl: './register-table.component.html',
   styleUrls: ['./register-table.component.css'],
@@ -73,6 +75,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
     private matDialog: MatDialog,
+    private matSnack: MatSnackBar,
     private changeDetectionRef: ChangeDetectorRef,
     private router: Router) {
   }
@@ -159,6 +162,10 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.router.navigateByUrl('/dashboard/register/logs?buildings=' + this.selectedBuildings.join(','));
   }
 
+  filterSelectedBuildings() {
+    this.registerFilterService.setBuildingsGlobalIdFilter(this.selectedBuildings);
+  }
+
   addNewBuilding() {
     this.router.navigateByUrl('/dashboard/register/form/BUILDING');
   }
@@ -202,6 +209,8 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
       console.log('Data', res);
     }
     if (!res) {
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.isLoadingResults = false;
       return;
     }
     if (res.data.fields.length) {

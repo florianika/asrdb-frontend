@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,6 +19,7 @@ import {RegisterLogService} from "../../register-log-view/register-log-table/reg
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MY_FORMATS} from "../../model/common-utils";
 import {EntityCreationMapService} from "../entity-management-map.service";
+import {RegisterFilterService} from "../../register-table-view/register-filter.service";
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -69,7 +70,8 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   constructor(
     private buildingService: CommonBuildingService,
     private registerLogService: RegisterLogService,
-    private mapService: EntityCreationMapService
+    private mapService: EntityCreationMapService,
+    private filterService: RegisterFilterService
   ) {
   }
 
@@ -100,7 +102,8 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       name: field[NAME_PROP],
       alias: field[ALIAS_PROP],
       type: fieldType,
-      selectOptions: fieldOptions
+      selectOptions: fieldOptions,
+      maxLength: field[LENGTH_PROP]
     });
   }
 
@@ -115,6 +118,10 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     if (field[LENGTH_PROP]) {
       control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
     }
+    if (field[NAME_PROP] === 'BldMunicipality') {
+      control.setValue(this.filterService.municipality);
+      this.mapService.setMunicipality(this.filterService.municipality);
+    }
     this.formGroup.addControl(fieldName, control);
   }
 
@@ -126,5 +133,12 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   getLogForField(variable: string): string {
     return this.registerLogService.getLogForVariable('BUILDING', variable)?.QualityMessageEn
       ?? '';
+  }
+
+  getError(control: AbstractControl) {
+    if (control.errors?.['maxlength']) {
+      return 'Value should not be longer than ' + control.errors?.['maxlength'].requiredLength;
+    }
+    return '';
   }
 }

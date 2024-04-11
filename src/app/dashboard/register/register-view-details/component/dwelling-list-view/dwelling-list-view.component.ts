@@ -35,6 +35,7 @@ import {
 import {Entrance} from '../../../model/entrance';
 import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -55,7 +56,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatProgressSpinnerModule,
     CommonModule,
     EntranceListViewFilterComponent,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ]
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
@@ -127,7 +129,9 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     private changeDetectorRef: ChangeDetectorRef,
     private registerLogService: RegisterLogService,
     private viewContainerRef: ViewContainerRef,
-    private matDialog: MatDialog) {
+    private matDialog: MatDialog,
+    private matSnack: MatSnackBar
+    ) {
   }
 
   ngOnInit() {
@@ -269,6 +273,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       console.log('Dwellings: ', res);
     }
     if (!res) {
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
       this.isLoadingResults = false;
       this.data = [];
       this.changeDetectorRef.markForCheck();

@@ -97,7 +97,8 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       name: (this.entranceId ?? '') + '_' + field[NAME_PROP],
       alias: field[ALIAS_PROP],
       type: fieldType,
-      selectOptions: fieldOptions
+      selectOptions: fieldOptions,
+      maxLength: field[LENGTH_PROP]
     });
   }
 

@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '
 import {AuthStateService} from 'src/app/common/services/auth-state.service';
 import {Chip} from "../../common/standalone-components/chip/chip.component";
 import {BuildingFilter} from "../register/model/building";
-import {FILTER_DASHBOARD, RegisterFilterService} from "../register/register-table-view/register-filter.service";
+import {FILTER_REGISTER, RegisterFilterService} from "../register/register-table-view/register-filter.service";
 import {CommonRegisterHelperService} from "../register/service/common-helper.service";
 import {CommonBuildingService} from "../register/service/common-building.service";
 import {Subject, takeUntil} from "rxjs";
@@ -64,7 +64,7 @@ export class OverviewComponent implements OnDestroy {
   remove($event: Chip) {
     const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
     (filterCopy as any).filter[$event.column] = '';
-    this.registerFilterService.updateFilter(filterCopy, FILTER_DASHBOARD);
+    this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 
   getValueFromStatus(column: string, code: string) {
@@ -80,7 +80,7 @@ export class OverviewComponent implements OnDestroy {
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
     if (newFilterConfig) {
-      this.registerFilterService.updateFilter(newFilterConfig, FILTER_DASHBOARD);
+      this.registerFilterService.updateFilter(newFilterConfig, FILTER_REGISTER);
     }
   }
 }
