@@ -94,15 +94,18 @@ export class DwellingDetailsFormComponent implements OnDestroy {
       }
     });
 
-    if (!data.id && this.entranceId) {
-      this.HIDDEN_FIELDS.push('DwlEntranceId');
+    if (!data.id) {
+      this.HIDDEN_FIELDS.push('DwlEntranceID');
     }
   }
 
   private initForm() {
     this.isLoadingResults = true;
     this.dwellingService.getAttributesMetadata().subscribe((fields: never[]) => {
-      fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]));
+      fields = fields.filter(field => {
+        console.log(field[NAME_PROP], `Editable: ${field[EDITABLE_PROP]} | Show: ${!this.HIDDEN_FIELDS.includes(field[NAME_PROP])}`);
+        return field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]);
+      });
       fields.forEach(field => {
         this.createFormControlForField(field);
         this.createFormObject(field);
@@ -142,7 +145,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   }
 
   private createFormObject(field: never) {
-    const isEntranceFK = field[NAME_PROP] === 'DwlEntranceId';
+    const isEntranceFK = field[NAME_PROP] === 'DwlEntranceID';
     const isSelect = field[DOMAIN_PROP] || isEntranceFK;
     const fieldType = isSelect ? 'select' : getFormObjectType(field[TYPE_PROP], field[LENGTH_PROP] ?? 0);
     const fieldOptions = isEntranceFK ? this.getOptionsForEntrance() : getFormObjectOptions(fieldType, field[DOMAIN_PROP]);
@@ -158,7 +161,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   private createFormControlForField(field: never) {
     const fieldName = field[NAME_PROP];
     const value = this.dwelling?.[fieldName];
-    const defaultValue = fieldName === 'DwlEntranceId' ? undefined: (field[DEFAULT_VALUE_PROP] ?? '');
+    const defaultValue = fieldName === 'DwlEntranceID' ? undefined: (field[DEFAULT_VALUE_PROP] ?? '');
     const control = new FormControl(value ? value : defaultValue);
     if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
@@ -218,7 +221,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
       dwelling.GlobalID = this.dwelling.GlobalID;
       dwelling.OBJECTID = this.dwelling.OBJECTID;
     } else {
-      dwelling.DwlEntranceId = this.entranceId;
+      dwelling.DwlEntranceID = this.entranceId;
     }
     this.dwellingCreationService.saveDwelling(dwelling);
   }

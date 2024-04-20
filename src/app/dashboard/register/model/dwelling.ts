@@ -2,7 +2,6 @@
 export type Dwelling = {
   OBJECTID: number,
   DwlID: number,
-  DwlEntranceID: number,
   DwlCensus2023: number,
   DwlAddressID: string,
   DwlQuality: number,
@@ -27,7 +26,7 @@ export type Dwelling = {
   created_date: number,
   last_edited_user: string,
   last_edited_date: number,
-  DwlEntranceId: string,
+  DwlEntranceID: string,
   external_creator: string,
   external_creator_date: string,
   external_editor: string,
@@ -36,13 +35,12 @@ export type Dwelling = {
 
 export type DwellingFilter = {
   filter: {
-    DwlEntranceID: number,
     DwlFloor: number,
     DwlStatus: string,
     DwlType: string,
     DwlApartNumber: number;
     GlobalID: string,
-    DwlEntranceId?: string
+    DwlEntranceID?: string
   };
   options: {
     DwlType: any[];

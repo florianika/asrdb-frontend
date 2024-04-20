@@ -101,13 +101,12 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   // TODO: Add correct filter
   filterConfig: DwellingFilter = {
     filter: {
-      DwlEntranceID: 0,
       DwlFloor: 0,
       DwlApartNumber: 0,
       GlobalID: '',
       DwlStatus: '',
       DwlType: '',
-      DwlEntranceId: ''
+      DwlEntranceID: ''
     },
     options: {
       DwlStatus: [] as any[],
@@ -201,7 +200,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   reload() {
-    if (!this.filterConfig.filter.DwlEntranceId) {
+    if (!this.filterConfig.filter.DwlEntranceID) {
       return;
     }
     this.loadDwellings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
@@ -229,6 +228,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       data: {
         entrances: this.entrances,
         id: globalId,
+        entranceId: this.entranceId,
         logs: this.registerLogService.getAllLogs('DWELLING')
       }
     }).afterClosed().subscribe(() => {
@@ -243,7 +243,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       .filter(([, value]: any) => !!value)
       .map(([key, value]: any) => ({ column: key, value } as Chip))
       .forEach((filter: any) => {
-        if (filter.column === 'DwlEntranceId') {
+        if (filter.column === 'DwlEntranceID') {
           conditions.push(filter.column + ' in ' + filter.value);
         } else {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
@@ -316,6 +316,6 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private loadDwellingsForEntrances(entranceId: string) {
-    this.filterConfig.filter.DwlEntranceId = `('${entranceId}')`;
+    this.filterConfig.filter.DwlEntranceID = `('${entranceId}')`;
   }
 }
