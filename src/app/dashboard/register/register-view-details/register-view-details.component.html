@@ -5,7 +5,9 @@
         <mat-icon>edit</mat-icon>
       </button>
       <h2 class="details-header" i18n>Details for building: {{building.GlobalID}}</h2>
-      <span class="details-subheader" i18n>Quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
+      <span class="details-subheader" i18n>Data quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
+      <br>
+      <span class="details-subheader" i18n>Status of building centroid: <span style="font-weight: bold;">{{getValueFromStatus('BldCentroidStatus')}}</span></span>
       <section *ngFor="let section of sections">
         <h3>{{section.title}}</h3>
         <asrdb-building-detail *ngFor="let entry of section.entries" [title]="entry.title" [value]="entry.value" [log]="entry.log"></asrdb-building-detail>

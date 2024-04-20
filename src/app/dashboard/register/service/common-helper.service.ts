@@ -23,6 +23,9 @@ export class CommonRegisterHelperService {
     if (!codeValues && this.isUnknownValue(code)) {
       return 'Unknown';
     }
+    if (!codeValues && this.isNotApplicable(code)) {
+      return 'Not applicable';
+    }
     if (!codeValues) {
       return code;
     }
@@ -40,5 +43,9 @@ export class CommonRegisterHelperService {
 
   private isUnknownValue(code: string | number) {
     return (!code && code !== 0) || /^9+$/.test(code.toString());
+  }
+
+  private isNotApplicable(code: string | number) {
+    return (!code && code !== 0) || code.toString() === '9000';
   }
 }

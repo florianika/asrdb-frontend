@@ -86,24 +86,6 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         },
         {
           title: '',
-          propName: 'BldLatitude',
-          value: '',
-          log: ''
-        },
-        {
-          title: '',
-          propName: 'BldLongitude',
-          value: '',
-          log: ''
-        },
-        {
-          title: '',
-          propName: 'BldCentroidStatus',
-          value: '',
-          log: ''
-        },
-        {
-          title: '',
           propName: 'BldCadastralZone',
           value: '',
           log: ''
@@ -128,13 +110,13 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         },
         {
           title: '',
-          propName: 'BldDwellingRecs',
+          propName: 'BldEntranceRecs',
           value: '',
           log: ''
         },
         {
           title: '',
-          propName: 'BldEntranceRecs',
+          propName: 'BldDwellingRecs',
           value: '',
           log: ''
         },
