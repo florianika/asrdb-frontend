@@ -43,7 +43,7 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   @Input() building!: string;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  private dataSource: MatTableDataSource<Log> = new MatTableDataSource();
+  private dataSource: MatTableDataSource<Log> = new MatTableDataSource<Log>();
   private interval: any = null;
 
   public isLoadingResults = this.logService.isLoadingResults;
@@ -74,31 +74,19 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
 
   constructor(
     private logService: RegisterLogService) {
-
   }
 
   ngOnInit(): void {
     this.logService.loadLogs(this.building);
-    this.logService.getExecutionStatus(this.building);
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-    // TODO: Cean this. test only.
-    this.interval = setInterval(() => {
-      const data = this.dataSource.data;
-      data.push(...data);
-      this.dataSource.data = data;
-      if (data.length > 100) {
-        clearInterval(this.interval);
-      }
-    }, 1000);
   }
 
-  cleanInterval() {
-    clearInterval(this.interval);
+  startExecuting() {
+    this.logService.executeRules(this.building);
   }
 
 }

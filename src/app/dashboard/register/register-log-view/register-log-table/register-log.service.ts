@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Log } from '../model/log';
 import { environment } from 'src/environments/environment';
 import {EntityType} from "../../../quality-management/quality-management-config";
+import {AuthStateService} from "../../../../common/services/auth-state.service";
 
 export const EXECUTING = 1;
 export const NOT_EXECUTING = 2;
@@ -11,7 +12,7 @@ export const NOT_EXECUTING = 2;
 @Injectable()
 export class RegisterLogService {
   private readonly LOGS_URL = '/qms/outputlogs/buildings/';
-  private readonly EXECUTION_STATUS_URL = '/qms/outputlogs/buildings/'; //TODO: Add correct URL
+  private readonly EXECUTE_RULES = '/qms/check/buildings'; //TODO: Add correct URL
 
   private loadedLogs = new BehaviorSubject<Log[]>([]);
   public get logs() {
@@ -28,22 +29,7 @@ export class RegisterLogService {
     return this.isExecuting.asObservable();
   }
 
-  constructor(private httpClient: HttpClient) {
-
-  }
-
-  public getExecutionStatus(buildingId: string) {
-    this.httpClient
-      .get<boolean>(environment.base_url + this.EXECUTION_STATUS_URL + buildingId.replace('{', '').replace('}', ''))
-      .subscribe({
-        next: (status) => {
-          this.isExecuting.next(status ? EXECUTING : NOT_EXECUTING);
-        },
-        error: (err) => {
-          console.log(err);
-          this.isExecuting.next(0);
-        },
-      });
+  constructor(private httpClient: HttpClient, private authState: AuthStateService) {
   }
 
   public loadLogs(buildingId: string) {
@@ -52,14 +38,50 @@ export class RegisterLogService {
       .get<{processOutputLogDTO: Log[]}>(environment.base_url + this.LOGS_URL + buildingId.replace('{', '').replace('}', ''))
       .subscribe({
         next: (data) => {
+          // TODO: verify this
+          // I am assuming that the processOutputLogDTO will hold all logs
+          // This means that if processOutputLogDTO has more data than loadedLogs, then the process is not finished.
+          // If the returned response has the same data as what is already loaded,
+          // // I will assume that the process has finished.
+          if (data.processOutputLogDTO.length !== this.loadedLogs.value.length) {
+            setTimeout(() => {
+              this.loadLogs(buildingId);
+            }, 3000);
+          } else {
+            this.isExecuting.next(EXECUTING);
+          }
           this.loadedLogs.next(data.processOutputLogDTO);
           this.isLoading.next(false);
         },
         error: (err) => {
           console.log(err);
           this.isLoading.next(false);
+          this.isExecuting.next(NOT_EXECUTING);
         },
       });
+  }
+
+  public executeRules(buildingId: string) {
+    const data = {
+      BuildingIds: [buildingId.replace('{', '').replace('}', '')],
+      ExecutionUser: this.authState.getNameId()
+    }
+    this.httpClient
+      .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .subscribe({
+        next: (data) => {
+          this.isExecuting.next(EXECUTING);
+          this.loadLogs(buildingId)
+        },
+        error: (err) => {
+          console.log(err);
+          this.isExecuting.next(NOT_EXECUTING);
+        },
+      })
   }
 
   public getLogForVariable(entityType: EntityType, variable: string): Log | undefined {

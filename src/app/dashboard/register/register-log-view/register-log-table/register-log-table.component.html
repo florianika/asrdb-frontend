@@ -3,7 +3,12 @@
     <h1 i18n class="header-title">Rule Execution {{building}}</h1>
     <span class="spacer"></span>
     <ng-container *ngIf="executionStatus | async as isExecuting">
-      <button mat-raised-button color="primary" style="margin-right: 10px;" [disabled]="isExecuting | logExecution">
+      <button
+        mat-raised-button
+        color="primary"
+        style="margin-right: 10px;"
+        (click)="startExecuting()"
+        [disabled]="isExecuting | logExecution">
         <ng-container *ngIf="isExecuting | logExecution">
           <mat-spinner diameter="20" style="display: inline-block; vertical-align: middle;"></mat-spinner>
           <span>
