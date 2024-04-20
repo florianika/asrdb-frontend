@@ -55,9 +55,12 @@ export class CommonBuildingService {
   ];
 
   get bldLayer(): FeatureLayer {
+    const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
       title: 'ASRDB Buildings',
-      url: environment.building_url,
+      apiKey: token,
+      url: environment.building_url + '?token='
+        + token,
       outFields: ['*'],
       renderer: {
         type: 'unique-value', // autocasts as new UniqueValueRenderer()
@@ -127,7 +130,7 @@ export class CommonBuildingService {
   createFeature(features: any): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.building_url
     + '/addFeatures?token='
-    + this.esriAuthService.getTokenForResource(environment.building_url);
+    + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
@@ -139,7 +142,7 @@ export class CommonBuildingService {
   updateFeature(features: any): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.building_url
     + '/updateFeatures?token='
-    + this.esriAuthService.getTokenForResource(environment.building_url);
+    + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {

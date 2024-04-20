@@ -13,9 +13,12 @@ import {HttpClient} from '@angular/common/http';
 export class CommonEntranceService {
 
   get entLayer(): FeatureLayer {
+    const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
       title: 'ASRDB Entrances',
-      url: environment.entrance_url,
+      apiKey: token,
+      url: environment.entrance_url + '?token='
+        + token,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,
@@ -23,7 +26,6 @@ export class CommonEntranceService {
       popupTemplate: {
         // autocasts as new PopupTemplate()
         title: 'ASRDB Entrance {GlobalID}',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi.'
       }
     });
   }
@@ -42,7 +44,7 @@ export class CommonEntranceService {
   createFeature(features: any[]): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.entrance_url
     + '/addFeatures?token='
-    + this.esriAuthService.getTokenForResource(environment.entrance_url);
+    + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
@@ -54,7 +56,7 @@ export class CommonEntranceService {
   updateFeature(features: any[]): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.entrance_url
     + '/updateFeatures'
-    + '?token=' + this.esriAuthService.getTokenForResource(environment.entrance_url);
+    + '?token=' + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {

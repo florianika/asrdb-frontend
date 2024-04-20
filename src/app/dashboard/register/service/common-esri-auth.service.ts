@@ -1,43 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
 import esriId from '@arcgis/core/identity/IdentityManager';
-import esriConfig from '@arcgis/core/config';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs/internal/Subject';
-
-type Credential = {
-  'userId': string;
-  'server': string;
-  'token': string;
-  'expires': number;
-  'validity': number;
-  'ssl': boolean;
-  'creationTime': number;
-  'scope': string;
-  'resources': string[];
-};
-
-type ServerInfo = {
-  'adminTokenServiceUrl': string;
-  'currentVersion': number;
-  'hasServer': boolean;
-  'owningSystemUrl': string;
-  'server': string;
-  'tokenServiceUrl': string;
-};
-
-type Credentials = {
-  'serverInfos': ServerInfo[],
-  'oAuthInfos': [],
-  'credentials': Credential[]
-}
+import {environment} from "../../../../environments/environment";
 
 @Injectable()
 export class CommonEsriAuthService implements OnDestroy {
   private ESRI_AUTH_KEY = 'ESRI-AUTH';
-  private portalUrl = 'https://gislab.teamdev.it/portal';
-  private apiKey = '7pVCdD54JxE7lOPm';
   private subscription = new Subject<boolean>();
 
   constructor(private authState: AuthStateService) {
@@ -48,7 +19,7 @@ export class CommonEsriAuthService implements OnDestroy {
           localStorage.removeItem(this.ESRI_AUTH_KEY);
         }
       });
-    this.inizializeAuth();
+    this.initializeAuth();
   }
 
   ngOnDestroy(): void {
@@ -56,44 +27,27 @@ export class CommonEsriAuthService implements OnDestroy {
     this.subscription.complete();
   }
 
-  getTokenForResource(url: string): string {
+  getTokenForResource(): string {
     const credentials = localStorage.getItem(this.ESRI_AUTH_KEY);
     if (credentials) {
-      const parsedCredentials: Credentials = JSON.parse(credentials);
-      const credential = parsedCredentials.credentials.find((c) => c.resources.includes(url));
-      return credential ? credential.token : parsedCredentials.credentials[0].token;
+      const parsedCredentials = JSON.parse(credentials);
+      return parsedCredentials.token;
     }
     return '';
   }
 
-  private inizializeAuth(): void {
-    this.initIdentityProvider();
-    this.initEsriConfig();
-    this.registerOAuth();
-    esriId.on('credential-create', () => {
-      localStorage.setItem(this.ESRI_AUTH_KEY, JSON.stringify(esriId.toJSON()));
+  private initializeAuth(): void {
+    void this.initEsriConfig();
+  }
+
+  private async initEsriConfig() {
+    const token = await esriId.generateToken({
+      server: environment.portal_url,
+      tokenServiceUrl: 'https://salstatstaging.tddev.it/portal/sharing/rest/generateToken'
+    } as __esri.ServerInfo, {
+      username: 'salstatuser',
+      password: 'EZ]3J*BsiXwtY+^'
     });
-  }
-
-  private initEsriConfig() {
-    esriConfig.portalUrl = this.portalUrl;
-    esriConfig.apiKey = this.apiKey;
-  }
-
-  private initIdentityProvider() {
-    const config = localStorage.getItem(this.ESRI_AUTH_KEY);
-    if (config) {
-      esriId.initialize(JSON.parse(config));
-    }
-  }
-
-  private registerOAuth() {
-    // const oAuthInfo = new OAuthInfo({
-    //   portalUrl: portalUrl,
-    //   appId: apiKey,
-    //   flowType: "auto", // default that uses two-step flow
-    //   popup: true
-    // });
-    // esriId.registerOAuthInfos([oAuthInfo]);
+    localStorage.setItem(this.ESRI_AUTH_KEY, JSON.stringify(token));
   }
 }
