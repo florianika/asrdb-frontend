@@ -141,10 +141,6 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.subscriber.complete();
   }
 
-  getTitle(column: string) {
-    return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
-  }
-
   getValueFromStatus(column: string, code: string) {
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
   }
