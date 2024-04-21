@@ -1,6 +1,10 @@
 <mat-form-field class="full-width" [appearance]="appearance">
   <mat-label i18n>Variable</mat-label>
-  <mat-select [(ngModel)]="variable" (selectionChange)="changeRole($event)" [required]="required" [disabled]="disabled">
-    <mat-option *ngFor="let variable of variables" [value]="variable" i18n>{{ variable }}</mat-option>
+  <mat-select
+    [(ngModel)]="variable"
+    (selectionChange)="changeRole($event)"
+    [required]="required"
+    [disabled]="disabled || !entityType">
+    <mat-option *ngFor="let variable of variables" [value]="variable.value" i18n>{{ variable.text }}</mat-option>
   </mat-select>
 </mat-form-field>

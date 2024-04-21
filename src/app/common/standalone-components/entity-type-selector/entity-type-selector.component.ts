@@ -18,7 +18,7 @@ import { EntityType } from 'src/app/model/RolePermissions.model';
 export class EntityTypeSelectorComponent {
   @Input() required = false;
   @Input() disabled = false;
-  @Input() entityType: EntityType = 'BUILDING';
+  @Input() entityType: EntityType | '' = 'BUILDING';
   @Output() entityTypeChange = new EventEmitter<EntityType>();
 
   changeRole(selectedPermission: MatSelectChange) {
