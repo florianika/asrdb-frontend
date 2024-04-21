@@ -44,7 +44,6 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   private dataSource: MatTableDataSource<Log> = new MatTableDataSource<Log>();
-  private interval: any = null;
 
   public isLoadingResults = this.logService.isLoadingResults;
   public executionStatus = this.logService.isExecutingRules;

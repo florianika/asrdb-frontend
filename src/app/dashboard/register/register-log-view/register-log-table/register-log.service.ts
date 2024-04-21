@@ -73,7 +73,7 @@ export class RegisterLogService {
         }
       })
       .subscribe({
-        next: (data) => {
+        next: () => {
           this.isExecuting.next(EXECUTING);
           this.loadLogs(buildingId)
         },
