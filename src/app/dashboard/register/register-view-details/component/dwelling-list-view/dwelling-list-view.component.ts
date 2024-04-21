@@ -1,12 +1,12 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy, ChangeDetectorRef,
-  Component,
+  Component, EventEmitter,
   Input,
   isDevMode,
   OnChanges,
   OnDestroy,
-  OnInit, SimpleChanges,
+  OnInit, Output, SimpleChanges,
   ViewChild, ViewContainerRef
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
@@ -64,6 +64,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   @Input() entranceId?: string;
   @Input() buildingNumber?: number;
   @Input() entrances: Entrance[] = [];
+
+  @Output() dwellingUpdated = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -233,6 +235,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       }
     }).afterClosed().subscribe(() => {
       this.reload();
+      this.dwellingUpdated.emit(this.entranceId)
     });
   }
 

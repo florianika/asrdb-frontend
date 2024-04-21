@@ -67,6 +67,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   private columns = [
     'EntBuildingID',
     'GlobalID',
+    'ObjectID',
     'EntStreet',
     'EntBuildingNumber',
     'EntEntranceNumber',
@@ -76,7 +77,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   ];
   private subscriber = new Subject();
 
-  displayedColumns: string[] = this.columns.concat(['actions']);
+  displayedColumns: string[] = this.columns.concat(['actions']).filter(column => column !== 'ObjectID');
   data: any[] = [];
   fields: any[] = [];
   resultsLength = 0;

@@ -42,6 +42,7 @@
       [entranceId]="selectedEntrance"
       [entrances]="loadedEntrances"
       [buildingNumber]="building.BldProperty"
+      (dwellingUpdated)="markEntranceAsUntestedData($event)"
     ></asrdb-dwelling-list-view>
   </div>
 </div>

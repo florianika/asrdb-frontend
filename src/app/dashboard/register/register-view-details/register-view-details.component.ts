@@ -18,6 +18,8 @@ import { RegisterFilterService } from '../register-table-view/register-filter.se
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 import {getDate} from "../model/common-utils";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {CommonEntranceService} from "../service/common-entrance.service";
+import {Building} from "../model/building";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -243,6 +245,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private commonBuildingService: CommonBuildingService,
+    private commonEntranceService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
     private registerLogService: RegisterLogService,
@@ -289,6 +292,23 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   setSelectedEntrance(entranceId: string) {
     this.selectedEntrance = entranceId;
+  }
+
+  markEntranceAsUntestedData(entranceId: string) {
+    const entrance = this.loadedEntrances.find(entrance => entrance.GlobalID === entranceId);
+    if (entrance) {
+      // Update entrance
+      entrance.EntQuality = 9;
+      this.commonEntranceService.updateFeature([{
+        attributes: entrance
+      }]).subscribe();
+
+      // Update building
+      (this.building as Building).BldQuality = 9;
+      this.commonBuildingService.updateFeature([{
+        attributes: this.building
+      }]).subscribe();
+    }
   }
 
   private prepareWhereCase() {
