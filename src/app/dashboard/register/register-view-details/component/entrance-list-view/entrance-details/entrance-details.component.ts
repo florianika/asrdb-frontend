@@ -159,8 +159,8 @@ export class EntranceDetailsComponent implements OnInit {
       section.entries.forEach(entry => {
         entry.title = this.getTitle(entry.propName);
         entry.value = this.getValueFromStatus(entry.propName);
-        entry.log = this.logs.find(log => log.Variable === entry.propName)
-          ?.QualityMessageEn ?? '';
+        entry.log = this.logs.find(log => log.variable === entry.propName)
+          ?.qualityMessageEn ?? '';
       });
     });
   }

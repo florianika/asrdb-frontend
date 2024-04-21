@@ -1,0 +1,30 @@
+<h2 mat-dialog-title i18n>Filter logs</h2>
+<mat-dialog-content class="mat-typography">
+  <asrdb-entity-type-selector [(entityType)]="filter.entityType"></asrdb-entity-type-selector>
+  <asrdb-variable-selector
+    [entityType]="filter.entityType"
+    [(variable)]="filter.variable"
+  >
+  </asrdb-variable-selector>
+  <mat-form-field class="full-width">
+    <mat-label i18n>Quality action</mat-label>
+    <mat-select [(ngModel)]="filter.qualityAction">
+      <mat-option value="AUT">
+        AUT
+      </mat-option>
+      <mat-option value="MISS">
+        MISS
+      </mat-option>
+      <mat-option value="QUE">
+        QUE
+      </mat-option>
+      <mat-option value="ERR">
+        ERR
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button color="primary" [mat-dialog-close]="filter">Filter</button>
+</mat-dialog-actions>

@@ -120,7 +120,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   getLogForField(variable: string): string {
     const variableName = variable.split('_')[1];
-    return this.registerLogService.getLogForVariable('ENTRANCE', variableName)?.QualityMessageEn
+    return this.registerLogService.getLogForVariable('ENTRANCE', variableName)?.qualityMessageEn
       ?? '';
   }
 

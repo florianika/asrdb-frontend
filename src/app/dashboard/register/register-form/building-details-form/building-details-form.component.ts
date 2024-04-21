@@ -131,7 +131,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   getLogForField(variable: string): string {
-    return this.registerLogService.getLogForVariable('BUILDING', variable)?.QualityMessageEn
+    return this.registerLogService.getLogForVariable('BUILDING', variable)?.qualityMessageEn
       ?? '';
   }
 

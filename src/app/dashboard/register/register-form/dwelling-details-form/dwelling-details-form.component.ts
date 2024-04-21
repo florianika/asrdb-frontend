@@ -227,7 +227,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   }
 
   getLogForField(variable: string): string {
-    return this.logs.find(log => log.Variable === variable)?.QualityMessageEn
+    return this.logs.find(log => log.variable === variable)?.qualityMessageEn
       ?? '';
   }
 

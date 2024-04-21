@@ -318,7 +318,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         entry.title = this.getTitle(entry.propName);
         entry.value = entry.propName === 'BldMunicipality' ? this.getMunicipality() : this.getValueFromStatus(entry.propName);
         entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
-          ?.QualityMessageEn ?? '';
+          ?.qualityMessageEn ?? '';
       });
     });
   }
