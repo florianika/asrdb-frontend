@@ -5,6 +5,11 @@ import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
 import {CommonBuildingService} from "../../../../register/service/common-building.service";
 import {CommonEntranceService} from "../../../../register/service/common-entrance.service";
 import {CommonDwellingService} from "../../../../register/service/common-dwellings.service";
+import {
+  BUILDING_HIDDEN_FIELDS,
+  DWELLING_HIDDEN_FIELDS,
+  ENTRANCE_HIDDEN_FIELDS
+} from "../../../../../common/data/hidden-fields";
 
 type SelectOption = { text: string, value: string };
 
@@ -64,9 +69,16 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy{
   }
 
   private mapVariables(fields: any[]): SelectOption[] {
-    return fields.filter(field => field.editable).map(field => ({
-      text: field.alias ? field.alias : field.name,
-      value: field.name
-    }));
+    return fields
+      .filter(field =>
+        field.editable
+        && !BUILDING_HIDDEN_FIELDS.includes(field.name)
+        && !ENTRANCE_HIDDEN_FIELDS.includes(field.name)
+        && !DWELLING_HIDDEN_FIELDS.includes(field.name)
+      )
+      .map(field => ({
+        text: field.alias ? field.alias : field.name,
+        value: field.name
+      }));
   }
 }

@@ -8,6 +8,7 @@ import {CommonBuildingService} from "../../../dashboard/register/service/common-
 import {CommonEntranceService} from "../../../dashboard/register/service/common-entrance.service";
 import {CommonDwellingService} from "../../../dashboard/register/service/common-dwellings.service";
 import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
+import {BUILDING_HIDDEN_FIELDS, DWELLING_HIDDEN_FIELDS, ENTRANCE_HIDDEN_FIELDS} from "../../data/hidden-fields";
 
 type SelectOption = { text: string, value: string };
 
@@ -84,7 +85,14 @@ export class VariableSelectorComponent implements OnDestroy{
   }
 
   private mapVariables(fields: any[]): SelectOption[] {
-    return fields.filter(field => field.editable).map(field => ({
+    return fields
+      .filter(field =>
+        field.editable
+        && !BUILDING_HIDDEN_FIELDS.includes(field.name)
+        && !ENTRANCE_HIDDEN_FIELDS.includes(field.name)
+        && !DWELLING_HIDDEN_FIELDS.includes(field.name)
+      )
+      .map(field => ({
       text: field.alias ? field.alias : field.name,
       value: field.name
     }));
