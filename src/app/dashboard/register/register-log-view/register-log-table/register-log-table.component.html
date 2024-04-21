@@ -96,7 +96,7 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="resolve(row.id)" i18n>Resolve</button>
+              <button mat-menu-item (click)="resolve(row.id)" i18n><mat-icon>check_circle</mat-icon> Resolve</button>
             </mat-menu>
           </ng-container>
         </td>
@@ -111,3 +111,14 @@
   </div>
   <mat-paginator [length]="resultsLength" [pageSize]="5" [pageSizeOptions]="[5, 30, 100]"></mat-paginator>
 </div>
+
+<ng-template #confirmDialog>
+  <h1 mat-dialog-title i18n>Resolve error</h1>
+  <div mat-dialog-content i18n>
+    <p>Marking this error as resolved can't be undone. Are you sure you want to proceed?</p>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close i18n>Cancel</button>
+    <button mat-button color="primary" [mat-dialog-close]="true" i18n>Resolve</button>
+  </div>
+</ng-template>

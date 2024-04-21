@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RegisterLogService } from './register-log.service';
 import { MatCardModule } from '@angular/material/card';
@@ -58,6 +58,7 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   @Input() building!: string;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild("confirmDialog") confirmDialog!: TemplateRef<any>;
   private dataSource: MatTableDataSource<Log> = new MatTableDataSource<Log>();
 
   public isLoadingResults = this.logService.isLoadingResults;
@@ -136,7 +137,11 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   }
 
   resolve(id: string) {
-    this.logService.resolveLog(id, this.building);
+    this.matDialog.open(this.confirmDialog).afterClosed().subscribe((confirm: boolean) => {
+      if (confirm) {
+        this.logService.resolveLog(id, this.building);
+      }
+    });
   }
 
   private filterLogs() {
