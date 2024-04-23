@@ -27,6 +27,7 @@ import { RoleSelectorComponent } from 'src/app/common/standalone-components/role
 import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
 import { RoleDeleteDialogComponent } from './role-delete-dialog/role-delete-dialog.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {CommonEsriAuthService} from "../../register/service/common-esri-auth.service";
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatTooltipModule
   ],
   providers: [
-    RoleManagementService
+    RoleManagementService,
+    CommonEsriAuthService
   ]
 })
 export class RoleManagementModule { }

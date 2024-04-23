@@ -20,6 +20,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MY_FORMATS} from "../../model/common-utils";
 import {EntityCreationMapService} from "../entity-management-map.service";
 import {RegisterFilterService} from "../../register-table-view/register-filter.service";
+import {BUILDING_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -52,21 +53,6 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   formStructure: FormObject[] = [];
 
-  private readonly HIDDEN_FIELDS = [
-    'last_edited_user',
-    'last_edited_date',
-    'created_user',
-    'created_date',
-    'BldLatitude',
-    'BldLongitude',
-    'external_creator',
-    'external_editor',
-    'external_creator_date',
-    'external_editor_date',
-    'BldQuality',
-    'BldID'
-  ];
-
   constructor(
     private buildingService: CommonBuildingService,
     private registerLogService: RegisterLogService,
@@ -78,7 +64,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.buildingService.getAttributesMetadata()
       .pipe(takeUntil(this.onDestroy)).subscribe((fields: never[]) => {
-      fields = fields.filter(field => field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]));
+      fields = fields.filter(field => field[EDITABLE_PROP] && !BUILDING_HIDDEN_FIELDS.includes(field[NAME_PROP]));
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
@@ -131,7 +117,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   getLogForField(variable: string): string {
-    return this.registerLogService.getLogForVariable('BUILDING', variable)?.QualityMessageEn
+    return this.registerLogService.getLogForVariable('BUILDING', variable)?.qualityMessageEn
       ?? '';
   }
 

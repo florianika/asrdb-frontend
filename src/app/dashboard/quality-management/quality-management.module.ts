@@ -30,6 +30,10 @@ import {
   QualityManagementVariableSelectionComponent
 } from "./quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {CommonEsriAuthService} from "../register/service/common-esri-auth.service";
+import {CommonBuildingService} from "../register/service/common-building.service";
+import {CommonEntranceService} from "../register/service/common-entrance.service";
+import {CommonDwellingService} from "../register/service/common-dwellings.service";
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
   readOnly: false,
@@ -71,6 +75,10 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
   ],
   providers: [
     QualityManagementService,
+    CommonEsriAuthService,
+    CommonBuildingService,
+    CommonEntranceService,
+    CommonDwellingService,
     {
       provide: ACE_CONFIG,
       useValue: DEFAULT_ACE_CONFIG

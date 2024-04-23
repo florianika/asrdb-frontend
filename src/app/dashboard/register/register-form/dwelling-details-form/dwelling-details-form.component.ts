@@ -20,6 +20,7 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} fro
 import {MomentDateAdapter} from "@angular/material-moment-adapter";
 import {MY_FORMATS} from "../../model/common-utils";
 import {Log} from "../../register-log-view/model/log";
+import {DWELLING_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
 
 @Component({
   selector: 'asrdb-dwelling-details-form',
@@ -45,18 +46,6 @@ import {Log} from "../../register-log-view/model/log";
   styleUrls: ['./dwelling-details-form.component.css']
 })
 export class DwellingDetailsFormComponent implements OnDestroy {
-  private readonly HIDDEN_FIELDS = [
-    'last_edited_user',
-    'last_edited_date',
-    'created_user',
-    'created_date',
-    'external_creator',
-    'external_editor',
-    'external_creator_date',
-    'external_editor_date',
-    'DwlQuality',
-    'DwlID'
-  ];
   private onDestroy = new Subject();
   private initialized = false;
   private dwelling?: Dwelling;
@@ -95,7 +84,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     });
 
     if (!data.id) {
-      this.HIDDEN_FIELDS.push('DwlEntranceID');
+      DWELLING_HIDDEN_FIELDS.push('DwlEntranceID');
     }
   }
 
@@ -103,8 +92,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.isLoadingResults = true;
     this.dwellingService.getAttributesMetadata().subscribe((fields: never[]) => {
       fields = fields.filter(field => {
-        console.log(field[NAME_PROP], `Editable: ${field[EDITABLE_PROP]} | Show: ${!this.HIDDEN_FIELDS.includes(field[NAME_PROP])}`);
-        return field[EDITABLE_PROP] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]);
+        console.log(field[NAME_PROP], `Editable: ${field[EDITABLE_PROP]} | Show: ${!DWELLING_HIDDEN_FIELDS.includes(field[NAME_PROP])}`);
+        return field[EDITABLE_PROP] && !DWELLING_HIDDEN_FIELDS.includes(field[NAME_PROP]);
       });
       fields.forEach(field => {
         this.createFormControlForField(field);
@@ -227,7 +216,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   }
 
   getLogForField(variable: string): string {
-    return this.logs.find(log => log.Variable === variable)?.QualityMessageEn
+    return this.logs.find(log => log.variable === variable)?.qualityMessageEn
       ?? '';
   }
 

@@ -18,6 +18,8 @@ import { RegisterFilterService } from '../register-table-view/register-filter.se
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 import {getDate} from "../model/common-utils";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {CommonEntranceService} from "../service/common-entrance.service";
+import {Building} from "../model/building";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -238,11 +240,12 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   ];
   loadedEntrances: Entrance[] = [];
 
-  private subscriber = new Subject();
+  private destroy$ = new Subject();
   private fields: any[] = [];
 
   constructor(
     private commonBuildingService: CommonBuildingService,
+    private commonEntranceService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
     private registerLogService: RegisterLogService,
@@ -254,17 +257,17 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '';
     if (this.id) {
       this.registerLogService.loadLogs(this.id);
-      this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+      this.loadBuildings().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
     }
-    this.registerLogService.logs.subscribe(() => {
+    this.registerLogService.logs.pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (this.fields.length) {
         this.fillSections();
       }
     });
   }
   ngOnDestroy(): void {
-    this.subscriber.next(true);
-    this.subscriber.complete();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getTitle(column: string) {
@@ -291,11 +294,28 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.selectedEntrance = entranceId;
   }
 
+  markEntranceAsUntestedData(entranceId: string) {
+    const entrance = this.loadedEntrances.find(entrance => entrance.GlobalID === entranceId);
+    if (entrance) {
+      // Update entrance
+      entrance.EntQuality = 9;
+      this.commonEntranceService.updateFeature([{
+        attributes: entrance
+      }]).pipe(takeUntil(this.destroy$)).subscribe();
+
+      // Update building
+      (this.building as Building).BldQuality = 9;
+      this.commonBuildingService.updateFeature([{
+        attributes: this.building
+      }]).pipe(takeUntil(this.destroy$)).subscribe();
+    }
+  }
+
   private prepareWhereCase() {
     return `GlobalID='${this.id}'`;
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Data', res);
     }
@@ -318,7 +338,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         entry.title = this.getTitle(entry.propName);
         entry.value = entry.propName === 'BldMunicipality' ? this.getMunicipality() : this.getValueFromStatus(entry.propName);
         entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
-          ?.QualityMessageEn ?? '';
+          ?.qualityMessageEn ?? '';
       });
     });
   }

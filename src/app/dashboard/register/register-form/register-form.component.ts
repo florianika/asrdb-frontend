@@ -177,6 +177,10 @@ export class RegisterFormComponent implements OnInit {
         return;
       }
       this.entranceManagementService.saveEntranceEntity(entranceToSave as Point, entranceDetails, this.buildingId);
+      buildingDetails.BldQuality = 9;
+      this.buildingService.updateFeature([{
+        attributes: buildingDetails
+      }]).subscribe();
     }
   }
 

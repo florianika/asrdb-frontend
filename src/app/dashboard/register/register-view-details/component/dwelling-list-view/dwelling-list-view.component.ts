@@ -1,12 +1,12 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy, ChangeDetectorRef,
-  Component,
+  Component, EventEmitter,
   Input,
   isDevMode,
   OnChanges,
   OnDestroy,
-  OnInit, SimpleChanges,
+  OnInit, Output, SimpleChanges,
   ViewChild, ViewContainerRef
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
@@ -65,6 +65,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   @Input() buildingNumber?: number;
   @Input() entrances: Entrance[] = [];
 
+  @Output() dwellingUpdated = new EventEmitter<string>();
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -88,7 +90,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     'DwlType',
     'DwlQuality'
   ];
-  private subscriber = new Subject();
+  private destroy$ = new Subject();
 
   displayedColumns: string[] = this.columns.concat(['actions']);
   data: any[] = [];
@@ -137,7 +139,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     if (this.entranceId) {
       this.loadDwellingsForEntrances(this.entranceId);
       this.loadDwellings().pipe(
-        takeUntil(this.subscriber),
+        takeUntil(this.destroy$),
         switchMap(() => this.loadDwellings()),
       ).subscribe((res) => this.handleResponse(res));
     } else {
@@ -147,11 +149,11 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(() => (this.paginator.pageIndex = 0));
     if (this.entranceId) {
       merge(this.sort.sortChange, this.paginator.page)
         .pipe(
-          takeUntil(this.subscriber),
+          takeUntil(this.destroy$),
           switchMap(() => this.loadDwellings()),
         )
         .subscribe((res) => this.handleResponse(res));
@@ -159,7 +161,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     }
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
-        takeUntil(this.subscriber),
+        takeUntil(this.destroy$),
         switchMap(() => this.loadDwellings()),
       )
       .subscribe((res) => this.handleResponse(res));
@@ -169,7 +171,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     if (changes['entranceId'] && changes['entranceId'].currentValue !== changes['entranceId'].previousValue) {
       this.loadDwellingsForEntrances(changes['entranceId'].currentValue);
       this.loadDwellings().pipe(
-        takeUntil(this.subscriber),
+        takeUntil(this.destroy$),
         switchMap(() => this.loadDwellings()),
       ).subscribe((res) => this.handleResponse(res));
       const entrance = this.entrances.find(e => e.GlobalID === changes['entranceId'].currentValue);
@@ -179,8 +181,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnDestroy(): void {
-    this.subscriber.next(true);
-    this.subscriber.complete();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getValueFromStatus(column: string, code: string) {
@@ -194,7 +196,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         logs: this.registerLogService.getAllLogs('DWELLING'),
         entranceId: this.entranceId
       },
-    }).afterClosed().subscribe(() => {
+    }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.reload();
     });
   }
@@ -203,7 +205,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     if (!this.filterConfig.filter.DwlEntranceID) {
       return;
     }
-    this.loadDwellings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    this.loadDwellings().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
   }
 
   remove($event: Chip) {
@@ -215,7 +217,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.matDialog.open(DwellingDetailsComponent, {
       data: {
         globalId,
-        logs: this.registerLogService.getAllLogs('DWELLING'),
+        logs: this.registerLogService.getAllLogs('DWELLING')
+          .filter(log => globalId.toLowerCase().includes(log.dwlId?.toLowerCase() as string)),
         streetName: this.streetName,
         buildingNumber: this.buildingNumber,
         entranceNumber: this.entranceNumber
@@ -231,8 +234,9 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         entranceId: this.entranceId,
         logs: this.registerLogService.getAllLogs('DWELLING')
       }
-    }).afterClosed().subscribe(() => {
+    }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.reload();
+      this.dwellingUpdated.emit(this.entranceId)
     });
   }
 
@@ -263,7 +267,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       num: this.paginator.pageSize,
       outFields: this.DWL_FIELDS,
       where: this.prepareWhereCase(),
-      orderByFields: this.sort.active ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()] : undefined
+      orderByFields: this.sort?.active ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()] : undefined
     } as Partial<QueryFilter>;
     return this.commonDwellingBuildingService.getDwellings(filter).pipe(catchError((err) => {
       console.log(err);
@@ -271,7 +275,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     }));
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Dwellings: ', res);
     }

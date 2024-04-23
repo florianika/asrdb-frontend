@@ -137,7 +137,7 @@ export class EntranceDetailsComponent implements OnInit {
     return `GlobalID='${this.id}'`;
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Entrance', res);
     }
@@ -159,8 +159,8 @@ export class EntranceDetailsComponent implements OnInit {
       section.entries.forEach(entry => {
         entry.title = this.getTitle(entry.propName);
         entry.value = this.getValueFromStatus(entry.propName);
-        entry.log = this.logs.find(log => log.Variable === entry.propName)
-          ?.QualityMessageEn ?? '';
+        entry.log = this.logs.find(log => log.variable === entry.propName)
+          ?.qualityMessageEn ?? '';
       });
     });
   }

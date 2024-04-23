@@ -67,6 +67,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   private columns = [
     'EntBuildingID',
     'GlobalID',
+    'ObjectID',
     'EntStreet',
     'EntBuildingNumber',
     'EntEntranceNumber',
@@ -74,9 +75,9 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     'EntDwellingExpec',
     'EntQuality',
   ];
-  private subscriber = new Subject();
+  private destroy$ = new Subject();
 
-  displayedColumns: string[] = this.columns.concat(['actions']);
+  displayedColumns: string[] = this.columns.concat(['actions']).filter(column => column !== 'ObjectID');
   data: any[] = [];
   fields: any[] = [];
   resultsLength = 0;
@@ -124,11 +125,11 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(() => (this.paginator.pageIndex = 0));
 
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
-        takeUntil(this.subscriber),
+        takeUntil(this.destroy$),
         startWith({}),
         switchMap(() => this.loadEntrances()),
       )
@@ -136,12 +137,8 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.subscriber.next(true);
-    this.subscriber.complete();
-  }
-
-  getTitle(column: string) {
-    return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getValueFromStatus(column: string, code: string) {
@@ -152,11 +149,11 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.matDialog
       .open(EntranceListViewFilterComponent, {
         data: {filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.buildingGlobalId}
-      }).afterClosed().subscribe((newFilterConfig: EntranceFilter | null) => this.handlePopupClose(newFilterConfig));
+      }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe((newFilterConfig: EntranceFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
   reload() {
-    this.loadEntrances().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    this.loadEntrances().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
   }
 
   remove($event: Chip) {
@@ -169,6 +166,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       data: {
         globalId,
         logs: this.registerLogService.getAllLogs('ENTRANCE')
+          .filter(log => globalId.toLowerCase().includes(log.entId?.toLowerCase() as string))
       }
     });
   }
@@ -218,7 +216,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       outFields: this.columns,
       where: this.prepareWhereCase()
     } as Partial<QueryFilter>;
-    if (this.sort.active) {
+    if (this.sort?.active) {
       filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
     return this.commonEntranceBuildingService.getEntranceData(filter).pipe(catchError((err) => {
@@ -227,7 +225,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     }));
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Entrances: ', res);
     }

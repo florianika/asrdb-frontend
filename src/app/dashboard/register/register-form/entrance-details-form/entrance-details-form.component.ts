@@ -17,6 +17,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MomentDateAdapter} from "@angular/material-moment-adapter";
 import {MY_FORMATS} from "../../model/common-utils";
+import {ENTRANCE_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -48,23 +49,6 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   formStructure: FormObject[] = [];
 
-  private readonly HIDDEN_FIELDS = [
-    'last_edited_user',
-    'last_edited_date',
-    'EntBuildingId',
-    'created_user',
-    'created_date',
-    'EntLongitude',
-    'EntLatitude',
-    'external_creator',
-    'external_editor',
-    'external_creator_date',
-    'external_editor_date',
-    'EntQuality',
-    'EntID',
-    'EntBuildingID'
-  ];
-
   constructor(
     private entranceService: CommonEntranceService,
     private activatedRoute: ActivatedRoute,
@@ -74,7 +58,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.entranceService.getAttributesMetadata().subscribe((fields: never[]) => {
-      this.fields = fields.filter(field => field['editable'] && !this.HIDDEN_FIELDS.includes(field[NAME_PROP]));
+      this.fields = fields.filter(field => field['editable'] && !ENTRANCE_HIDDEN_FIELDS.includes(field[NAME_PROP]));
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
@@ -120,7 +104,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   getLogForField(variable: string): string {
     const variableName = variable.split('_')[1];
-    return this.registerLogService.getLogForVariable('ENTRANCE', variableName)?.QualityMessageEn
+    return this.registerLogService.getLogForVariable('ENTRANCE', variableName)?.qualityMessageEn
       ?? '';
   }
 

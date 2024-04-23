@@ -219,7 +219,7 @@ export class DwellingDetailsComponent implements OnInit {
     return `GlobalID='${this.id}'`;
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Dwelling', res);
     }
@@ -242,8 +242,8 @@ export class DwellingDetailsComponent implements OnInit {
         if (entry.propName !== '') {
           entry.title = this.getTitle(entry.propName);
           entry.value = this.getValueFromStatus(entry.propName);
-          entry.log = this.logs.find(log => log.Variable === entry.propName)
-            ?.QualityMessageEn ?? '';
+          entry.log = this.logs.find(log => log.variable === entry.propName)
+            ?.qualityMessageEn ?? '';
         } else if (entry.title === this.STREET_NAME) {
           entry.value = this.data.streetName;
         } else if (entry.title === this.BUILDING_NUMBER) {
