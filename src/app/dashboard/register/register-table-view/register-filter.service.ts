@@ -63,13 +63,19 @@ export class RegisterFilterService {
     this.filter.next(filterValue);
   }
 
-  setBuildingGlobalIdFilter(globalId: string) {
+  setBuildingGlobalIdFilter(globalId?: string) {
+    if (!globalId && globalId !== '') {
+      return;
+    }
     const filterValue = JSON.parse(JSON.stringify(this.filter.getValue()));
     filterValue.filter.GlobalID = globalId;
     this.filter.next(filterValue);
   }
 
-  updateGlobalIds(globalIds: string[]) {
+  updateGlobalIds(globalIds?: string[]) {
+    if (!globalIds) {
+      return;
+    }
     const globalIdsToStore = globalIds.filter(globalId => !!globalId);
     this.globalIds.next(globalIdsToStore);
   }
@@ -77,12 +83,6 @@ export class RegisterFilterService {
   updateFilter(filter: BuildingFilter, key: string) {
     this.filter.next(filter);
     sessionStorage.setItem(key, JSON.stringify(filter));
-  }
-
-  removeDefaultValue() {
-    const filterValue = JSON.parse(JSON.stringify(this.filter.getValue()));
-    filterValue.filter.BldMunicipality = '';
-    this.filter.next(filterValue);
   }
 
   prepareFilter(fields: never[]) {

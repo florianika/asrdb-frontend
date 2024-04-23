@@ -217,7 +217,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     this.matDialog.open(DwellingDetailsComponent, {
       data: {
         globalId,
-        logs: this.registerLogService.getAllLogs('DWELLING'),
+        logs: this.registerLogService.getAllLogs('DWELLING')
+          .filter(log => globalId.toLowerCase().includes(log.dwlId?.toLowerCase() as string)),
         streetName: this.streetName,
         buildingNumber: this.buildingNumber,
         entranceNumber: this.entranceNumber
@@ -266,7 +267,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       num: this.paginator.pageSize,
       outFields: this.DWL_FIELDS,
       where: this.prepareWhereCase(),
-      orderByFields: this.sort.active ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()] : undefined
+      orderByFields: this.sort?.active ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()] : undefined
     } as Partial<QueryFilter>;
     return this.commonDwellingBuildingService.getDwellings(filter).pipe(catchError((err) => {
       console.log(err);
@@ -274,7 +275,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     }));
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Dwellings: ', res);
     }

@@ -25,8 +25,8 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
   constructor(private registerMapService: RegisterMapService, private registerFilterService: RegisterFilterService) { }
 
   ngOnInit(): void {
-    this.registerFilterService.setBuildingGlobalIdFilter(this.buildingGlobalId ?? '');
-    this.registerFilterService.updateGlobalIds([this.buildingGlobalId ?? '']);
+    this.registerFilterService.setBuildingGlobalIdFilter(this.buildingGlobalId);
+    this.registerFilterService.updateGlobalIds(this.buildingGlobalId ? [this.buildingGlobalId] : undefined);
 
     // Initialize MapView and return an instance of MapView
     this.initializeMap().then(() => {

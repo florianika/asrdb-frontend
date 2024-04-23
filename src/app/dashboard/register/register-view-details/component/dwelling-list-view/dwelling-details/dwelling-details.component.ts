@@ -219,7 +219,7 @@ export class DwellingDetailsComponent implements OnInit {
     return `GlobalID='${this.id}'`;
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Dwelling', res);
     }

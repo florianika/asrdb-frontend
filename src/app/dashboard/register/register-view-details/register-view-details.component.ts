@@ -315,7 +315,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     return `GlobalID='${this.id}'`;
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Data', res);
     }

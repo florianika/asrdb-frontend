@@ -195,7 +195,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
       outFields: this.columns,
       where: this.registerFilterService.prepareWhereCase()
     } as Partial<QueryFilter>;
-    if (this.sort.active) {
+    if (this.sort?.active) {
       filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
     return this.commonBuildingService.getBuildingData(filter).pipe(catchError((err) => {

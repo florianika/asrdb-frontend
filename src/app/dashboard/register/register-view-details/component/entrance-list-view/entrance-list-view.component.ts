@@ -166,6 +166,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       data: {
         globalId,
         logs: this.registerLogService.getAllLogs('ENTRANCE')
+          .filter(log => globalId.toLowerCase().includes(log.entId?.toLowerCase() as string))
       }
     });
   }
@@ -215,7 +216,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       outFields: this.columns,
       where: this.prepareWhereCase()
     } as Partial<QueryFilter>;
-    if (this.sort.active) {
+    if (this.sort?.active) {
       filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
     return this.commonEntranceBuildingService.getEntranceData(filter).pipe(catchError((err) => {
@@ -224,7 +225,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     }));
   }
 
-  private async handleResponse(res: any) {
+  private handleResponse(res: any) {
     if (isDevMode()) {
       console.log('Entrances: ', res);
     }
