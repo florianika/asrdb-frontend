@@ -19,6 +19,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ToolbarComponent } from './common/components/toolbar/toolbar.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { AuthInterceptor } from './common/services/auth-interceptor';
+import {CommonEsriAuthService} from "./dashboard/register/service/common-esri-auth.service";
 
 @NgModule({
   declarations: [
@@ -42,7 +43,9 @@ import { AuthInterceptor } from './common/services/auth-interceptor';
     MatSnackBarModule,
     HttpClientModule,
   ],
-  providers: [AuthStateService,
+  providers: [
+    AuthStateService,
+    CommonEsriAuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })
