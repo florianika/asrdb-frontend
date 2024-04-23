@@ -159,6 +159,7 @@ export class RegisterFilterService {
     return !this.filter.value.filter.BldMunicipality
       && !this.filter.value.filter.BldType
       && !this.filter.value.filter.BldStatus
+      && !this.filter.value.filter.BldQuality
       && !this.filter.value.filter.GlobalID;
   }
 }
