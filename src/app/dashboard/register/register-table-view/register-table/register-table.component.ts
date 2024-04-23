@@ -53,7 +53,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild(MatSort) sort!: MatSort;
 
   private columns = ['GlobalID', 'BldMunicipality', 'BldEnumArea', 'BldStatus', 'BldType', 'BldEntranceRecs', 'BldDwellingRecs' , 'BldQuality'];
-  private subscriber = new Subject();
+  private destroy$ = new Subject();
   private initialized = false;
 
   displayedColumns: string[] = ['selection'].concat(this.columns.concat(['actions']));
@@ -81,19 +81,19 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.registerFilterService.filterObservable.subscribe((filter) => {
+    this.registerFilterService.filterObservable.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
       this.reload();
     });
   }
 
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(() => (this.paginator.pageIndex = 0));
 
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
         distinctUntilChanged(),
-        takeUntil(this.subscriber),
+        takeUntil(this.destroy$),
         startWith({}),
         switchMap(() => this.loadBuildings()),
       )
@@ -101,8 +101,8 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
-    this.subscriber.next(true);
-    this.subscriber.complete();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getMunicipality(column: string, code: string) {
@@ -133,11 +133,11 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.matDialog
       .open(RegisterFilterComponent, {
         data: JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
-      }).afterClosed().subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
+      }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
   reload() {
-    this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    this.loadBuildings().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
   }
 
   remove($event: Chip) {

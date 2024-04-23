@@ -240,7 +240,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   ];
   loadedEntrances: Entrance[] = [];
 
-  private subscriber = new Subject();
+  private destroy$ = new Subject();
   private fields: any[] = [];
 
   constructor(
@@ -257,17 +257,17 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '';
     if (this.id) {
       this.registerLogService.loadLogs(this.id);
-      this.loadBuildings().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+      this.loadBuildings().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
     }
-    this.registerLogService.logs.subscribe(() => {
+    this.registerLogService.logs.pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (this.fields.length) {
         this.fillSections();
       }
     });
   }
   ngOnDestroy(): void {
-    this.subscriber.next(true);
-    this.subscriber.complete();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getTitle(column: string) {
@@ -301,13 +301,13 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       entrance.EntQuality = 9;
       this.commonEntranceService.updateFeature([{
         attributes: entrance
-      }]).subscribe();
+      }]).pipe(takeUntil(this.destroy$)).subscribe();
 
       // Update building
       (this.building as Building).BldQuality = 9;
       this.commonBuildingService.updateFeature([{
         attributes: this.building
-      }]).subscribe();
+      }]).pipe(takeUntil(this.destroy$)).subscribe();
     }
   }
 

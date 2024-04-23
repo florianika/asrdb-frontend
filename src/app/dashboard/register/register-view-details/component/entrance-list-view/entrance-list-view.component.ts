@@ -75,7 +75,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     'EntDwellingExpec',
     'EntQuality',
   ];
-  private subscriber = new Subject();
+  private destroy$ = new Subject();
 
   displayedColumns: string[] = this.columns.concat(['actions']).filter(column => column !== 'ObjectID');
   data: any[] = [];
@@ -125,11 +125,11 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(() => (this.paginator.pageIndex = 0));
 
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
-        takeUntil(this.subscriber),
+        takeUntil(this.destroy$),
         startWith({}),
         switchMap(() => this.loadEntrances()),
       )
@@ -137,8 +137,8 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.subscriber.next(true);
-    this.subscriber.complete();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getValueFromStatus(column: string, code: string) {
@@ -149,11 +149,11 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.matDialog
       .open(EntranceListViewFilterComponent, {
         data: {filter: JSON.parse(JSON.stringify(this.filterConfig)), showBuildingIdFilter: !this.buildingGlobalId}
-      }).afterClosed().subscribe((newFilterConfig: EntranceFilter | null) => this.handlePopupClose(newFilterConfig));
+      }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe((newFilterConfig: EntranceFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
   reload() {
-    this.loadEntrances().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    this.loadEntrances().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
   }
 
   remove($event: Chip) {
