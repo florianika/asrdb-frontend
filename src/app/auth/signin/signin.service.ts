@@ -7,6 +7,9 @@ import { BehaviorSubject, Observer } from 'rxjs';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import { SigninResponse } from 'src/app/model/JWT.model';
 import { environment } from 'src/environments/environment';
+import {CommonEsriAuthService} from "../../dashboard/register/service/common-esri-auth.service";
+
+export type Credentials = { username: string, password: string };
 
 @Injectable()
 export class SigninService {
@@ -14,9 +17,7 @@ export class SigninService {
   private signinObserver = {
     next: (signinResponse: SigninResponse) => {
       this.authStateService.setJWT(signinResponse);
-      this.authStateService.setLoginState(true);
-      this.router.navigateByUrl('/dashboard');
-      this.signingIn.next(false);
+      this.getEsriCredentials();
     },
     error: (error) => {
       console.error(error);
@@ -51,6 +52,34 @@ export class SigninService {
     return new FormGroup({
       email: new FormControl('', [Validators.email]),
       password: new FormControl('')
+    });
+  }
+
+  getEsriCredentials() {
+    this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
+      .subscribe({
+      next: async (credentials) => {
+        try {
+          await this.authStateService.initEsriConfig(credentials);
+          void this.router.navigateByUrl('/dashboard');
+          this.authStateService.setLoginState(true);
+          this.signingIn.next(false);
+        } catch (error) {
+          this.handleError(error);
+        }
+      },
+      error: (error) => {
+        this.handleError(error);
+      }
+    });
+  }
+
+  private handleError(error: any) {
+    console.error(error);
+    this.signingIn.next(false);
+    this.authStateService.setLoginState(false);
+    this.matSnack.open('Could not load credentials. Please try again.', 'Ok', {
+      duration: 3000
     });
   }
 

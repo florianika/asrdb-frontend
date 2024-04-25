@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import { Observable, defer, from } from 'rxjs';
+import {Observable, defer, from, catchError, of} from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
 import { environment } from 'src/environments/environment';
 import { EntityManageResponse } from '../model/entity-req-res';
 import { HttpClient } from '@angular/common/http';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,12 @@ import { HttpClient } from '@angular/common/http';
 export class CommonDwellingService {
 
   get dwlLayer(): FeatureLayer {
+    const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
       title: 'ASRDB Dwellings',
-      url: environment.dwelling_url,
+      apiKey: token,
+      url: environment.dwelling_url + '?token='
+        + token,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,
@@ -28,7 +32,10 @@ export class CommonDwellingService {
     });
   }
 
-  constructor(private esriAuthService: CommonEsriAuthService, private httpClient: HttpClient) {
+  constructor(
+    private esriAuthService: CommonEsriAuthService,
+    private httpClient: HttpClient,
+    private snackBar: MatSnackBar) {
   }
 
   getDwellings(filter?: Partial<QueryFilter>): Observable<any> {
@@ -42,7 +49,7 @@ export class CommonDwellingService {
   createFeature(features: any): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.dwelling_url
     + '/addFeatures?token='
-    + this.esriAuthService.getTokenForResource(environment.dwelling_url);
+    + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
@@ -54,13 +61,63 @@ export class CommonDwellingService {
   updateFeature(features: any): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.dwelling_url
     + '/updateFeatures?token='
-    + this.esriAuthService.getTokenForResource(environment.dwelling_url);
+    + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
+  }
+
+  resetStatus(dwlId: string, callback?: () => void) {
+    const filter = {
+      where: `GlobalID = '${dwlId}'`,
+      outFields: ['GlobalID', 'OBJECTID']
+    } as Partial<QueryFilter>
+    this.getDwellings(filter)
+      .pipe(catchError((err: any) => {
+        return this.handleError(err);
+      }))
+      .subscribe({
+        next: (res: any) => {
+          this.handleResponse(res, callback);
+        },
+        error: (err: any) => {
+          return this.handleError(err);
+        }
+      });
+  }
+
+  private handleResponse(res: any, callback?: () => void) {
+    const [attributes] = res.data.features.map((field: any) => field.attributes);
+    const object = {
+      GlobalID: attributes.GlobalID,
+      OBJECTID: attributes.OBJECTID,
+      DwlQuality: 9
+    }
+    this.updateFeature([{
+      attributes: object
+    }]).subscribe({
+      next: (response: EntityManageResponse) => {
+        const responseData = response['addResults']?.[0] ?? response['updateResults']?.[0];
+        if (!responseData?.success) {
+          this.snackBar.open('Could not update value', 'Ok', {
+            duration: 3000
+          });
+          return;
+        }
+        callback?.();
+      },
+      error: (err: any) => {
+        return this.handleError(err);
+      }
+    });
+  }
+
+  private handleError(err: any) {
+    console.error(err);
+    return of(null);
   }
 
   private async fetchAttributesMetadata() {

@@ -6,6 +6,9 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Role } from 'src/app/model/RolePermissions.model';
+import {Credentials} from "../../auth/signin/signin.service";
+import esriId from "@arcgis/core/identity/IdentityManager";
+import {ESRI_AUTH_KEY} from "../../dashboard/register/service/common-esri-auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -56,8 +59,10 @@ export class AuthStateService implements OnDestroy {
       'RefreshToken': this.tokens?.refreshToken
     }).pipe(takeUntil(this.subscription))
       .subscribe({
-        next: (newToken) => {
-          console.log(newToken);
+        next: async (newToken) => {
+          if (isDevMode()) {
+            console.log(newToken);
+          }
           if (!this.tokens) {
             this.tokens = {} as SigninResponse;
           }
@@ -66,7 +71,19 @@ export class AuthStateService implements OnDestroy {
             accessToken: newToken.accessToken,
             refreshToken: newToken.refreshToken
           });
-
+          this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
+            .subscribe({
+              next: async (credentials) => {
+                try {
+                  await this.initEsriConfig(credentials);
+                } catch (error) {
+                  this.handleError(error);
+                }
+              },
+              error: (error) => {
+                this.handleError(error);
+              }
+            });
           this.checkTokenValidity();
         },
         error: () => {
@@ -77,10 +94,6 @@ export class AuthStateService implements OnDestroy {
 
   setLoginState(loginState: boolean) {
     this.isLoggedIn?.next(loginState);
-  }
-
-  getLoginState(): boolean {
-    return this.isLoggedIn.value;
   }
 
   getLoginStateAsObservable() {
@@ -193,7 +206,25 @@ export class AuthStateService implements OnDestroy {
           console.log('Reloaded token');
         }
         this.refreshToken();
+      } else if (this.tokenInNearExpired() && this.router.url.includes('/auth/')) {
+        clearInterval(this.interval);
       }
     }, 3000) as any;
+  }
+
+  public async initEsriConfig(credentials: Credentials) {
+    const token = await esriId.generateToken({
+      server: environment.portal_url,
+      tokenServiceUrl: environment.token_url,
+    } as __esri.ServerInfo, {
+      username: credentials.username,
+      password: credentials.password,
+    });
+    localStorage.setItem(ESRI_AUTH_KEY, JSON.stringify(token));
+  }
+
+  private handleError(error: any) {
+    console.error(error);
+    this.logout();
   }
 }

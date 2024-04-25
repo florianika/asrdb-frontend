@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {defer, from, Observable} from 'rxjs';
+import {catchError, defer, from, Observable, of} from 'rxjs';
 import {QueryFilter} from '../model/query-filter';
 import {CommonEsriAuthService} from './common-esri-auth.service';
 import {environment} from 'src/environments/environment';
 import {EntityManageResponse} from '../model/entity-req-res';
 import {HttpClient} from '@angular/common/http';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,12 @@ import {HttpClient} from '@angular/common/http';
 export class CommonEntranceService {
 
   get entLayer(): FeatureLayer {
+    const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
       title: 'ASRDB Entrances',
-      url: environment.entrance_url,
+      apiKey: token,
+      url: environment.entrance_url + '?token='
+        + token,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,
@@ -23,12 +27,14 @@ export class CommonEntranceService {
       popupTemplate: {
         // autocasts as new PopupTemplate()
         title: 'ASRDB Entrance {GlobalID}',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi.'
       }
     });
   }
 
-  constructor(private esriAuthService: CommonEsriAuthService, private httpClient: HttpClient) {
+  constructor(
+    private esriAuthService: CommonEsriAuthService,
+    private httpClient: HttpClient,
+    private snackBar: MatSnackBar,) {
   }
 
   getEntranceData(filter?: Partial<QueryFilter>): Observable<any> {
@@ -42,7 +48,7 @@ export class CommonEntranceService {
   createFeature(features: any[]): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.entrance_url
     + '/addFeatures?token='
-    + this.esriAuthService.getTokenForResource(environment.entrance_url);
+    + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
@@ -54,13 +60,63 @@ export class CommonEntranceService {
   updateFeature(features: any[]): Observable<EntityManageResponse> {
     const addFeatureLayerURL = environment.entrance_url
     + '/updateFeatures'
-    + '?token=' + this.esriAuthService.getTokenForResource(environment.entrance_url);
+    + '?token=' + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
+  }
+
+  resetStatus(entId: string, callback?: () => void) {
+    const filter = {
+      where: `GlobalID = '${entId}'`,
+      outFields: ['GlobalID', 'OBJECTID']
+    } as Partial<QueryFilter>
+    this.getEntranceData(filter)
+      .pipe(catchError((err: any) => {
+        return this.handleError(err);
+      }))
+      .subscribe({
+        next: (res: any) => {
+          this.handleResponse(res, callback);
+        },
+        error: (err: any) => {
+          return this.handleError(err);
+        }
+      });
+  }
+
+  private handleResponse(res: any, callback?: () => void) {
+    const [attributes] = res.data.features.map((field: any) => field.attributes);
+    const object = {
+      GlobalID: attributes.GlobalID,
+      OBJECTID: attributes.OBJECTID,
+      EntQuality: 9
+    }
+    this.updateFeature([{
+      attributes: object
+    }]).subscribe({
+      next: (response: EntityManageResponse) => {
+        const responseData = response['addResults']?.[0] ?? response['updateResults']?.[0];
+        if (!responseData?.success) {
+          this.snackBar.open('Could not update value', 'Ok', {
+            duration: 3000
+          });
+          return;
+        }
+        callback?.();
+      },
+      error: (err: any) => {
+        return this.handleError(err);
+      }
+    });
+  }
+
+  private handleError(err: any) {
+    console.error(err);
+    return of(null);
   }
 
   private async fetchAttributesMetadata() {

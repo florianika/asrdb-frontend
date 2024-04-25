@@ -6,6 +6,9 @@ import { environment } from 'src/environments/environment';
 import {EntityType} from "../../../quality-management/quality-management-config";
 import {AuthStateService} from "../../../../common/services/auth-state.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {CommonBuildingService} from "../../service/common-building.service";
+import {CommonEntranceService} from "../../service/common-entrance.service";
+import {CommonDwellingService} from "../../service/common-dwellings.service";
 
 export const EXECUTING = 1;
 export const NOT_EXECUTING = 2;
@@ -39,7 +42,15 @@ export class RegisterLogService {
     return this.isExecuting.asObservable();
   }
 
+  private buildingQuality = new BehaviorSubject<string>('');
+  public get bldQuality() {
+    return this.buildingQuality.asObservable();
+  }
+
   constructor(
+    private commonBuildingService: CommonBuildingService,
+    private commonEntranceService: CommonEntranceService,
+    private commonDwellingService: CommonDwellingService,
     private httpClient: HttpClient,
     private authState: AuthStateService,
     private matSnack: MatSnackBar) {
@@ -73,9 +84,22 @@ export class RegisterLogService {
           this.isExecuting.next(NOT_EXECUTING);
         },
       });
+    this.loadBuildingQuality(buildingId);
+  }
+
+  private loadBuildingQuality(buildingId: string) {
+    this.commonBuildingService.getBuildingQuality(buildingId).subscribe({
+      next: (quality => {
+        this.buildingQuality.next(quality ?? '');
+      }),
+      error: (err) => {
+        console.error(err);
+      }
+    });
   }
 
   public executeRules(buildingId: string) {
+    this.isExecuting.next(EXECUTING);
     const data = {
       BuildingIds: [buildingId.replace('{', '').replace('}', '')],
       ExecutionUser: this.authState.getNameId()
@@ -107,6 +131,7 @@ export class RegisterLogService {
       .subscribe({
         next: () => {
           this.isResolving.next(false);
+          this.resetStatus(logId);
           this.loadLogs(buildingId);
         },
         error: (err) => {
@@ -116,7 +141,7 @@ export class RegisterLogService {
           });
           console.log(err);
         }
-      })
+      });
   }
 
   public getLogForVariable(entityType: EntityType, variable: string): Log | undefined {
@@ -130,5 +155,28 @@ export class RegisterLogService {
       }
       return true;
     });
+  }
+
+  private resetStatus(logId: string) {
+    const log = this.loadedLogs.getValue().find(log => log.id === logId);
+    if (log) {
+      const entityType = log.entityType;
+      if (entityType === 'BUILDING') {
+        this.commonBuildingService.resetStatus(log.bldId!, () => {
+          this.loadBuildingQuality(log.bldId!);
+        });
+      } else if (entityType === 'ENTRANCE') {
+        this.commonBuildingService.resetStatus(log.bldId!, () => {
+          this.loadBuildingQuality(log.bldId!);
+        });
+        this.commonEntranceService.resetStatus(log.entId!);
+      } else if (entityType === 'DWELLING') {
+        this.commonBuildingService.resetStatus(log.bldId!, () => {
+          this.loadBuildingQuality(log.bldId!);
+        });
+        this.commonEntranceService.resetStatus(log.entId!);
+        this.commonDwellingService.resetStatus(log.dwlId!);
+      }
+    }
   }
 }

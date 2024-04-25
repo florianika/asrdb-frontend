@@ -1,6 +1,9 @@
 <div class="asrbd-container mat-elevation-z8" style="background-color: white; margin-bottom: 20px;">
   <div class="header-container">
-    <h1 i18n class="header-title">Rule Execution {{building}}</h1>
+    <div>
+      <h1 i18n class="header-title">Rule Execution {{building}}</h1>
+      <span i18n>Quality status: {{buildingQuality | async}}</span>
+    </div>
     <span class="spacer"></span>
     <ng-container *ngIf="executionStatus | async as isExecuting">
       <button mat-icon-button
