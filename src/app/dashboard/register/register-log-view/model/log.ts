@@ -1,10 +1,12 @@
+import {EntityType} from "../../../quality-management/quality-management-config";
+
 export type Log = {
   id: string,
   ruleId: number,
   bldId?: string,
   entId?: string
   dwlId?: string,
-  entityType: string,
+  entityType: EntityType,
   variable?: string,
   qualityAction: string,
   qualityStatus: string,

@@ -206,6 +206,8 @@ export class AuthStateService implements OnDestroy {
           console.log('Reloaded token');
         }
         this.refreshToken();
+      } else if (this.tokenInNearExpired() && this.router.url.includes('/auth/')) {
+        clearInterval(this.interval);
       }
     }, 3000) as any;
   }

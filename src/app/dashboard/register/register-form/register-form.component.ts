@@ -124,11 +124,11 @@ export class RegisterFormComponent implements OnInit {
         .pipe(takeUntil(this.subscriber));
 
       zip([getBuildingRequest, getEntranceRequest]).subscribe(([building, entrances]) => {
-        this.existingBuildingDetails = building.data.features[0].attributes;
-        this.existingBuildingGeometry = { ...building.data.features[0].geometry, type: 'polygon', id: this.buildingId };
+        this.existingBuildingDetails = building?.data.features[0].attributes;
+        this.existingBuildingGeometry = { ...building?.data.features[0].geometry, type: 'polygon', id: this.buildingId };
 
-        this.existingEntrancesDetails = entrances.data.features.map((featrue: any) => featrue.attributes);
-        this.existingEntrancesGeometry = entrances.data.features.map((featrue: any) => ({ ...featrue.geometry, type: 'point', id: featrue.attributes.GlobalID }));
+        this.existingEntrancesDetails = entrances?.data.features.map((featrue: any) => featrue.attributes);
+        this.existingEntrancesGeometry = entrances?.data.features.map((featrue: any) => ({ ...featrue.geometry, type: 'point', id: featrue.attributes.GlobalID }));
         this.isLoadingData = false;
       });
     } else {

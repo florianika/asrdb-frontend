@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {defer, from, Observable} from 'rxjs';
+import {catchError, defer, from, Observable, of} from 'rxjs';
 import {QueryFilter} from '../model/query-filter';
 import {CommonEsriAuthService} from './common-esri-auth.service';
 import {environment} from 'src/environments/environment';
 import {EntityManageResponse} from '../model/entity-req-res';
 import {HttpClient} from '@angular/common/http';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,10 @@ export class CommonEntranceService {
     });
   }
 
-  constructor(private esriAuthService: CommonEsriAuthService, private httpClient: HttpClient) {
+  constructor(
+    private esriAuthService: CommonEsriAuthService,
+    private httpClient: HttpClient,
+    private snackBar: MatSnackBar,) {
   }
 
   getEntranceData(filter?: Partial<QueryFilter>): Observable<any> {
@@ -63,6 +67,56 @@ export class CommonEntranceService {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
+  }
+
+  resetStatus(entId: string, callback?: () => void) {
+    const filter = {
+      where: `GlobalID = '${entId}'`,
+      outFields: ['GlobalID', 'OBJECTID']
+    } as Partial<QueryFilter>
+    this.getEntranceData(filter)
+      .pipe(catchError((err: any) => {
+        return this.handleError(err);
+      }))
+      .subscribe({
+        next: (res: any) => {
+          this.handleResponse(res, callback);
+        },
+        error: (err: any) => {
+          return this.handleError(err);
+        }
+      });
+  }
+
+  private handleResponse(res: any, callback?: () => void) {
+    const [attributes] = res.data.features.map((field: any) => field.attributes);
+    const object = {
+      GlobalID: attributes.GlobalID,
+      OBJECTID: attributes.OBJECTID,
+      EntQuality: 9
+    }
+    this.updateFeature([{
+      attributes: object
+    }]).subscribe({
+      next: (response: EntityManageResponse) => {
+        const responseData = response['addResults']?.[0] ?? response['updateResults']?.[0];
+        if (!responseData?.success) {
+          this.snackBar.open('Could not update value', 'Ok', {
+            duration: 3000
+          });
+          return;
+        }
+        callback?.();
+      },
+      error: (err: any) => {
+        return this.handleError(err);
+      }
+    });
+  }
+
+  private handleError(err: any) {
+    console.error(err);
+    return of(null);
   }
 
   private async fetchAttributesMetadata() {
