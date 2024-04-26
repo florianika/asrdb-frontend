@@ -4,8 +4,6 @@ export const BUILDING_HIDDEN_FIELDS = [
   'last_edited_date',
   'created_user',
   'created_date',
-  'BldLatitude',
-  'BldLongitude',
   'external_creator',
   'external_editor',
   'external_creator_date',

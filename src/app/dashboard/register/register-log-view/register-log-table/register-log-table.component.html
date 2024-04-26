@@ -1,8 +1,15 @@
 <div class="asrbd-container mat-elevation-z8" style="background-color: white; margin-bottom: 20px;">
   <div class="header-container">
     <div>
-      <h1 i18n class="header-title">Rule Execution {{building}}</h1>
-      <span i18n>Quality status: {{buildingQuality | async}}</span>
+      <h1 i18n class="header-title details-header">Rule Execution {{building}}</h1>
+      <span class="details-subheader" i18n>
+        Quality status: <span style="font-weight: bold">{{buildingQuality | async}}</span>
+      </span>
+      <br>
+      <span class="details-subheader" *ngIf="(buildingQuality | async) == 'Untested data'" i18n>
+        Building is untested, error list below may not be valid anymore. Execute the rules to see the latest errors.
+This is not implemented.
+      </span>
     </div>
     <span class="spacer"></span>
     <ng-container *ngIf="executionStatus | async as isExecuting">

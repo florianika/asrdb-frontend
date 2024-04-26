@@ -89,7 +89,8 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       alias: field[ALIAS_PROP],
       type: fieldType,
       selectOptions: fieldOptions,
-      maxLength: field[LENGTH_PROP]
+      maxLength: field[LENGTH_PROP],
+      hidden: ['BldLatitude', 'BldLongitude'].includes(field[NAME_PROP])
     });
   }
 

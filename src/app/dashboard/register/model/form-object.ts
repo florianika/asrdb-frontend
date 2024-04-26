@@ -4,6 +4,7 @@ export type FormObject = {
   type: FormObjectType,
   selectOptions: FormObjectSelectOption[] | null,
   maxLength?: number
+  hidden?:  boolean
 }
 
 export type FormObjectType = 'number' | 'text' | 'text-area' | 'select' | 'date';
