@@ -106,7 +106,15 @@ export class RegisterFilterService {
       .map(([key, value]) => ({ column: key, value } as Chip))
       .forEach(filter => {
         if (filter.column === 'GlobalID') {
-          const globalIds = filter.value.split(',');
+          const globalIds = filter.value.split(',').map(id => {
+            if (!id.startsWith('{')) {
+              id = '{' + id;
+            }
+            if (!id.endsWith('}')) {
+              id = id + '}';
+            }
+            return id;
+          });
           const globalIdsCondition = globalIds.map(globalId => `'${globalId}'`).join(',');
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
         } else {
