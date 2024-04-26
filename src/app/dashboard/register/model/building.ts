@@ -47,10 +47,11 @@ export type Building = {
 export type BuildingFilter = {
   filter: {
     BldMunicipality: string;
-    BldStatus: string;
+    BldStatus: string[];
     BldType: string;
     BldQuality: string;
     GlobalID: string;
+    BldEnumArea: string;
   };
   options: {
     BldMunicipality: any[];

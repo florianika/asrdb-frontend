@@ -10,7 +10,10 @@
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Status</mat-label>
-    <mat-select [value]="filterConfig.filter.BldStatus" (selectionChange)="changeValue($event, 'BldStatus')">
+    <mat-select
+      [value]="filterConfig.filter.BldStatus"
+      [multiple]="true"
+      (selectionChange)="changeValue($event, 'BldStatus')">
       <mat-option *ngFor="let status of filterConfig.options.BldStatus"
         [value]="status.code">{{status.name}}</mat-option>
     </mat-select>
@@ -26,6 +29,10 @@
     <mat-select [value]="filterConfig.filter.BldQuality" (selectionChange)="changeValue($event, 'BldQuality')">
       <mat-option *ngFor="let type of filterConfig.options.BldQuality" [value]="type.code">{{type.name}}</mat-option>
     </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Enumeration area</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.BldEnumArea"/>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>PK Buildings (Global ID)</mat-label>

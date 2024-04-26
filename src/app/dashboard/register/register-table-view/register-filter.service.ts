@@ -16,16 +16,17 @@ export class RegisterFilterService {
     return this.globalIds.asObservable();
   }
 
-  private readonly defaultFilter = {
+  private readonly defaultFilter: BuildingFilter = {
     filter: {
       // add default value if possible
       // default value will be Tirane
       // This is done to prevent any value to be loaded on init.
       // user can change this to load what they want
       BldMunicipality: '53',
-      BldStatus: '',
+      BldStatus: [],
       BldType: '',
       BldQuality: '',
+      BldEnumArea: '',
       GlobalID: '',
     },
     options: {
@@ -89,12 +90,17 @@ export class RegisterFilterService {
     this.filter.next({
       filter: this.filter.value.filter,
       options: {
-        BldMunicipality: this.getOptions('BldMunicipality').length ? this.getOptions('BldMunicipality') : this.filter.value.options.BldMunicipality,
-        BldStatus: this.getOptions('BldStatus').length ? this.getOptions('BldStatus') : this.filter.value.options.BldStatus,
-        BldType: this.getOptions('BldType').length ? this.getOptions('BldType') : this.filter.value.options.BldType,
-        BldQuality: this.getOptions('BldQuality').length ? this.getOptions('BldQuality') : this.filter.value.options.BldQuality,
+        BldMunicipality: this.getOptionsFromDomain('BldMunicipality'),
+        BldStatus: this.getOptionsFromDomain('BldStatus'),
+        BldType: this.getOptionsFromDomain('BldType'),
+        BldQuality: this.getOptionsFromDomain('BldQuality'),
       }
     });
+  }
+
+  private getOptionsFromDomain(domain: string) {
+    const options = this.getOptions(domain);
+    return options.length ? options : (this.filter.value.options as any)[domain];
   }
 
   prepareWhereCase() {
@@ -102,7 +108,13 @@ export class RegisterFilterService {
     Object
       .entries(this.filter.value.filter)
       .filter(([, value]) => !!value)
-      .map(([key, value]) => ({ column: key, value } as Chip))
+      .map(([key, value]) => {
+        let finalValue = value;
+        if (Array.isArray(value)) {
+          finalValue = value.join(', ')
+        }
+        return { column: key, value: finalValue } as Chip;
+      })
       .forEach(filter => {
         if (filter.column === 'GlobalID') {
           const globalIds = filter.value.split(',').map(id => {
@@ -116,6 +128,8 @@ export class RegisterFilterService {
           });
           const globalIdsCondition = globalIds.map(globalId => `'${globalId}'`).join(',');
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
+        } else if (filter.column === 'BldStatus') {
+          conditions.push(filter.column + ' in (' + filter.value + ')');
         } else {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
         }
@@ -166,6 +180,7 @@ export class RegisterFilterService {
     return !this.filter.value.filter.BldMunicipality
       && !this.filter.value.filter.BldType
       && !this.filter.value.filter.BldStatus
+      && !this.filter.value.filter.BldEnumArea
       && !this.filter.value.filter.BldQuality
       && !this.filter.value.filter.GlobalID;
   }
