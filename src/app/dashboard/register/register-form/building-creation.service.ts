@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {CommonBuildingService} from '../service/common-building.service';
+import {CommonBuildingService} from '../../common/service/common-building.service';
 import {BehaviorSubject} from 'rxjs';
 import {BuildingPoly, DEFAULR_SPARTIAL_REF} from '../model/map-data';
 import {Building} from '../model/building';

@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 import { Role } from 'src/app/model/RolePermissions.model';
 import {Credentials} from "../../auth/signin/signin.service";
 import esriId from "@arcgis/core/identity/IdentityManager";
-import {ESRI_AUTH_KEY} from "../../dashboard/register/service/common-esri-auth.service";
+import {ESRI_AUTH_KEY} from "../../dashboard/common/service/common-esri-auth.service";
 
 @Injectable({
   providedIn: 'root'

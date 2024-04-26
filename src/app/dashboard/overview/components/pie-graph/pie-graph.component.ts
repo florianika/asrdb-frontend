@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {CommonBuildingService} from "../../../register/service/common-building.service";
+import {CommonBuildingService} from "../../../common/service/common-building.service";
 import {RegisterFilterService} from "../../../register/register-table-view/register-filter.service";
 import {Subject, takeUntil} from "rxjs";
 import {QueryFilter} from "../../../register/model/query-filter";

@@ -9,7 +9,7 @@ import {BuildingPoly, Centroid, Point} from '../../model/map-data';
 import {EntityType} from "../../../quality-management/quality-management-config";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute} from "@angular/router";
-import {CommonBuildingService} from "../../service/common-building.service";
+import {CommonBuildingService} from "../../../common/service/common-building.service";
 
 @Component({
   selector: 'asrdb-building-creation',

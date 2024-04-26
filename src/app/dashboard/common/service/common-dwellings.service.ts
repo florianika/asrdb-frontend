@@ -1,24 +1,24 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {catchError, defer, from, Observable, of} from 'rxjs';
-import {QueryFilter} from '../model/query-filter';
-import {CommonEsriAuthService} from './common-esri-auth.service';
-import {environment} from 'src/environments/environment';
-import {EntityManageResponse} from '../model/entity-req-res';
-import {HttpClient} from '@angular/common/http';
+import {Observable, defer, from, catchError, of} from 'rxjs';
+import { QueryFilter } from '../../register/model/query-filter';
+import { CommonEsriAuthService } from './common-esri-auth.service';
+import { environment } from 'src/environments/environment';
+import { EntityManageResponse } from '../../register/model/entity-req-res';
+import { HttpClient } from '@angular/common/http';
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
 })
-export class CommonEntranceService {
+export class CommonDwellingService {
 
-  get entLayer(): FeatureLayer {
+  get dwlLayer(): FeatureLayer {
     const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
-      title: 'ASRDB Entrances',
+      title: 'ASRDB Dwellings',
       apiKey: token,
-      url: environment.entrance_url + '?token='
+      url: environment.dwelling_url + '?token='
         + token,
       outFields: ['*'],
       minScale: 0,
@@ -26,7 +26,8 @@ export class CommonEntranceService {
       // create a new popupTemplate for the layer
       popupTemplate: {
         // autocasts as new PopupTemplate()
-        title: 'ASRDB Entrance {GlobalID}',
+        title: 'ASRDB Dwelling {GlobalID}',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi.'
       }
     });
   }
@@ -34,19 +35,19 @@ export class CommonEntranceService {
   constructor(
     private esriAuthService: CommonEsriAuthService,
     private httpClient: HttpClient,
-    private snackBar: MatSnackBar,) {
+    private snackBar: MatSnackBar) {
   }
 
-  getEntranceData(filter?: Partial<QueryFilter>): Observable<any> {
-    return defer(() => from(this.fetchEntranceData(filter)));
+  getDwellings(filter?: Partial<QueryFilter>): Observable<any> {
+    return defer(() => from(this.fetchDwellingsData(filter)));
   }
 
   getAttributesMetadata() {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
 
-  createFeature(features: any[]): Observable<EntityManageResponse> {
-    const addFeatureLayerURL = environment.entrance_url
+  createFeature(features: any): Observable<EntityManageResponse> {
+    const addFeatureLayerURL = environment.dwelling_url
     + '/addFeatures?token='
     + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
@@ -57,10 +58,10 @@ export class CommonEntranceService {
     });
   }
 
-  updateFeature(features: any[]): Observable<EntityManageResponse> {
-    const addFeatureLayerURL = environment.entrance_url
-    + '/updateFeatures'
-    + '?token=' + this.esriAuthService.getTokenForResource();
+  updateFeature(features: any): Observable<EntityManageResponse> {
+    const addFeatureLayerURL = environment.dwelling_url
+    + '/updateFeatures?token='
+    + this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
     return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
       headers: {
@@ -69,12 +70,12 @@ export class CommonEntranceService {
     });
   }
 
-  resetStatus(entId: string, callback?: () => void) {
+  resetStatus(dwlId: string, callback?: () => void) {
     const filter = {
-      where: `GlobalID = '${entId}'`,
+      where: `GlobalID = '${dwlId}'`,
       outFields: ['GlobalID', 'OBJECTID']
     } as Partial<QueryFilter>
-    this.getEntranceData(filter)
+    this.getDwellings(filter)
       .pipe(catchError((err: any) => {
         return this.handleError(err);
       }))
@@ -93,7 +94,7 @@ export class CommonEntranceService {
     const object = {
       GlobalID: attributes.GlobalID,
       OBJECTID: attributes.OBJECTID,
-      EntQuality: 9
+      DwlQuality: 9
     }
     this.updateFeature([{
       attributes: object
@@ -120,29 +121,30 @@ export class CommonEntranceService {
   }
 
   private async fetchAttributesMetadata() {
-    const dataQuery = this.entLayer.createQuery();
+    const dataQuery = this.dwlLayer.createQuery();
     dataQuery.start = 0;
     dataQuery.num = 1;
     dataQuery.outFields = ['*'];
-    dataQuery.outStatistics = [];
+    dataQuery.where = '1=1';
     dataQuery.returnGeometry = false;
-    const features = await (await this.entLayer.queryFeatures(dataQuery)).toJSON();
+    dataQuery.outStatistics = [];
+    const features = await (await this.dwlLayer.queryFeatures(dataQuery)).toJSON();
     return features.fields;
   }
 
-  private async fetchEntranceData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any} | null> {
-    const query = this.entLayer.createQuery();
+  private async fetchDwellingsData(filter?: Partial<QueryFilter>): Promise<{count: number, data: any} | null> {
+    const query = this.dwlLayer.createQuery();
     query.start = filter?.start ?? 0;
     query.num = filter?.num ?? 5;
     query.where = filter?.where ?? '1=1';
     query.outFields = filter?.outFields ?? ['*'];
-    query.returnGeometry = filter?.returnGeometry ?? false;
-    query.orderByFields = filter?.orderByFields ?? ['EntBuildingNumber'];
+    query.returnGeometry = false;
+    query.orderByFields = filter?.orderByFields ?? ['DwlFloor'];
     query.outStatistics = [];
 
     try {
-      const featureCount = await this.entLayer.queryFeatureCount(query);
-      const features = await (await this.entLayer.queryFeatures(query)).toJSON();
+      const featureCount = await this.dwlLayer.queryFeatureCount(query);
+      const features = await (await this.dwlLayer.queryFeatures(query)).toJSON();
 
       return {
         count: featureCount,

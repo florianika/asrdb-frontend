@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {FormGroup, FormControl, Validators, ReactiveFormsModule, AbstractControl} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FormObject, getFormObjectType, getFormObjectOptions } from '../../model/form-object';
-import { CommonEntranceService } from '../../service/common-entrance.service';
+import { CommonEntranceService } from '../../../common/service/common-entrance.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';

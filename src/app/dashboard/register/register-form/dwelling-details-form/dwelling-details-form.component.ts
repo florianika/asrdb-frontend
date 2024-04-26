@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, Subject, catchError, of, takeUntil } from 'rxjs';
 import { FormObject, getFormObjectType, getFormObjectOptions } from '../../model/form-object';
-import { CommonDwellingService } from '../../service/common-dwellings.service';
+import { CommonDwellingService } from '../../../common/service/common-dwellings.service';
 import { EDITABLE_PROP, ALIAS_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, NAME_PROP, DEFAULT_VALUE_PROP, NULLABLE_PROP } from '../../constant/common-constants';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Entrance } from '../../model/entrance';

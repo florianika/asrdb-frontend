@@ -4,7 +4,7 @@ import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { CommonBuildingService } from '../../service/common-building.service';
+import { CommonBuildingService } from '../../../common/service/common-building.service';
 import {distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import { FormObject, getFormObjectOptions, getFormObjectType } from '../../model/form-object';
 import { Building } from '../../model/building';

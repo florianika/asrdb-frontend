@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {EntityManageResponse} from '../model/entity-req-res';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {CommonDwellingService} from '../service/common-dwellings.service';
+import {CommonDwellingService} from '../../common/service/common-dwellings.service';
 import {Dwelling} from '../model/dwelling';
 import {AuthStateService} from "../../../common/services/auth-state.service";
 

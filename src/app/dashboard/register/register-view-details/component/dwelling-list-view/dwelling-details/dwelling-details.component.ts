@@ -7,8 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
 import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
 import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
-import { CommonDwellingService } from 'src/app/dashboard/register/service/common-dwellings.service';
-import { CommonRegisterHelperService } from 'src/app/dashboard/register/service/common-helper.service';
+import { CommonDwellingService } from 'src/app/dashboard/common/service/common-dwellings.service';
+import { CommonRegisterHelperService } from 'src/app/dashboard/common/service/common-helper.service';
 import {getDate} from "../../../../model/common-utils";
 import {Log} from "../../../../register-log-view/model/log";
 

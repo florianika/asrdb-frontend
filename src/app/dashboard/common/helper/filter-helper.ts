@@ -1,7 +1,7 @@
 import {Chip} from "../../../common/standalone-components/chip/chip.component";
 import {BuildingFilter} from "../../register/model/building";
 import {Injectable} from "@angular/core";
-import {CommonRegisterHelperService} from "../../register/service/common-helper.service";
+import {CommonRegisterHelperService} from "../service/common-helper.service";
 
 @Injectable()
 export class FilterHelper {

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BuildingFilter} from '../model/building';
-import {CommonRegisterHelperService} from '../service/common-helper.service';
+import {CommonRegisterHelperService} from '../../common/service/common-helper.service';
 import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
 

@@ -23,11 +23,11 @@ import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chi
 import {
   EntranceListViewFilterComponent
 } from '../entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component';
-import {CommonEntranceService} from '../../../service/common-entrance.service';
+import {CommonEntranceService} from '../../../../common/service/common-entrance.service';
 import {DwellingFilter} from '../../../model/dwelling';
 import {QueryFilter} from '../../../model/query-filter';
-import {CommonDwellingService} from '../../../service/common-dwellings.service';
-import {CommonRegisterHelperService} from '../../../service/common-helper.service';
+import {CommonDwellingService} from '../../../../common/service/common-dwellings.service';
+import {CommonRegisterHelperService} from '../../../../common/service/common-helper.service';
 import {DwellingDetailsComponent} from './dwelling-details/dwelling-details.component';
 import {
   DwellingDetailsFormComponent

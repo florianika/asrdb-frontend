@@ -7,7 +7,7 @@ import { BehaviorSubject, Observer } from 'rxjs';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import { SigninResponse } from 'src/app/model/JWT.model';
 import { environment } from 'src/environments/environment';
-import {CommonEsriAuthService} from "../../dashboard/register/service/common-esri-auth.service";
+import {CommonEsriAuthService} from "../../dashboard/common/service/common-esri-auth.service";
 
 export type Credentials = { username: string, password: string };
 

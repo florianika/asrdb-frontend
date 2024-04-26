@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { CommonModule } from '@angular/common';
 import MapView from '@arcgis/core/views/MapView';
 import { RegisterMapService } from './register-map.service';
-import { RegisterFilterService } from '../register-filter.service';
+import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
 import {BaseMapChangeService} from "./custom-map-logic/basemap-change";
 import {FeatureSelectionService} from "./custom-map-logic/feature-selection";
 

@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { BuildingFilter } from '../../model/building';
+import { BuildingFilter } from '../../../register/model/building';
 
 @Component({
   selector: 'asrdb-building-list-view-filter',

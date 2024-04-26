@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RegisterMapComponent } from './register-map/register-map.component';
+import { RegisterMapComponent } from '../../common/components/register-map/register-map.component';
 import { RegisterTableComponent } from './register-table/register-table.component';
 
 @Component({

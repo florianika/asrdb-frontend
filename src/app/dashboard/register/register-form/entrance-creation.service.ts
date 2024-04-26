@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommonEntranceService } from '../service/common-entrance.service';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
 import { BehaviorSubject } from 'rxjs';
 import { DEFAULR_SPARTIAL_REF, Point } from '../model/map-data';
 import { Entrance } from '../model/entrance';

@@ -1,5 +1,5 @@
 import { ElementRef, Injectable } from '@angular/core';
-import { CommonEsriAuthService } from '../service/common-esri-auth.service';
+import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
 import WebMap from '@arcgis/core/WebMap';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
@@ -14,8 +14,8 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {EntityType} from "../../quality-management/quality-management-config";
 import {ActivatedRoute} from "@angular/router";
-import {BaseMapChangeService} from "../register-table-view/register-map/custom-map-logic/basemap-change";
-import {CommonBuildingService} from "../service/common-building.service";
+import {BaseMapChangeService} from "../../common/components/register-map/custom-map-logic/basemap-change";
+import {CommonBuildingService} from "../../common/service/common-building.service";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";

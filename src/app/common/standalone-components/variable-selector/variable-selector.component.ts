@@ -4,9 +4,9 @@ import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/fo
 import { MatSelectModule, MatSelectChange } from '@angular/material/select';
 import { EntityType } from 'src/app/model/RolePermissions.model';
 import { CommonModule } from '@angular/common';
-import {CommonBuildingService} from "../../../dashboard/register/service/common-building.service";
-import {CommonEntranceService} from "../../../dashboard/register/service/common-entrance.service";
-import {CommonDwellingService} from "../../../dashboard/register/service/common-dwellings.service";
+import {CommonBuildingService} from "../../../dashboard/common/service/common-building.service";
+import {CommonEntranceService} from "../../../dashboard/common/service/common-entrance.service";
+import {CommonDwellingService} from "../../../dashboard/common/service/common-dwellings.service";
 import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
 import {BUILDING_HIDDEN_FIELDS, DWELLING_HIDDEN_FIELDS, ENTRANCE_HIDDEN_FIELDS} from "../../data/hidden-fields";
 

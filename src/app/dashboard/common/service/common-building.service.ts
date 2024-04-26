@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import {catchError, defer, from, map, Observable, of} from 'rxjs';
-import {QueryFilter} from '../model/query-filter';
+import {QueryFilter} from '../../register/model/query-filter';
 import {CommonEsriAuthService} from './common-esri-auth.service';
 import {HttpClient} from '@angular/common/http';
 import {environment} from 'src/environments/environment';
-import {EntityManageResponse} from '../model/entity-req-res';
+import {EntityManageResponse} from '../../register/model/entity-req-res';
 import MapView from "@arcgis/core/views/MapView";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
 import Collection from "@arcgis/core/core/Collection";

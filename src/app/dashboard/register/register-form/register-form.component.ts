@@ -5,8 +5,8 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {BuildingCreationComponent} from './building-creation/building-creation.component';
 import {BuildingDetailsFormComponent} from './building-details-form/building-details-form.component';
 import {EntranceDetailsFormComponent} from './entrance-details-form/entrance-details-form.component';
-import {CommonBuildingService} from '../service/common-building.service';
-import {CommonEntranceService} from '../service/common-entrance.service';
+import {CommonBuildingService} from '../../common/service/common-building.service';
+import {CommonEntranceService} from '../../common/service/common-entrance.service';
 import {map, Subject, takeUntil, zip} from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -22,7 +22,7 @@ import {EntityType} from "../../quality-management/quality-management-config";
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {EntityCreationMapService} from "./entity-management-map.service";
-import {BaseMapChangeService} from "../register-table-view/register-map/custom-map-logic/basemap-change";
+import {BaseMapChangeService} from "../../common/components/register-map/custom-map-logic/basemap-change";
 
 @Component({
   selector: 'asrdb-register-form',

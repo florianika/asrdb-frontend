@@ -7,7 +7,7 @@ import {Injectable} from "@angular/core";
 import Geometry from "@arcgis/core/geometry/Geometry";
 import {CommonBuildingService} from "../../../service/common-building.service";
 import {CommonEntranceService} from "../../../service/common-entrance.service";
-import {RegisterFilterService} from "../../register-filter.service";
+import {RegisterFilterService} from "../../../../register/register-table-view/register-filter.service";
 
 @Injectable()
 export class FeatureSelectionService {

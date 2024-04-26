@@ -6,9 +6,9 @@ import { environment } from 'src/environments/environment';
 import {EntityType} from "../../../quality-management/quality-management-config";
 import {AuthStateService} from "../../../../common/services/auth-state.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {CommonBuildingService} from "../../service/common-building.service";
-import {CommonEntranceService} from "../../service/common-entrance.service";
-import {CommonDwellingService} from "../../service/common-dwellings.service";
+import {CommonBuildingService} from "../../../common/service/common-building.service";
+import {CommonEntranceService} from "../../../common/service/common-entrance.service";
+import {CommonDwellingService} from "../../../common/service/common-dwellings.service";
 
 export const EXECUTING = 1;
 export const NOT_EXECUTING = 2;

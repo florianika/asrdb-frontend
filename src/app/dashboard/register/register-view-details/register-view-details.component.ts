@@ -8,17 +8,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, takeUntil, catchError, of} from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
-import { CommonBuildingService } from '../service/common-building.service';
-import { CommonRegisterHelperService } from '../service/common-helper.service';
+import { CommonBuildingService } from '../../common/service/common-building.service';
+import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Entrance } from '../model/entrance';
-import { RegisterMapComponent } from '../register-table-view/register-map/register-map.component';
+import { RegisterMapComponent } from '../../common/components/register-map/register-map.component';
 import { RegisterFilterService } from '../register-table-view/register-filter.service';
 import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
 import {getDate} from "../model/common-utils";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {CommonEntranceService} from "../service/common-entrance.service";
+import {CommonEntranceService} from "../../common/service/common-entrance.service";
 import {Building} from "../model/building";
 
 @Component({

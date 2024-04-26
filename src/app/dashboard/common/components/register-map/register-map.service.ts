@@ -8,7 +8,7 @@ import WebMap from '@arcgis/core/WebMap';
 import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
-import { RegisterFilterService } from '../register-filter.service';
+import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
 import { FeatureSelectionService } from "./custom-map-logic/feature-selection";
 import { BaseMapChangeService } from "./custom-map-logic/basemap-change";
 import Legend from "@arcgis/core/widgets/Legend";

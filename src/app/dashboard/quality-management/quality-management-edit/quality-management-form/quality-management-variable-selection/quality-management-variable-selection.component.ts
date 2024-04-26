@@ -2,9 +2,9 @@ import {Component, Input, OnDestroy} from '@angular/core';
 import { EntityType } from '../../../quality-management-config';
 import { FormGroup } from '@angular/forms';
 import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
-import {CommonBuildingService} from "../../../../register/service/common-building.service";
-import {CommonEntranceService} from "../../../../register/service/common-entrance.service";
-import {CommonDwellingService} from "../../../../register/service/common-dwellings.service";
+import {CommonBuildingService} from "../../../../common/service/common-building.service";
+import {CommonEntranceService} from "../../../../common/service/common-entrance.service";
+import {CommonDwellingService} from "../../../../common/service/common-dwellings.service";
 import {
   BUILDING_HIDDEN_FIELDS,
   DWELLING_HIDDEN_FIELDS,
