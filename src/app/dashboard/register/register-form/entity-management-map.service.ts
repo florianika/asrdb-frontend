@@ -140,7 +140,7 @@ export class EntityCreationMapService {
         this.view.goTo(mainGraphic);
       } else {
         this.view.goTo({
-          center: [19.83, 41.33],
+          center: [19.818, 41.3285],
           zoom: 9
         });
       }
@@ -292,6 +292,9 @@ export class EntityCreationMapService {
     const query = this.bldLayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldLayer.queryExtent(query);
-    view.goTo(extend.extent ?? this.bldLayer.fullExtent);
+    view.goTo(extend.count !== 0 ? extend.extent : {
+      center: [19.818, 41.3285],
+      zoom: 9
+    });
   }
 }

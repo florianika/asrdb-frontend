@@ -66,8 +66,37 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   get filterChips(): Chip[] {
     return Object
       .entries(this.registerFilterService.getFilter().filter)
-      .filter(([, value]) => !!value)
-      .map(([key, value]) => ({ column: key, value: this.getValueFromStatus(key, value) }));
+      .filter(([, value]) => {
+        return Array.isArray(value) ? value.length : !!value;
+      })
+      .reduce((currentValue, [key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach(subValues => {
+              currentValue.push({
+                column: key,
+                value: this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, key, subValues)
+              })
+            });
+            return currentValue;
+          } else if (key === 'GlobalID') {
+            const globalIds = value.split(',');
+            globalIds.forEach(v => {
+              currentValue.push({
+                column: key,
+                value: v
+              })
+            });
+            return currentValue;
+          } else {
+            currentValue.push({
+              column: key,
+              value: this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, key, value)
+            });
+            return currentValue;
+          }
+        },
+        [] as Chip[]
+      );
   }
 
   constructor(
@@ -145,7 +174,16 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   remove($event: Chip) {
     const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
-    (filterCopy as any).filter[$event.column] = '';
+    if ($event.column === 'GlobalID') {
+      const values = (filterCopy as any).filter[$event.column].split(',')
+        .filter((value: string) => value !== $event.value);
+      (filterCopy as any).filter[$event.column] = values.join(',');
+    } else if (Array.isArray((filterCopy as any).filter[$event.column])) {
+      (filterCopy as any).filter[$event.column] = (filterCopy as any).filter[$event.column]
+        .filter((value: string) => this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, $event.column, value) !== $event.value);
+    } else {
+      (filterCopy as any).filter[$event.column] = '';
+    }
     this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 

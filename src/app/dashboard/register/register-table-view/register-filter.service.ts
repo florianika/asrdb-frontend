@@ -107,7 +107,9 @@ export class RegisterFilterService {
     const conditions: string[] = [];
     Object
       .entries(this.filter.value.filter)
-      .filter(([, value]) => !!value)
+      .filter(([, value]) => {
+        return Array.isArray(value) ? value.length : !!value;
+      })
       .map(([key, value]) => {
         let finalValue = value;
         if (Array.isArray(value)) {
@@ -138,7 +140,7 @@ export class RegisterFilterService {
   }
 
   prepareWhereCaseForEntrance() {
-    if (!this.globalIds.getValue()?.length || this.noFilterApplied()) {
+    if (!this.globalIds.getValue()?.length && this.noFilterApplied()) {
       return '1=1';
     }
     return `EntBuildingId in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
@@ -179,7 +181,7 @@ export class RegisterFilterService {
   private noFilterApplied() {
     return !this.filter.value.filter.BldMunicipality
       && !this.filter.value.filter.BldType
-      && !this.filter.value.filter.BldStatus
+      && !this.filter.value.filter.BldStatus.length
       && !this.filter.value.filter.BldEnumArea
       && !this.filter.value.filter.BldQuality
       && !this.filter.value.filter.GlobalID;
