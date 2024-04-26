@@ -22,6 +22,7 @@ import {ChipComponent} from "../../common/standalone-components/chip/chip.compon
 import {MatDialogModule} from "@angular/material/dialog";
 import { PieGraphComponent } from './components/pie-graph/pie-graph.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {FilterHelper} from "../common/helper/filter-helper";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -51,7 +52,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     CommonBuildingService,
     CommonEntranceService,
     RegisterFilterService,
-    CommonRegisterHelperService
+    CommonRegisterHelperService,
+    FilterHelper,
   ]
 })
 export class OverviewModule { }

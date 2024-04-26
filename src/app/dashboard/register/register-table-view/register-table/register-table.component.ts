@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
+import {FilterHelper} from "../../../common/helper/filter-helper";
 
 @Component({
   selector: 'asrdb-register-table',
@@ -40,6 +41,9 @@ import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
     MatCheckboxModule,
     MatTooltipModule,
     MatSnackBarModule
+  ],
+  providers: [
+    FilterHelper
   ],
   templateUrl: './register-table.component.html',
   styleUrls: ['./register-table.component.css'],
@@ -69,34 +73,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
       .filter(([, value]) => {
         return Array.isArray(value) ? value.length : !!value;
       })
-      .reduce((currentValue, [key, value]) => {
-          if (Array.isArray(value)) {
-            value.forEach(subValues => {
-              currentValue.push({
-                column: key,
-                value: this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, key, subValues)
-              })
-            });
-            return currentValue;
-          } else if (key === 'GlobalID') {
-            const globalIds = value.split(',');
-            globalIds.forEach(v => {
-              currentValue.push({
-                column: key,
-                value: v
-              })
-            });
-            return currentValue;
-          } else {
-            currentValue.push({
-              column: key,
-              value: this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, key, value)
-            });
-            return currentValue;
-          }
-        },
-        [] as Chip[]
-      );
+      .reduce(this.filterHelper.getFilterChipStructure, [] as Chip[]);
   }
 
   constructor(
@@ -106,6 +83,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     private matDialog: MatDialog,
     private matSnack: MatSnackBar,
     private changeDetectionRef: ChangeDetectorRef,
+    private filterHelper: FilterHelper,
     private router: Router) {
   }
 
@@ -173,17 +151,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   remove($event: Chip) {
-    const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
-    if ($event.column === 'GlobalID') {
-      const values = (filterCopy as any).filter[$event.column].split(',')
-        .filter((value: string) => value !== $event.value);
-      (filterCopy as any).filter[$event.column] = values.join(',');
-    } else if (Array.isArray((filterCopy as any).filter[$event.column])) {
-      (filterCopy as any).filter[$event.column] = (filterCopy as any).filter[$event.column]
-        .filter((value: string) => this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, $event.column, value) !== $event.value);
-    } else {
-      (filterCopy as any).filter[$event.column] = '';
-    }
+    const filterCopy = this.filterHelper.removeFilterValue($event, this.registerFilterService.getFilter());
     this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 
@@ -256,6 +224,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     if (res.data.fields.length) {
       this.fields = res.data.fields;
+      this.filterHelper.init(this.fields);
     }
     this.resultsLength = res.count;
     this.data = res.data.features.map((feature: any) => feature.attributes);

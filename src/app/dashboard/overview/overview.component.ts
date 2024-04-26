@@ -9,6 +9,7 @@ import {catchError, of, Subject, takeUntil} from "rxjs";
 import {RegisterFilterComponent} from "../register/register-table-view/register-filter/register-filter.component";
 import {MatDialog} from "@angular/material/dialog";
 import {QueryFilter} from "../register/model/query-filter";
+import {FilterHelper} from "../common/helper/filter-helper";
 
 @Component({
   selector: 'asrdb-overview',
@@ -28,12 +29,14 @@ export class OverviewComponent implements OnDestroy {
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
+    private filterHelper: FilterHelper,
     private changeDetectionRef: ChangeDetectorRef,
   ) {
     this.commonBuildingService.getAttributesMetadata()
       .pipe(takeUntil(this.destroy))
       .subscribe(fields => {
         this.fields = fields;
+        filterHelper.init(fields);
         registerFilterService.prepareFilter(fields);
         this.changeDetectionRef.detectChanges();
       });
@@ -58,34 +61,7 @@ export class OverviewComponent implements OnDestroy {
       .filter(([, value]) => {
         return Array.isArray(value) ? value.length : !!value;
       })
-      .reduce((currentValue, [key, value]) => {
-          if (Array.isArray(value)) {
-            value.forEach(subValues => {
-              currentValue.push({
-                column: key,
-                value: this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, key, subValues)
-              })
-            });
-            return currentValue;
-          } else if (key === 'GlobalID') {
-            const globalIds = value.split(',');
-            globalIds.forEach(v => {
-              currentValue.push({
-                column: key,
-                value: v
-              })
-            });
-            return currentValue;
-          } else {
-            currentValue.push({
-              column: key,
-              value: this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, key, value)
-            });
-            return currentValue;
-          }
-        },
-        [] as Chip[]
-      );
+      .reduce(this.filterHelper.getFilterChipStructure, [] as Chip[]);
   }
 
   openFilter() {
@@ -96,17 +72,7 @@ export class OverviewComponent implements OnDestroy {
   }
 
   remove($event: Chip) {
-    const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
-    if ($event.column === 'GlobalID') {
-      const values = (filterCopy as any).filter[$event.column].split(',')
-        .filter((value: string) => value !== $event.value);
-      (filterCopy as any).filter[$event.column] = values.join(',');
-    } else if (Array.isArray((filterCopy as any).filter[$event.column])) {
-      (filterCopy as any).filter[$event.column] = (filterCopy as any).filter[$event.column]
-        .filter((value: string) => this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, $event.column, value) !== $event.value);
-    } else {
-      (filterCopy as any).filter[$event.column] = '';
-    }
+    const filterCopy = this.filterHelper.removeFilterValue($event, this.registerFilterService.getFilter());
     this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 
