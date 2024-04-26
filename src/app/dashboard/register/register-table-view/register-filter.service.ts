@@ -3,7 +3,6 @@ import {BuildingFilter} from '../model/building';
 import {CommonRegisterHelperService} from '../service/common-helper.service';
 import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
-import {Router} from "@angular/router";
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
 
