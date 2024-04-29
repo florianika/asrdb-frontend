@@ -170,6 +170,7 @@ export class RegisterFormComponent implements OnInit {
     if (this.isBuilding) {
       const buildingPoly = (this.mapDetails.value as any)['buildingPoly'];
       this.buildingManagementService.saveBuilding(buildingPoly, buildingDetails);
+      this.buildingService.resetStatus(buildingDetails.GlobalID);
     } else if (this.isEntrance && this.buildingId) {
       const entranceToSave = this.getEntrancePointToSave();
       if (!entranceToSave) {
@@ -177,10 +178,7 @@ export class RegisterFormComponent implements OnInit {
         return;
       }
       this.entranceManagementService.saveEntranceEntity(entranceToSave as Point, entranceDetails, this.buildingId);
-      buildingDetails.BldQuality = 9;
-      this.buildingService.updateFeature([{
-        attributes: buildingDetails
-      }]).subscribe();
+      this.buildingService.resetStatus(buildingDetails.GlobalID);
     }
   }
 

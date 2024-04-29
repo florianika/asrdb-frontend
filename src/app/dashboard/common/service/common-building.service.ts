@@ -11,6 +11,7 @@ import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
 import Collection from "@arcgis/core/core/Collection";
 import Geometry from "@arcgis/core/geometry/Geometry";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {AuthStateService} from "../../../common/services/auth-state.service";
 
 type EntityDataResponse = { count: number, data: any, globalIds: string[] };
 
@@ -105,6 +106,7 @@ export class CommonBuildingService {
 
   constructor(
     private esriAuthService: CommonEsriAuthService,
+    private authState: AuthStateService,
     private httpClient: HttpClient,
     private snackBar: MatSnackBar) {
   }
@@ -218,6 +220,7 @@ export class CommonBuildingService {
           return;
         }
         callback?.();
+        this.executeAutomaticRules(attributes.GlobalID);
       },
       error: (err: any) => {
         return this.handleError(err);
@@ -228,6 +231,27 @@ export class CommonBuildingService {
   private handleError(err: any) {
     console.error(err);
     return of(null);
+  }
+
+  executeAutomaticRules(buildingId: string) {
+    const body = {
+      buildingIds: [buildingId.replace('{', '').replace('}', '')],
+      executionUser: this.authState.getNameId()
+    }
+    this.httpClient
+      .post(environment.base_url + '/qms/check/automatic', JSON.stringify(body), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .subscribe({
+        error: (err) => {
+          this.snackBar.open('Could not start automatic rules execution', 'Ok', {
+            duration: 3000
+          });
+          return this.handleError(err);
+        }
+      })
   }
 
   // This function is called when user completes drawing a rectangle

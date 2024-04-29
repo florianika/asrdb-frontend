@@ -161,22 +161,19 @@ export class RegisterLogService {
     const log = this.loadedLogs.getValue().find(log => log.id === logId);
     if (log) {
       const entityType = log.entityType;
-      if (entityType === 'BUILDING') {
-        this.commonBuildingService.resetStatus(log.bldId!, () => {
-          this.loadBuildingQuality(log.bldId!);
-        });
-      } else if (entityType === 'ENTRANCE') {
-        this.commonBuildingService.resetStatus(log.bldId!, () => {
-          this.loadBuildingQuality(log.bldId!);
-        });
+      this.resetBuildingStatus(log);
+      if (entityType === 'ENTRANCE') {
         this.commonEntranceService.resetStatus(log.entId!);
       } else if (entityType === 'DWELLING') {
-        this.commonBuildingService.resetStatus(log.bldId!, () => {
-          this.loadBuildingQuality(log.bldId!);
-        });
         this.commonEntranceService.resetStatus(log.entId!);
         this.commonDwellingService.resetStatus(log.dwlId!);
       }
     }
+  }
+
+  private resetBuildingStatus(log: Log) {
+    this.commonBuildingService.resetStatus(log.bldId!, () => {
+      this.loadBuildingQuality(log.bldId!);
+    });
   }
 }

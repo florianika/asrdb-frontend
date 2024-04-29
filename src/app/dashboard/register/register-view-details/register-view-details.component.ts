@@ -257,7 +257,9 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '';
     if (this.id) {
       this.registerLogService.loadLogs(this.id);
-      this.loadBuildings().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
+      this.loadBuildingData();
+    } else {
+      void this.router.navigateByUrl('dashboard/register');
     }
     this.registerLogService.logs.pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (this.fields.length) {
@@ -265,6 +267,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
@@ -298,16 +301,12 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     const entrance = this.loadedEntrances.find(entrance => entrance.GlobalID === entranceId);
     if (entrance) {
       // Update entrance
-      entrance.EntQuality = 9;
-      this.commonEntranceService.updateFeature([{
-        attributes: entrance
-      }]).pipe(takeUntil(this.destroy$)).subscribe();
+      this.commonEntranceService.resetStatus(entranceId);
 
       // Update building
-      (this.building as Building).BldQuality = 9;
-      this.commonBuildingService.updateFeature([{
-        attributes: this.building
-      }]).pipe(takeUntil(this.destroy$)).subscribe();
+      this.commonBuildingService.resetStatus(this.id!, () => {
+        this.loadBuildingData();
+      });
     }
   }
 
@@ -343,7 +342,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadBuildings() {
+  private loadBuilding() {
     this.isLoadingResults = true;
     const filter = {
       where: this.prepareWhereCase()
@@ -355,6 +354,10 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       });
       return of(null);
     }));
+  }
+
+  private loadBuildingData() {
+    this.loadBuilding().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
   }
 
   protected readonly getDate = getDate;
