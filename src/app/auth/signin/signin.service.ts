@@ -7,7 +7,6 @@ import { BehaviorSubject, Observer } from 'rxjs';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import { SigninResponse } from 'src/app/model/JWT.model';
 import { environment } from 'src/environments/environment';
-import {CommonEsriAuthService} from "../../dashboard/common/service/common-esri-auth.service";
 
 export type Credentials = { username: string, password: string };
 
@@ -16,8 +15,7 @@ export class SigninService {
   private signingIn = new BehaviorSubject(false);
   private signinObserver = {
     next: (signinResponse: SigninResponse) => {
-      this.authStateService.setJWT(signinResponse);
-      this.getEsriCredentials();
+      this.getEsriCredentials(signinResponse);
     },
     error: (error) => {
       console.error(error);
@@ -55,13 +53,14 @@ export class SigninService {
     });
   }
 
-  getEsriCredentials() {
+  getEsriCredentials(signinResponse: SigninResponse) {
     this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
       .subscribe({
       next: async (credentials) => {
         try {
           await this.authStateService.initEsriConfig(credentials);
           void this.router.navigateByUrl('/dashboard');
+          this.authStateService.setJWT(signinResponse);
           this.authStateService.setLoginState(true);
           this.signingIn.next(false);
         } catch (error) {

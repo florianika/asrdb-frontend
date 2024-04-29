@@ -12,8 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SignupService } from './signup.service';
-import { HttpClientModule } from '@angular/common/http';
-
 
 @NgModule({
   declarations: [
@@ -24,7 +22,6 @@ import { HttpClientModule } from '@angular/common/http';
     SignupRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     MatCardModule,
     MatIconModule,
     MatFormFieldModule,

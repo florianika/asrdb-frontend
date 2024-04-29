@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UserManagementRoutingModule } from './user-management-routing.module';
-import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -31,7 +30,6 @@ import { RoleSelectorComponent } from 'src/app/common/standalone-components/role
   imports: [
     CommonModule,
     UserManagementRoutingModule,
-    HttpClientModule,
     FormsModule,
     MatTableModule,
     MatPaginatorModule,

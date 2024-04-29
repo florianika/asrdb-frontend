@@ -17,26 +17,26 @@ export class AuthStateService implements OnDestroy {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
   private readonly SIGNIN_URL = '/auth/signin';
   private readonly SIGNOUT_URL = '/auth/signout';
-
+  private readonly STOP_INTERVAL_MESSAGE = 'stopInterval';
 
   private tokens: SigninResponse | null;
   private isLoggedIn: BehaviorSubject<boolean>;
   private helper = new JwtHelperService();
 
   private subscription = new Subject<boolean>();
-  private interval!: number;
+  private webWorker!: Worker;
 
   constructor(private router: Router, private httpClient: HttpClient) {
     const item = localStorage.getItem(this.TOKEN_STORAGE_KEY);
     this.tokens = item ? JSON.parse(item) : null;
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
-    this.checkTokenValidity();
+    this.createWebWorker();
   }
 
   ngOnDestroy() {
     this.subscription.next(true);
     this.subscription.complete();
-    clearInterval(this.interval);
+    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
   }
 
   logout() {
@@ -53,7 +53,7 @@ export class AuthStateService implements OnDestroy {
   }
 
   refreshToken() {
-    clearInterval(this.interval);
+    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
     this.httpClient.post<SigninResponse>(environment.base_url + '/auth/refreshtoken', {
       'AccessToken': this.tokens?.accessToken,
       'RefreshToken': this.tokens?.refreshToken
@@ -71,6 +71,7 @@ export class AuthStateService implements OnDestroy {
             accessToken: newToken.accessToken,
             refreshToken: newToken.refreshToken
           });
+          this.webWorker.postMessage('');
           this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
             .subscribe({
               next: async (credentials) => {
@@ -84,7 +85,6 @@ export class AuthStateService implements OnDestroy {
                 this.handleError(error);
               }
             });
-          this.checkTokenValidity();
         },
         error: () => {
           this.logout();
@@ -113,7 +113,7 @@ export class AuthStateService implements OnDestroy {
   setJWT(newJWT: SigninResponse) {
     this.tokens = newJWT;
     localStorage.setItem(this.TOKEN_STORAGE_KEY, JSON.stringify(this.tokens));
-    this.checkTokenValidity();
+    this.webWorker.postMessage('');
   }
 
   getEmail(): string {
@@ -148,6 +148,20 @@ export class AuthStateService implements OnDestroy {
     return 'Bearer ' + this.tokens?.accessToken;
   }
 
+  private createWebWorker() {
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      this.webWorker = new Worker(new URL('../../app.worker', import.meta.url));
+      this.webWorker.onmessage = ({ data }) => {
+        this.checkTokenValidity();
+      };
+      this.webWorker.postMessage(''); // Start interval
+    } else {
+      // Web Workers are not supported in this environment.
+      // You should add a fallback so that your program still executes correctly.
+    }
+  }
+
   private getDecodedJWT(): JWT | null {
     if (!this.tokens) {
       void this.router.navigateByUrl(this.SIGNIN_URL);
@@ -157,7 +171,7 @@ export class AuthStateService implements OnDestroy {
   }
 
   private logoutUser() {
-    clearInterval(this.interval);
+    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
     this.setLoginState(false);
     localStorage.removeItem(this.TOKEN_STORAGE_KEY);
     void this.router.navigateByUrl(this.SIGNIN_URL);
@@ -193,23 +207,18 @@ export class AuthStateService implements OnDestroy {
   }
 
   private checkTokenValidity() {
-    if (this.interval) {
-      clearInterval(this.interval);
+    if (isDevMode()) {
+      console.log(`Token is valid: ${this.isTokenValidInternal()}`);
+      console.log(`Subscription is: ${this.subscription.closed}`);
     }
-    this.interval = setInterval(() => {
+    if (this.tokenInNearExpired() && !this.router.url.includes('/auth/')) {
       if (isDevMode()) {
-        console.log(`Token is valid: ${this.isTokenValidInternal()}`);
-        console.log(`Subscription is: ${this.subscription.closed}`);
+        console.log('Reloaded token');
       }
-      if (this.tokenInNearExpired() && !this.router.url.includes('/auth/')) {
-        if (isDevMode()) {
-          console.log('Reloaded token');
-        }
-        this.refreshToken();
-      } else if (this.tokenInNearExpired() && this.router.url.includes('/auth/')) {
-        clearInterval(this.interval);
-      }
-    }, 3000) as any;
+      this.refreshToken();
+    } else if (this.router.url.includes('/auth/')) {
+      this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE);
+    }
   }
 
   public async initEsriConfig(credentials: Credentials) {

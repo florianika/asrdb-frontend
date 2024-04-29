@@ -5,6 +5,7 @@ import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
+const DEFAULT_MUNICIPALITY = '53';
 
 @Injectable()
 export class RegisterFilterService {
@@ -22,7 +23,7 @@ export class RegisterFilterService {
       // default value will be Tirane
       // This is done to prevent any value to be loaded on init.
       // user can change this to load what they want
-      BldMunicipality: '53',
+      BldMunicipality: DEFAULT_MUNICIPALITY,
       BldStatus: [],
       BldType: '',
       BldQuality: '',
@@ -46,7 +47,11 @@ export class RegisterFilterService {
 
     if (savedFilterJSON) {
       try {
-        this.filter.next(JSON.parse(savedFilterJSON));
+        const filter = JSON.parse(savedFilterJSON);
+        if (!filter.filter.BldMunicipality) {
+          filter.filter.BldMunicipality = DEFAULT_MUNICIPALITY;
+        }
+        this.filter.next(filter);
       } catch (e) {
         console.log('Filter could not be initialised');
       }

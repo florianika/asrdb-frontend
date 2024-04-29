@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { RoleManagementRoutingModule } from './role-management-routing.module';
 import {RoleManagementComponent} from './role-management.component';
-import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -41,7 +40,6 @@ import {CommonEsriAuthService} from "../../common/service/common-esri-auth.servi
   imports: [
     CommonModule,
     RoleManagementRoutingModule,
-    HttpClientModule,
     FormsModule,
     MatTableModule,
     MatPaginatorModule,

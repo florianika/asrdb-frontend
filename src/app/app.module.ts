@@ -41,12 +41,13 @@ import {CommonEsriAuthService} from "./dashboard/common/service/common-esri-auth
     MatDividerModule,
     MatMenuModule,
     MatSnackBarModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   providers: [
     AuthStateService,
     CommonEsriAuthService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },],
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
