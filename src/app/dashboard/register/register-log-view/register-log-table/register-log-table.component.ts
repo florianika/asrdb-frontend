@@ -1,20 +1,29 @@
-import {AfterViewInit, Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RegisterLogService } from './register-log.service';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatMenuModule } from '@angular/material/menu';
-import { map } from 'rxjs/internal/operators/map';
-import { Observable } from 'rxjs/internal/Observable';
-import { Log } from '../model/log';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ConcatenateMessagePipe as ConcatinateMessagePipe } from './register-log-message.pipe';
-import { LogExecutionPipe } from './register-log-execution.pipe';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RegisterLogService} from './register-log.service';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatMenuModule} from '@angular/material/menu';
+import {map} from 'rxjs/internal/operators/map';
+import {Observable} from 'rxjs/internal/Observable';
+import {Log} from '../model/log';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {ConcatenateMessagePipe as ConcatinateMessagePipe} from './register-log-message.pipe';
+import {LogExecutionPipe} from './register-log-execution.pipe';
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -51,6 +60,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
   providers: [
     RegisterLogService
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register-log-table.component.html',
   styleUrls: ['./register-log-table.component.css']
 })
@@ -105,6 +115,7 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
 
   constructor(
     private logService: RegisterLogService,
+    private changeDetectionRef: ChangeDetectorRef,
     private matDialog: MatDialog) {
   }
 
