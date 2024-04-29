@@ -310,6 +310,10 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  gotToLogs() {
+    this.router.navigateByUrl('dashboard/register/logs?buildings=' + this.id);
+  }
+
   private prepareWhereCase() {
     return `GlobalID='${this.id}'`;
   }

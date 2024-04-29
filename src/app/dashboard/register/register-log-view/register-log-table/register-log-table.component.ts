@@ -32,6 +32,7 @@ import {RegisterLogTableFilterComponent} from "./register-log-table-filter/regis
 import {LogFilter} from "../model/log-filter";
 import {Chip, ChipComponent} from "../../../../common/standalone-components/chip/chip.component";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'asrdb-register-log-table-view',
@@ -115,6 +116,7 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
 
   constructor(
     private logService: RegisterLogService,
+    private router: Router,
     private changeDetectionRef: ChangeDetectorRef,
     private matDialog: MatDialog) {
   }
@@ -154,6 +156,10 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
         this.logService.resolveLog(id, this.building);
       }
     });
+  }
+
+  goToBuildingDetails() {
+    this.router.navigateByUrl('dashboard/register/details/BUILDING/' + this.building);
   }
 
   private filterLogs() {

@@ -1,8 +1,20 @@
 <div *ngIf="!isLoadingResults" class="building-details-container">
   <mat-card class="building-details-card">
     <mat-card-content>
-      <button mat-icon-button [matTooltip]="'Edit building'" style="float: right;" (click)="editBuilding(building.GlobalID)">
+      <button
+        mat-icon-button
+        [matTooltip]="'Edit building'"
+        style="float: right;"
+        (click)="editBuilding(building.GlobalID)">
         <mat-icon>edit</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        matTooltip="View building logs"
+        style="vertical-align: middle; float: right;"
+        (click)="gotToLogs()">
+        <mat-icon>open_in_new</mat-icon>
       </button>
       <h2 class="details-header" i18n>Details for building: {{building.GlobalID}}</h2>
       <span class="details-subheader" i18n>Data quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>

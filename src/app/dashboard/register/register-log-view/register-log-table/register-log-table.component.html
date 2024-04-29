@@ -1,7 +1,15 @@
 <div class="asrbd-container mat-elevation-z8" style="background-color: white; margin-bottom: 20px;">
   <div class="header-container">
     <div>
-      <h1 i18n class="header-title details-header">Rule Execution {{building}}</h1>
+      <h1 i18n class="header-title details-header">Rule Execution {{building}}
+        <button
+          mat-icon-button
+          matTooltip="View building details"
+          style="vertical-align: middle"
+          (click)="goToBuildingDetails()">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </h1>
       <span class="details-subheader" i18n>
         Quality status: <span style="font-weight: bold">{{buildingQuality | async}}</span>
       </span>
@@ -14,6 +22,7 @@ This is not implemented.
     <span class="spacer"></span>
     <ng-container *ngIf="executionStatus | async as isExecuting">
       <button mat-icon-button
+              matTooltip="Filter logs"
               (click)="filterData()"
               [disabled]="isExecuting | logExecution">
         <mat-icon>filter_alt</mat-icon>
