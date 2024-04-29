@@ -92,7 +92,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     const value = (entrance as any)?.[fieldName];
     const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
 
-    const control = new FormControl(value ? value : defaultValue);
+    const control = new FormControl(value || value === 0 ? value : defaultValue);
     if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
     }

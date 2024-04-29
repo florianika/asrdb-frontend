@@ -98,7 +98,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     const fieldName = field[NAME_PROP];
     const value = (this.existingBuildingDetails as any)?.[fieldName];
     const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
-    const control = new FormControl(value ? value : defaultValue);
+    const control = new FormControl(value || value === 0 ? value : defaultValue);
     if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
     }

@@ -149,9 +149,9 @@ export class DwellingDetailsFormComponent implements OnDestroy {
 
   private createFormControlForField(field: never) {
     const fieldName = field[NAME_PROP];
-    const value = this.dwelling?.[fieldName];
+    const value: string | number | undefined = this.dwelling?.[fieldName];
     const defaultValue = fieldName === 'DwlEntranceID' ? undefined: (field[DEFAULT_VALUE_PROP] ?? '');
-    const control = new FormControl(value ? value : defaultValue);
+    const control = new FormControl(value || value === 0 ? value : defaultValue);
     if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
     }
