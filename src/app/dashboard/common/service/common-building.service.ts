@@ -219,8 +219,7 @@ export class CommonBuildingService {
           });
           return;
         }
-        callback?.();
-        this.executeAutomaticRules(attributes.GlobalID);
+        this.executeAutomaticRules(attributes.GlobalID, callback);
       },
       error: (err: any) => {
         return this.handleError(err);
@@ -233,7 +232,7 @@ export class CommonBuildingService {
     return of(null);
   }
 
-  executeAutomaticRules(buildingId: string) {
+  executeAutomaticRules(buildingId: string, callback?: () => void) {
     const body = {
       buildingIds: [buildingId.replace('{', '').replace('}', '')],
       executionUser: this.authState.getNameId()
@@ -245,10 +244,14 @@ export class CommonBuildingService {
         }
       })
       .subscribe({
+        next: () => {
+          callback?.();
+        },
         error: (err) => {
           this.snackBar.open('Could not start automatic rules execution', 'Ok', {
             duration: 3000
           });
+          callback?.();
           return this.handleError(err);
         }
       })

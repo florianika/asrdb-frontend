@@ -197,6 +197,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         entranceId: this.entranceId
       },
     }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.dwellingUpdated.emit(this.entranceId);
       this.reload();
     });
   }
@@ -263,8 +264,8 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   private loadDwellings() {
     this.isLoadingResults = true;
     const filter = {
-      start: this.paginator.pageIndex * this.paginator.pageSize,
-      num: this.paginator.pageSize,
+      start: (this.paginator?.pageIndex ?? 0) * (this.paginator?.pageSize ?? 5),
+      num: this.paginator?.pageSize ?? 5,
       outFields: this.DWL_FIELDS,
       where: this.prepareWhereCase(),
       orderByFields: this.sort?.active ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()] : undefined

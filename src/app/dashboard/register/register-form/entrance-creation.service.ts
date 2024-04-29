@@ -26,7 +26,6 @@ export class EntranceManagementService {
         return;
       }
       this.isSaving.next(false);
-      this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + this.buildingId);
     },
     error: () => {
       this.isSaving.next(false);

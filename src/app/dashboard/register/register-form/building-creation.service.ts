@@ -18,9 +18,14 @@ export class BuildingManagementService {
   private responseHandler = () => ({
     next: (response: EntityManageResponse) => {
       const responseData = response['addResults']?.[0] ?? response['updateResults']?.[0];
+      const isCreate = !!response['addResults']?.[0] ?? false;
       if (responseData?.success) {
+        if (isCreate) {
+          this.startAutomaticRuleExecution(response, 'addResults');
+        } else {
+          this.startAutomaticRuleExecution(response, 'updateResults');
+        }
         this.isSaving.next(false);
-        this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + responseData.globalId);
       } else {
         this.snackBar.open('Could not save building data', 'Ok', {
           duration: 3000
@@ -35,6 +40,16 @@ export class BuildingManagementService {
       });
     }
   });
+
+  private startAutomaticRuleExecution(response: EntityManageResponse, action: 'addResults' | 'updateResults') {
+    const createResponseData = response[action];
+    if (createResponseData && createResponseData.length && createResponseData[0]?.['globalId']) {
+      const id = createResponseData[0].globalId;
+      this.buildingService.executeAutomaticRules(id, () => {
+        void this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + id);
+      });
+    }
+  }
 
   constructor(private buildingService: CommonBuildingService,
               private snackBar: MatSnackBar,

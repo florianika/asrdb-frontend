@@ -305,7 +305,9 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
       // Update building
       this.commonBuildingService.resetStatus(this.id!, () => {
-        this.loadBuildingData();
+        setTimeout(() => {
+          this.loadBuildingData();
+        }, 500);
       });
     }
   }
