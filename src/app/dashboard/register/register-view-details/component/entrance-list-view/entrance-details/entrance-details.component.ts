@@ -39,13 +39,15 @@ export class EntranceDetailsComponent implements OnInit {
           title: '',
           propName: 'EntCensus2023',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'EntAddressID',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
       ]
     },
@@ -56,37 +58,43 @@ export class EntranceDetailsComponent implements OnInit {
           title: '',
           propName: 'EntPointStatus',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
-          propName: 'EntStreetCode',
+          propName: 'EntStreet',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'EntBuildingNumber',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'EntEntranceNumber',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'EntTown',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'EntZipCode',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
       ]
     },
@@ -97,13 +105,15 @@ export class EntranceDetailsComponent implements OnInit {
           title: '',
           propName: 'EntDwellingRecs',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'EntDwellingExpec',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
       ]
     }
@@ -161,8 +171,9 @@ export class EntranceDetailsComponent implements OnInit {
       section.entries.forEach(entry => {
         entry.title = this.getTitle(entry.propName);
         entry.value = this.getValueFromStatus(entry.propName);
-        entry.log = this.logs.find(log => log.variable === entry.propName)
-          ?.qualityMessageEn ?? '';
+        const log = this.logs.find(log => log.variable === entry.propName);
+        entry.log = log?.qualityMessageEn ?? '';
+        entry.logType = log?.qualityAction ?? '';
       });
     });
   }

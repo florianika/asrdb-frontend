@@ -16,8 +16,9 @@ import {RegisterLogService} from "../../register-log-view/register-log-table/reg
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MomentDateAdapter} from "@angular/material-moment-adapter";
-import {MY_FORMATS} from "../../model/common-utils";
+import {getColor, MY_FORMATS} from "../../model/common-utils";
 import {ENTRANCE_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
+import {Log} from "../../register-log-view/model/log";
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -102,10 +103,9 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     this.formGroup.addControl((this.entranceId ?? '') + '_' + field[NAME_PROP], control);
   }
 
-  getLogForField(variable: string): string {
+  getLogForField(variable: string): Log | undefined {
     const variableName = variable.split('_')[1];
-    return this.registerLogService.getLogForVariable('ENTRANCE', variableName)?.qualityMessageEn
-      ?? '';
+    return this.registerLogService.getLogForVariable('ENTRANCE', variableName);
   }
 
   getError(control: AbstractControl) {
@@ -114,4 +114,6 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     }
     return '';
   }
+
+  protected readonly getColor = getColor;
 }

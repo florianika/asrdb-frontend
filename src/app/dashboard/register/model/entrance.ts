@@ -15,7 +15,7 @@ export type Entrance = {
   created_date: string;
   last_edited_user: number;
   last_edited_date: number;
-  EntStreetCode: number;
+  EntStreet: number;
   EntBuildingId: string;
   EntPointStatus: number;
   EntDwellingRecs: number;

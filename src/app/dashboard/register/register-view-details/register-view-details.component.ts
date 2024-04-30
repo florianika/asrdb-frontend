@@ -56,19 +56,22 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
           title: '',
           propName: 'BldID',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldCensus2023',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldAddressID',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
       ]
     },
@@ -79,49 +82,57 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
           title: '',
           propName: 'BldMunicipality',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldEnumArea',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldCadastralZone',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldProperty',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldPermitNumber',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldPermitDate',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldEntranceRecs',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldDwellingRecs',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
       ]
     },
@@ -132,109 +143,127 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
           title: '',
           propName: 'BldStatus',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldYearConstruction',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldYearDemolition',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldType',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldClass',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldArea',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldFloorsAbove',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldFloorsUnder',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldHeight',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldVolume',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldDwellingRecs',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldEntranceRecs',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldPipedWater',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldRainWater',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldWasteWater',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldElectricity',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldPipedGas',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
         {
           title: '',
           propName: 'BldElevator',
           value: '',
-          log: ''
+          log: '',
+          logType: ''
         },
       ]
     }
@@ -345,6 +374,8 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         entry.value = entry.propName === 'BldMunicipality' ? this.getMunicipality() : this.getValueFromStatus(entry.propName);
         entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
           ?.qualityMessageEn ?? '';
+        entry.logType = this.registerLogService.getLogForVariable('BUILDING', entry.propName)
+          ?.qualityAction ?? '';
       });
     });
   }

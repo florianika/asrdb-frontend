@@ -21,3 +21,19 @@ export const MY_FORMATS = {
     monthYearA11yLabel: 'YYYY',
   },
 };
+
+export const logTypeColorMap = new Map<string, string>([
+  ['ERR', 'red'],
+  ['MISS', 'orange'],
+  ['QUE', 'blue'],
+  ['AUT', 'green'],
+]);
+
+
+
+export function getColor(logType: string) {
+  if (logTypeColorMap.has(logType)) {
+    return logTypeColorMap.get(logType);
+  }
+  return 'gray';
+}

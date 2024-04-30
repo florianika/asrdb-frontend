@@ -8,8 +8,13 @@
           style="font-weight: bold;">{{getValueFromStatus('DwlQuality')}}</span></span>
       <section *ngFor="let section of sections">
         <h3>{{section.title}}</h3>
-        <asrdb-building-detail *ngFor="let entry of section.entries" [title]="entry.title"
-          [value]="entry.value" [log]="entry.log"></asrdb-building-detail>
+        <asrdb-building-detail
+          *ngFor="let entry of section.entries"
+          [title]="entry.title"
+          [value]="entry.value"
+          [log]="entry.log"
+          [logType]="entry.logType"
+        ></asrdb-building-detail>
         <hr>
       </section>
     </mat-card-content>

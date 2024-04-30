@@ -18,7 +18,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MomentDateAdapter} from "@angular/material-moment-adapter";
-import {MY_FORMATS} from "../../model/common-utils";
+import {getColor, MY_FORMATS} from "../../model/common-utils";
 import {Log} from "../../register-log-view/model/log";
 import {DWELLING_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
 
@@ -215,9 +215,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.dwellingCreationService.saveDwelling(dwelling);
   }
 
-  getLogForField(variable: string): string {
-    return this.logs.find(log => log.variable === variable)?.qualityMessageEn
-      ?? '';
+  getLogForField(variable: string): Log | undefined {
+    return this.logs.find(log => log.variable === variable);
   }
 
   getError(control: AbstractControl) {
@@ -226,4 +225,6 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     }
     return '';
   }
+
+    protected readonly getColor = getColor;
 }

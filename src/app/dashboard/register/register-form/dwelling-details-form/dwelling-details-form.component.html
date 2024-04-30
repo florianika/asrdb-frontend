@@ -23,8 +23,8 @@
           <mat-datepicker #picker></mat-datepicker>
         </ng-container>
         <mat-hint *ngIf="getLogForField(formItem.name) as log" style="font-size: 14px; padding-bottom: 10px">
-          <mat-icon>info</mat-icon>
-          <span style="margin-left: 5px">{{log}}</span>
+          <mat-icon [style.color]="getColor(log.qualityAction)">info</mat-icon>
+          <span style="margin-left: 5px">{{log.qualityMessageEn}}</span>
         </mat-hint>
         <mat-error *ngIf="formGroup.controls[formItem.name].invalid">{{getError(formGroup.controls[formItem.name])}}</mat-error>
       </mat-form-field>

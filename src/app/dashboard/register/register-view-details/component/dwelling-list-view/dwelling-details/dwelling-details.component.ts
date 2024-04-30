@@ -43,25 +43,29 @@ export class DwellingDetailsComponent implements OnInit {
           title: '',
           propName: 'GlobalID',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlEntranceID',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlCensus2023',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlAddressID',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         }
       ],
     },
@@ -72,31 +76,36 @@ export class DwellingDetailsComponent implements OnInit {
           title: this.STREET_NAME,
           propName: '',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: this.BUILDING_NUMBER,
           propName: '',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: this.ENTRANCE_NUMBER,
           propName: '',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlFloor',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlApartNumber',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         }
       ]
     },
@@ -107,85 +116,99 @@ export class DwellingDetailsComponent implements OnInit {
           title: '',
           propName: 'DwlStatus',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlYearConstruction',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlYearElimination',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlType',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlOwnership',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlOccupancy',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlSurface',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlWaterSupply',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlToilet',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlBath',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlHeatingFacility',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlHeatingEnergy',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlAirConditioner',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         },
         {
           title: '',
           propName: 'DwlSolarPanel',
           value: '',
-          log: ''
+          log: '',
+logType: ''
         }
       ]
     }
@@ -244,8 +267,9 @@ export class DwellingDetailsComponent implements OnInit {
         if (entry.propName !== '') {
           entry.title = this.getTitle(entry.propName);
           entry.value = this.getValueFromStatus(entry.propName);
-          entry.log = this.logs.find(log => log.variable === entry.propName)
-            ?.qualityMessageEn ?? '';
+          const log = this.logs.find(log => log.variable === entry.propName);
+          entry.log = log?.qualityMessageEn ?? '';
+          entry.logType = log?.qualityAction ?? '';
         } else if (entry.title === this.STREET_NAME) {
           entry.value = this.data.streetName;
         } else if (entry.title === this.BUILDING_NUMBER) {

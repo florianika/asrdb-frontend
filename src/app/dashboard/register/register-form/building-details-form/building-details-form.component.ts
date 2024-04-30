@@ -17,10 +17,11 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {MY_FORMATS} from "../../model/common-utils";
+import {getColor, logTypeColorMap, MY_FORMATS} from "../../model/common-utils";
 import {EntityCreationMapService} from "../entity-management-map.service";
 import {RegisterFilterService} from "../../register-table-view/register-filter.service";
 import {BUILDING_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
+import {Log} from "../../register-log-view/model/log";
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -45,6 +46,7 @@ import {BUILDING_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
   styleUrls: ['./building-details-form.component.css']
 })
 export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
+  protected readonly getColor = getColor;
 
   @Input() formGroup!: FormGroup;
   @Input() existingBuildingDetails?: Building;
@@ -119,9 +121,8 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  getLogForField(variable: string): string {
-    return this.registerLogService.getLogForVariable('BUILDING', variable)?.qualityMessageEn
-      ?? '';
+  getLogForField(variable: string): Log | undefined {
+    return this.registerLogService.getLogForVariable('BUILDING', variable);
   }
 
   getError(control: AbstractControl) {
