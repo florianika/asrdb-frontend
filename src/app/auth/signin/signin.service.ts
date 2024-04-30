@@ -15,7 +15,8 @@ export class SigninService {
   private signingIn = new BehaviorSubject(false);
   private signinObserver = {
     next: (signinResponse: SigninResponse) => {
-      this.getEsriCredentials(signinResponse);
+      this.authStateService.setJWT(signinResponse);
+      this.getEsriCredentials();
     },
     error: (error) => {
       console.error(error);
@@ -53,14 +54,13 @@ export class SigninService {
     });
   }
 
-  getEsriCredentials(signinResponse: SigninResponse) {
+  getEsriCredentials() {
     this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
       .subscribe({
       next: async (credentials) => {
         try {
           await this.authStateService.initEsriConfig(credentials);
           void this.router.navigateByUrl('/dashboard');
-          this.authStateService.setJWT(signinResponse);
           this.authStateService.setLoginState(true);
           this.signingIn.next(false);
         } catch (error) {
