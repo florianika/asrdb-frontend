@@ -120,20 +120,6 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
           log: '',
           logType: ''
         },
-        {
-          title: '',
-          propName: 'BldEntranceRecs',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldDwellingRecs',
-          value: '',
-          log: '',
-          logType: ''
-        },
       ]
     },
     {
@@ -211,14 +197,14 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         },
         {
           title: '',
-          propName: 'BldDwellingRecs',
+          propName: 'BldEntranceRecs',
           value: '',
           log: '',
           logType: ''
         },
         {
           title: '',
-          propName: 'BldEntranceRecs',
+          propName: 'BldDwellingRecs',
           value: '',
           log: '',
           logType: ''
