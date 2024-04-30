@@ -11,6 +11,7 @@ import { CommonDwellingService } from 'src/app/dashboard/common/service/common-d
 import { CommonRegisterHelperService } from 'src/app/dashboard/common/service/common-helper.service';
 import {getDate} from "../../../../model/common-utils";
 import {Log} from "../../../../register-log-view/model/log";
+import {HistoryDetailsComponent} from "../../history-details/history-details.component";
 
 @Component({
   selector: 'asrdb-dwelling-details',
@@ -21,7 +22,8 @@ import {Log} from "../../../../register-log-view/model/log";
     MatDialogModule,
     MatCardModule,
     MatButtonModule,
-    BuildingDetailComponent
+    BuildingDetailComponent,
+    HistoryDetailsComponent
   ],
   standalone: true
 })

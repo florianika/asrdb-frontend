@@ -13,19 +13,14 @@
       </section>
     </mat-card-content>
   </mat-card>
-  <mat-card class="building-last-modified-card">
-    <mat-card-content>
-      <h2 i18n>History details</h2>
-      <div>
-        <span i18n>Created by: </span>
-        <span>{{entrance.created_user}} - {{getDate(entrance.created_date)}}</span>
-      </div>
-      <div>
-        <span i18n>Last edited by: </span>
-        <span>{{entrance.last_edited_user}} - {{getDate(entrance.last_edited_date)}}</span>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <div class="building-last-modified-card">
+    <asrdb-history-details
+      [externalCreator]="entrance.external_creator"
+      [externalCreationDate]="entrance.external_creator_date"
+      [externalUpdater]="entrance.external_editor"
+      [externalUpdateDate]="entrance.external_editor_date"
+    ></asrdb-history-details>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>

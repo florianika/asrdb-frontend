@@ -19,7 +19,7 @@ import {RegisterLogService} from "../register-log-view/register-log-table/regist
 import {getDate} from "../model/common-utils";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {CommonEntranceService} from "../../common/service/common-entrance.service";
-import {Building} from "../model/building";
+import {HistoryDetailsComponent} from "./component/history-details/history-details.component";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -33,7 +33,8 @@ import {Building} from "../model/building";
     EntranceListViewComponent,
     DwellingListViewComponent,
     RegisterMapComponent,
-    MatTooltipModule
+    MatTooltipModule,
+    HistoryDetailsComponent
   ],
   providers: [
     RegisterLogService

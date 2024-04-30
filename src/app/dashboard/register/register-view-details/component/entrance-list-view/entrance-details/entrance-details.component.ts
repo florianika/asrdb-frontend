@@ -11,6 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import {getDate} from "../../../../model/common-utils";
 import {Log} from "../../../../register-log-view/model/log";
+import {HistoryDetailsComponent} from "../../history-details/history-details.component";
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -21,7 +22,8 @@ import {Log} from "../../../../register-log-view/model/log";
     MatDialogModule,
     MatCardModule,
     MatButtonModule,
-    BuildingDetailComponent
+    BuildingDetailComponent,
+    HistoryDetailsComponent
   ],
   standalone: true
 })

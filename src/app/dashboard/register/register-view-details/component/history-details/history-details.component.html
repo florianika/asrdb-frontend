@@ -1,0 +1,13 @@
+<mat-card>
+  <mat-card-content>
+    <h2 i18n>History details</h2>
+    <div>
+      <span i18n>Created by: </span>
+      <span>{{externalCreatorObservable | async}} - {{getDate(externalCreationDate)}}</span>
+    </div>
+    <div>
+      <span i18n>Last edited by: </span>
+      <span>{{externalUpdaterObservable | async}} - {{getDate(externalUpdateDate)}}</span>
+    </div>
+  </mat-card-content>
+</mat-card>

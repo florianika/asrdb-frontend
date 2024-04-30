@@ -14,19 +14,14 @@
       </section>
     </mat-card-content>
   </mat-card>
-  <mat-card class="building-last-modified-card">
-    <mat-card-content>
-      <h2 i18n>History details</h2>
-      <div>
-        <span i18n>Created by: </span>
-        <span>{{dwelling.created_user}} - {{getDate(dwelling.created_date)}}</span>
-      </div>
-      <div>
-        <span i18n>Last edited by: </span>
-        <span>{{dwelling.last_edited_user}} - {{getDate(dwelling.last_edited_date)}}</span>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <div class="building-last-modified-card">
+    <asrdb-history-details
+      [externalCreator]="dwelling.external_creator"
+      [externalCreationDate]="dwelling.external_creator_date"
+      [externalUpdater]="dwelling.external_editor"
+      [externalUpdateDate]="dwelling.external_editor_date"
+    ></asrdb-history-details>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>

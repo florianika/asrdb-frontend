@@ -28,20 +28,12 @@
     </mat-card-content>
   </mat-card>
   <div class="building-last-modified-card">
-    <mat-card>
-      <mat-card-content>
-        <h2 i18n>History details</h2>
-        <div>
-          <span i18n>Created by: </span>
-          <span>{{building.created_user}} - {{getDate(building.created_date)}}</span>
-        </div>
-        <div>
-          <span i18n>Last edited by: </span>
-          <span>{{building.last_edited_user}} - {{getDate(building.last_edited_date)}}</span>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
+    <asrdb-history-details
+      [externalCreator]="building.external_creator"
+      [externalCreationDate]="building.external_creator_date"
+      [externalUpdater]="building.external_editor"
+      [externalUpdateDate]="building.external_editor_date"
+    ></asrdb-history-details>
     <asrdb-register-map [enableFilter]="false" [enableSelection]="false" [buildingGlobalId]="id"></asrdb-register-map>
   </div>
 
