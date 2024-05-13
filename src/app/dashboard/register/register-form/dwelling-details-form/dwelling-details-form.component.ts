@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, Subject, catchError, of, takeUntil } from 'rxjs';
-import { FormObject, getFormObjectType, getFormObjectOptions } from '../../model/form-object';
+import {FormObject, getFormObjectType, getFormObjectOptions, getValue} from '../../model/form-object';
 import { CommonDwellingService } from '../../../common/service/common-dwellings.service';
 import { EDITABLE_PROP, ALIAS_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, NAME_PROP, DEFAULT_VALUE_PROP, NULLABLE_PROP } from '../../constant/common-constants';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -149,7 +149,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
 
   private createFormControlForField(field: never) {
     const fieldName = field[NAME_PROP];
-    const value: string | number | undefined = this.dwelling?.[fieldName];
+    const value = getValue(field, fieldName, this.dwelling);
     const defaultValue = fieldName === 'DwlEntranceID' ? undefined: (field[DEFAULT_VALUE_PROP] ?? '');
     const control = new FormControl(value || value === 0 ? value : defaultValue);
     if (!field[NULLABLE_PROP]) {

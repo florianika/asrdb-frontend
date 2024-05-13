@@ -86,7 +86,12 @@ export class BuildingManagementService {
     const cleanedAttributes = {} as Partial<Building>;
     Object.entries(buildingDetails).forEach(([key, value]) => {
       if (value) {
-        (cleanedAttributes as any)[key] = value;
+        if (key === 'BldPermitDate') {
+          const unixTime = (value as any).unix?.();
+          (cleanedAttributes as any)[key] = unixTime ? (unixTime * 1000) : new Date(value as string).getTime();
+        } else {
+          (cleanedAttributes as any)[key] = value;
+        }
       }
     });
     return [

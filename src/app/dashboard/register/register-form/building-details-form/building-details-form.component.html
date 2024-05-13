@@ -19,7 +19,11 @@
       </mat-select>
 
       <ng-container *ngIf="formItem.type === 'date'">
-        <input matInput [matDatepicker]="picker" (click)="picker.open()" [formControlName]="formItem.name" readonly>
+        <input matInput
+               [matDatepicker]="picker"
+               [formControlName]="formItem.name"
+               (click)="picker.open()"
+               readonly>
         <mat-datepicker #picker></mat-datepicker>
       </ng-container>
       <mat-hint *ngIf="getLogForField(formItem.name) as log" style="font-size: 14px; padding-bottom: 10px; display: inline-block">

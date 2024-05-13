@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormGroup, FormControl, Validators, ReactiveFormsModule, AbstractControl} from '@angular/forms';
 import { Subject } from 'rxjs';
-import { FormObject, getFormObjectType, getFormObjectOptions } from '../../model/form-object';
+import {FormObject, getFormObjectType, getFormObjectOptions, getValue} from '../../model/form-object';
 import { CommonEntranceService } from '../../../common/service/common-entrance.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -90,7 +90,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
   private createFormControlForField(field: never) {
     const fieldName = field[NAME_PROP];
     const entrance = this.existingEntrancesDetails?.find(o => o.GlobalID === this.entranceId);
-    const value = (entrance as any)?.[fieldName];
+    const value = getValue(field, fieldName, entrance);
     const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
 
     const control = new FormControl(value || value === 0 ? value : defaultValue);

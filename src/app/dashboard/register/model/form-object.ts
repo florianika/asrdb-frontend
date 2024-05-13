@@ -1,3 +1,5 @@
+import {TYPE_PROP} from "../constant/common-constants";
+
 export type FormObject = {
   name: string,
   alias: string,
@@ -37,4 +39,11 @@ export function getFormObjectOptions(type: FormObjectType, domain: EsriDomain): 
     text: codedValue.name,
     value: codedValue.code
   }));
+}
+
+export function getValue(field: never, fieldName: never, existingBuildingDetails?: any) {
+  const value = existingBuildingDetails?.[fieldName];
+  return field[TYPE_PROP] === 'esriFieldTypeDate'
+    ? new Date(value as number)
+    : value;
 }

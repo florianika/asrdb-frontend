@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {getDate} from "../../register/model/common-utils";
 
 @Injectable()
 export class CommonRegisterHelperService {
@@ -26,6 +27,9 @@ export class CommonRegisterHelperService {
     if (!codeValues && this.isNotApplicable(code)) {
       return 'Not applicable';
     }
+    if (this.isDateField(fields, column)) {
+      return getDate((code as number) as any);
+    }
     if (!codeValues) {
       return code;
     }
@@ -47,5 +51,10 @@ export class CommonRegisterHelperService {
 
   private isNotApplicable(code: string | number) {
     return (!code && code !== 0) || code.toString() === '9000';
+  }
+
+  private isDateField(fields: any[], column: string) {
+    const field = this.getField(fields, column);
+    return field?.type === 'esriFieldTypeDate';
   }
 }

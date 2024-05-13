@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonBuildingService } from '../../../common/service/common-building.service';
 import {distinctUntilChanged, Subject, takeUntil} from 'rxjs';
-import { FormObject, getFormObjectOptions, getFormObjectType } from '../../model/form-object';
+import {FormObject, getFormObjectOptions, getFormObjectType, getValue} from '../../model/form-object';
 import { Building } from '../../model/building';
 import { EDITABLE_PROP, ALIAS_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, NAME_PROP, NULLABLE_PROP, DEFAULT_VALUE_PROP } from '../../constant/common-constants';
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -98,7 +98,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
 
   private createFormControlForField(field: never) {
     const fieldName = field[NAME_PROP];
-    const value = (this.existingBuildingDetails as any)?.[fieldName];
+    const value = getValue(field, fieldName, this.existingBuildingDetails);
     const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
     const control = new FormControl(value || value === 0 ? value : defaultValue);
     if (!field[NULLABLE_PROP]) {

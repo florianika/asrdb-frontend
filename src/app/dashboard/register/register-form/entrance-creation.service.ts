@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { CommonEntranceService } from '../../common/service/common-entrance.service';
-import { BehaviorSubject } from 'rxjs';
-import { DEFAULR_SPARTIAL_REF, Point } from '../model/map-data';
-import { Entrance } from '../model/entrance';
-import { EntityManageResponse } from '../model/entity-req-res';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {Injectable} from '@angular/core';
+import {CommonEntranceService} from '../../common/service/common-entrance.service';
+import {BehaviorSubject} from 'rxjs';
+import {DEFAULR_SPARTIAL_REF, Point} from '../model/map-data';
+import {Entrance} from '../model/entrance';
+import {EntityManageResponse} from '../model/entity-req-res';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from "@angular/router";
 import {AuthStateService} from "../../../common/services/auth-state.service";
 
