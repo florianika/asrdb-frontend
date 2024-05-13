@@ -44,8 +44,8 @@ export class EntranceManagementService {
 
   public saveEntranceEntity(geometry: Point, entrance: Entrance, buildingGlobalId: string) {
     this.buildingId = buildingGlobalId;
+    entrance.EntQuality = 9;
     const attributes = this.cleanAttributes(entrance, geometry, buildingGlobalId);
-    attributes.EntQuality = 9;
 
     if (attributes?.GlobalID) {
       attributes.external_editor = `{${this.authState.getNameId()}}` ?? '';

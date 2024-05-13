@@ -82,13 +82,13 @@ export class BuildingManagementService {
 
   private createFeatures(buildingDetails: Building, mapFormData: BuildingPoly) {
     this.isSaving.next(true);
+    buildingDetails.BldQuality = 9;
     const cleanedAttributes = {} as Partial<Building>;
     Object.entries(buildingDetails).forEach(([key, value]) => {
       if (value) {
         (cleanedAttributes as any)[key] = value;
       }
     });
-    buildingDetails.BldQuality = 9
     return [
       {
         'geometry': {

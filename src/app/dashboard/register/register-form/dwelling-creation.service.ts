@@ -60,13 +60,13 @@ export class DwellingManagementService {
 
   private createFeatures(dwelling: Dwelling) {
     this.isSaving.next(true);
+    dwelling.DwlQuality = 9;
     const cleanedAttributes = {} as Partial<Dwelling>;
     Object.entries(dwelling).forEach(([key, value]) => {
       if (value) {
         (cleanedAttributes as any)[key] = value;
       }
     });
-    dwelling.DwlQuality = 9;
     return [
       {
         'attributes': cleanedAttributes
