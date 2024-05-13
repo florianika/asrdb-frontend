@@ -216,7 +216,15 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   }
 
   getLogForField(variable: string): Log | undefined {
-    return this.logs.find(log => log.variable === variable);
+    const cleanedId = this.dwelling?.GlobalID.replace('{', '').replace('}', '').toLowerCase();
+    return this.logs.find(log =>
+      log.variable === variable &&
+      log.entityType === 'DWELLING' &&
+      log.dwlId === cleanedId);
+  }
+
+  hasLog(variable: string): boolean {
+    return !!this.getLogForField(variable);
   }
 
   getError(control: AbstractControl) {

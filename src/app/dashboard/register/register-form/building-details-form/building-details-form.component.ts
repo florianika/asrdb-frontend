@@ -122,7 +122,11 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   getLogForField(variable: string): Log | undefined {
-    return this.registerLogService.getLogForVariable('BUILDING', variable);
+    return this.registerLogService.getLogForVariable('BUILDING', variable, this.existingBuildingDetails?.GlobalID);
+  }
+
+  hasLog(variable: string): boolean {
+    return !!this.getLogForField(variable);
   }
 
   getError(control: AbstractControl) {

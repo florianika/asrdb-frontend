@@ -105,7 +105,11 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   getLogForField(variable: string): Log | undefined {
     const variableName = variable.split('_')[1];
-    return this.registerLogService.getLogForVariable('ENTRANCE', variableName);
+    return this.registerLogService.getLogForVariable('ENTRANCE', variableName, this.entranceId ?? undefined);
+  }
+
+  hasLog(variable: string): boolean {
+    return !!this.getLogForField(variable);
   }
 
   getError(control: AbstractControl) {

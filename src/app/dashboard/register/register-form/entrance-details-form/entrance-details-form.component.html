@@ -1,6 +1,9 @@
 <form [formGroup]="formGroup">
   <ng-container *ngFor="let formItem of formStructure">
-    <mat-form-field class="full-width">
+    <mat-form-field
+      class="full-width"
+      *ngIf="!formItem.hidden"
+      [style.margin-bottom]="hasLog(formItem.name) ? '10px' : '0'">
       <mat-label>{{formItem.alias}}</mat-label>
       <input
         *ngIf="formItem.type !== 'select' && formItem.type !== 'date'"

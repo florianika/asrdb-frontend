@@ -144,8 +144,15 @@ export class RegisterLogService {
       });
   }
 
-  public getLogForVariable(entityType: EntityType, variable: string): Log | undefined {
-    return this.loadedLogs.value.find(log => log.entityType === entityType && log.variable === variable);
+  public getLogForVariable(entityType: EntityType, variable: string, id?: string): Log | undefined {
+    const cleanedID = id?.replace('{', '').replace('}', '').toLowerCase();
+    const matchID = (log: Log): boolean => {
+      return entityType === 'BUILDING' ? log.bldId === cleanedID :
+        entityType === 'ENTRANCE' ? log.entId === cleanedID :
+          entityType === 'DWELLING' ? log.dwlId === cleanedID : false
+    }
+    return this.loadedLogs.value
+      .find(log => log.entityType === entityType && log.variable === variable && cleanedID && matchID(log));
   }
 
   public getAllLogs(entityType?: EntityType): Log[] {
