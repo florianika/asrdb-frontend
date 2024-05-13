@@ -18,6 +18,7 @@ export class RegisterLogService {
   private readonly LOGS_URL = '/qms/outputlogs/buildings/';
   private readonly EXECUTE_RULES = '/qms/check/buildings';
   private readonly RESOLVE_LOG = '/qms/outputlogs/resolve/';
+  private readonly UNRESOLVE_LOG = '/qms/outputlogs/pend/';
 
   private loadedLogs = new BehaviorSubject<Log[]>([]);
   public get logs() {
@@ -128,6 +129,25 @@ export class RegisterLogService {
   public resolveLog(logId: string, buildingId: string) {
     this.isResolving.next(true);
     this.httpClient.patch(environment.base_url + this.RESOLVE_LOG + logId, null)
+      .subscribe({
+        next: () => {
+          this.isResolving.next(false);
+          this.resetStatus(logId);
+          this.loadLogs(buildingId);
+        },
+        error: (err) => {
+          this.isResolving.next(false);
+          this.matSnack.open('Action could not be performed', 'Ok', {
+            duration: 3000
+          });
+          console.log(err);
+        }
+      });
+  }
+
+  public unresolveLog(logId: string, buildingId: string) {
+    this.isResolving.next(true);
+    this.httpClient.patch(environment.base_url + this.UNRESOLVE_LOG + logId, null)
       .subscribe({
         next: () => {
           this.isResolving.next(false);

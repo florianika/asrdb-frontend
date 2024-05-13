@@ -69,7 +69,8 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   @Input() building!: string;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild("confirmDialog") confirmDialog!: TemplateRef<any>;
+  @ViewChild("confirmResolveDialog") confirmResolveDialog!: TemplateRef<any>;
+  @ViewChild("confirmPendingDialog") confirmPendingDialog!: TemplateRef<any>;
   private dataSource: MatTableDataSource<Log> = new MatTableDataSource<Log>();
 
   public isLoadingResults = this.logService.isLoadingResults;
@@ -151,9 +152,17 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   }
 
   resolve(id: string) {
-    this.matDialog.open(this.confirmDialog).afterClosed().subscribe((confirm: boolean) => {
+    this.matDialog.open(this.confirmResolveDialog).afterClosed().subscribe((confirm: boolean) => {
       if (confirm) {
         this.logService.resolveLog(id, this.building);
+      }
+    });
+  }
+
+  unresolve(id: string) {
+    this.matDialog.open(this.confirmPendingDialog).afterClosed().subscribe((confirm: boolean) => {
+      if (confirm) {
+        this.logService.unresolveLog(id, this.building);
       }
     });
   }
