@@ -87,7 +87,6 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     'variable',
     'qualityStatus',
     'qualityAction',
-    'errorLevel',
     'actions'
   ];
   public resultsLength = 0;
