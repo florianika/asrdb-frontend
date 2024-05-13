@@ -19,15 +19,16 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
   @Input() enableSelection = true;
   @Input() enableLegend = false;
   @Input() buildingGlobalId?: string;
+  @Input() skipOtherFiltersApartFromGlobalId = false;
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
 
   constructor(private registerMapService: RegisterMapService, private registerFilterService: RegisterFilterService) { }
 
   ngOnInit(): void {
+    this.registerFilterService.skipOtherFiltersApartFromGlobalId = this.skipOtherFiltersApartFromGlobalId;
     this.registerFilterService.setBuildingGlobalIdFilter(this.buildingGlobalId);
     this.registerFilterService.updateGlobalIds(this.buildingGlobalId ? [this.buildingGlobalId] : undefined);
-
     // Initialize MapView and return an instance of MapView
     this.initializeMap().then(() => {
       console.log('The map is ready.');

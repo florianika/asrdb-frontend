@@ -40,7 +40,12 @@
       [externalUpdater]="building.external_editor"
       [externalUpdateDate]="building.external_editor_date"
     ></asrdb-history-details>
-    <asrdb-register-map [enableFilter]="false" [enableSelection]="false" [buildingGlobalId]="id"></asrdb-register-map>
+    <asrdb-register-map
+      [enableFilter]="false"
+      [enableSelection]="false"
+      [buildingGlobalId]="id"
+      [skipOtherFiltersApartFromGlobalId]="true"
+    ></asrdb-register-map>
   </div>
 
   <div class="full-width">

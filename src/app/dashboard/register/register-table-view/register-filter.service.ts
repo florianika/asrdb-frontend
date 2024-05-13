@@ -9,6 +9,7 @@ const DEFAULT_MUNICIPALITY = '53';
 
 @Injectable()
 export class RegisterFilterService {
+  skipOtherFiltersApartFromGlobalId = false;
   get filterObservable() {
     return this.filter.asObservable();
   }
@@ -130,9 +131,9 @@ export class RegisterFilterService {
           });
           const globalIdsCondition = globalIds.map(globalId => `'${globalId}'`).join(',');
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
-        } else if (['BldStatus', 'BldType', 'BldQuality'].includes(filter.column)) {
+        } else if (['BldStatus', 'BldType', 'BldQuality'].includes(filter.column) && !this.skipOtherFiltersApartFromGlobalId) {
           conditions.push(filter.column + ' in (' + filter.value + ')');
-        } else {
+        } else if (!this.skipOtherFiltersApartFromGlobalId) {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
         }
       });
