@@ -83,10 +83,13 @@ export class FeatureSelectionService {
       const query = this.bldlayer.createQuery();
       query.geometry = geometry;
       query.outFields = ['GlobalID'];
+      query.where = this.registerFilterService.prepareWhereCase();
       const globalIds = (await (await this.bldlayer.queryFeatures(query)).toJSON())
         .features
         .map((o: any) => o.attributes['GlobalID']);
-      this.registerFilterService.setBuildingsGlobalIdFilter(globalIds);
+      if (globalIds.length) {
+        this.registerFilterService.setBuildingsGlobalIdFilter(globalIds);
+      }
     }
   }
 
