@@ -22,9 +22,8 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   public displayedColumns = [
     'id',
     'localId',
-    'nameAl',
-    'nameEn',
     'variable',
+    'ruleRequirement',
     'version',
     'ruleStatus',
     'actions',

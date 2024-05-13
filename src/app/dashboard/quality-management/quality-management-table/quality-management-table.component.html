@@ -33,17 +33,13 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Reference</th>
         <td mat-cell *matCellDef="let element"> {{element.localId}} </td>
       </ng-container>
-      <ng-container matColumnDef="nameAl">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Name in Albanian</th>
-        <td mat-cell *matCellDef="let element"> {{element.nameAl}} </td>
-      </ng-container>
-      <ng-container matColumnDef="nameEn">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Name in English</th>
-        <td mat-cell *matCellDef="let element"> {{element.nameEn}} </td>
-      </ng-container>
       <ng-container matColumnDef="variable">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Variable</th>
         <td mat-cell *matCellDef="let element"> {{element.variable}} </td>
+      </ng-container>
+      <ng-container matColumnDef="ruleRequirement">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Requirement</th>
+        <td mat-cell *matCellDef="let element"> {{element.ruleRequirement}} </td>
       </ng-container>
       <ng-container matColumnDef="version">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Version</th>
