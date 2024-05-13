@@ -25,8 +25,8 @@ export class RegisterFilterService {
       // user can change this to load what they want
       BldMunicipality: DEFAULT_MUNICIPALITY,
       BldStatus: [],
-      BldType: '',
-      BldQuality: '',
+      BldType: [],
+      BldQuality: [],
       BldEnumArea: '',
       GlobalID: '',
     },
@@ -95,17 +95,12 @@ export class RegisterFilterService {
     this.filter.next({
       filter: this.filter.value.filter,
       options: {
-        BldMunicipality: this.getOptionsFromDomain('BldMunicipality'),
+        BldMunicipality: this.getBldMunicipalityOptions(),
         BldStatus: this.getOptionsFromDomain('BldStatus'),
         BldType: this.getOptionsFromDomain('BldType'),
         BldQuality: this.getOptionsFromDomain('BldQuality'),
       }
     });
-  }
-
-  private getOptionsFromDomain(domain: string) {
-    const options = this.getOptions(domain);
-    return options.length ? options : (this.filter.value.options as any)[domain];
   }
 
   prepareWhereCase() {
@@ -135,7 +130,7 @@ export class RegisterFilterService {
           });
           const globalIdsCondition = globalIds.map(globalId => `'${globalId}'`).join(',');
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
-        } else if (filter.column === 'BldStatus') {
+        } else if (['BldStatus', 'BldType', 'BldQuality'].includes(filter.column)) {
           conditions.push(filter.column + ' in (' + filter.value + ')');
         } else {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
@@ -163,20 +158,39 @@ export class RegisterFilterService {
     return field
       .domain
       ?.codedValues
-      ?.map((codeValue: { name: string, code: string }) => {
-      return {
-        name: codeValue.name,
-        code: codeValue.code,
-      };
-    })
+      ?.map((codeValue: { name: string, code: string }) => (
+        {
+          name: codeValue.name,
+          code: codeValue.code,
+        })
+      )
       ?.sort((a: { name: string, code: string }, b: { name: string, code: string }) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1;
-        } else if (a.name < b.name) {
+        } else if (a.code < b.code) {
           return -1;
         }
         return 0;
       });
+  }
+
+  private getOptionsFromDomain(domain: string) {
+    const options = this.getOptions(domain);
+    return options.length ? options : (this.filter.value.options as any)[domain];
+  }
+
+  private getBldMunicipalityOptions() {
+    return this.getOptionsFromDomain('BldMunicipality').sort((a: { name: string, code: string }, b: {
+      name: string,
+      code: string
+    }) => {
+      if (a.name > b.name) {
+        return 1;
+      } else if (a.name < b.name) {
+        return -1;
+      }
+      return 0;
+    });
   }
 
   private getWhereConditionValue(value: string | number) {

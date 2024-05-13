@@ -9,6 +9,10 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Enumeration area</mat-label>
+    <input matInput [(ngModel)]="filterConfig.filter.BldEnumArea"/>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Status</mat-label>
     <mat-select
       [value]="filterConfig.filter.BldStatus"
@@ -20,19 +24,21 @@
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Type</mat-label>
-    <mat-select [value]="filterConfig.filter.BldType" (selectionChange)="changeValue($event, 'BldType')">
+    <mat-select
+      [value]="filterConfig.filter.BldType"
+      [multiple]="true"
+      (selectionChange)="changeValue($event, 'BldType')">
       <mat-option *ngFor="let type of filterConfig.options.BldType" [value]="type.code">{{type.name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Quality</mat-label>
-    <mat-select [value]="filterConfig.filter.BldQuality" (selectionChange)="changeValue($event, 'BldQuality')">
+    <mat-select
+      [value]="filterConfig.filter.BldQuality"
+      [multiple]="true"
+      (selectionChange)="changeValue($event, 'BldQuality')">
       <mat-option *ngFor="let type of filterConfig.options.BldQuality" [value]="type.code">{{type.name}}</mat-option>
     </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label i18n>Enumeration area</mat-label>
-    <input matInput [(ngModel)]="filterConfig.filter.BldEnumArea"/>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>PK Buildings (Global ID)</mat-label>

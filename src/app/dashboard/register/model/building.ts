@@ -48,8 +48,8 @@ export type BuildingFilter = {
   filter: {
     BldMunicipality: string;
     BldStatus: string[];
-    BldType: string;
-    BldQuality: string;
+    BldType: string[];
+    BldQuality: string[];
     GlobalID: string;
     BldEnumArea: string;
   };
