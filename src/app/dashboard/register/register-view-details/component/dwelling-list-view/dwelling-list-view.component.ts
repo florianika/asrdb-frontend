@@ -175,7 +175,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         switchMap(() => this.loadDwellings()),
       ).subscribe((res) => this.handleResponse(res));
       const entrance = this.entrances.find(e => e.GlobalID === changes['entranceId'].currentValue);
-      this.streetName = entrance?.EntAddressID ?? 'Unknown';
+      this.streetName = entrance?.EntStreet.toString() ?? 'Unknown';
       this.entranceNumber = entrance?.EntEntranceNumber?.toString() ?? 'Unknown';
     }
   }

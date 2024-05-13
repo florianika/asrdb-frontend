@@ -77,7 +77,9 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   ];
   private destroy$ = new Subject();
 
-  displayedColumns: string[] = this.columns.concat(['actions']).filter(column => column !== 'ObjectID');
+  displayedColumns: string[] = this.columns
+    .concat(['actions'])
+    .filter(column => !['ObjectID', 'EntBuildingID'].includes(column));
   data: any[] = [];
   fields: any[] = [];
   resultsLength = 0;

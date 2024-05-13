@@ -4,3 +4,7 @@
 .selected-entrance-row {
   background: lightgray;
 }
+
+.mat-column-EntStreet {
+  min-width: 300px;
+}
