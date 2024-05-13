@@ -6,6 +6,7 @@ export type Log = {
   bldId?: string,
   entId?: string
   dwlId?: string,
+  reference: string,
   entityType: EntityType,
   variable?: string,
   qualityAction: string,

@@ -78,7 +78,7 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   public isResolvingLog = this.logService.isResolvingLog;
   public buildingQuality = this.logService.bldQuality;
   public displayedColumns = [
-    'ruleId',
+    'reference',
     'bldId',
     'entId',
     'dwlId',
