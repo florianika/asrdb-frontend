@@ -9,7 +9,11 @@ export const BUILDING_HIDDEN_FIELDS = [
   'external_creator_date',
   'external_editor_date',
   'BldQuality',
-  'BldID'
+  'BldID',
+  'BldHeight',
+  'BldVolume',
+  'BldEntranceRecs',
+  'BldDwellingRecs',
 ];
 
 export const ENTRANCE_HIDDEN_FIELDS = [
@@ -26,7 +30,8 @@ export const ENTRANCE_HIDDEN_FIELDS = [
   'external_editor_date',
   'EntQuality',
   'EntID',
-  'EntBuildingID'
+  'EntBuildingID',
+  'EntDwellingRecs'
 ];
 
 export const DWELLING_HIDDEN_FIELDS = [
