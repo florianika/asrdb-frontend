@@ -17,7 +17,7 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {getColor, logTypeColorMap, MY_FORMATS} from "../../model/common-utils";
+import {getColor, MY_FORMATS} from "../../model/common-utils";
 import {EntityCreationMapService} from "../entity-management-map.service";
 import {RegisterFilterService} from "../../register-table-view/register-filter.service";
 import {BUILDING_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";

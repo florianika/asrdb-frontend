@@ -132,8 +132,7 @@ export class RegisterLogService {
       .subscribe({
         next: () => {
           this.isResolving.next(false);
-          this.resetStatus(logId);
-          this.loadLogs(buildingId);
+          this.executeRules(buildingId);
         },
         error: (err) => {
           this.isResolving.next(false);
@@ -151,8 +150,7 @@ export class RegisterLogService {
       .subscribe({
         next: () => {
           this.isResolving.next(false);
-          this.resetStatus(logId);
-          this.loadLogs(buildingId);
+          this.executeRules(buildingId);
         },
         error: (err) => {
           this.isResolving.next(false);
@@ -165,14 +163,21 @@ export class RegisterLogService {
   }
 
   public getLogForVariable(entityType: EntityType, variable: string, id?: string): Log | undefined {
-    const cleanedID = id?.replace('{', '').replace('}', '').toLowerCase();
+    if (!id) {
+      return undefined;
+    }
+    const cleanedID = id.replace('{', '').replace('}', '').toLowerCase();
     const matchID = (log: Log): boolean => {
       return entityType === 'BUILDING' ? log.bldId === cleanedID :
         entityType === 'ENTRANCE' ? log.entId === cleanedID :
           entityType === 'DWELLING' ? log.dwlId === cleanedID : false
     }
     return this.loadedLogs.value
-      .find(log => log.entityType === entityType && log.variable === variable && cleanedID && matchID(log));
+      .find(log =>
+        (log.qualityAction !== 'QUE' || log.qualityStatus === 'PENDING') &&
+        log.entityType === entityType &&
+        log.variable === variable &&
+        matchID(log));
   }
 
   public getAllLogs(entityType?: EntityType): Log[] {
@@ -181,26 +186,6 @@ export class RegisterLogService {
         return log.entityType === entityType;
       }
       return true;
-    });
-  }
-
-  private resetStatus(logId: string) {
-    const log = this.loadedLogs.getValue().find(log => log.id === logId);
-    if (log) {
-      const entityType = log.entityType;
-      this.resetBuildingStatus(log);
-      if (entityType === 'ENTRANCE') {
-        this.commonEntranceService.resetStatus(log.entId!);
-      } else if (entityType === 'DWELLING') {
-        this.commonEntranceService.resetStatus(log.entId!);
-        this.commonDwellingService.resetStatus(log.dwlId!);
-      }
-    }
-  }
-
-  private resetBuildingStatus(log: Log) {
-    this.commonBuildingService.resetStatus(log.bldId!, () => {
-      this.loadBuildingQuality(log.bldId!);
     });
   }
 }
