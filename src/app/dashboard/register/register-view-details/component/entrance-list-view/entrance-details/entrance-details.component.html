@@ -37,7 +37,8 @@
     </div>
     <div class="col-12 mt-3">
       <asrdb-dwelling-list-view
-        [entranceId]="id ?? ''"
+        *ngIf="id"
+        [entranceId]="id"
         [entrances]="[entrance]"
         [buildingNumber]="building.BldProperty"
         (dwellingUpdated)="dwellingUpdated($event)"
