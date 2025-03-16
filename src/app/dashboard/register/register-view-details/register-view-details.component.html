@@ -51,6 +51,7 @@
   <div class="full-width">
     <asrdb-entrance-list-view
       [buildingGlobalId]="building.GlobalID"
+      [building]="building"
       (entrancesLoaded)="setEntrances($event)"
       (entranceSelected)="setSelectedEntrance($event)" >
     </asrdb-entrance-list-view>

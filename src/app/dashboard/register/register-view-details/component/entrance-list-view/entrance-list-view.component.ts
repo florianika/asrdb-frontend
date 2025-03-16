@@ -55,6 +55,7 @@ import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() buildingGlobalId?: string;
+  @Input() building?: any;
   @Output() entrancesLoaded = new EventEmitter<Entrance[]>();
   @Output() entranceSelected = new EventEmitter<string>();
 
@@ -167,6 +168,8 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.matDialog.open(EntranceDetailsComponent, {
       data: {
         globalId,
+        buildingGlobalId: this.buildingGlobalId,
+        building: this.building,
         logs: this.registerLogService.getAllLogs('ENTRANCE')
           .filter(log => globalId.toLowerCase().includes(log.entId?.toLowerCase() as string))
       }

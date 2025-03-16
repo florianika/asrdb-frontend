@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, isDevMode } from '@angular/core';
+import {Component, Inject, OnInit, isDevMode, Output, EventEmitter} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
@@ -12,6 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import {getDate} from "../../../../model/common-utils";
 import {Log} from "../../../../register-log-view/model/log";
 import {HistoryDetailsComponent} from "../../history-details/history-details.component";
+import {RegisterMapComponent} from "../../../../../common/components/register-map/register-map.component";
+import {DwellingListViewComponent} from "../../dwelling-list-view/dwelling-list-view.component";
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -23,7 +25,9 @@ import {HistoryDetailsComponent} from "../../history-details/history-details.com
     MatCardModule,
     MatButtonModule,
     BuildingDetailComponent,
-    HistoryDetailsComponent
+    HistoryDetailsComponent,
+    RegisterMapComponent,
+    DwellingListViewComponent
   ],
   standalone: true
 })
@@ -120,17 +124,23 @@ export class EntranceDetailsComponent implements OnInit {
   ];
 
   private subscriber = new Subject();
-  private fields: any[] = [];
-  private id: string | null = '';
   private logs: Log[] = [];
+  private fields: any[] = [];
+  protected id: string | null = '';
+  protected buildingGlobalId = '';
+  protected building;
+
+  @Output() markEntranceAsUntestedData = new EventEmitter<string>();
 
   constructor(
     private commonEntranceService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matSnack: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[]}) {
+    @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[], buildingGlobalId: string, building: any}) {
       this.id = this.data.globalId;
       this.logs = this.data.logs;
+      this.buildingGlobalId = this.data.buildingGlobalId;
+      this.building = this.data.building;
     }
 
   ngOnInit(): void {
@@ -143,6 +153,10 @@ export class EntranceDetailsComponent implements OnInit {
 
   getValueFromStatus(column: string) {
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.entrance[column]) ?? 'Unknown';
+  }
+
+  dwellingUpdated(id: string) {
+    this.markEntranceAsUntestedData.emit(id);
   }
 
   private prepareWhereCase() {

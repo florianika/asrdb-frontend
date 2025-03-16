@@ -43,7 +43,7 @@ import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
   styleUrls: ['./dwelling-list-view.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [CommonDwellingService, CommonEntranceService],
+  providers: [CommonDwellingService, CommonEntranceService, RegisterLogService],
   imports: [
     MatIconModule,
     MatDialogModule,

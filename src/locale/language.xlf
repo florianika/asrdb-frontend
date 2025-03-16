@@ -17,7 +17,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">25</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-management.component.html</context>
@@ -36,7 +36,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1431416938026210429" datatype="html">
@@ -47,7 +47,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2772023564304193657" datatype="html">
@@ -58,7 +58,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6962699013778688473" datatype="html">
@@ -69,85 +69,114 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9146157164301730812" datatype="html">
-        <source>Create an accoun</source>
+      <trans-unit id="2308975396733519902" datatype="html">
+        <source>Create an account</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signin/signin.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8301535046747035390" datatype="html">
-        <source>Full name</source>
+      <trans-unit id="5342432350421167093" datatype="html">
+        <source>First name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5268165571303113726" datatype="html">
-        <source>Enter your full name</source>
+      <trans-unit id="4410595138621609690" datatype="html">
+        <source>Enter your first name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1298642884503962903" datatype="html">
-        <source>Please provide your full name</source>
+      <trans-unit id="3175927175540513146" datatype="html">
+        <source>Please provide your first name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
           <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3586674587150281199" datatype="html">
+        <source>Last name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-management.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-view-dialog/user-view-dialog.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6986696995596700053" datatype="html">
+        <source>Enter your last name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1198787058256473854" datatype="html">
+        <source>Please provide your last name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5480342526565273009" datatype="html">
         <source>Please provide a valid email</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5989883236047045886" datatype="html">
         <source>Please provide a valid password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">32,33</context>
+          <context context-type="linenumber">39,40</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">46,47</context>
+          <context context-type="linenumber">53,54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3786799564906029988" datatype="html">
         <source>Password should be at least 8 characters long</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">34,35</context>
+          <context context-type="linenumber">41,42</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">48,49</context>
+          <context context-type="linenumber">55,56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4621828901734430721" datatype="html">
         <source>Retype password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3752855973298371911" datatype="html">
         <source>Retype your password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9173108350252009172" datatype="html">
         <source>Already have an account? Sign in!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3742728431516357098" datatype="html">
@@ -307,14 +336,14 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="187187500641108332" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ variable }}"/></source>
+        <source><x id="INTERPOLATION" equiv-text="{{ variable.text }}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/standalone-components/variable-selector/variable-selector.component.html</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-management.component.html</context>
@@ -350,6 +379,26 @@
           <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-edit-dialog/user-edit-dialog.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="9110220604678961015" datatype="html">
         <source>Delete role</source>
@@ -383,8 +432,8 @@
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4773959996704120333" datatype="html">
-        <source>Role Management</source>
+      <trans-unit id="8177681805342886400" datatype="html">
+        <source>Role Permission Management</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/role-management/role-management.component.html</context>
           <context context-type="linenumber">17</context>
@@ -408,19 +457,23 @@
           <context context-type="linenumber">45</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view.component.html</context>
-          <context context-type="linenumber">54</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view.component.html</context>
-          <context context-type="linenumber">58</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view.component.html</context>
-          <context context-type="linenumber">58</context>
-        </context-group>
-        <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
           <context context-type="linenumber">57</context>
         </context-group>
       </trans-unit>
@@ -474,17 +527,6 @@
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3586674587150281199" datatype="html">
-        <source>Last name</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-management.component.html</context>
-          <context context-type="linenumber">30</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-view-dialog/user-view-dialog.component.html</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="6023816507523482681" datatype="html">
         <source>Account status</source>
         <context-group purpose="location">
@@ -520,12 +562,12 @@
           <context context-type="linenumber">21</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view-filter/building-list-view-filter.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">16</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7819314041543176992" datatype="html">
@@ -535,237 +577,75 @@
           <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2218854094766380276" datatype="html">
-        <source>Details for building: <x id="INTERPOLATION" equiv-text="{{building.GlobalID}}"/></source>
+      <trans-unit id="3265822934051154657" datatype="html">
+        <source>Filter data</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-details/building-details.component.html</context>
-          <context context-type="linenumber">4,5</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/dwelling/dwelling-details/dwelling-details.component.html</context>
-          <context context-type="linenumber">4,5</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">4,5</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2481217113471170601" datatype="html">
-        <source>Quality: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold;&quot;&gt;"/><x id="INTERPOLATION" equiv-text="s(&apos;BldQuality&apos;)}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-details/building-details.component.html</context>
-          <context context-type="linenumber">5,6</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/dwelling/dwelling-details/dwelling-details.component.html</context>
-          <context context-type="linenumber">5,7</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">5,7</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3408871773261273776" datatype="html">
-        <source>History details</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-details/building-details.component.html</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/dwelling/dwelling-details/dwelling-details.component.html</context>
-          <context context-type="linenumber">17</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">17</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="71502924772671299" datatype="html">
-        <source>Created by: </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-details/building-details.component.html</context>
-          <context context-type="linenumber">17</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/dwelling/dwelling-details/dwelling-details.component.html</context>
-          <context context-type="linenumber">19</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">19</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7594633701784563799" datatype="html">
-        <source>Last edited by: </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-details/building-details.component.html</context>
-          <context context-type="linenumber">21</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/dwelling/dwelling-details/dwelling-details.component.html</context>
-          <context context-type="linenumber">23</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6914740930132103623" datatype="html">
         <source>Municipality</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view-filter/building-list-view-filter.component.html</context>
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
           <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4005740723939879376" datatype="html">
+        <source>Enumeration area</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8650499415827640724" datatype="html">
         <source>Type</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view-filter/building-list-view-filter.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3209056610537919480" datatype="html">
+        <source>Quality</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1671331205430502902" datatype="html">
         <source>PK Buildings (Global ID)</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view-filter/building-list-view-filter.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9027521692429240862" datatype="html">
-        <source>Building Register</source>
+      <trans-unit id="8829497237648100098" datatype="html">
+        <source>Filter</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view.component.html</context>
-          <context context-type="linenumber">3</context>
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1917978204978171168" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>apartment<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View building details</source>
+      <trans-unit id="2656473461755689224" datatype="html">
+        <source>Welcome, <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;text-transform: capitalize;&quot;&gt;"/><x id="INTERPOLATION" equiv-text="&lt;/span&gt;&lt;/h1"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/h1&gt;"/></source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view.component.html</context>
-          <context context-type="linenumber">60,61</context>
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
+          <context context-type="linenumber">3,5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3825940913564187041" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>directions_walk<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View entrances</source>
+      <trans-unit id="1069523139277190436" datatype="html">
+        <source>Statistics</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view.component.html</context>
-          <context context-type="linenumber">62</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8388523860875719402" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>meeting_room<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View dwellings</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/building/building-list-view/building-list-view.component.html</context>
-          <context context-type="linenumber">63</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view.component.html</context>
-          <context context-type="linenumber">65</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2247270192251966992" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{title}}"/>: </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/building-detail/building-detail.component.html</context>
-          <context context-type="linenumber">2</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7001276874809502483" datatype="html">
-        <source>Appartment number</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view-filter/dwelling-list-view-filter.component.html</context>
-          <context context-type="linenumber">4</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4229850122490215097" datatype="html">
-        <source>Entrance ID</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view-filter/dwelling-list-view-filter.component.html</context>
-          <context context-type="linenumber">8</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6206547709363551540" datatype="html">
-        <source>Dwelling type</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view-filter/dwelling-list-view-filter.component.html</context>
-          <context context-type="linenumber">12</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="9197783127687919480" datatype="html">
-        <source>Dwelling status</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view-filter/dwelling-list-view-filter.component.html</context>
-          <context context-type="linenumber">18</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1656478981421761611" datatype="html">
-        <source>Dwelling id (Global ID)</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view-filter/dwelling-list-view-filter.component.html</context>
-          <context context-type="linenumber">24</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7786906424703651101" datatype="html">
-        <source>Dwellings Register</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view.component.html</context>
-          <context context-type="linenumber">3</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8971153176168516828" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>meeting_room<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View dwelling details</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/dwelling-list-view/dwelling-list-view.component.html</context>
-          <context context-type="linenumber">64</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6071094951820216608" datatype="html">
-        <source>Building number</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
-          <context context-type="linenumber">4</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="315836188246778648" datatype="html">
-        <source>Entrance number</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
-          <context context-type="linenumber">8</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2119165364067658903" datatype="html">
-        <source>Building id</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
-          <context context-type="linenumber">12</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4574187116116719181" datatype="html">
-        <source>Entrance status</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1214236342010492927" datatype="html">
-        <source>Entrance id (Global ID)</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
-          <context context-type="linenumber">22</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="9195590761423652834" datatype="html">
-        <source>Entrance Register</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view.component.html</context>
-          <context context-type="linenumber">3</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2204816980855038048" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>directions_walk<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View entrance details</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/buildings-register/common/component/entrance-list-view/entrance-list-view.component.html</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="785891933839918927" datatype="html">
@@ -774,164 +654,12 @@
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-edit.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-edit.component.html</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
       </trans-unit>
       <trans-unit id="8338140708715632959" datatype="html">
         <source>Update rule</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-edit.component.html</context>
-          <context context-type="linenumber">5</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-edit.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2838129566011107043" datatype="html">
-        <source>Condition</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">5</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6424246633820870206" datatype="html">
-        <source>Equals</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">7</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4269208812120923332" datatype="html">
-        <source>Not equals</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">8</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6504828068656625171" datatype="html">
-        <source>Is null</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7052416294348779340" datatype="html">
-        <source>Is not null</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">10</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2841739558138901231" datatype="html">
-        <source>In</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">11</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1060842410379893910" datatype="html">
-        <source>Not in</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">12</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="9072461985602712884" datatype="html">
-        <source>Highier than</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
           <context context-type="linenumber">13</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8573950494141629457" datatype="html">
-        <source>Highier or equal to</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">14</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1162781102663212766" datatype="html">
-        <source>Lower than</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1403998814912244561" datatype="html">
-        <source>Lower or equal than</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6555318547274416232" datatype="html">
-        <source>Value</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1179184907489210406" datatype="html">
-        <source>Operator</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">29</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="188313477943387511" datatype="html">
-        <source>And</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">31</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5504129468136884250" datatype="html">
-        <source>Or</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">32</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8766478462306887223" datatype="html">
-        <source> Group with next condition </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">35,37</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8568836825688111576" datatype="html">
-        <source>Delete rule?</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">43</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="629948240703949400" datatype="html">
-        <source>This will delete the rule and cannot be undone.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/expression-form/expression-form.component.html</context>
-          <context context-type="linenumber">44</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2791965473218359494" datatype="html">
-        <source>Expression</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/quality-management-expression-builder.component.html</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
-          <context context-type="linenumber">85</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8268158415755347713" datatype="html">
-        <source>Please fill all the required data for the expression to be generated</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-expression-builder/quality-management-expression-builder.component.html</context>
-          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6439365426343089851" datatype="html">
@@ -941,8 +669,8 @@
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3516771402100534805" datatype="html">
-        <source>Local ID</source>
+      <trans-unit id="3147371091697922238" datatype="html">
+        <source>Reference</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
           <context context-type="linenumber">6</context>
@@ -966,10 +694,6 @@
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table-fitler/quality-management-table-fitler.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">37</context>
-        </context-group>
       </trans-unit>
       <trans-unit id="4442519073733132522" datatype="html">
         <source>Name in English</source>
@@ -980,10 +704,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table-fitler/quality-management-table-fitler.component.html</context>
           <context context-type="linenumber">14</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8827016044964463768" datatype="html">
@@ -1023,6 +743,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
           <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table-filter/register-log-table-filter.component.html</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="810888510148304696" datatype="html">
@@ -1118,35 +842,42 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">98</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2791965473218359494" datatype="html">
+        <source>Expression</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
+          <context context-type="linenumber">85</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7808756054397155068" datatype="html">
         <source>Reset</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3768927257183755959" datatype="html">
         <source>Save</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
-          <context context-type="linenumber">93</context>
+          <context context-type="linenumber">101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7678352174032892015" datatype="html">
         <source>Reset form?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5682658740552819253" datatype="html">
         <source> This action will reset the form. All values will be deleted. <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>This action cannot be undone<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/>. <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> Are you sure you want to reset the form </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
-          <context context-type="linenumber">101,104</context>
+          <context context-type="linenumber">109,112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1310629597645030031" datatype="html">
@@ -1170,32 +901,563 @@
           <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="788128427681572062" datatype="html">
+        <source>Requirement</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="2724055831234181057" datatype="html">
         <source>Version</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">49</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7951217691804456428" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>apartment<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View rule details</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">63,64</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6399627576712551328" datatype="html">
         <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>Edit rule</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4217972259466175155" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>switch_access_2<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>Toggle status</source>
+      <trans-unit id="1690712740292365213" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>published_with_changes<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>Toggle status</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">60,61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2448371697496136903" datatype="html">
+        <source> Please draw the building to continue!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/building-creation/building-creation.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8639685089025279847" datatype="html">
+        <source> Please update the building so that it does not intersect another building!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/building-creation/building-creation.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5705744078647526519" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon inline&gt;"/>error<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Please draw at least one entrance point to continue!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/building-creation/building-creation.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7247925753018126917" datatype="html">
+        <source>Create dwelling</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="197325656244116421" datatype="html">
+        <source>Update dwelling</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="55761414459972450" datatype="html">
+        <source>Save data</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="360302202446428433" datatype="html">
+        <source>Cancel creating dwelling?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4892771140324258694" datatype="html">
+        <source>Cancel editing dwelling?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5303812453545876745" datatype="html">
+        <source> Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone! <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> Do you want to continue </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">45,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6398969587818603892" datatype="html">
+        <source>Close dialog</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6389467666496840549" datatype="html">
+        <source> Please fill all the details for the <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;isEntrance&quot;&gt;"/> entrance<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span *ngIf=&quot;isBuilding&quot;&gt;"/> building<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">13,18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2014630539707145186" datatype="html">
+        <source>Save changes <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon iconPositionBefore&gt;"/>save<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">32,35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4994502626184499978" datatype="html">
+        <source>Cancel <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon iconPositionBefore&gt;"/>close<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">38,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8934399966089997167" datatype="html">
+        <source>Cancel creating building?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5531212140553627459" datatype="html">
+        <source>Cancel creating entrance?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7365060066324522726" datatype="html">
+        <source>Cancel editing entrance?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2660563062676016995" datatype="html">
+        <source> Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone! <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> Do you want to continue? </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">50,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6287870280326457420" datatype="html">
+        <source>No, close dialog</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6621125090091467231" datatype="html">
+        <source>Yes, cancel editing</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7278637339942511871" datatype="html">
+        <source>Filter logs</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table-filter/register-log-table-filter.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4099449824783405551" datatype="html">
+        <source>Quality Report - <x id="INTERPOLATION" equiv-text="{{building}}"/> <x id="START_TAG_BUTTON" ctype="x-button" equiv-text="&lt;button
+          mat-icon-button
+          matTooltip=&quot;View building details&quot;
+          style=&quot;vertical-align: middle&quot;
+          (click)=&quot;goToBuildingDetails()&quot;&gt;"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_TAG_BUTTON" ctype="x-button" equiv-text="&lt;/button&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">4,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7927503951085905736" datatype="html">
+        <source> Quality status: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold&quot;&gt;"/><x id="INTERPOLATION" equiv-text="async}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/sp"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">13,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="578616033451631020" datatype="html">
+        <source> Building is untested, error list below may not be valid anymore. Execute the rules to see the latest errors. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="446243320681183739" datatype="html">
+        <source> Start execution </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">45,47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6336280740370214301" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>check_circle<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Resolve </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">118,119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="907507096288356020" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>check_circle<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Mark as pending </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">125,126</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="60339518069223848" datatype="html">
+        <source> No data matching the filter. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">133,135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1190514144497395410" datatype="html">
+        <source>Resolve error</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">149</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="831850406752039139" datatype="html">
+        <source><x id="START_PARAGRAPH" ctype="x-p"/>You are about to mark this error as Resolved. Are you sure you want to proceed?<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">145,147</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4367300193055906885" datatype="html">
+        <source>Mark error as PENDING</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">154</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7045634509383089" datatype="html">
+        <source><x id="START_PARAGRAPH" ctype="x-p"/>You are about to mark this error as PENDING. Are you sure you want to proceed?<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">156,158</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7408889486233707100" datatype="html">
+        <source>Mark as PENDING</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
+          <context context-type="linenumber">160</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8179356317761271349" datatype="html">
+        <source>Building List</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5782981899482871069" datatype="html">
+        <source>Building</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2573975093139059902" datatype="html">
+        <source>Building status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1917978204978171168" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>apartment<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View building details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">79,80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1338417620517092172" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit building details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">81,82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1770222453693644362" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>text_snippet<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View quality logs</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
+          <context context-type="linenumber">83,84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5587879886416225240" datatype="html">
+        <source>Dwelling details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-details/dwelling-details.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6230195088320220777" datatype="html">
+        <source>Details for dwelling: <x id="INTERPOLATION" equiv-text="{{dwelling.GlobalID}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-details/dwelling-details.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6493496716060748102" datatype="html">
+        <source>Data Quality: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span
+          style=&quot;font-weight: bold;&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{getValueFromStatus(&apos;DwlQuality&apos;)}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-details/dwelling-details.component.html</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-details/entrance-details.component.html</context>
+          <context context-type="linenumber">6,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="887509999658032278" datatype="html">
+        <source>Dwellings List</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8246912299711554497" datatype="html">
+        <source>Dwelling</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8535717725952298934" datatype="html">
+        <source>Street name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6071094951820216608" datatype="html">
+        <source>Building number</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="315836188246778648" datatype="html">
+        <source>Entrance number</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6149875809221974120" datatype="html">
+        <source>Floor</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8890415502920144925" datatype="html">
+        <source>Apartment number</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9197783127687919480" datatype="html">
+        <source>Dwelling status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6206547709363551540" datatype="html">
+        <source>Dwelling type</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5871397608030643963" datatype="html">
+        <source>Dwelling quality</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8971153176168516828" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>meeting_room<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View dwelling details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8628436167149495937" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit dwelling details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/dwelling-list-view/dwelling-list-view.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4091938725695658415" datatype="html">
+        <source>Entrance details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-details/entrance-details.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2218854094766380276" datatype="html">
+        <source>Details for building: <x id="INTERPOLATION" equiv-text="{{entrance.GlobalID}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-details/entrance-details.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/register-view-details.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2119165364067658903" datatype="html">
+        <source>Building id</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4574187116116719181" datatype="html">
+        <source>Entrance status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1214236342010492927" datatype="html">
+        <source>Entrance id (Global ID)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view-filter/entrance-list-view-filter.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="298220819667557605" datatype="html">
+        <source>Entrance List</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7987110915177987447" datatype="html">
+        <source>Entrance</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1859650009408952374" datatype="html">
+        <source>Dwellings recorded</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="694365597871795028" datatype="html">
+        <source>Dwellings expected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6747435378479051210" datatype="html">
+        <source>Entrance quality</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2204816980855038048" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>directions_walk<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View entrance details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7312734073638284580" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit entrance details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/entrance-list-view/entrance-list-view.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3408871773261273776" datatype="html">
+        <source>History details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/history-details/history-details.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="71502924772671299" datatype="html">
+        <source>Created by: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/history-details/history-details.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7594633701784563799" datatype="html">
+        <source>Last edited by: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/component/history-details/history-details.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6623942988187952500" datatype="html">
+        <source>Data quality: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold;&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{getValueFromStatus(&apos;BldQuality&apos;)}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/register-view-details.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4007965361313773141" datatype="html">
+        <source>Status of building centroid: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold;&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{getValueFromStatus(&apos;BldCentroidStatus&apos;)}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details/register-view-details.component.html</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
     </body>

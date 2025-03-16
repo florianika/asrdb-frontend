@@ -140,7 +140,10 @@ export class RegisterFilterService {
     return conditions.length ? conditions.join(' and ') : '1=1';
   }
 
-  prepareWhereCaseForEntrance() {
+  prepareWhereCaseForEntrance(entranceId?: string) {
+    if (entranceId) {
+      return `EntBuildingId='${entranceId}'`;
+    }
     if (!this.globalIds.getValue()?.length && this.noFilterApplied()) {
       return '1=1';
     }

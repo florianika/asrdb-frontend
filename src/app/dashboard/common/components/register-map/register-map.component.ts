@@ -19,7 +19,9 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
   @Input() enableSelection = true;
   @Input() enableLegend = false;
   @Input() buildingGlobalId?: string;
+  @Input() entranceGlobalId?: string;
   @Input() skipOtherFiltersApartFromGlobalId = false;
+  @Input() small = false;
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
 
@@ -57,7 +59,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
       enableSelection: this.enableSelection,
       enableLegend: this.enableLegend,
       bldWhereCase: this.registerFilterService.prepareWhereCase(),
-      entWhereCase: this.registerFilterService.prepareWhereCaseForEntrance(),
+      entWhereCase: this.registerFilterService.prepareWhereCaseForEntrance(this.entranceGlobalId),
     });
   }
 }

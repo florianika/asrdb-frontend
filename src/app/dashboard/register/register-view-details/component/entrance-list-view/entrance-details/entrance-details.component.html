@@ -1,30 +1,48 @@
 <h2 mat-dialog-title i18n>Entrance details</h2>
-<mat-dialog-content *ngIf="!isLoadingResults" class="building-details-container mat-typography" style="color: initial; margin: 10px;">
-  <mat-card class="building-details-card">
-    <mat-card-content>
-      <h2 class="details-header" i18n>Details for building: {{entrance.GlobalID}}</h2>
-      <span class="details-subheader" i18n>Data Quality: <span
+<mat-dialog-content *ngIf="!isLoadingResults" class="mat-typography" style="color: initial; margin: 10px;">
+  <div class="row">
+    <mat-card class="col-12 col-md-8">
+      <mat-card-content>
+        <h2 class="details-header" i18n>Details for building: {{entrance.GlobalID}}</h2>
+        <span class="details-subheader" i18n>Data Quality: <span
           style="font-weight: bold;">{{getValueFromStatus('EntQuality')}}</span></span>
-      <section *ngFor="let section of sections">
-        <h3>{{section.title}}</h3>
-        <asrdb-building-detail
-          *ngFor="let entry of section.entries"
-          [title]="entry.title"
-          [value]="entry.value"
-          [log]="entry.log"
-          [logType]="entry.logType"
-        ></asrdb-building-detail>
-        <hr>
-      </section>
-    </mat-card-content>
-  </mat-card>
-  <div class="building-last-modified-card">
-    <asrdb-history-details
-      [externalCreator]="entrance.external_creator"
-      [externalCreationDate]="entrance.external_creator_date"
-      [externalUpdater]="entrance.external_editor"
-      [externalUpdateDate]="entrance.external_editor_date"
-    ></asrdb-history-details>
+        <section *ngFor="let section of sections">
+          <h3>{{section.title}}</h3>
+          <asrdb-building-detail
+            *ngFor="let entry of section.entries"
+            [title]="entry.title"
+            [value]="entry.value"
+            [log]="entry.log"
+            [logType]="entry.logType"
+          ></asrdb-building-detail>
+          <hr>
+        </section>
+      </mat-card-content>
+    </mat-card>
+    <div class="col-12 col-md-4">
+      <asrdb-history-details
+        [externalCreator]="entrance.external_creator"
+        [externalCreationDate]="entrance.external_creator_date"
+        [externalUpdater]="entrance.external_editor"
+        [externalUpdateDate]="entrance.external_editor_date"
+      ></asrdb-history-details>
+      <asrdb-register-map
+        *ngIf="buildingGlobalId"
+        [enableFilter]="false"
+        [enableSelection]="false"
+        [buildingGlobalId]="buildingGlobalId"
+        [skipOtherFiltersApartFromGlobalId]="true"
+        [small]="true"
+      ></asrdb-register-map>
+    </div>
+    <div class="col-12 mt-3">
+      <asrdb-dwelling-list-view
+        [entranceId]="id ?? ''"
+        [entrances]="[entrance]"
+        [buildingNumber]="building.BldProperty"
+        (dwellingUpdated)="dwellingUpdated($event)"
+      ></asrdb-dwelling-list-view>
+    </div>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
