@@ -118,7 +118,7 @@ export class CommonBuildingService {
       outline: {
         // autocasts as new SimpleLineSymbol()
         color: color,
-        width: 1
+        width: 3
       }
     };
   }
