@@ -1,16 +1,16 @@
-import { ElementRef, Injectable, isDevMode } from '@angular/core';
+import {ElementRef, Injectable, isDevMode} from '@angular/core';
 
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import WebMap from '@arcgis/core/WebMap';
-import { CommonBuildingService } from '../../service/common-building.service';
-import { CommonEntranceService } from '../../service/common-entrance.service';
-import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
-import { FeatureSelectionService } from "./custom-map-logic/feature-selection";
-import { BaseMapChangeService } from "./custom-map-logic/basemap-change";
+import {CommonBuildingService} from '../../service/common-building.service';
+import {CommonEntranceService} from '../../service/common-entrance.service';
+import {CommonEsriAuthService} from '../../service/common-esri-auth.service';
+import {RegisterFilterService} from '../../../register/register-table-view/register-filter.service';
+import {FeatureSelectionService} from "./custom-map-logic/feature-selection";
+import {BaseMapChangeService} from "./custom-map-logic/basemap-change";
 import Legend from "@arcgis/core/widgets/Legend";
 
 export type MapInitOptions = {

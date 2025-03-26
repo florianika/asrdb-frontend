@@ -23,39 +23,34 @@ export class CommonBuildingService {
   uniqueValueInfos = [
     {
       value: 1,
-      label: 'Permitted (linked to a construction permission)',
-      symbol: this.getSymbol('#00BF7')
+      label: 'Permitted',
+      symbol: this.getSymbol('#89CE00')
     },
     {
       value: 2,
-      label: 'Under construction (linked to a construction permission)',
-      symbol: this.getSymbol('#00B4C5')
+      label: 'Under construction',
+      symbol: this.getSymbol('#5BA300')
     },
     {
       value: 3,
-      label: 'Completed (linked to a construction permission)',
-      symbol: this.getSymbol('#5BA300')
+      label: 'Completed',
+      symbol: this.getSymbol('#00B4C5')
     },
     {
       value: 4,
       label: 'Existing',
-      symbol: this.getSymbol('#89CE00')
-    },
-    {
-      value: 5,
-      label: 'Abandoned (residential and non-residential use excluded)',
-      symbol: this.getSymbol('#E6308A')
-    },
-    {
-      value: 6,
-      label: 'Demolished (not existing anymore)',
       symbol: this.getSymbol('#B51963')
     },
     {
-      value: 9,
-      label: 'Unknown building status',
+      value: 5,
+      label: 'Abandoned',
       symbol: this.getSymbol('#F57600')
-    }
+    },
+    {
+      value: 6,
+      label: 'Demolished',
+      symbol: this.getSymbol('rgba(145,145,145,0.53)')
+    },
   ];
 
   get bldLayer(): FeatureLayer {
@@ -68,10 +63,9 @@ export class CommonBuildingService {
       outFields: ['*'],
       renderer: {
         type: 'unique-value', // autocasts as new UniqueValueRenderer()
-        defaultSymbol: this.getSymbol('#FAFAFA'),
-        defaultLabel: 'Other',
         field: 'BldStatus',
         uniqueValueInfos: this.uniqueValueInfos,
+        showOthers: false
       } as __esri.RendererProperties,
       minScale: 0,
       maxScale: 0,
