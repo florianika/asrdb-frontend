@@ -93,6 +93,10 @@ export class RegisterMapService {
             const globalId = view.popup.selectedFeature.attributes['GlobalID'];
             this.registerFilterService.setBuildingGlobalIdFilter(globalId);
           }
+          if (view.popup.selectedFeature.layer.title === 'ASRDB Entrances') {
+            const globalId = view.popup.selectedFeature.attributes['EntBuildingID'];
+            this.registerFilterService.setBuildingGlobalIdFilter(globalId);
+          }
         }, 100);
       });
       this.eventsCleanupCallbacks.push(() => {
