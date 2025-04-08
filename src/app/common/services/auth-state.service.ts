@@ -1,5 +1,5 @@
-import {Injectable, isDevMode, OnDestroy} from '@angular/core';
-import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
+import {Injectable, isDevMode, OnDestroy, OnInit} from '@angular/core';
+import {BehaviorSubject, Observable, Subject, Subscriber, takeUntil} from 'rxjs';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {JWT, SigninResponse} from 'src/app/model/JWT.model';
 import {Router} from '@angular/router';
@@ -13,7 +13,7 @@ import {ESRI_AUTH_KEY} from "../../dashboard/common/service/common-esri-auth.ser
 @Injectable({
   providedIn: 'root'
 })
-export class AuthStateService implements OnDestroy {
+export class AuthStateService implements OnInit, OnDestroy {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
   private readonly SIGNIN_URL = '/auth/signin';
   private readonly SIGNOUT_URL = '/auth/signout';
@@ -31,6 +31,10 @@ export class AuthStateService implements OnDestroy {
     this.tokens = item ? JSON.parse(item) : null;
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
     this.createWebWorker();
+  }
+
+  ngOnInit() {
+    this.checkTokenValidity();
   }
 
   ngOnDestroy() {
@@ -54,42 +58,48 @@ export class AuthStateService implements OnDestroy {
 
   refreshToken() {
     this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
-    this.httpClient.post<SigninResponse>(environment.base_url + '/auth/refreshtoken', {
-      'AccessToken': this.tokens?.accessToken,
-      'RefreshToken': this.tokens?.refreshToken
-    }).pipe(takeUntil(this.subscription))
-      .subscribe({
-        next: async (newToken) => {
-          if (isDevMode()) {
-            console.log(newToken);
-          }
-          if (!this.tokens) {
-            this.tokens = {} as SigninResponse;
-          }
-          this.setJWT({
-            idToken: newToken.idToken,
-            accessToken: newToken.accessToken,
-            refreshToken: newToken.refreshToken
-          });
-          this.webWorker.postMessage('');
-          this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
-            .subscribe({
-              next: async (credentials) => {
-                try {
-                  await this.initEsriConfig(credentials);
-                } catch (error) {
-                  this.handleError(error);
-                }
-              },
-              error: (error) => {
-                this.handleError(error);
-              }
+    return new Observable(observer => {
+      this.httpClient.post<SigninResponse>(environment.base_url + '/auth/refreshtoken', {
+        'AccessToken': this.tokens?.accessToken,
+        'RefreshToken': this.tokens?.refreshToken
+      }).pipe(takeUntil(this.subscription))
+        .subscribe({
+          next: async (newToken) => {
+            if (isDevMode()) {
+              console.log(newToken);
+            }
+            if (!this.tokens) {
+              this.tokens = {} as SigninResponse;
+            }
+            this.setJWT({
+              idToken: newToken.idToken,
+              accessToken: newToken.accessToken,
+              refreshToken: newToken.refreshToken
             });
-        },
-        error: () => {
-          this.logout();
-        }
-      });
+            this.webWorker.postMessage('');
+            this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
+              .subscribe({
+                next: async (credentials) => {
+                  try {
+                    await this.initEsriConfig(credentials);
+                    observer.next(true);
+                  } catch (error) {
+                    this.handleError(error);
+                    observer.error(error);
+                  }
+                },
+                error: (error) => {
+                  this.handleError(error);
+                  observer.error(error);
+                }
+              });
+          },
+          error: () => {
+            this.logout();
+            observer.error('Error refreshing token');
+          }
+        });
+    });
   }
 
   setLoginState(loginState: boolean) {
@@ -100,14 +110,53 @@ export class AuthStateService implements OnDestroy {
     return this.isLoggedIn.asObservable();
   }
 
+  isUserLoggedIn(admin = false): Observable<boolean> {
+    return new Observable(observer => {
+      const isLoggedIn = this.isTokenValid();
+      if (!isLoggedIn) {
+        this.refreshToken().subscribe({
+          next: (response) => {
+            if (response) {
+              this.handleSuccess(admin, observer);
+            } else {
+              this.logout();
+              observer.next(false);
+            }
+          },
+          error: () => {
+            this.logout();
+            observer.next(false);
+          }
+        })
+      } else {
+        this.handleSuccess(admin, observer);
+      }
+      observer.complete();
+    });
+  }
+
+  private handleSuccess(admin: boolean, observer: Subscriber<boolean>) {
+    if (admin) {
+      const isAdmin = this.isAdmin();
+      if (!isAdmin) {
+        this.logout();
+        observer.next(false);
+      } else {
+        this.setLoginState(true);
+        observer.next(true);
+      }
+    } else {
+      this.setLoginState(true);
+      observer.next(true);
+    }
+  }
+
   isTokenValid(): boolean {
-    const isTokenValid = this.isTokenValidInternal();
-    this.setLoginState(isTokenValid);
-    return isTokenValid;
+    return this.isTokenValidInternal();
   }
 
   isAdmin() {
-    return this.isTokenValid() && this.getDecodedJWT()?.role === 'ADMIN';
+    return this.getDecodedJWT()?.role === 'ADMIN';
   }
 
   setJWT(newJWT: SigninResponse) {
@@ -187,14 +236,14 @@ export class AuthStateService implements OnDestroy {
     return isTokenValid;
   }
 
-  private tokenInNearExpired() {
+  private isAuthTokenNearlyExpired() {
     let isTokenNearlyExpired: boolean;
     try {
       const expirationDate = this.helper.getTokenExpirationDate(this.tokens!.idToken);
       const startDate = new Date();
       const seconds = ((expirationDate?.getTime() ?? 0) - startDate.getTime()) / 1000;
       if (isDevMode()) {
-        console.log(`Seconds left: ${seconds}`);
+        console.log(`Seconds left for auth token: ${seconds}`);
       }
       isTokenNearlyExpired = seconds <= 10;
     } catch (e) {
@@ -207,18 +256,37 @@ export class AuthStateService implements OnDestroy {
   }
 
   private checkTokenValidity() {
+    const isAuthTokenNearlyExpired = this.isAuthTokenNearlyExpired();
+    const isEsriTokenNearlyExpired = this.isEsriTokenNearlyExpiry();
+
     if (isDevMode()) {
       console.log(`Token is valid: ${this.isTokenValidInternal()}`);
       console.log(`Subscription is: ${this.subscription.closed}`);
     }
-    if (this.tokenInNearExpired() && !this.router.url.includes('/auth/')) {
+
+    const shouldRefreshToken = isAuthTokenNearlyExpired || isEsriTokenNearlyExpired;
+    if (shouldRefreshToken && !this.router.url.includes('/auth/')) {
       if (isDevMode()) {
         console.log('Reloaded token');
       }
-      this.refreshToken();
+      this.refreshToken().subscribe();
     } else if (this.router.url.includes('/auth/')) {
       this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE);
     }
+  }
+
+  private isEsriTokenNearlyExpiry(): boolean {
+    const credentials = localStorage.getItem(ESRI_AUTH_KEY);
+    if (credentials) {
+      const parsedCredentials = JSON.parse(credentials);
+      const currentTime = Math.floor(Date.now());
+      const secondsLeft = (parsedCredentials.expires - currentTime) / 1000;
+      if (isDevMode()) {
+        console.log('Time left for esri token: ', secondsLeft);
+      }
+      return secondsLeft < 300; // 5 minutes
+    }
+    return false;
   }
 
   public async initEsriConfig(credentials: Credentials) {
