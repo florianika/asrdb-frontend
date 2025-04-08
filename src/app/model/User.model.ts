@@ -6,7 +6,8 @@ export type User = {
   name: string,
   lastName: string,
   accountStatus: AccountStatus,
-  accountRole: Role
+  accountRole: Role,
+  municipality: string,
 };
 
 export type AccountStatus = 'ACTIVE' | 'TERMINATED';

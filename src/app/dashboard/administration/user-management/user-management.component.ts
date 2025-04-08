@@ -21,7 +21,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     })
   );
 
-  private dataSource: MatTableDataSource<User> = new MatTableDataSource();
+  private dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
 
   resultsLength = 0;
   isLoadingResults = this.userManagementService.loadingAsObservable;

@@ -65,15 +65,18 @@ export class UserManagementService {
 
   openEditUserDialog(user: User) {
     const editDialog = this.dialog.open(UserEditDialogComponent, {data: user});
-    const editDialogSubscription = editDialog.afterClosed().subscribe(role => {
-      if (role) {
-        this.editUser(user.id, role);
+    const editDialogSubscription = editDialog.afterClosed().subscribe((data) => {
+      if (data.role && data.role !== user.accountRole) {
+        this.editUserRole(user.id, data.role);
+      }
+      if (data.municipality && data.municipality !== user.municipality) {
+        this.editUserMunicipality(user.id, data.municipality);
       }
       editDialogSubscription.unsubscribe();
     });
   }
 
-  editUser(userId: string, role: Role) {
+  editUserRole(userId: string, role: Role) {
     this.loading.next(true);
     this.httpClient.patch(environment.base_url + `/auth/users/${userId}/set/${role}`, {}).subscribe({
       next: () => {
@@ -83,6 +86,20 @@ export class UserManagementService {
         this.loading.next(false);
         console.error(error);
         this.showMessage('Coult not update user.');
+      }
+    });
+  }
+
+  editUserMunicipality(userId: string, municipality: string) {
+    this.loading.next(true);
+    this.httpClient.patch(environment.base_url + `/auth/users/${userId}/set/municipality/${municipality}`, {}).subscribe({
+      next: () => {
+        this.getUsers();
+      },
+      error: (error) => {
+        this.loading.next(false);
+        console.error(error);
+        this.showMessage('Could not update users municipality.');
       }
     });
   }

@@ -1,8 +1,16 @@
 <h1 mat-dialog-title i18n>Update user {{data.name}} {{data.lastName}}</h1>
 <div mat-dialog-content>
   <asrdb-role-selector [role]="role" (roleChange)="updateRole($event)"></asrdb-role-selector>
+  <mat-form-field class="w-100">
+    <mat-label i18n>Municipality</mat-label>
+    <mat-select [(ngModel)]="newMunicipality" class="full-width">
+      <mat-option *ngFor="let municipality of municipalities" [value]="municipality.code">
+        {{ municipality.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close] i18n>Cancel</button>
-  <button mat-button color="primary" [mat-dialog-close]="newRole" cdkFocusInitial i18n>Ok</button>
+  <button mat-button color="primary" [mat-dialog-close]="{role: newRole, municipality: newMunicipality}" cdkFocusInitial i18n>Ok</button>
 </div>
