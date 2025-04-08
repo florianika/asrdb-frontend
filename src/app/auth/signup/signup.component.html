@@ -1,6 +1,8 @@
 <section class="signup-container">
   <mat-card class="signup-card">
-    <img class="signup-card-logo" src="assets/images/logo_instat.png" alt="logo">
+    <div>
+      <img class="signup-card-logo" ngSrc="assets/images/logo_instat.png" alt="logo" height="127" width="400">
+    </div>
     <mat-card-title class="signup-card-title">
       Create your new account
     </mat-card-title>
@@ -27,6 +29,17 @@
             (keyup.enter)="signup()">
           <mat-icon matPrefix>email</mat-icon>
           <mat-error *ngIf="signupFormGroup.controls.email.invalid" i18n>Please provide a valid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label i18n>Municipality</mat-label>
+          <mat-icon matPrefix>person_pin_circle</mat-icon>
+          <mat-select formControlName="municipality">
+            <mat-option *ngFor="let municipality of municipalities" [value]="municipality.code">
+              {{ municipality.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="signupFormGroup.controls.municipality.invalid" i18n>Please select a municipality</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">

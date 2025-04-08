@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {SignupForm, SignupFormValue, SignupService} from './signup.service';
+import {MUNICIPALITIES} from "../../common/data/municipalities";
 
 @Component({
   selector: 'asrdb-signup',
@@ -40,7 +41,8 @@ import {SignupForm, SignupFormValue, SignupService} from './signup.service';
   }
   .signup-card-logo {
     margin-bottom: 35px;
-    width: 75%;
+    width: 100%;
+    height: 100%;
     margin-left: auto;
     margin-right: auto;
   }
@@ -68,6 +70,7 @@ export class SignupComponent {
   hiddenRetypePassword = true;
   loading = this.signupService.signingUpAsObservable;
   signupFormGroup: SignupForm;
+  municipalities = MUNICIPALITIES.sort((a, b) => a.name.localeCompare(b.name));
 
   constructor(private signupService: SignupService) {
     this.signupFormGroup = this.signupService.createSignupForm();

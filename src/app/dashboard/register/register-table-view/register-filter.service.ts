@@ -3,6 +3,7 @@ import {BuildingFilter} from '../model/building';
 import {CommonRegisterHelperService} from '../../common/service/common-helper.service';
 import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
+import {MUNICIPALITIES} from "../../../common/data/municipalities";
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
 const DEFAULT_MUNICIPALITY = '53';
@@ -32,7 +33,7 @@ export class RegisterFilterService {
       GlobalID: '',
     },
     options: {
-      BldMunicipality: [] as never[],
+      BldMunicipality: MUNICIPALITIES as never[],
       BldStatus: [] as never[],
       BldType: [] as never[],
       BldQuality: [] as never[],

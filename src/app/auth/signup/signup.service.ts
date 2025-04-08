@@ -12,6 +12,7 @@ export type SignupForm = FormGroup<{
     lastName: FormControl<string | null>;
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
+    municipality: FormControl<string | null>;
 }>;
 
 export type SignupFormValue = Partial<{
@@ -20,6 +21,7 @@ export type SignupFormValue = Partial<{
   lastName: string;
   password: string;
   confirmPassword: string;
+  municipality: string;
 }>;
 
 @Injectable()
@@ -48,6 +50,7 @@ export class SignupService {
       lastName: new FormControl('', [Validators.pattern(/^[a-z]+$/i)]),
       password: new FormControl('', [Validators.required, Validators.minLength(8)]),
       confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      municipality: new FormControl('', [Validators.required]),
     });
   }
 
@@ -57,7 +60,8 @@ export class SignupService {
       name: signupForm.firstName,
       lastName: signupForm.lastName ?? '',
       email: signupForm.email,
-      password: signupForm.password
+      password: signupForm.password,
+      municipalityCode: signupForm.municipality
     };
     this.httpClient.post<any>(environment.base_url + '/auth/signup', JSON.stringify(data), {
       headers: {
