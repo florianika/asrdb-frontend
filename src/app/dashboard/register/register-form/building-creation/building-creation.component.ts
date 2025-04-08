@@ -10,6 +10,8 @@ import {EntityType} from "../../../quality-management/quality-management-config"
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute} from "@angular/router";
 import {CommonBuildingService} from "../../../common/service/common-building.service";
+import Geometry from "@arcgis/core/geometry/Geometry";
+import Collection from "@arcgis/core/core/Collection";
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -119,7 +121,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
         }
       }
       if (value.rings) {
-        if (await this.buildingService.checkIntersectingBuildings(this.view, this.mapService.getCreatedGraphic())) {
+        if (await this.buildingService.checkIntersectingBuildings(this.view, this.mapService.getCreatedGraphic() as Collection<Geometry>)) {
           this.intersectsBuilding = true;
           this.matSnackBar.open('The polygon you created/edited intersects with an exiting one. ' +
             'Changes will not be applied.' +

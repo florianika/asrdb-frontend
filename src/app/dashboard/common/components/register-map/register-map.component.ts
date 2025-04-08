@@ -37,19 +37,15 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
     });
 
     this.registerFilterService.filterObservable.subscribe(async () => {
-      await this.registerMapService.filterBuildingData(this.view, this.registerFilterService.prepareWhereCase());
+      await this.registerMapService.filterBuildingData(this.registerFilterService.prepareWhereCase());
     });
 
     this.registerFilterService.globalIdsObservable.subscribe(async () => {
-      await this.registerMapService.filterEntranceData(this.view, this.registerFilterService.prepareWhereCaseForEntrance());
+      await this.registerMapService.filterEntranceData(this.registerFilterService.prepareWhereCaseForEntrance());
     });
   }
 
   ngOnDestroy(): void {
-    if (this.view) {
-      // destroy the map view
-      this.view.destroy();
-    }
     this.registerMapService.cleanup();
   }
 

@@ -12,6 +12,8 @@ import Collection from "@arcgis/core/core/Collection";
 import Geometry from "@arcgis/core/geometry/Geometry";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthStateService} from "../../../common/services/auth-state.service";
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import UniqueValueInfoProperties = __esri.UniqueValueInfoProperties;
 
 type EntityDataResponse = { count: number, data: any, globalIds: string[] };
 
@@ -51,7 +53,7 @@ export class CommonBuildingService {
       label: 'Demolished',
       symbol: this.getSymbol('rgba(145,145,145,0.53)')
     },
-  ];
+  ] as UniqueValueInfoProperties[];
 
   get bldLayer(): FeatureLayer {
     const token = this.esriAuthService.getTokenForResource();
@@ -61,12 +63,10 @@ export class CommonBuildingService {
       url: environment.building_url + '?token='
         + token,
       outFields: ['*'],
-      renderer: {
-        type: 'unique-value', // autocasts as new UniqueValueRenderer()
+      renderer: new UniqueValueRenderer({
         field: 'BldStatus',
-        uniqueValueInfos: this.uniqueValueInfos,
-        showOthers: false
-      } as __esri.RendererProperties,
+        uniqueValueInfos: this.uniqueValueInfos as UniqueValueInfoProperties[],
+      }),
       minScale: 0,
       maxScale: 0,
       legendEnabled: true,
@@ -257,7 +257,9 @@ export class CommonBuildingService {
     const query = this.bldLayer.createQuery();
     query.geometry = await geometryEngine.union(geometries.toArray());
     query.outFields = ['GlobalID'];
-    return (await (await this.bldLayer.queryFeatures(query)).toJSON())
+    const response = await this.bldLayer.queryFeatures(query);
+    const JSONResponse = await response.toJSON();
+    return JSONResponse
       .features
       .map((o: any) => o.attributes['GlobalID'])
       .length;

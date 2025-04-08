@@ -8,6 +8,7 @@ import Geometry from "@arcgis/core/geometry/Geometry";
 import {CommonBuildingService} from "../../../service/common-building.service";
 import {CommonEntranceService} from "../../../service/common-entrance.service";
 import {RegisterFilterService} from "../../../../register/register-table-view/register-filter.service";
+import Map from "@arcgis/core/Map";
 
 @Injectable()
 export class FeatureSelectionService {
@@ -23,7 +24,7 @@ export class FeatureSelectionService {
     this.entlayer = this.entranceService.entLayer;
   }
 
-  createFeatureSelection(view: MapView, webmap: WebMap, eventsCleanupCallbacks: any[]) {
+  createFeatureSelection(view: MapView, webmap: Map, eventsCleanupCallbacks: any[]) {
     const featureSelection = this.createSelectionButton();
     const eraseSelection = this.createEraseButton();
 
