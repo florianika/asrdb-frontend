@@ -5,11 +5,11 @@ import { MatSelectChange } from '@angular/material/select';
 import { EntityType } from '../../quality-management-config';
 
 @Component({
-  selector: 'asrdb-quality-management-table-fitler',
-  templateUrl: './quality-management-table-fitler.component.html',
-  styleUrls: ['./quality-management-table-fitler.component.css']
+  selector: 'asrdb-quality-management-table-filter',
+  templateUrl: './quality-management-table-filter.component.html',
+  styleUrls: ['./quality-management-table-filter.component.css']
 })
-export class QualityManagementTableFitlerComponent {
+export class QualityManagementTableFilterComponent {
   filterConfig: QualityRuleFilter;
   qualityType!: EntityType;
 

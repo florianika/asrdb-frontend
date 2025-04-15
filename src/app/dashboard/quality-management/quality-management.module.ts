@@ -23,7 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import {MatListModule} from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { QualityManagementTableFitlerComponent } from './quality-management-table/quality-management-table-fitler/quality-management-table-fitler.component';
+import { QualityManagementTableFilterComponent } from './quality-management-table/quality-management-table-fitler/quality-management-table-filter.component';
 import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
 import {ACE_CONFIG, AceConfigInterface, AceModule} from "ngx-ace-wrapper";
 import {
@@ -45,7 +45,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     QualityManagementTableComponent,
     QualityManagementEditComponent,
     QualityManagementFormComponent,
-    QualityManagementTableFitlerComponent,
+    QualityManagementTableFilterComponent,
     QualityManagementVariableSelectionComponent
   ],
   imports: [

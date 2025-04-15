@@ -37,22 +37,22 @@ export class SideBarComponent implements AfterViewInit {
       visible: true
     },
     {
-      sectionTitle: 'Quality Management',
+      sectionTitle: 'Quality Rule Management',
       sectionElements: [
         {
-          title: 'Building Q. Rules',
+          title: 'Building Rules',
           path: '/dashboard/quality-management/BUILDING',
           icon: 'domainm',
           selected: false
         },
         {
-          title: 'Entrance Q. Rules',
+          title: 'Entrance Rules',
           path: '/dashboard/quality-management/ENTRANCE',
           icon: 'directions_walk',
           selected: false
         },
         {
-          title: 'Dwelling Q. Rules',
+          title: 'Dwelling Rules',
           path: '/dashboard/quality-management/DWELLING',
           icon: 'meeting_room',
           selected: false

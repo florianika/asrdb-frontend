@@ -5,16 +5,6 @@
     <input matInput [(ngModel)]="filterConfig.localId"/>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label i18n>Name in Albanian</mat-label>
-    <input matInput [(ngModel)]="filterConfig.nameAl"/>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label i18n>Name in English</mat-label>
-    <input matInput [(ngModel)]="filterConfig.nameEn"/>
-  </mat-form-field>
-
   <asrdb-variable-selector [variable]="filterConfig.variable" [entityType]="qualityType" (variableChange)="changeValue($event, 'variable')" appearance="outline"></asrdb-variable-selector>
 
   <mat-form-field appearance="outline" class="full-width">

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
 import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,16 +6,18 @@ import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { QualityManagementTableFitlerComponent } from './quality-management-table-fitler/quality-management-table-fitler.component';
+import { QualityManagementTableFilterComponent } from './quality-management-table-fitler/quality-management-table-filter.component';
 import { QualityRuleFilter } from './model/quality-rule-filter';
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'asrdb-quality-management-table',
   templateUrl: './quality-management-table.component.html',
   styleUrls: ['./quality-management-table.component.css']
 })
-export class QualityManagementTableComponent implements OnInit, OnDestroy {
+export class QualityManagementTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   public qualityRulesObservable!: Observable<MatTableDataSource<any>>;
   public isLoadingResults!: Observable<boolean>;
@@ -35,8 +37,6 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
 
   filterConfig: QualityRuleFilter = {
     localId: '',
-    nameAl: '',
-    nameEn: '',
     variable: '',
     ruleStatus: '',
   };
@@ -64,6 +64,10 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
     this.qualityManagementService.getRules(this.qualityType);
   }
 
+  ngAfterViewInit() {
+
+  }
+
   ngOnDestroy(): void {
     this.subscription.next(true);
     this.subscription.complete();
@@ -78,7 +82,7 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
 
   openFilter() {
     this.matDialog
-      .open(QualityManagementTableFitlerComponent, {
+      .open(QualityManagementTableFilterComponent, {
         data: JSON.parse(JSON.stringify({ filter: this.filterConfig, qualityType: this.qualityType }))
       }).afterClosed().subscribe((newFilterConfig: QualityRuleFilter | null) => this.handlePopupClose(newFilterConfig));
   }
@@ -113,14 +117,13 @@ export class QualityManagementTableComponent implements OnInit, OnDestroy {
   private init() {
     this.filterConfig = {
       localId: '',
-      nameAl: '',
-      nameEn: '',
       variable: '',
       ruleStatus: '',
     };
     this.qualityRulesObservable = this.qualityManagementService.qualityRulesAsObservable.pipe(map((value) => {
       this.datasource.data = value;
       this.datasource.paginator = this.paginator;
+      this.datasource.sort = this.sort;
       return this.datasource;
     }));
     this.isLoadingResults = this.qualityManagementService.loadingResultsAsObservable;
