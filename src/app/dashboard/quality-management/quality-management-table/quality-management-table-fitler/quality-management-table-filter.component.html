@@ -3,9 +3,17 @@
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Reference</mat-label>
     <input matInput [(ngModel)]="filterConfig.localId"/>
+    <mat-icon matSuffix
+              style="cursor: pointer; z-index: 10;"
+              (click)="clearValue($event, 'localId')">close</mat-icon>
   </mat-form-field>
 
-  <asrdb-variable-selector [variable]="filterConfig.variable" [entityType]="qualityType" (variableChange)="changeValue($event, 'variable')" appearance="outline"></asrdb-variable-selector>
+  <asrdb-variable-selector
+    [variable]="filterConfig.variable"
+    [entityType]="qualityType"
+    [clearable]="true"
+    (variableChange)="changeValue($event, 'variable')"
+    appearance="outline"></asrdb-variable-selector>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Rule status</mat-label>
@@ -13,11 +21,28 @@
       <mat-option value="ACTIVE" i18n>Active</mat-option>
       <mat-option value="DISABLED" i18n>Disabled</mat-option>
     </mat-select>
+    <mat-icon matSuffix
+              style="cursor: pointer; z-index: 10;"
+              (click)="clearValue($event, 'ruleStatus')">close</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Quality action</mat-label>
+    <mat-select [value]="filterConfig.qualityAction"
+                (selectionChange)="changeStatusValue($event, 'qualityAction')">
+      <mat-option value="AUT" i18n>Automatic</mat-option>
+      <mat-option value="MISS" i18n>Miss</mat-option>
+      <mat-option value="QUE" i18n>Queue</mat-option>
+      <mat-option value="ERR" i18n>Error</mat-option>
+    </mat-select>
+    <mat-icon matSuffix
+              style="cursor: pointer; z-index: 10;"
+              (click)="clearValue($event, 'qualityAction')">close</mat-icon>
   </mat-form-field>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button mat-dialog-close i18n>Cancel</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button mat-button color="primary" [mat-dialog-close]="filterConfig">Filter</button>
+  <button mat-button color="primary" [mat-dialog-close]="applyFilter()" i18n>Filter</button>
 </mat-dialog-actions>

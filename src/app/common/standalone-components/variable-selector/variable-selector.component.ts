@@ -9,6 +9,8 @@ import {CommonEntranceService} from "../../../dashboard/common/service/common-en
 import {CommonDwellingService} from "../../../dashboard/common/service/common-dwellings.service";
 import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
 import {BUILDING_HIDDEN_FIELDS, DWELLING_HIDDEN_FIELDS, ENTRANCE_HIDDEN_FIELDS} from "../../data/hidden-fields";
+import {MatIconModule} from "@angular/material/icon";
+import {MatInputModule} from "@angular/material/input";
 
 type SelectOption = { text: string, value: string };
 
@@ -21,7 +23,9 @@ type SelectOption = { text: string, value: string };
     MatSelectModule,
     MatFormFieldModule,
     FormsModule,
-    CommonModule
+    CommonModule,
+    MatIconModule,
+    MatInputModule
   ],
   providers: [
     CommonBuildingService,
@@ -35,17 +39,24 @@ export class VariableSelectorComponent implements OnDestroy{
   @Input() variable = '';
   @Input() appearance: MatFormFieldAppearance = 'fill';
   @Input() entityType: EntityType | '' = 'BUILDING';
+  @Input() clearable = false;
   @Output() variableChange = new EventEmitter<string>();
-  private destroy$ = new Subject();
 
+  public filterValue = '';
+
+  private destroy$ = new Subject();
   private _variables = new Map<EntityType, SelectOption[]>([
     ['BUILDING', []],
     ['ENTRANCE', []],
     ['DWELLING', []],
-  ])
+  ]);
 
   public get variables() : SelectOption[] {
-    return this._variables.get(this.entityType ? this.entityType : 'BUILDING')!;
+    return this._variables
+      .get(this.entityType ? this.entityType : 'BUILDING')!
+      .filter((variable: any) => {
+        return this.filterValue === '' || variable.value.toLowerCase().includes(this.filterValue.toLowerCase());
+      });
   }
 
   constructor(
@@ -80,8 +91,14 @@ export class VariableSelectorComponent implements OnDestroy{
     this.destroy$.unsubscribe();
   }
 
-  changeRole(selectedPermission: MatSelectChange) {
-    this.variableChange.emit(selectedPermission.value);
+  changeVariable(selectedVariable: MatSelectChange) {
+    this.variableChange.emit(selectedVariable.value);
+  }
+
+  clearValue($event: any) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.variableChange.emit('');
   }
 
   private mapVariables(fields: any[]): SelectOption[] {

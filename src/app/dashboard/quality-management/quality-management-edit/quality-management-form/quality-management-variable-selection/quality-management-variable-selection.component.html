@@ -2,7 +2,14 @@
   <mat-form-field class="full-width">
     <mat-label>{{label}}</mat-label>
     <mat-select [formControlName]="variable">
-      <mat-option *ngFor="let variable of variables" [value]="variable.value">{{variable.text}}</mat-option>
+      <div class="search-field-container">
+        <mat-form-field class="w-100" appearance="outline">
+          <input matInput i18n-placeholder
+                 placeholder="Search..."
+                 (input)="updateFilter($event)"/>
+        </mat-form-field>
+      </div>
+      <mat-option *ngFor="let variable of filteredVariables" [value]="variable.value">{{variable.value}}</mat-option>
     </mat-select>
   </mat-form-field>
 </div>

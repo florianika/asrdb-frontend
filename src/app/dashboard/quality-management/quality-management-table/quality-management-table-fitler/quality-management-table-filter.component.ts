@@ -1,8 +1,10 @@
-import { Component, Inject } from '@angular/core';
-import { QualityRuleFilter } from '../model/quality-rule-filter';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
-import { EntityType } from '../../quality-management-config';
+import {Component, Inject} from '@angular/core';
+import {QualityRuleFilter} from '../model/quality-rule-filter';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatSelectChange} from '@angular/material/select';
+import {EntityType} from '../../quality-management-config';
+
+export const FILTER_CONFIG_PREFIX = 'filter-config-';
 
 @Component({
   selector: 'asrdb-quality-management-table-filter',
@@ -24,5 +26,16 @@ export class QualityManagementTableFilterComponent {
 
   changeValue(event: string, filterProp: string) {
     (this.filterConfig as any)[filterProp] = event;
+  }
+
+  clearValue($event: any, filterProp: string) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    (this.filterConfig as any)[filterProp] = '';
+  }
+
+  applyFilter() {
+    localStorage.setItem(FILTER_CONFIG_PREFIX + this.qualityType, JSON.stringify(this.filterConfig));
+    return this.filterConfig;
   }
 }

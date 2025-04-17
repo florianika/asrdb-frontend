@@ -1,6 +1,6 @@
-import {Component, Input, OnDestroy} from '@angular/core';
-import { EntityType } from '../../../quality-management-config';
-import { FormGroup } from '@angular/forms';
+import {Component, Input, isDevMode, OnDestroy} from '@angular/core';
+import {EntityType} from '../../../quality-management-config';
+import {FormGroup} from '@angular/forms';
 import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
 import {CommonBuildingService} from "../../../../common/service/common-building.service";
 import {CommonEntranceService} from "../../../../common/service/common-entrance.service";
@@ -18,7 +18,7 @@ type SelectOption = { text: string, value: string };
   templateUrl: './quality-management-variable-selection.component.html',
   styleUrls: ['./quality-management-variable-selection.component.css']
 })
-export class QualityManagementVariableSelectionComponent implements OnDestroy{
+export class QualityManagementVariableSelectionComponent implements OnDestroy {
   @Input() entity!: EntityType;
   @Input() label!: string;
   @Input() variable!: string;
@@ -30,11 +30,10 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy{
     ['BUILDING', []],
     ['ENTRANCE', []],
     ['DWELLING', []],
-  ])
+  ]);
 
-  public get variables() : SelectOption[] {
-    return this._variables.get(this.entity)!;
-  }
+  public filterValue = '';
+  public filteredVariables: SelectOption[] = [];
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -48,17 +47,21 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy{
       ]
     )
       .pipe(takeUntil(this.destroy$), catchError((error) => {
+        console.log(error);
         return of([]);
       }))
       .subscribe({
         next: ([buildingFields, entranceFields, dwellingFields]) => {
-          console.log(buildingFields);
-          console.log(entranceFields);
-          console.log(dwellingFields);
-
+          if (isDevMode()) {
+            console.log(buildingFields);
+            console.log(entranceFields);
+            console.log(dwellingFields);
+          }
           this._variables.set('BUILDING', this.mapVariables(buildingFields));
           this._variables.set('ENTRANCE', this.mapVariables(entranceFields));
           this._variables.set('DWELLING', this.mapVariables(dwellingFields));
+
+          this.filterVariables();
         }
       })
   }
@@ -66,6 +69,22 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy{
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  updateFilter($event: any) {
+    this.filterValue = $event.target.value;
+    this.filterVariables();
+  }
+
+  private filterVariables() {
+    const variables = this._variables.get(this.entity);
+    if (variables && variables.length > 0) {
+      this.filteredVariables = variables.filter((variable: SelectOption) => {
+        return variable.value.toLowerCase().includes(this.filterValue.toLowerCase());
+      });
+    } else {
+      this.filteredVariables = [];
+    }
   }
 
   private mapVariables(fields: any[]): SelectOption[] {

@@ -1,0 +1,6 @@
+.search-field-container {
+  display: flex;
+  position: relative;
+  padding: 0px 10px;
+  border-bottom: 1px solid lightgray;
+}

@@ -2,9 +2,20 @@
   <mat-label i18n>Variable</mat-label>
   <mat-select
     [(ngModel)]="variable"
-    (selectionChange)="changeRole($event)"
+    (selectionChange)="changeVariable($event)"
     [required]="required"
     [disabled]="disabled || !entityType">
-    <mat-option *ngFor="let variable of variables" [value]="variable.value" i18n>{{ variable.text }}</mat-option>
+    <div class="search-field-container">
+      <mat-form-field class="w-100" appearance="outline">
+        <input matInput i18n-placeholder
+               placeholder="Search..."
+               [(ngModel)]="filterValue"/>
+      </mat-form-field>
+    </div>
+    <mat-option *ngFor="let variable of variables" [value]="variable.value" i18n>{{ variable.value }}</mat-option>
   </mat-select>
+  <mat-icon *ngIf="clearable"
+            style="cursor: pointer; z-index: 10;"
+            matSuffix
+            (click)="clearValue($event)">close</mat-icon>
 </mat-form-field>

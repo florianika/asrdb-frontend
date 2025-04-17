@@ -51,3 +51,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 .basemap-item:hover {
   background: #f1f1f1;
 }
+
+.search-field-container > mat-form-field > .mat-mdc-form-field-subscript-wrapper {
+  height: 0px !important;
+  margin-bottom: 10px;
+}

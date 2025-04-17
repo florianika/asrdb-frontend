@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import 'brace';
 import 'brace/mode/sql.js';
 import 'brace/theme/github';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'asrdb-quality-management-form',
@@ -20,6 +21,8 @@ export class QualityManagementFormComponent implements OnInit {
   @Input() id?: string | null;
 
   @ViewChild('resetDialog') resetDialog!: TemplateRef<any>;
+  @ViewChild('cancelDialog') cancelDialog!: TemplateRef<any>;
+
   @ViewChild('stepper') stepper!: MatStepper;
 
   public isSaving = this.qualityManagementService.isSavingAsObservable;
@@ -34,14 +37,15 @@ export class QualityManagementFormComponent implements OnInit {
   constructor(
     private qualityManagementService: QualityManagementService,
     private matDialog: MatDialog,
-    private matSnackBar: MatSnackBar
+    private matSnackBar: MatSnackBar,
+    private router: Router,
   ) {
 
   }
 
   ngOnInit(): void {
     this.firstFormGroup = new FormGroup({
-      localId: new FormControl<string>({ value: this.rule?.localId ?? '', disabled: !!this.id }, [Validators.required]),
+      localId: new FormControl<string>(this.rule?.localId ?? '', [Validators.required]),
       entityType: new FormControl<EntityType>({ value: this.rule?.entityType ?? this.qualityType, disabled: true }, [Validators.required]),
       variable: new FormControl<string>(this.rule?.variable ?? '', [Validators.required]),
       nameAl: new FormControl<string>(this.rule?.nameAl ?? ''),
@@ -91,6 +95,17 @@ export class QualityManagementFormComponent implements OnInit {
     } else {
       this.qualityManagementService.save(rule, this.qualityType);
     }
+  }
+
+  cancel() {
+    this.matDialog
+      .open(this.cancelDialog)
+      .afterClosed()
+      .subscribe((confirm) => {
+        if (confirm) {
+          void this.router.navigate(['/dashboard/quality-management/' + this.qualityType]);
+        }
+      });
   }
 
   reset(stepper: MatStepper) {

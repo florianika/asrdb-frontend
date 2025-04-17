@@ -13,6 +13,10 @@
     <button mat-icon-button matTooltip="Reload table data" (click)="reload()" [disabled]="isLoadingResults | async">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
+    <span style="border-right: 1px solid lightgray; height: 24px; display: inline-block"></span>
+    <button mat-icon-button matTooltip="Export to CSV" (click)="downloadCSV()" [disabled]="isLoadingResults | async">
+      <mat-icon style="cursor: pointer;">download</mat-icon>
+    </button>
   </div>
 
   <div style="padding: 0px 10px;">
@@ -48,6 +52,10 @@
       <ng-container matColumnDef="ruleStatus">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Status</th>
         <td mat-cell *matCellDef="let element"> {{element.ruleStatus}} </td>
+      </ng-container>
+      <ng-container matColumnDef="qualityAction">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Quality Action</th>
+        <td mat-cell *matCellDef="let element"> {{element.qualityAction}} </td>
       </ng-container>
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
