@@ -54,6 +54,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   private onDestroy = new Subject();
 
   formStructure: FormObject[] = [];
+  inputFilters: Record<string, string> = {};
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -83,6 +84,28 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  filterInputOptions($event: any, name: string) {
+    const value = $event.target.value;
+    this.inputFilters[name] = value;
+    this.formStructure.forEach((field: FormObject) => {
+      if (field.name === name && field.type === 'select' && field.originalOptions) {
+        field.selectOptions = field.originalOptions
+          .filter((option: any) => option.text.toLowerCase().includes(value.toLowerCase()));
+      }
+    });
+  }
+
+  clearInputFilter($event: any, name: string) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.inputFilters[name] = '';
+    this.formStructure.forEach((field: FormObject) => {
+      if (field.name === name && field.type === 'select' && field.originalOptions) {
+        field.selectOptions = field.originalOptions;
+      }
+    });
+  }
+
   private createFormObject(field: never) {
     const fieldType = field[DOMAIN_PROP] ? 'select' : getFormObjectType(field[TYPE_PROP], field[LENGTH_PROP] ?? 0);
     const fieldOptions = getFormObjectOptions(fieldType, field[DOMAIN_PROP]);
@@ -91,6 +114,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       alias: field[ALIAS_PROP],
       type: fieldType,
       selectOptions: fieldOptions,
+      originalOptions: fieldOptions,
       maxLength: field[LENGTH_PROP],
       hidden: ['BldLatitude', 'BldLongitude'].includes(field[NAME_PROP])
     });

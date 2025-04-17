@@ -67,8 +67,11 @@ export class OverviewComponent implements OnDestroy {
   openFilter() {
     this.matDialog
       .open(RegisterFilterComponent, {
-        data: JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
-      }).afterClosed().subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
+        data: JSON.parse(JSON.stringify(this.registerFilterService.getFilter())),
+        width: '700px',
+      })
+      .afterClosed()
+      .subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
   remove($event: Chip) {

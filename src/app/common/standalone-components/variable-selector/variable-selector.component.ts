@@ -11,6 +11,7 @@ import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
 import {BUILDING_HIDDEN_FIELDS, DWELLING_HIDDEN_FIELDS, ENTRANCE_HIDDEN_FIELDS} from "../../data/hidden-fields";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
 
 type SelectOption = { text: string, value: string };
 
@@ -25,7 +26,8 @@ type SelectOption = { text: string, value: string };
     FormsModule,
     CommonModule,
     MatIconModule,
-    MatInputModule
+    MatInputModule,
+    MatButtonModule
   ],
   providers: [
     CommonBuildingService,
@@ -99,6 +101,12 @@ export class VariableSelectorComponent implements OnDestroy{
     $event.stopPropagation();
     $event.preventDefault();
     this.variableChange.emit('');
+  }
+
+  clearFilter($event: any) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.filterValue = '';
   }
 
   private mapVariables(fields: any[]): SelectOption[] {

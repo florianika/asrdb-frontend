@@ -76,6 +76,13 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
     this.filterVariables();
   }
 
+  clearFilter($event: any) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.filterValue = '';
+    this.filterVariables();
+  }
+
   private filterVariables() {
     const variables = this._variables.get(this.entity);
     if (variables && variables.length > 0) {

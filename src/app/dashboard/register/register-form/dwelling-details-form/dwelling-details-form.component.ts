@@ -60,6 +60,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   entranceId = '';
   isSaving: Observable<boolean>;
   isLoadingResults = false;
+  inputFilters: Record<string, string> = {};
 
   constructor(
     private dwellingService: CommonDwellingService,
@@ -86,6 +87,28 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     if (!data.id) {
       DWELLING_HIDDEN_FIELDS.push('DwlEntranceID');
     }
+  }
+
+  filterInputOptions($event: any, name: string) {
+    const value = $event.target.value;
+    this.inputFilters[name] = value;
+    this.formStructure.forEach((field: FormObject) => {
+      if (field.name === name && field.type === 'select' && field.originalOptions) {
+        field.selectOptions = field.originalOptions
+          .filter((option: any) => option.text.toLowerCase().includes(value.toLowerCase()));
+      }
+    });
+  }
+
+  clearInputFilter($event: any, name: string) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.inputFilters[name] = '';
+    this.formStructure.forEach((field: FormObject) => {
+      if (field.name === name && field.type === 'select' && field.originalOptions) {
+        field.selectOptions = field.originalOptions;
+      }
+    });
   }
 
   private initForm() {
@@ -143,6 +166,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
       alias: field[ALIAS_PROP],
       type: fieldType,
       selectOptions: fieldOptions,
+      originalOptions: fieldOptions,
       maxLength: field[LENGTH_PROP]
     });
   }

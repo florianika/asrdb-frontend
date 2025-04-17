@@ -19,6 +19,7 @@ import {MomentDateAdapter} from "@angular/material-moment-adapter";
 import {getColor, MY_FORMATS} from "../../model/common-utils";
 import {ENTRANCE_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
 import {Log} from "../../register-log-view/model/log";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -33,6 +34,7 @@ import {Log} from "../../register-log-view/model/log";
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatButtonModule,
   ],
   providers: [
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
@@ -49,6 +51,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
   private readonly entranceId: string | null;
 
   formStructure: FormObject[] = [];
+  inputFilters: Record<string, string> = {};
 
   constructor(
     private entranceService: CommonEntranceService,
@@ -75,6 +78,28 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
+  filterInputOptions($event: any, name: string) {
+    const value = $event.target.value;
+    this.inputFilters[name] = value;
+    this.formStructure.forEach((field: FormObject) => {
+      if (field.name === name && field.type === 'select' && field.originalOptions) {
+        field.selectOptions = field.originalOptions
+          .filter((option: any) => option.text.toLowerCase().includes(value.toLowerCase()));
+      }
+    });
+  }
+
+  clearInputFilter($event: any, name: string) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.inputFilters[name] = '';
+    this.formStructure.forEach((field: FormObject) => {
+      if (field.name === name && field.type === 'select' && field.originalOptions) {
+        field.selectOptions = field.originalOptions;
+      }
+    });
+  }
+
   private createFormObject(field: never) {
     const fieldType = field[DOMAIN_PROP] ? 'select' : getFormObjectType(field[TYPE_PROP], field[LENGTH_PROP] ?? 0);
     const fieldOptions = getFormObjectOptions(fieldType, field[DOMAIN_PROP]);
@@ -83,6 +108,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       alias: field[ALIAS_PROP],
       type: fieldType,
       selectOptions: fieldOptions,
+      originalOptions: fieldOptions,
       maxLength: field[LENGTH_PROP]
     });
   }

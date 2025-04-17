@@ -5,6 +5,7 @@ export type FormObject = {
   alias: string,
   type: FormObjectType,
   selectOptions: FormObjectSelectOption[] | null,
+  originalOptions: FormObjectSelectOption[] | null,
   maxLength?: number
   hidden?:  boolean
 }

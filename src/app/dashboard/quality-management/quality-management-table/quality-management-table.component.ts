@@ -98,7 +98,8 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
   openFilter() {
     this.matDialog
       .open(QualityManagementTableFilterComponent, {
-        data: JSON.parse(JSON.stringify({ filter: this.filterConfig, qualityType: this.qualityType }))
+        data: JSON.parse(JSON.stringify({ filter: this.filterConfig, qualityType: this.qualityType })),
+        width: '700px',
       })
       .afterClosed()
       .subscribe((newFilterConfig: QualityRuleFilter | null) => this.handlePopupClose(newFilterConfig));

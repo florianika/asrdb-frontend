@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { BuildingFilter } from '../../../register/model/building';
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'asrdb-building-list-view-filter',
@@ -20,11 +21,13 @@ import { BuildingFilter } from '../../../register/model/building';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
   ]
 })
 export class RegisterFilterComponent {
   filterConfig: BuildingFilter;
+  filterValue = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: BuildingFilter,
@@ -32,7 +35,18 @@ export class RegisterFilterComponent {
     this.filterConfig = data;
   }
 
+  get municipalities() {
+    return this.filterConfig.options.BldMunicipality
+      .filter(el => !this.filterValue || el.name.toString().toLowerCase().includes(this.filterValue.toLowerCase()));
+  }
+
   changeValue(event: MatSelectChange, filterProp: string) {
     (this.filterConfig.filter as any)[filterProp] = event.value;
+  }
+
+  cleanValue(event: any, filterProp: string) {
+    event.stopPropagation();
+    event.preventDefault();
+    (this.filterConfig.filter as any)[filterProp] = '';
   }
 }

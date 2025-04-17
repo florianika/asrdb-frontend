@@ -12,14 +12,23 @@
     <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
-    <ng-container *ngIf="selectedBuildings.length">
+    <ng-container>
       <div style="border-left: 1px solid lightgray; width: 1px; height: 20px"></div>
-      <button mat-icon-button [matTooltip]="'Open log view for selected building(s)'" (click)="viewLogsForSelected()" [disabled]="isLoadingResults">
+      <span
+        [matTooltip]="'Open log view for selected building(s) - ' + (!selectedBuildings.length ? 'Select an item to enable this option' : '')">
+        <button mat-icon-button
+                [disabled]="!selectedBuildings.length || isLoadingResults"
+                (click)="viewLogsForSelected()">
         <mat-icon style="cursor: pointer;">rule</mat-icon>
       </button>
-      <button mat-icon-button [matTooltip]="'Filter map for selected building(s)'" (click)="filterSelectedBuildings()" [disabled]="isLoadingResults">
+      </span>
+      <span
+        [matTooltip]="'Filter map for selected building(s) - ' + (!selectedBuildings.length ? 'Select an item to enable this option' : '')">
+        <button mat-icon-button
+                (click)="filterSelectedBuildings()" [disabled]="!selectedBuildings.length || isLoadingResults">
         <mat-icon style="cursor: pointer;">map</mat-icon>
       </button>
+      </span>
     </ng-container>
   </div>
 

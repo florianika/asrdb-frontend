@@ -142,8 +142,12 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   openFilter() {
     this.matDialog
       .open(RegisterFilterComponent, {
-        data: JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
-      }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
+        data: JSON.parse(JSON.stringify(this.registerFilterService.getFilter())),
+        width: '700px',
+      })
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
   }
 
   reload() {

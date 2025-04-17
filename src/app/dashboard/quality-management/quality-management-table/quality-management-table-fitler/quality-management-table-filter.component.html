@@ -3,7 +3,7 @@
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Reference</mat-label>
     <input matInput [(ngModel)]="filterConfig.localId"/>
-    <mat-icon matSuffix
+    <mat-icon matSuffix *ngIf="filterConfig.localId"
               style="cursor: pointer; z-index: 10;"
               (click)="clearValue($event, 'localId')">close</mat-icon>
   </mat-form-field>
@@ -21,7 +21,7 @@
       <mat-option value="ACTIVE" i18n>Active</mat-option>
       <mat-option value="DISABLED" i18n>Disabled</mat-option>
     </mat-select>
-    <mat-icon matSuffix
+    <mat-icon matSuffix *ngIf="filterConfig.ruleStatus"
               style="cursor: pointer; z-index: 10;"
               (click)="clearValue($event, 'ruleStatus')">close</mat-icon>
   </mat-form-field>
@@ -35,7 +35,7 @@
       <mat-option value="QUE" i18n>Queue</mat-option>
       <mat-option value="ERR" i18n>Error</mat-option>
     </mat-select>
-    <mat-icon matSuffix
+    <mat-icon matSuffix *ngIf="filterConfig.qualityAction"
               style="cursor: pointer; z-index: 10;"
               (click)="clearValue($event, 'qualityAction')">close</mat-icon>
   </mat-form-field>
