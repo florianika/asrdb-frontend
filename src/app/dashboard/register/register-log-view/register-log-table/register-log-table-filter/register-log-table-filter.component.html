@@ -4,6 +4,7 @@
   <asrdb-variable-selector
     [entityType]="filter.entityType"
     [(variable)]="filter.variable"
+    [clearable]="true"
   >
   </asrdb-variable-selector>
   <mat-form-field class="full-width">
@@ -22,6 +23,9 @@
         ERR
       </mat-option>
     </mat-select>
+    <button matSuffix mat-icon-button *ngIf="filter.qualityAction" (click)="clearFormValue($event, 'qualityAction')">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

@@ -5,14 +5,14 @@ export type Permission = 'WRITE' | 'READ' | 'NONE';
 export type RolePermissions = {
   'id': number,
   'role': Role
-  'entityType': EntityType,
+  'entityType': EntityType | '',
   'variableName': string,
   'permission': Permission
 }
 
 export type NewRolePermission = {
   'role': Role
-  'entityType': EntityType,
+  'entityType': EntityType | '',
   'variableName': string,
   'permission': Permission
 }

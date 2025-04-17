@@ -13,6 +13,7 @@ import {
 } from "../../../../../common/standalone-components/entity-type-selector/entity-type-selector.component";
 import {LogFilter} from "../../model/log-filter";
 import {FormsModule} from "@angular/forms";
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'asrdb-register-log-table-filter',
@@ -26,7 +27,8 @@ import {FormsModule} from "@angular/forms";
     MatSelectModule,
     VariableSelectorComponent,
     EntityTypeSelectorComponent,
-    FormsModule
+    FormsModule,
+    MatIconModule
   ],
   templateUrl: './register-log-table-filter.component.html',
   styleUrls: ['./register-log-table-filter.component.css']
@@ -46,4 +48,9 @@ export class RegisterLogTableFilterComponent {
     this.filter = JSON.parse(JSON.stringify(data));
   }
 
+  clearFormValue($event: any, filterProp: string) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    (this.filter as any)[filterProp] = '';
+  }
 }

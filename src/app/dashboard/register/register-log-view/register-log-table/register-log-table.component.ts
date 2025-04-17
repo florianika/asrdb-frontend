@@ -135,7 +135,7 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   }
 
   filterData() {
-    this.matDialog.open(RegisterLogTableFilterComponent, {data: this.filter})
+    this.matDialog.open(RegisterLogTableFilterComponent, {data: this.filter, width: '700px'})
       .afterClosed()
       .subscribe((filter) => {
         if (filter) {
