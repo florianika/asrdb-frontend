@@ -88,7 +88,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.registerFilterService.filterObservable.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
+    this.registerFilterService.filterObservable.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.reload();
     });
   }

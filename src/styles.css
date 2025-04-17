@@ -25,7 +25,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 }
 
 .table {
-  margin-bottom: 0px !important;
+  margin-bottom: 0 !important;
 }
 
 .spacer {
@@ -65,6 +65,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 }
 
 .search-field-container > mat-form-field > .mat-mdc-form-field-subscript-wrapper {
-  height: 0px !important;
+  height: 0 !important;
   margin-bottom: 10px;
 }

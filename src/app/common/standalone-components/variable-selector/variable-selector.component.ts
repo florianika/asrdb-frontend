@@ -73,6 +73,7 @@ export class VariableSelectorComponent implements OnDestroy{
       ]
     )
       .pipe(takeUntil(this.destroy$), catchError((error) => {
+        console.error(error);
         return of([]);
       }))
       .subscribe({

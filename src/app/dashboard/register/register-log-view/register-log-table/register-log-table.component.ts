@@ -54,7 +54,6 @@ import {Router} from "@angular/router";
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    RegisterLogTableFilterComponent,
     ChipComponent,
     MatSnackBarModule
   ],

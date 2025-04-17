@@ -12,7 +12,7 @@ import {
 } from './quality-management-table-fitler/quality-management-table-filter.component';
 import { QualityRuleFilter } from './model/quality-rule-filter';
 import {MatSort} from "@angular/material/sort";
-import { mkConfig, generateCsv, download, asBlob, CsvOutput } from "export-to-csv";
+import { mkConfig, generateCsv, asBlob, CsvOutput } from "export-to-csv";
 
 
 @Component({

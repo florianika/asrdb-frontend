@@ -41,7 +41,7 @@ export class OverviewComponent implements OnDestroy {
         this.changeDetectionRef.detectChanges();
       });
 
-    this.registerFilterService.filterObservable.subscribe((filter) => {
+    this.registerFilterService.filterObservable.subscribe(() => {
       this.reload();
     });
   }
