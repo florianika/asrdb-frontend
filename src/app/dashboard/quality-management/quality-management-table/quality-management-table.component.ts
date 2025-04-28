@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
 import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,7 +18,8 @@ import { mkConfig, generateCsv, asBlob, CsvOutput } from "export-to-csv";
 @Component({
   selector: 'asrdb-quality-management-table',
   templateUrl: './quality-management-table.component.html',
-  styleUrls: ['./quality-management-table.component.css']
+  styleUrls: ['./quality-management-table.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QualityManagementTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -112,6 +113,7 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
   remove($event: Chip) {
     (this.filterConfig as any)[$event.column] = '';
     this.datasource.filter = JSON.stringify(this.filterConfig);
+    localStorage.setItem(FILTER_CONFIG_PREFIX + this.qualityType, JSON.stringify(this.filterConfig));
   }
 
   viewDetails(id: string) {
@@ -188,7 +190,7 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
   }
 
   private init() {
-    this.filterConfig = JSON.parse(JSON.stringify(this.filterConfig));
+    this.loadFilter();
     this.qualityRulesObservable = this.qualityManagementService.qualityRulesAsObservable.pipe(map((value: any) => {
       this.datasource.data = value;
       this.datasource.paginator = this.paginator;
