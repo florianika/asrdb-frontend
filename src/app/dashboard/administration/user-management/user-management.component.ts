@@ -5,6 +5,7 @@ import { UserManagementService } from './user-management.service';
 import { User } from 'src/app/model/User.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, map } from 'rxjs';
+import {MUNICIPALITIES} from "../../../common/data/municipalities";
 
 @Component({
   selector: 'asrdb-user-management',
@@ -12,7 +13,7 @@ import { Observable, map } from 'rxjs';
   styleUrls: ['./user-management.component.css']
 })
 export class UserManagementComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['id', 'email', 'name', 'lastName', 'accountStatus', 'accountRole', 'actions'];
+  displayedColumns: string[] = ['id', 'email', 'name', 'lastName', 'municipality','accountStatus', 'accountRole', 'actions'];
   dataSourceObservable: Observable<MatTableDataSource<User>> = this.userManagementService.usersAsObservable.pipe(
     map(users => {
       const dataSource = this.dataSource;
@@ -53,5 +54,17 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     user.accountStatus === 'ACTIVE'
     ? this.userManagementService.terminateUser(user.id)
     : this.userManagementService.activateUser(user.id);
+  }
+
+  mapMunicipality(municipalityCode: string) {
+    if (!municipalityCode) {
+      return "-";
+    }
+    const municipality = MUNICIPALITIES.find((el: {name: string, code: number}) => el.code.toString() === municipalityCode);
+    if (municipality) {
+      return municipality.name;
+    } else {
+      return "-";
+    }
   }
 }
