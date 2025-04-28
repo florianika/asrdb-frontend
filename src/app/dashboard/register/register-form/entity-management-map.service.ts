@@ -115,13 +115,7 @@ export class EntityCreationMapService {
       throw new Error("MapView element or available tools are not defined");
     }
 
-    this.graphicsLayer = new GraphicsLayer({
-      elevationInfo: {
-        mode: 'on-the-ground',
-        offset: 1,
-        unit: "meters"
-      }
-    });
+    this.graphicsLayer = new GraphicsLayer();
     const mainGraphic: Graphic | null = this.addExistingGraphics(this.editingGeometry, this.graphicsLayer);
     const layers: any[] = [this.graphicsLayer];
     if (this.availableTools.includes('polygon')) {
