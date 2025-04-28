@@ -7,7 +7,6 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {Role} from 'src/app/model/RolePermissions.model';
 import {Credentials} from "../../auth/signin/signin.service";
-import esriId from "@arcgis/core/identity/IdentityManager";
 import {ESRI_AUTH_KEY} from "../../dashboard/common/service/common-esri-auth.service";
 export const DEFAULT_MUNICIPALITY = 53;
 
@@ -78,11 +77,11 @@ export class AuthStateService implements OnInit, OnDestroy {
               refreshToken: newToken.refreshToken
             });
             this.webWorker.postMessage('');
-            this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
+            this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/login')
               .subscribe({
                 next: async (credentials) => {
                   try {
-                    await this.initEsriConfig(credentials);
+                    this.initEsriConfig(credentials);
                     observer.next(true);
                   } catch (error) {
                     this.handleError(error);
@@ -304,15 +303,8 @@ export class AuthStateService implements OnInit, OnDestroy {
     return false;
   }
 
-  public async initEsriConfig(credentials: Credentials) {
-    const token = await esriId.generateToken({
-      server: environment.portal_url,
-      tokenServiceUrl: environment.token_url,
-    } as __esri.ServerInfo, {
-      username: credentials.username,
-      password: credentials.password,
-    });
-    localStorage.setItem(ESRI_AUTH_KEY, JSON.stringify(token));
+  public initEsriConfig(credentials: Credentials) {
+    localStorage.setItem(ESRI_AUTH_KEY, JSON.stringify(credentials));
   }
 
   private handleError(error: any) {

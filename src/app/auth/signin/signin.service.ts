@@ -55,11 +55,11 @@ export class SigninService {
   }
 
   getEsriCredentials() {
-    this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/credentials')
+    this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/login')
       .subscribe({
       next: async (credentials) => {
         try {
-          await this.authStateService.initEsriConfig(credentials);
+          this.authStateService.initEsriConfig(credentials);
           void this.router.navigateByUrl('/dashboard');
           this.authStateService.setLoginState(true);
           this.signingIn.next(false);
