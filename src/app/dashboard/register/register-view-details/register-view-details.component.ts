@@ -293,8 +293,8 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
   }
 
-  getMunicipality() {
-    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, 'BldMunicipality', this.building.BldMunicipality.toString());
+  getMunicipality(): string | number {
+    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, 'BldMunicipality', this.building.BldMunicipality);
   }
 
   getValueFromStatus(column: string) {

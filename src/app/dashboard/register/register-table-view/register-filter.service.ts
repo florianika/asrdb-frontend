@@ -6,7 +6,7 @@ import {BehaviorSubject} from 'rxjs';
 import {MUNICIPALITIES} from "../../../common/data/municipalities";
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
-const DEFAULT_MUNICIPALITY = '53';
+const DEFAULT_MUNICIPALITY = 53;
 
 @Injectable()
 export class RegisterFilterService {
@@ -60,8 +60,8 @@ export class RegisterFilterService {
     }
   }
 
-  get municipality(): string {
-    return this.filter.value.filter?.BldMunicipality ?? '';
+  get municipality(): number | null {
+    return this.filter.value.filter?.BldMunicipality ?? null;
   }
 
   setBuildingsGlobalIdFilter(globalIds: string[]) {
@@ -88,6 +88,13 @@ export class RegisterFilterService {
   }
 
   updateFilter(filter: BuildingFilter, key: string) {
+    //TODO: Discuss if needed
+    // if (!filter) {
+    //   return;
+    // }
+    // if (!filter.filter.BldMunicipality) {
+    //   filter.filter.BldMunicipality = DEFAULT_MUNICIPALITY;
+    // }
     this.filter.next(filter);
     sessionStorage.setItem(key, JSON.stringify(filter));
   }
@@ -143,12 +150,12 @@ export class RegisterFilterService {
 
   prepareWhereCaseForEntrance(entranceId?: string) {
     if (entranceId) {
-      return `EntBuildingId='${entranceId}'`;
+      return `EntBldGlobalID='${entranceId}'`;
     }
     if (!this.globalIds.getValue()?.length && this.noFilterApplied()) {
       return '1=1';
     }
-    return `EntBuildingId in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
+    return `EntBldGlobalID in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
   }
 
   getFilter() {
@@ -163,13 +170,13 @@ export class RegisterFilterService {
     return field
       .domain
       ?.codedValues
-      ?.map((codeValue: { name: string, code: string }) => (
+      ?.map((codeValue: { name: string, code: string | number }) => (
         {
           name: codeValue.name,
           code: codeValue.code,
         })
       )
-      ?.sort((a: { name: string, code: string }, b: { name: string, code: string }) => {
+      ?.sort((a: { name: string, code: string }, b: { name: string, code: string | number }) => {
         if (a.code > b.code) {
           return 1;
         } else if (a.code < b.code) {
@@ -185,9 +192,9 @@ export class RegisterFilterService {
   }
 
   private getBldMunicipalityOptions() {
-    return this.getOptionsFromDomain('BldMunicipality').sort((a: { name: string, code: string }, b: {
+    return this.getOptionsFromDomain('BldMunicipality').sort((a: { name: string, code: number }, b: {
       name: string,
-      code: string
+      code: number
     }) => {
       if (a.name > b.name) {
         return 1;

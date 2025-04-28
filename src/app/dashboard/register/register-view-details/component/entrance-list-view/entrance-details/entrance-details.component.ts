@@ -67,13 +67,6 @@ export class EntranceDetailsComponent implements OnInit {
         },
         {
           title: '',
-          propName: 'EntStreet',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
           propName: 'EntBuildingNumber',
           value: '',
           log: '',

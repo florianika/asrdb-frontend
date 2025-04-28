@@ -149,6 +149,7 @@ export class CommonEntranceService {
         data: features
       };
     } catch (e) {
+      console.error(e);
       return null;
     }
   }

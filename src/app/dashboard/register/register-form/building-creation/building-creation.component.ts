@@ -135,7 +135,12 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
         }
         this.formGroup.patchValue({
           buildingPoly: {
-            rings: value.rings,
+            rings: value.rings.map((ring) => {
+              return ring.map((point) => {
+                point.push(1);
+                return point;
+              });
+            }),
             spatialReference: value.spatialReference
           }
         });
@@ -145,6 +150,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
         currentMapPoint.push({
           x: value.x,
           y: value.y,
+          z: 0,
           id: value.id,
           spatialReference: value.spatialReference
         });

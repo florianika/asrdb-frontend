@@ -66,10 +66,9 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   selectedEntrance: string | undefined;
 
   private columns = [
-    'EntBuildingID',
+    'EntBldGlobalID',
     'GlobalID',
     'ObjectID',
-    'EntStreet',
     'EntBuildingNumber',
     'EntEntranceNumber',
     'EntDwellingRecs',
@@ -80,7 +79,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   displayedColumns: string[] = this.columns
     .concat(['actions'])
-    .filter(column => !['ObjectID', 'EntBuildingID'].includes(column));
+    .filter(column => !['ObjectID', 'EntBldGlobalID'].includes(column));
   data: any[] = [];
   fields: any[] = [];
   resultsLength = 0;
@@ -93,7 +92,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       EntEntranceNumber: 0,
       EntPointStatus: '',
       GlobalID: '',
-      EntBuildingId: ''
+      EntBldGlobalID: ''
     },
     options: {
       EntPointStatus: [] as any[],
@@ -120,9 +119,9 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit() {
     this.buildingIdQueryParam = this.activatedRoute.snapshot.queryParamMap.get('building');
     if (this.buildingIdQueryParam) {
-      this.filterConfig.filter.EntBuildingId = this.buildingIdQueryParam?.replace('{', '').replace('}', '');
+      this.filterConfig.filter.EntBldGlobalID = this.buildingIdQueryParam?.replace('{', '').replace('}', '');
     } else if (this.buildingGlobalId) {
-      this.filterConfig.filter.EntBuildingId = this.buildingGlobalId?.replace('{', '').replace('}', '');
+      this.filterConfig.filter.EntBldGlobalID = this.buildingGlobalId?.replace('{', '').replace('}', '');
     }
   }
 
@@ -225,7 +224,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
     return this.commonEntranceBuildingService.getEntranceData(filter).pipe(catchError((err) => {
-      console.log(err);
+      console.error(err);
       return observableOf(null);
     }));
   }

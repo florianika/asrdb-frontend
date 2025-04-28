@@ -30,7 +30,7 @@ export class FilterHelper {
     return filterCopy;
   }
 
-  getFilterChipStructure = (currentValue: Chip[], [key, value]: [key: string, value: string | string[]]) => {
+  getFilterChipStructure = (currentValue: Chip[], [key, value]: [key: string, value: string | string[] | number]) => {
     if (Array.isArray(value)) {
       value.forEach(subValues => {
         currentValue.push({
@@ -39,7 +39,7 @@ export class FilterHelper {
         })
       });
       return currentValue;
-    } else if (key === 'GlobalID') {
+    } else if (key === 'GlobalID' && typeof value === 'string') {
       const globalIds = value.split(',');
       globalIds.forEach(v => {
         currentValue.push({

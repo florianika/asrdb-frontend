@@ -19,7 +19,7 @@ export type Centroid = {
   latitude?: number,
   longitude?: number
 };
-export type Ring = number[][];
+export type Ring = number[][][];
 export type Point = {
   x: number,
   y: number,

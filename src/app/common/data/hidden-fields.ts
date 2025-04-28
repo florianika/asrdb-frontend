@@ -19,7 +19,7 @@ export const BUILDING_HIDDEN_FIELDS = [
 export const ENTRANCE_HIDDEN_FIELDS = [
   'last_edited_user',
   'last_edited_date',
-  'EntBuildingId',
+  'EntBldGlobalID',
   'created_user',
   'created_date',
   'EntLongitude',
@@ -30,8 +30,9 @@ export const ENTRANCE_HIDDEN_FIELDS = [
   'external_editor_date',
   'EntQuality',
   'EntID',
-  'EntBuildingID',
-  'EntDwellingRecs'
+  'EntBldGlobalID',
+  'EntDwellingRecs',
+  'EntStrGlobalID'
 ];
 
 export const DWELLING_HIDDEN_FIELDS = [

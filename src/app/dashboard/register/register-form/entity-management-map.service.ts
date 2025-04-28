@@ -30,7 +30,7 @@ export class EntityCreationMapService {
   private graphicsLayer!: GraphicsLayer;
   private eventsCleanupCallbacks: (() => void)[] = [];
   private readonly bldLayer;
-  private municipality = new BehaviorSubject('99');
+  private municipality = new BehaviorSubject<number | null>(99);
   private view: MapView | undefined = undefined;
   private createdGraphic: any | null = null;
 
@@ -73,14 +73,14 @@ export class EntityCreationMapService {
       } as any
     } as any;
     this.municipalityObservable.subscribe(municipality => {
-      if (municipality && municipality !== '99' && this.view) {
-        void this.filterBuildingData(`BldMunicipality='${municipality.toString()}'`);
+      if (municipality && municipality !== 99 && this.view) {
+        void this.filterBuildingData(`BldMunicipality=${municipality.toString()}`);
       }
     });
   }
 
-  public setMunicipality(municipality: string) {
-    this.municipality.next(municipality.toString());
+  public setMunicipality(municipality: number | null) {
+    this.municipality.next(municipality);
   }
 
   public async initBuildingCreationMap(mapViewEl: ElementRef, entityType?: EntityType, editingGeometry?: any[]) {
@@ -117,7 +117,13 @@ export class EntityCreationMapService {
       throw new Error("MapView element or available tools are not defined");
     }
 
-    this.graphicsLayer = new GraphicsLayer();
+    this.graphicsLayer = new GraphicsLayer({
+      elevationInfo: {
+        mode: 'on-the-ground',
+        offset: 1,
+        unit: "meters"
+      }
+    });
     const mainGraphic: Graphic | null = this.addExistingGraphics(this.editingGeometry, this.graphicsLayer);
     const layers: any[] = [this.graphicsLayer];
     if (this.availableTools.includes('polygon')) {
@@ -146,8 +152,8 @@ export class EntityCreationMapService {
       }
     });
     this.createSketch();
-    if (this.municipality.value && this.municipality.value !== '99') {
-      void this.filterBuildingData(`BldMunicipality='${this.municipality.value.toString()}'`);
+    if (this.municipality.value && this.municipality.value !== 99) {
+      void this.filterBuildingData(`BldMunicipality=${this.municipality.value.toString()}`);
     }
 
     void this.basemapService.createBasemapChangeAction(this.view, this.reload.bind(this), this.eventsCleanupCallbacks);

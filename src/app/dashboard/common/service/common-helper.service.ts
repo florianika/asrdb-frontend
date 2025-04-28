@@ -11,7 +11,7 @@ export class CommonRegisterHelperService {
     return field.alias;
   }
 
-  getMunicipality(fields: any[], column: string, code: string) {
+  getMunicipality(fields: any[], column: string, code: number | string): string | number {
     const codeValues = this.getCodeValues(fields, column, code);
     if (!codeValues) {
       return code;

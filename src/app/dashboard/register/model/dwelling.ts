@@ -26,7 +26,7 @@ export type Dwelling = {
   created_date: number,
   last_edited_user: string,
   last_edited_date: number,
-  DwlEntranceID: string,
+  DwlEntGlobalID: string,
   external_creator: string,
   external_creator_date: string,
   external_editor: string,
@@ -40,7 +40,7 @@ export type DwellingFilter = {
     DwlType: string,
     DwlApartNumber: number;
     GlobalID: string,
-    DwlEntranceID?: string
+    DwlEntGlobalID?: string
   };
   options: {
     DwlType: any[];

@@ -112,7 +112,7 @@ export class RegisterMapService {
             this.registerFilterService.setBuildingGlobalIdFilter(globalId);
           }
           if (this.view.popup.selectedFeature.layer?.title === 'ASRDB Entrances') {
-            const globalId = this.view.popup.selectedFeature.attributes['EntBuildingID'];
+            const globalId = this.view.popup.selectedFeature.attributes['EntBldGlobalID'];
             this.registerFilterService.setBuildingGlobalIdFilter(globalId);
           }
         }, 100);

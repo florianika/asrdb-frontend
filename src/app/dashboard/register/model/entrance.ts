@@ -2,7 +2,6 @@ export type Entrance = {
   OBJECTID: number;
   GlobalID: string;
   EntID: number;
-  EntBuildingID: number;
   EntAddressID: string;
   EntQuality: number;
   EntLatitude: number;
@@ -15,8 +14,7 @@ export type Entrance = {
   created_date: string;
   last_edited_user: number;
   last_edited_date: number;
-  EntStreet: number;
-  EntBuildingId: string;
+  EntBldGlobalID: string;
   EntPointStatus: number;
   EntDwellingRecs: number;
   EntDwellingExpec: number;
@@ -36,7 +34,7 @@ export type EntranceFilter = {
     EntEntranceNumber: number,
     EntPointStatus: string,
     GlobalID: string,
-    EntBuildingId?: string
+    EntBldGlobalID?: string
   };
   options: {
     EntPointStatus: any[];

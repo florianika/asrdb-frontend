@@ -108,7 +108,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       GlobalID: '',
       DwlStatus: '',
       DwlType: '',
-      DwlEntranceID: ''
+      DwlEntGlobalID: ''
     },
     options: {
       DwlStatus: [] as any[],
@@ -175,7 +175,6 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         switchMap(() => this.loadDwellings()),
       ).subscribe((res) => this.handleResponse(res));
       const entrance = this.entrances.find(e => e.GlobalID === changes['entranceId'].currentValue);
-      this.streetName = entrance?.EntStreet.toString() ?? 'Unknown';
       this.entranceNumber = entrance?.EntEntranceNumber?.toString() ?? 'Unknown';
     }
   }
@@ -203,7 +202,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   reload() {
-    if (!this.filterConfig.filter.DwlEntranceID) {
+    if (!this.filterConfig.filter.DwlEntGlobalID) {
       return;
     }
     this.loadDwellings().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
@@ -248,7 +247,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
       .filter(([, value]: any) => !!value)
       .map(([key, value]: any) => ({ column: key, value } as Chip))
       .forEach((filter: any) => {
-        if (filter.column === 'DwlEntranceID') {
+        if (filter.column === 'DwlEntGlobalID') {
           conditions.push(filter.column + ' in ' + filter.value);
         } else {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
@@ -321,6 +320,6 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private loadDwellingsForEntrances(entranceId: string) {
-    this.filterConfig.filter.DwlEntranceID = `('${entranceId}')`;
+    this.filterConfig.filter.DwlEntGlobalID = `('${entranceId}')`;
   }
 }

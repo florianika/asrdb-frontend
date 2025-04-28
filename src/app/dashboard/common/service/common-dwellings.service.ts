@@ -151,6 +151,7 @@ export class CommonDwellingService {
         data: features
       };
     } catch (e) {
+      console.error(e);
       return null;
     }
   }

@@ -48,7 +48,7 @@ logType: ''
         },
         {
           title: '',
-          propName: 'DwlEntranceID',
+          propName: 'DwlEntGlobalID',
           value: '',
           log: '',
 logType: ''
