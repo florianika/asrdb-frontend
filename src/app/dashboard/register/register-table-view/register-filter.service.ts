@@ -4,9 +4,9 @@ import {CommonRegisterHelperService} from '../../common/service/common-helper.se
 import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
 import {MUNICIPALITIES} from "../../../common/data/municipalities";
+import {AuthStateService} from "../../../common/services/auth-state.service";
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
-const DEFAULT_MUNICIPALITY = 53;
 
 @Injectable()
 export class RegisterFilterService {
@@ -25,7 +25,7 @@ export class RegisterFilterService {
       // default value will be Tirane
       // This is done to prevent any value to be loaded on init.
       // user can change this to load what they want
-      BldMunicipality: DEFAULT_MUNICIPALITY,
+      BldMunicipality: this.authState.getMunicipality(),
       BldStatus: [],
       BldType: [],
       BldQuality: [],
@@ -44,14 +44,14 @@ export class RegisterFilterService {
 
   private fields: never[] = [];
 
-  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService) {
+  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService, private authState: AuthStateService) {
     const savedFilterJSON = sessionStorage.getItem(FILTER_REGISTER);
 
     if (savedFilterJSON) {
       try {
         const filter = JSON.parse(savedFilterJSON);
         if (!filter.filter.BldMunicipality) {
-          filter.filter.BldMunicipality = DEFAULT_MUNICIPALITY;
+          filter.filter.BldMunicipality = this.authState.getMunicipality();
         }
         this.filter.next(filter);
       } catch (e) {

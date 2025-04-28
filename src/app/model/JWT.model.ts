@@ -6,6 +6,7 @@ export type JWT = {
   email: string,
   name: string,
   family_name: string,
+  municipality: string,
   role: Role,
   nbf: number,
   exp: number,

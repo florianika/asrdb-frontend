@@ -21,14 +21,15 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import {OSM_BASEMAP} from "../../common/components/register-map/custom-map-logic/BasemapTypes";
 import SketchProperties = __esri.SketchProperties;
+import {AuthStateService} from "../../../common/services/auth-state.service";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class EntityCreationMapService {
   private valueUpdate = new Subject<MapData>();
   private graphicsLayer!: GraphicsLayer;
   private eventsCleanupCallbacks: (() => void)[] = [];
   private readonly bldLayer;
-  private municipality = new BehaviorSubject<number | null>(99);
+  private municipality;
   private view: MapView | undefined = undefined;
   private createdGraphic: any | null = null;
 
@@ -56,8 +57,10 @@ export class EntityCreationMapService {
     private matSnackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute,
     private basemapService: BaseMapChangeService,
-    private buildingService: CommonBuildingService
+    private buildingService: CommonBuildingService,
+    private authState: AuthStateService
   ) {
+    this.municipality = new BehaviorSubject<number | null>(this.authState.getMunicipality());
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
     this.bldLayer = this.buildingService.bldLayer as FeatureLayer;
     (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];

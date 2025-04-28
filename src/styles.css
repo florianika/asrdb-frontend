@@ -68,3 +68,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   height: 0 !important;
   margin-bottom: 10px;
 }
+
+.esri-legend {
+  max-width: 200px;
+}

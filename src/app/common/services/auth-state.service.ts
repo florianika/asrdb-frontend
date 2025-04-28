@@ -9,6 +9,7 @@ import {Role} from 'src/app/model/RolePermissions.model';
 import {Credentials} from "../../auth/signin/signin.service";
 import esriId from "@arcgis/core/identity/IdentityManager";
 import {ESRI_AUTH_KEY} from "../../dashboard/common/service/common-esri-auth.service";
+export const DEFAULT_MUNICIPALITY = 53;
 
 @Injectable({
   providedIn: 'root'
@@ -193,6 +194,19 @@ export class AuthStateService implements OnInit, OnDestroy {
     return this.getDecodedJWT()?.nameid;
   }
 
+  getMunicipality(): number {
+    try {
+      const municipality = this.getDecodedJWT()?.municipality;
+      if (municipality) {
+        return Number.parseInt(municipality, 10);
+      }
+      return DEFAULT_MUNICIPALITY;
+    } catch (e) {
+      console.error(e);
+      return DEFAULT_MUNICIPALITY;
+    }
+  }
+
   getAuthorizationToken() {
     return 'Bearer ' + this.tokens?.accessToken;
   }
@@ -222,7 +236,8 @@ export class AuthStateService implements OnInit, OnDestroy {
   private logoutUser() {
     this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
     this.setLoginState(false);
-    localStorage.removeItem(this.TOKEN_STORAGE_KEY);
+    localStorage.clear();
+    sessionStorage.clear();
     void this.router.navigateByUrl(this.SIGNIN_URL);
   }
 
