@@ -1,17 +1,17 @@
-import { ElementRef, Injectable } from '@angular/core';
-import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
+import {ElementRef, Injectable} from '@angular/core';
+import {CommonEsriAuthService} from '../../common/service/common-esri-auth.service';
 import WebMap from '@arcgis/core/WebMap';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
 import {BehaviorSubject, Subject} from 'rxjs';
-import { MapData } from '../model/map-data';
+import {MapData} from '../model/map-data';
 import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Point from '@arcgis/core/geometry/Point';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {EntityType} from "../../quality-management/quality-management-config";
 import {ActivatedRoute} from "@angular/router";
 import {BaseMapChangeService} from "../../common/components/register-map/custom-map-logic/basemap-change";
@@ -19,10 +19,8 @@ import {CommonBuildingService} from "../../common/service/common-building.servic
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
-import SketchProperties = __esri.SketchProperties;
-import {MapInitOptions} from "../../common/components/register-map/register-map.service";
 import {OSM_BASEMAP} from "../../common/components/register-map/custom-map-logic/BasemapTypes";
-import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
+import SketchProperties = __esri.SketchProperties;
 
 @Injectable()
 export class EntityCreationMapService {

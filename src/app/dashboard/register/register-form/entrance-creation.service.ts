@@ -38,8 +38,7 @@ export class EntranceManagementService {
   constructor(
     private entranceService: CommonEntranceService,
     private snackBar: MatSnackBar,
-    private authState: AuthStateService,
-    private router: Router) {
+    private authState: AuthStateService) {
   }
 
   public saveEntranceEntity(geometry: Point, entrance: Entrance, buildingGlobalId: string) {
