@@ -117,6 +117,10 @@ export class CommonBuildingService {
     };
   }
 
+  getBuildingMunicipality(buildingId: string): Observable<any> {
+    return defer(() => from(this.fetchBuildingMunicipality(buildingId)));
+  }
+
   getBuildingData(filter?: Partial<QueryFilter>): Observable<EntityDataResponse | null> {
     return defer(() => from(this.fetchBuildingData(filter)));
   }
@@ -301,6 +305,26 @@ export class CommonBuildingService {
         count: featureCount,
         data: features,
         globalIds
+      };
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  private async fetchBuildingMunicipality(buildingId: string) {
+    const dataQuery = this.bldLayer.createQuery();
+    dataQuery.start = 0;
+    dataQuery.num = 1;
+    dataQuery.where = 'GlobalID = \'' + buildingId + '\'';
+    dataQuery.outFields = ['BldMunicipality'];
+    dataQuery.returnGeometry = false;
+
+    try {
+      const features = await (await this.bldLayer.queryFeatures(dataQuery)).toJSON();
+
+      return {
+        data: features
       };
     } catch (e) {
       console.log(e);

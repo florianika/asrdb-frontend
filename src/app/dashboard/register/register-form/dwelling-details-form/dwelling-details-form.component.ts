@@ -20,7 +20,7 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} fro
 import {MomentDateAdapter} from "@angular/material-moment-adapter";
 import {getColor, MY_FORMATS} from "../../model/common-utils";
 import {Log} from "../../register-log-view/model/log";
-import {DWELLING_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
+import {STREET_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
 
 @Component({
   selector: 'asrdb-dwelling-details-form',
@@ -85,7 +85,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     });
 
     if (!data.id) {
-      DWELLING_HIDDEN_FIELDS.push('DwlEntGlobalID');
+      STREET_HIDDEN_FIELDS.push('DwlEntGlobalID');
     }
   }
 
@@ -115,8 +115,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.isLoadingResults = true;
     this.dwellingService.getAttributesMetadata().subscribe((fields: never[]) => {
       fields = fields.filter(field => {
-        console.log(field[NAME_PROP], `Editable: ${field[EDITABLE_PROP]} | Show: ${!DWELLING_HIDDEN_FIELDS.includes(field[NAME_PROP])}`);
-        return field[EDITABLE_PROP] && !DWELLING_HIDDEN_FIELDS.includes(field[NAME_PROP]);
+        console.log(field[NAME_PROP], `Editable: ${field[EDITABLE_PROP]} | Show: ${!STREET_HIDDEN_FIELDS.includes(field[NAME_PROP])}`);
+        return field[EDITABLE_PROP] && !STREET_HIDDEN_FIELDS.includes(field[NAME_PROP]);
       });
       fields.forEach(field => {
         this.createFormControlForField(field);

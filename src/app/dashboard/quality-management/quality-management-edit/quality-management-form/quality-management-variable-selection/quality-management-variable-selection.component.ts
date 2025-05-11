@@ -7,7 +7,7 @@ import {CommonEntranceService} from "../../../../common/service/common-entrance.
 import {CommonDwellingService} from "../../../../common/service/common-dwellings.service";
 import {
   BUILDING_HIDDEN_FIELDS,
-  DWELLING_HIDDEN_FIELDS,
+  STREET_HIDDEN_FIELDS,
   ENTRANCE_HIDDEN_FIELDS
 } from "../../../../../common/data/hidden-fields";
 
@@ -100,7 +100,7 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
         field.editable
         && !BUILDING_HIDDEN_FIELDS.includes(field.name)
         && !ENTRANCE_HIDDEN_FIELDS.includes(field.name)
-        && !DWELLING_HIDDEN_FIELDS.includes(field.name)
+        && !STREET_HIDDEN_FIELDS.includes(field.name)
       )
       .map(field => ({
         text: field.alias ? field.alias : field.name,

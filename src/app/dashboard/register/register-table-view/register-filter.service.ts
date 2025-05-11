@@ -25,7 +25,7 @@ export class RegisterFilterService {
       // default value will be Tirane
       // This is done to prevent any value to be loaded on init.
       // user can change this to load what they want
-      BldMunicipality: this.authState.getMunicipality(),
+      BldMunicipality: this.authState.getMunicipality() ?? 99,
       BldStatus: [],
       BldType: [],
       BldQuality: [],
@@ -51,7 +51,7 @@ export class RegisterFilterService {
       try {
         const filter = JSON.parse(savedFilterJSON);
         if (!filter.filter.BldMunicipality) {
-          filter.filter.BldMunicipality = this.authState.getMunicipality();
+          filter.filter.BldMunicipality = this.authState.getMunicipality() ?? 99;
         }
         this.filter.next(filter);
       } catch (e) {

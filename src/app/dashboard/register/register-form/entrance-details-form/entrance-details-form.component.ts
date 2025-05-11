@@ -1,15 +1,23 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {FormGroup, FormControl, Validators, ReactiveFormsModule, AbstractControl} from '@angular/forms';
-import { Subject } from 'rxjs';
-import {FormObject, getFormObjectType, getFormObjectOptions, getValue} from '../../model/form-object';
-import { CommonEntranceService } from '../../../common/service/common-entrance.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { Entrance } from '../../model/entrance';
-import { NAME_PROP, DOMAIN_PROP, TYPE_PROP, LENGTH_PROP, ALIAS_PROP, NULLABLE_PROP, DEFAULT_VALUE_PROP } from '../../constant/common-constants';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Subject} from 'rxjs';
+import {FormObject, getFormObjectOptions, getFormObjectType, getValue} from '../../model/form-object';
+import {CommonEntranceService} from '../../../common/service/common-entrance.service';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {Entrance} from '../../model/entrance';
+import {
+  ALIAS_PROP,
+  DEFAULT_VALUE_PROP,
+  DOMAIN_PROP,
+  LENGTH_PROP,
+  NAME_PROP,
+  NULLABLE_PROP,
+  TYPE_PROP
+} from '../../constant/common-constants';
 import {ActivatedRoute} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
@@ -20,6 +28,9 @@ import {getColor, MY_FORMATS} from "../../model/common-utils";
 import {ENTRANCE_HIDDEN_FIELDS} from "../../../../common/data/hidden-fields";
 import {Log} from "../../register-log-view/model/log";
 import {MatButtonModule} from "@angular/material/button";
+import {CommonBuildingService} from "../../../common/service/common-building.service";
+import {CommonStreetService} from "../../../common/service/common-street.service";
+import {QueryFilter} from "../../model/query-filter";
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -39,15 +50,19 @@ import {MatButtonModule} from "@angular/material/button";
   providers: [
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+    CommonStreetService,
+    CommonBuildingService,
   ],
   templateUrl: './entrance-details-form.component.html',
   styleUrls: ['./entrance-details-form.component.css']
 })
 export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
+  @Input() buildingId: string | undefined = undefined;
   @Input() formGroup!: FormGroup;
   @Input() existingEntrancesDetails?: Entrance[] = [];
   private onDestroy = new Subject();
   private fields = [];
+  private streets = [];
   private readonly entranceId: string | null;
 
   formStructure: FormObject[] = [];
@@ -55,6 +70,8 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private entranceService: CommonEntranceService,
+    private buildingService: CommonBuildingService,
+    private streetService: CommonStreetService,
     private activatedRoute: ActivatedRoute,
     private registerLogService: RegisterLogService) {
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId');
@@ -66,9 +83,26 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       if (!this.formGroup) {
         this.formGroup = new FormGroup({});
       }
-      this.fields.forEach(field => {
-        this.createFormControlForField(field);
-        this.createFormObject(field);
+      // load municipality for building
+      this.buildingService.getBuildingMunicipality(this.buildingId ?? '').subscribe(({data}: any) => {
+        const municipality = data.features[0]?.attributes?.['BldMunicipality'] ?? 99;
+        const filter = {
+          where: `StrMunicipality = ${municipality}`,
+        } as Partial<QueryFilter>;
+        this.streetService.getAllStreetsForMunicipality(filter).subscribe((streets: any) => {
+          console.log(streets);
+          this.streets = streets.data.features.map((street: any) => {
+            return {
+              text: street.attributes['StrNameCore'],
+              value: street.attributes['GlobalID']
+            };
+          });
+
+          this.fields.forEach(field => {
+            this.createFormControlForField(field);
+            this.createFormObject(field);
+          });
+        });
       });
     });
   }
@@ -101,6 +135,17 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   private createFormObject(field: never) {
+    if (field[NAME_PROP] === 'EntStrGlobalID') {
+      this.formStructure.push({
+        name: (this.entranceId ?? '') + '_' + field[NAME_PROP],
+        alias: field[ALIAS_PROP],
+        type: 'select',
+        selectOptions: this.streets,
+        originalOptions: this.streets,
+        maxLength: field[LENGTH_PROP]
+      });
+      return;
+    }
     const fieldType = field[DOMAIN_PROP] ? 'select' : getFormObjectType(field[TYPE_PROP], field[LENGTH_PROP] ?? 0);
     const fieldOptions = getFormObjectOptions(fieldType, field[DOMAIN_PROP]);
     this.formStructure.push({

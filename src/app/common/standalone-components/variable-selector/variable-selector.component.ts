@@ -8,7 +8,7 @@ import {CommonBuildingService} from "../../../dashboard/common/service/common-bu
 import {CommonEntranceService} from "../../../dashboard/common/service/common-entrance.service";
 import {CommonDwellingService} from "../../../dashboard/common/service/common-dwellings.service";
 import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
-import {BUILDING_HIDDEN_FIELDS, DWELLING_HIDDEN_FIELDS, ENTRANCE_HIDDEN_FIELDS} from "../../data/hidden-fields";
+import {BUILDING_HIDDEN_FIELDS, STREET_HIDDEN_FIELDS, ENTRANCE_HIDDEN_FIELDS} from "../../data/hidden-fields";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
@@ -116,7 +116,7 @@ export class VariableSelectorComponent implements OnDestroy{
         field.editable
         && !BUILDING_HIDDEN_FIELDS.includes(field.name)
         && !ENTRANCE_HIDDEN_FIELDS.includes(field.name)
-        && !DWELLING_HIDDEN_FIELDS.includes(field.name)
+        && !STREET_HIDDEN_FIELDS.includes(field.name)
       )
       .map(field => ({
       text: field.alias ? field.alias : field.name,

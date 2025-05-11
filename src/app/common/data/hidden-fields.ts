@@ -32,10 +32,9 @@ export const ENTRANCE_HIDDEN_FIELDS = [
   'EntID',
   'EntBldGlobalID',
   'EntDwellingRecs',
-  'EntStrGlobalID'
 ];
 
-export const DWELLING_HIDDEN_FIELDS = [
+export const STREET_HIDDEN_FIELDS = [
   'last_edited_user',
   'last_edited_date',
   'created_user',

@@ -1,7 +1,7 @@
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { AuthStateService } from '../../services/auth-state.service';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/internal/operators/filter';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {AuthStateService} from '../../services/auth-state.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs/internal/operators/filter';
 
 @Component({
   selector: 'asrdb-side-bar',
@@ -35,6 +35,19 @@ export class SideBarComponent implements AfterViewInit {
         },
       ],
       visible: true
+    },
+    {
+      sectionTitle: '',
+      sectionElements: [
+        {
+          title: 'Street List',
+          path: '/dashboard/street-management',
+          pathMatch: true,
+          icon: 'signpost',
+          selected: false,
+        },
+      ],
+      visible: this.isAdmin
     },
     {
       sectionTitle: 'Quality Rule Management',

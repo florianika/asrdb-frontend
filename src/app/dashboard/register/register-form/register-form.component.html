@@ -22,6 +22,7 @@
     </asrdb-building-details-form>
     <asrdb-entrance-details-form
       *ngIf="isEntrance"
+      [buildingId]="buildingId"
       [formGroup]="entranceDetails"
       [existingEntrancesDetails]="existingEntrancesDetails">
     </asrdb-entrance-details-form>

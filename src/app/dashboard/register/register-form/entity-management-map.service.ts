@@ -60,7 +60,7 @@ export class EntityCreationMapService {
     private buildingService: CommonBuildingService,
     private authState: AuthStateService
   ) {
-    this.municipality = new BehaviorSubject<number | null>(this.authState.getMunicipality());
+    this.municipality = new BehaviorSubject<number | null>(this.authState.getMunicipality() ?? 99);
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
     this.bldLayer = this.buildingService.bldLayer as FeatureLayer;
     (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];

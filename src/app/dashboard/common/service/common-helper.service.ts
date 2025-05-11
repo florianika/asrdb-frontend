@@ -16,7 +16,7 @@ export class CommonRegisterHelperService {
     if (!codeValues) {
       return code;
     }
-    return codeValues.code + ' - ' + codeValues.name;
+    return codeValues.code + ' | ' + codeValues.name;
   }
 
   getValueFromStatus(fields: any[], column: string, code: string | number) {
@@ -42,7 +42,7 @@ export class CommonRegisterHelperService {
 
   getCodeValues(fields: any[], column: string, code: string | number) {
     const field = this.getField(fields, column);
-    return field?.domain?.codedValues?.find((o: any) => o.code === code);
+    return field?.domain?.codedValues?.find((o: any) => o.code == code);
   }
 
   private isUnknownValue(code: string | number) {
