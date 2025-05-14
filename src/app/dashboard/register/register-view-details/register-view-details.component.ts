@@ -367,8 +367,9 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getValue(entry: any) {
-    return entry.propName === 'BldMunicipality' ? this.getMunicipality() :
-      this.getValueFromStatus(entry.propName);
+    return entry.propName === 'BldMunicipality'
+      ? this.getMunicipality()
+      : this.getValueFromStatus(entry.propName);
   }
 
   private loadBuilding() {

@@ -22,13 +22,16 @@ export class CommonRegisterHelperService {
   getValueFromStatus(fields: any[], column: string, code: string | number) {
     const codeValues = this.getCodeValues(fields, column, code);
     if (!codeValues && this.isUnknownValue(code)) {
-      return 'Unknown';
+      return '';
     }
     if (!codeValues && this.isNotApplicable(code)) {
       return 'Not applicable';
     }
     if (this.isDateField(fields, column)) {
       return getDate((code as number) as any);
+    }
+    if (column === 'BldArea') {
+      return Math.round(Number(code)).toString();
     }
     if (!codeValues) {
       return code;
