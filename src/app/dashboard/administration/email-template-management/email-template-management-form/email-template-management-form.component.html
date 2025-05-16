@@ -1,0 +1,50 @@
+<h1 mat-dialog-title i18n *ngIf="!id">Create email template</h1>
+<h1 mat-dialog-title i18n *ngIf="id">Update email template</h1>
+<div mat-dialog-content class="pt-2" *ngIf="!!template">
+    <mat-form-field class="full-width" appearance="outline">
+        <mat-label i18n>Subject</mat-label>
+        <input matInput
+               [(ngModel)]="template.subject"
+               [disabled]="!!(isLoadingResults | async)"
+               name="subject"
+               required>
+    </mat-form-field>
+
+    <div>
+        <p i18n>Keywords that can be used in the template:</p>
+        <ul>
+            <li i18n>{{ "{" }}NAME{{ "}" }} - Name of the user</li>
+            <li i18n>{{ "{" }}SURNAME{{ "}" }} - Surname of the user</li>
+            <li i18n>{{ "{" }}DESCRIPTION{{ "}" }} - Description</li>
+            <li i18n>{{ "{" }}STARTDATE{{ "}" }} - Strat date of the campaign</li>
+        </ul>
+    </div>
+
+    <mat-form-field class="full-width" appearance="outline">
+        <mat-label i18n>Email body</mat-label>
+        <textarea matInput
+                  rows="10"
+                  [(ngModel)]="template.body"
+                  [disabled]="!!(isLoadingResults | async)"
+                  name="body"
+                  required></textarea>
+    </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-button [disabled]="(isLoadingResults | async) || (isSaving | async)" (click)="cancel()" i18n>Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="(isLoadingResults | async) || (isSaving | async)" (click)="save()" i18n>Save</button>
+</div>
+<ng-template #cancelConfirmDialog>
+    <h1 mat-dialog-title i18n *ngIf="!id">Cancel creating email template?</h1>
+    <h1 mat-dialog-title i18n *ngIf="id">Cancel editing email template?</h1>
+    <mat-dialog-content class="mat-typography" i18n>
+        Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone!
+        <br>
+        Do you want to continue
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close i18n [disabled]="!!(isSaving | async)">Cancel</button>
+        <button mat-raised-button color="warn" [mat-dialog-close]="true" [disabled]="!!(isSaving | async)" i18n>Close dialog</button>
+    </mat-dialog-actions>
+</ng-template>

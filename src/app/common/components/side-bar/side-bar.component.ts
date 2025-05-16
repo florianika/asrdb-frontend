@@ -88,6 +88,12 @@ export class SideBarComponent implements AfterViewInit {
           icon: 'verified_user',
           selected: false
         },
+        {
+          title: 'Email templates',
+          path: '/dashboard/administration/email-template-management',
+          icon: 'mail',
+          selected: false
+        },
       ],
       visible: this.isAdmin
     }
