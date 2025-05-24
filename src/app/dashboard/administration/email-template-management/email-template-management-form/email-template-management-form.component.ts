@@ -1,11 +1,11 @@
 import {Component, Inject, isDevMode, OnDestroy, TemplateRef, ViewChild} from '@angular/core';
 import {catchError, Observable, of, Subject, takeUntil} from "rxjs";
-import {AbstractControl} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {EmailTemplateManagementService} from "../email-template-management.service";
 import {EmailTemplateForm} from "../../../../model/EmailTemplate.model";
 import {AuthStateService} from "../../../../common/services/auth-state.service";
+import {Editor, Toolbar} from "ngx-editor";
 
 @Component({
     selector: 'asrdb-email-template-management-form',
@@ -16,6 +16,17 @@ export class EmailTemplateManagementFormComponent implements OnDestroy {
     private onDestroy = new Subject();
     private initialized = false;
     public template: EmailTemplateForm | undefined;
+    editor: Editor;
+    toolbar: Toolbar = [
+        ['bold', 'italic'],
+        ['underline', 'strike'],
+        ['code', 'blockquote'],
+        ['ordered_list', 'bullet_list'],
+        [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+        ['link', 'image'],
+        ['text_color', 'background_color'],
+        ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ];
 
     @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
 
@@ -32,6 +43,7 @@ export class EmailTemplateManagementFormComponent implements OnDestroy {
         private emailTemplateManagementService: EmailTemplateManagementService
     ) {
         this.id = data.templateId;
+        this.editor = new Editor();
 
         this.loadTemplateById(data.templateId);
         this.isSaving = this.emailTemplateManagementService.savingAsObservable;
@@ -84,6 +96,7 @@ export class EmailTemplateManagementFormComponent implements OnDestroy {
     ngOnDestroy(): void {
         this.onDestroy.next(true);
         this.onDestroy.complete();
+        this.editor.destroy();
     }
 
     cancel() {

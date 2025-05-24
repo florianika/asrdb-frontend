@@ -20,6 +20,7 @@ import { EmailTemplateManagementFormComponent } from './email-template-managemen
 import {EmailTemplateManagementService} from "./email-template-management.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ConcatenateMessagePipe} from "../../register/register-log-view/register-log-table/register-log-message.pipe";
+import { NgxEditorModule } from 'ngx-editor';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {ConcatenateMessagePipe} from "../../register/register-log-view/register-
     RoleSelectorComponent,
     ReactiveFormsModule,
     MatTooltipModule,
-    ConcatenateMessagePipe
+    ConcatenateMessagePipe,
+    NgxEditorModule,
   ],
   providers: [
     EmailTemplateManagementService

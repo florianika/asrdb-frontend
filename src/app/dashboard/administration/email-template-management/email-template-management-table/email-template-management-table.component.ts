@@ -15,7 +15,7 @@ import {EmailTemplate} from "../../../../model/EmailTemplate.model";
   styleUrls: ['./email-template-management-table.component.css']
 })
 export class EmailTemplateManagementTableComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['emailTemplateId', 'subject', 'body', 'createdUser', 'createdTimestamp','actions'];
+  displayedColumns: string[] = ['emailTemplateId', 'subject', 'createdUser', 'createdTimestamp','actions'];
   dataSourceObservable: Observable<MatTableDataSource<EmailTemplate>> = this.emailTemplateManagementService.emailTemplatesAsObservable.pipe(
     map(users => {
       const dataSource = this.dataSource;
@@ -46,10 +46,6 @@ export class EmailTemplateManagementTableComponent implements OnInit, AfterViewI
 
   createEmailTemplate() {
     this.emailTemplateManagementService.openEditEmailTemplateDialog();
-  }
-
-  viewEmailTemplate(emailTemplate: EmailTemplate) {
-    this.emailTemplateManagementService.openViewEmailTemplate(emailTemplate.emailTemplateId);
   }
 
   editEmailTemplate(emailTemplate: EmailTemplate) {

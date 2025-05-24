@@ -67,14 +67,10 @@ export class EmailTemplateManagementService {
         });
     }
 
-    openViewEmailTemplate(id: number) {
-        this.dialog.open(UserViewDialogComponent, {data: {templateId: id}, width: '700px'});
-    }
-
     openEditEmailTemplateDialog(id?: number) {
         const editDialog = this.dialog.open(
             EmailTemplateManagementFormComponent,
-            {data: {templateId: id}, width: '700px'}
+            {data: {templateId: id}, width: '900px'}
         );
         const editDialogSubscription = editDialog.afterClosed().subscribe((data: EmailTemplate) => {
             if (data) {

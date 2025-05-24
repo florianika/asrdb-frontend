@@ -20,15 +20,10 @@
         </ul>
     </div>
 
-    <mat-form-field class="full-width" appearance="outline">
-        <mat-label i18n>Email body</mat-label>
-        <textarea matInput
-                  rows="10"
-                  [(ngModel)]="template.body"
-                  [disabled]="!!(isLoadingResults | async)"
-                  name="body"
-                  required></textarea>
-    </mat-form-field>
+    <div class="NgxEditor__Wrapper">
+        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+        <ngx-editor [editor]="editor" [(ngModel)]="template.body"> </ngx-editor>
+    </div>
 </div>
 
 <div mat-dialog-actions>
