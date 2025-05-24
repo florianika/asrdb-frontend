@@ -3,7 +3,7 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import {catchError, defer, from, map, Observable, of} from 'rxjs';
 import {QueryFilter} from '../../register/model/query-filter';
 import {CommonEsriAuthService} from './common-esri-auth.service';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {environment} from 'src/environments/environment';
 import {EntityManageResponse} from '../../register/model/entity-req-res';
 import MapView from "@arcgis/core/views/MapView";

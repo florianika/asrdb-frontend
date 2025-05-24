@@ -17,37 +17,31 @@ import { SideBarComponent } from './common/components/side-bar/side-bar.componen
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ToolbarComponent } from './common/components/toolbar/toolbar.component';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AuthInterceptor } from './common/services/auth-interceptor';
 import {CommonEsriAuthService} from "./dashboard/common/service/common-esri-auth.service";
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NotFoundComponent,
-    NotAuthorizedComponent,
-    SideBarComponent,
-    ToolbarComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatDividerModule,
-    MatMenuModule,
-    MatSnackBarModule,
-    HttpClientModule
-  ],
-  providers: [
-    AuthStateService,
-    CommonEsriAuthService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        NotFoundComponent,
+        NotAuthorizedComponent,
+        SideBarComponent,
+        ToolbarComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatListModule,
+        MatDividerModule,
+        MatMenuModule,
+        MatSnackBarModule], providers: [
+        AuthStateService,
+        CommonEsriAuthService,
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

@@ -5,7 +5,7 @@ import {QueryFilter} from '../../register/model/query-filter';
 import {CommonEsriAuthService} from './common-esri-auth.service';
 import {environment} from 'src/environments/environment';
 import {EntityManageResponse} from '../../register/model/entity-req-res';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
