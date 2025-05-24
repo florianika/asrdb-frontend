@@ -105,10 +105,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "asrdb-frontend:build:production"
+              "buildTarget": "asrdb-frontend:build:production"
             },
             "development": {
-              "browserTarget": "asrdb-frontend:build:development"
+              "buildTarget": "asrdb-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -116,7 +116,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "asrdb-frontend:build"
+            "buildTarget": "asrdb-frontend:build"
           }
         },
         "test": {
