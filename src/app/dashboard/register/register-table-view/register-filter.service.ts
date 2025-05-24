@@ -4,7 +4,7 @@ import {CommonRegisterHelperService} from '../../common/service/common-helper.se
 import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
 import {BehaviorSubject} from 'rxjs';
 import {MUNICIPALITIES} from "../../../common/data/municipalities";
-import {AuthStateService} from "../../../common/services/auth-state.service";
+import {AuthStateService, DEFAULT_MUNICIPALITY} from "../../../common/services/auth-state.service";
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
 
@@ -25,10 +25,11 @@ export class RegisterFilterService {
       // default value will be Tirane
       // This is done to prevent any value to be loaded on init.
       // user can change this to load what they want
-      BldMunicipality: this.authState.getMunicipality() ?? 99,
+      BldMunicipality: this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY,
       BldStatus: [],
       BldType: [],
       BldQuality: [],
+      BldReview: [],
       BldEnumArea: '',
       GlobalID: '',
     },
@@ -37,6 +38,7 @@ export class RegisterFilterService {
       BldStatus: [] as never[],
       BldType: [] as never[],
       BldQuality: [] as never[],
+      BldReview: [] as never[],
     }
   }
   private filter = new BehaviorSubject<BuildingFilter>(this.defaultFilter);
@@ -51,7 +53,7 @@ export class RegisterFilterService {
       try {
         const filter = JSON.parse(savedFilterJSON);
         if (!filter.filter.BldMunicipality) {
-          filter.filter.BldMunicipality = this.authState.getMunicipality() ?? 99;
+          filter.filter.BldMunicipality = this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY;
         }
         this.filter.next(filter);
       } catch (e) {
@@ -108,6 +110,7 @@ export class RegisterFilterService {
         BldStatus: this.getOptionsFromDomain('BldStatus'),
         BldType: this.getOptionsFromDomain('BldType'),
         BldQuality: this.getOptionsFromDomain('BldQuality'),
+        BldReview: this.getOptionsFromDomain('BldReview'),
       }
     });
   }
@@ -139,7 +142,7 @@ export class RegisterFilterService {
           });
           const globalIdsCondition = globalIds.map(globalId => `'${globalId}'`).join(',');
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
-        } else if (['BldStatus', 'BldType', 'BldQuality'].includes(filter.column) && !this.skipOtherFiltersApartFromGlobalId) {
+        } else if (['BldStatus', 'BldType', 'BldQuality', 'BldReview'].includes(filter.column) && !this.skipOtherFiltersApartFromGlobalId) {
           conditions.push(filter.column + ' in (' + filter.value + ')');
         } else if (!this.skipOtherFiltersApartFromGlobalId) {
           conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
@@ -215,6 +218,7 @@ export class RegisterFilterService {
       && !this.filter.value.filter.BldStatus.length
       && !this.filter.value.filter.BldEnumArea
       && !this.filter.value.filter.BldQuality
+      && !this.filter.value.filter.BldReview
       && !this.filter.value.filter.GlobalID;
   }
 }

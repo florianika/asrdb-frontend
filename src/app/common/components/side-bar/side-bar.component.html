@@ -5,7 +5,9 @@
       <div mat-subheader *ngIf="sideBarElement.sectionTitle">{{sideBarElement.sectionTitle}}</div>
 
       <ng-container *ngFor="let sectionElement of sideBarElement.sectionElements">
-        <mat-list-option [routerLink]="sectionElement.path" [selected]="sectionElement.selected">
+        <mat-list-option
+                [routerLink]="sectionElement.path"
+                [selected]="sectionElement.selected">
           <mat-icon matListItemIcon>{{sectionElement.icon}}</mat-icon>
           {{sectionElement.title}}
         </mat-list-option>

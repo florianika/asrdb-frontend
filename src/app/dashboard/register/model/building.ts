@@ -52,11 +52,13 @@ export type BuildingFilter = {
     BldQuality: string[];
     GlobalID: string;
     BldEnumArea: string;
+    BldReview: string[];
   };
   options: {
     BldMunicipality: any[];
     BldStatus: any[];
     BldType: any[];
     BldQuality: any[];
+    BldReview: any[];
   }
 }

@@ -21,7 +21,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import {OSM_BASEMAP} from "../../common/components/register-map/custom-map-logic/BasemapTypes";
 import SketchProperties = __esri.SketchProperties;
-import {AuthStateService} from "../../../common/services/auth-state.service";
+import {AuthStateService, DEFAULT_MUNICIPALITY} from "../../../common/services/auth-state.service";
 
 @Injectable({providedIn: 'root'})
 export class EntityCreationMapService {
@@ -60,7 +60,7 @@ export class EntityCreationMapService {
     private buildingService: CommonBuildingService,
     private authState: AuthStateService
   ) {
-    this.municipality = new BehaviorSubject<number | null>(this.authState.getMunicipality() ?? 99);
+    this.municipality = new BehaviorSubject<number | null>(this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY);
     this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
     this.bldLayer = this.buildingService.bldLayer as FeatureLayer;
     (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];

@@ -31,6 +31,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {CommonBuildingService} from "../../../common/service/common-building.service";
 import {CommonStreetService} from "../../../common/service/common-street.service";
 import {QueryFilter} from "../../model/query-filter";
+import {DEFAULT_MUNICIPALITY} from "../../../../common/services/auth-state.service";
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -85,7 +86,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       }
       // load municipality for building
       this.buildingService.getBuildingMunicipality(this.buildingId ?? '').subscribe(({data}: any) => {
-        const municipality = data.features[0]?.attributes?.['BldMunicipality'] ?? 99;
+        const municipality = data.features[0]?.attributes?.['BldMunicipality'] ?? DEFAULT_MUNICIPALITY;
         const filter = {
           where: `StrMunicipality = ${municipality}`,
         } as Partial<QueryFilter>;

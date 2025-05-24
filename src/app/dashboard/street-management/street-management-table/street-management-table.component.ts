@@ -18,7 +18,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {QueryFilter} from "../../register/model/query-filter";
 import {StreetFilter} from "../../register/model/street";
 import {CommonStreetService} from "../../common/service/common-street.service";
-import {AuthStateService} from "../../../common/services/auth-state.service";
+import {AuthStateService, DEFAULT_MUNICIPALITY} from "../../../common/services/auth-state.service";
 import {StreetManagementFormComponent} from "../street-management-form/street-management-form.component";
 import {
   StreetManagementTableFilterComponent
@@ -64,7 +64,7 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
 
   filterConfig: StreetFilter = {
     filter: {
-      StrMunicipality: this.authState.getMunicipality() ?? 99,
+      StrMunicipality: this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY,
       StrType: '',
       StrNameCore: '',
       StrNameFull: '',
@@ -104,7 +104,7 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
     } catch (e) {
       console.error('Error parsing filter from localStorage', e);
     }
-    this.loadStreetsForMunicipality(this.authState.getMunicipality() ?? 99);
+    this.loadStreetsForMunicipality(this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY);
     this.loadStreets().pipe(
       takeUntil(this.destroy$),
       catchError((err) => {
@@ -161,7 +161,7 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
   addStreet() {
     this.matDialog.open(StreetManagementFormComponent, {
       data: {
-        municipality: this.authState.getMunicipality() ?? 99,
+        municipality: this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY,
       },
     }).afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.reload();

@@ -30,7 +30,7 @@ export class SideBarComponent implements AfterViewInit {
           title: 'Building List',
           path: '/dashboard/register',
           pathMatch: true,
-          icon: 'domainm',
+          icon: 'apartment',
           selected: false,
         },
       ],
@@ -55,19 +55,19 @@ export class SideBarComponent implements AfterViewInit {
         {
           title: 'Building Rules',
           path: '/dashboard/quality-management/BUILDING',
-          icon: 'domainm',
+          icon: 'apartment',
           selected: false
         },
         {
           title: 'Entrance Rules',
           path: '/dashboard/quality-management/ENTRANCE',
-          icon: 'directions_walk',
+          icon: 'meeting_room',
           selected: false
         },
         {
           title: 'Dwelling Rules',
           path: '/dashboard/quality-management/DWELLING',
-          icon: 'meeting_room',
+          icon: 'floor_lamp',
           selected: false
         },
       ],
