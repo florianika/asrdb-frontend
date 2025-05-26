@@ -1,87 +1,91 @@
 <div *ngIf="!isLoadingResults" class="building-details-container">
-  <mat-card class="building-details-card">
-    <mat-card-content>
-      <div class="d-flex">
-        <button
-          mat-icon-button
-          matTooltip="Go to listing view"
-          style="vertical-align: middle"
-          (click)="goBack()">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <span class="flex-grow-1"></span>
+  <div class="row">
+    <div class="col-12 col-md-4 pe-0">
+      <mat-card class="building-details-card">
+        <mat-card-content>
+          <div class="d-flex">
+            <button
+              mat-icon-button
+              matTooltip="Go to listing view"
+              style="vertical-align: middle"
+              (click)="goBack()">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <span class="flex-grow-1"></span>
 
-        <button
-          mat-icon-button
-          [matTooltip]="'Edit building'"
-          (click)="editBuilding(building.GlobalID)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button
-          mat-icon-button
-          matTooltip="Test building data"
-          style="vertical-align: middle;"
-          (click)="startExecution()">
-          <mat-icon>play_arrow</mat-icon>
-        </button>
-        <button
-          mat-icon-button
-          matTooltip="Quality report"
-          style="vertical-align: middle;"
-          (click)="gotToLogs()">
-          <mat-icon>rule</mat-icon>
-        </button>
+            <button
+              mat-icon-button
+              [matTooltip]="'Edit building'"
+              (click)="editBuilding(building.GlobalID)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matTooltip="Test building data"
+              style="vertical-align: middle;"
+              (click)="startExecution()">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matTooltip="Quality report"
+              style="vertical-align: middle;"
+              (click)="gotToLogs()">
+              <mat-icon>rule</mat-icon>
+            </button>
+          </div>
+          <mat-divider class="mt-2 mb-3"></mat-divider>
+          <h2 class="details-header" i18n>
+            <span>Details for building</span>
+          </h2>
+          <span class="details-subheader" i18n>Data quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
+          <br>
+          <span class="details-subheader" i18n>Status of building centroid: <span style="font-weight: bold;">{{getValueFromStatus('BldCentroidStatus')}}</span></span>
+          <section *ngFor="let section of sections">
+            <h3>{{section.title}}</h3>
+            <asrdb-building-detail
+              *ngFor="let entry of section.entries"
+              [title]="entry.title"
+              [value]="entry.value"
+              [log]="entry.log"
+              [logType]="entry.logType"
+            ></asrdb-building-detail>
+            <hr>
+          </section>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="building-last-modified-card">
+        <asrdb-history-details
+          [externalCreator]="building.external_creator"
+          [externalCreationDate]="building.external_creator_date"
+          [externalUpdater]="building.external_editor"
+          [externalUpdateDate]="building.external_editor_date"
+        ></asrdb-history-details>
+        <asrdb-register-map
+          [enableFilter]="false"
+          [enableSelection]="false"
+          [buildingGlobalId]="id"
+          [skipOtherFiltersApartFromGlobalId]="true"
+        ></asrdb-register-map>
+        <div class="mt-3">
+          <asrdb-entrance-list-view
+            [buildingGlobalId]="building.GlobalID"
+            [building]="building"
+            (entrancesLoaded)="setEntrances($event)"
+            (entranceSelected)="setSelectedEntrance($event)" >
+          </asrdb-entrance-list-view>
+        </div>
+        <div class="mt-3">
+          <asrdb-dwelling-list-view
+            [entranceId]="selectedEntrance"
+            [entrances]="loadedEntrances"
+            [buildingNumber]="building.BldProperty"
+            (dwellingUpdated)="markEntranceAsUntestedData($event)"
+          ></asrdb-dwelling-list-view>
+        </div>
       </div>
-      <mat-divider class="mt-2 mb-3"></mat-divider>
-      <h2 class="details-header" i18n>
-        <span>Details for building</span>
-      </h2>
-      <span class="details-subheader" i18n>Data quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
-      <br>
-      <span class="details-subheader" i18n>Status of building centroid: <span style="font-weight: bold;">{{getValueFromStatus('BldCentroidStatus')}}</span></span>
-      <section *ngFor="let section of sections">
-        <h3>{{section.title}}</h3>
-        <asrdb-building-detail
-          *ngFor="let entry of section.entries"
-          [title]="entry.title"
-          [value]="entry.value"
-          [log]="entry.log"
-          [logType]="entry.logType"
-        ></asrdb-building-detail>
-        <hr>
-      </section>
-    </mat-card-content>
-  </mat-card>
-  <div class="building-last-modified-card">
-    <asrdb-history-details
-      [externalCreator]="building.external_creator"
-      [externalCreationDate]="building.external_creator_date"
-      [externalUpdater]="building.external_editor"
-      [externalUpdateDate]="building.external_editor_date"
-    ></asrdb-history-details>
-    <asrdb-register-map
-      [enableFilter]="false"
-      [enableSelection]="false"
-      [buildingGlobalId]="id"
-      [skipOtherFiltersApartFromGlobalId]="true"
-    ></asrdb-register-map>
-  </div>
-
-  <div class="full-width">
-    <asrdb-entrance-list-view
-      [buildingGlobalId]="building.GlobalID"
-      [building]="building"
-      (entrancesLoaded)="setEntrances($event)"
-      (entranceSelected)="setSelectedEntrance($event)" >
-    </asrdb-entrance-list-view>
-  </div>
-
-  <div class="full-width">
-    <asrdb-dwelling-list-view
-      [entranceId]="selectedEntrance"
-      [entrances]="loadedEntrances"
-      [buildingNumber]="building.BldProperty"
-      (dwellingUpdated)="markEntranceAsUntestedData($event)"
-    ></asrdb-dwelling-list-view>
+    </div>
   </div>
 </div>
