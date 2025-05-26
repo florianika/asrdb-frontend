@@ -1,4 +1,14 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, isDevMode } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  isDevMode,
+  TemplateRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -8,7 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {Subject, merge, takeUntil, startWith, switchMap, catchError, of, distinctUntilChanged} from 'rxjs';
 import { BuildingFilter } from '../../model/building';
 import { QueryFilter } from '../../model/query-filter';
@@ -22,6 +32,8 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import {FilterHelper} from "../../../common/helper/filter-helper";
+import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
+import {RegisterDeleteService} from "../register-delete.service";
 
 @Component({
   selector: 'asrdb-register-table',
@@ -43,7 +55,9 @@ import {FilterHelper} from "../../../common/helper/filter-helper";
     MatSnackBarModule
   ],
   providers: [
-    FilterHelper
+    FilterHelper,
+    RegisterLogService,
+    RegisterDeleteService
   ],
   templateUrl: './register-table.component.html',
   styleUrls: ['./register-table.component.css'],
@@ -55,10 +69,13 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild("deleteConfirmation") deleteConfirmation?: TemplateRef<any>;
 
   private columns = ['GlobalID', 'BldMunicipality', 'BldEnumArea', 'BldStatus', 'BldType', 'BldEntranceRecs', 'BldDwellingRecs' , 'BldQuality', 'BldReview'];
   private destroy$ = new Subject();
   private initialized = false;
+  private deleteDialog?: MatDialogRef<any>;
+  private idToDelete?: string;
 
   displayedColumns: string[] = ['selection'].concat(this.columns.concat(['actions']));
   data: never[] = [];
@@ -66,6 +83,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   resultsLength = 0;
   isLoadingResults = true;
   selectedBuildings: string[] = [];
+  disableDialogButtons = false;
 
   get filterChips(): Chip[] {
     return Object
@@ -84,7 +102,11 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     private matSnack: MatSnackBar,
     private changeDetectionRef: ChangeDetectorRef,
     private filterHelper: FilterHelper,
+    private registerLogService: RegisterLogService,
+    private registerDeleteService: RegisterDeleteService,
     private router: Router) {
+    this.registerFilterService.setBuildingGlobalIdFilter('');
+    this.registerFilterService.setBuildingsGlobalIdFilter([]);
   }
 
   ngOnInit(): void {
@@ -110,6 +132,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+    this.registerFilterService.resetFilter();
   }
 
   getMunicipality(column: string, code: number | string) {
@@ -151,7 +174,9 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   reload() {
-    this.loadBuildings().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
+    this.loadBuildings()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => this.handleResponse(res));
   }
 
   remove($event: Chip) {
@@ -175,6 +200,20 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.router.navigateByUrl('/dashboard/register/logs?buildings=' + this.selectedBuildings.join(','));
   }
 
+  startExecutionForSelected() {
+    this.registerLogService.executeRulesForMultipleBuildings(this.selectedBuildings);
+    setTimeout(() => {
+      this.handlePopupClose(JSON.parse(JSON.stringify(this.registerFilterService.getFilter())));
+    }, 2000);
+  }
+
+  startExecutionForBuilding(buildingId: string) {
+    this.registerLogService.executeRules(buildingId, false);
+    setTimeout(() => {
+      this.handlePopupClose(JSON.parse(JSON.stringify(this.registerFilterService.getFilter())));
+    }, 2000);
+  }
+
   filterSelectedBuildings() {
     this.registerFilterService.setBuildingsGlobalIdFilter(this.selectedBuildings);
   }
@@ -191,6 +230,34 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   stopClickEventFiltering(event: Event) {
     event.stopImmediatePropagation();
+  }
+
+  openDeleteDialog(globalId: string) {
+    if (!this.deleteConfirmation) {
+      return;
+    }
+    this.idToDelete = globalId;
+    this.deleteDialog = this.matDialog.open(this.deleteConfirmation, {
+      hasBackdrop: true,
+      disableClose: true
+    });
+  }
+
+  handleDeleteConfirm() {
+    if (!this.idToDelete) {
+      return;
+    }
+    this.disableDialogButtons = true;
+    this.registerDeleteService.deleteBuilding(this.idToDelete);
+    this.registerDeleteService.deleteDone
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(deleted => {
+      if (deleted) {
+        this.handlePopupClose(JSON.parse(JSON.stringify(this.registerFilterService.getFilter())));
+        this.deleteDialog?.close();
+        this.disableDialogButtons = false;
+      }
+    });
   }
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {

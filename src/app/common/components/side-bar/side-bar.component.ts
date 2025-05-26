@@ -2,6 +2,7 @@ import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component} fr
 import {AuthStateService} from '../../services/auth-state.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/internal/operators/filter';
+import {FILTER_REGISTER} from "../../../dashboard/register/register-table-view/register-filter.service";
 
 @Component({
   selector: 'asrdb-side-bar',
@@ -67,7 +68,7 @@ export class SideBarComponent implements AfterViewInit {
         {
           title: 'Dwelling Rules',
           path: '/dashboard/quality-management/DWELLING',
-          icon: 'floor_lamp',
+          icon: 'light',
           selected: false
         },
       ],
@@ -113,6 +114,12 @@ export class SideBarComponent implements AfterViewInit {
 
   get isAdmin(): boolean {
     return this.authStateService.isAdmin();
+  }
+
+  handleClick(title: string) {
+    if (["Dashboard", "Building List"].includes(title)) {
+      localStorage.removeItem(FILTER_REGISTER);
+    }
   }
 
   private setSelected() {

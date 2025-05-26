@@ -20,6 +20,7 @@ import {getDate} from "../model/common-utils";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {CommonEntranceService} from "../../common/service/common-entrance.service";
 import {HistoryDetailsComponent} from "./component/history-details/history-details.component";
+import {MatDivider} from "@angular/material/divider";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -34,7 +35,8 @@ import {HistoryDetailsComponent} from "./component/history-details/history-detai
     DwellingListViewComponent,
     RegisterMapComponent,
     MatTooltipModule,
-    HistoryDetailsComponent
+    HistoryDetailsComponent,
+    MatDivider
   ],
   providers: [
     RegisterLogService
@@ -330,6 +332,17 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   gotToLogs() {
     this.router.navigateByUrl('dashboard/register/logs?buildings=' + this.id);
+  }
+
+  startExecution() {
+    this.registerLogService.executeRules(this.id!, false);
+    setTimeout(() => {
+      this.loadBuildingData();
+    }, 500);
+  }
+
+  goBack() {
+    this.router.navigateByUrl('dashboard/register');
   }
 
   private prepareWhereCase() {

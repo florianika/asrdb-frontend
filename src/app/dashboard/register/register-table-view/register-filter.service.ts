@@ -47,7 +47,7 @@ export class RegisterFilterService {
   private fields: never[] = [];
 
   constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService, private authState: AuthStateService) {
-    const savedFilterJSON = sessionStorage.getItem(FILTER_REGISTER);
+    const savedFilterJSON = localStorage.getItem(FILTER_REGISTER);
 
     if (savedFilterJSON) {
       try {
@@ -55,6 +55,7 @@ export class RegisterFilterService {
         if (!filter.filter.BldMunicipality) {
           filter.filter.BldMunicipality = this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY;
         }
+        filter.filter.GlobalID = null;
         this.filter.next(filter);
       } catch (e) {
         console.log('Filter could not be initialised');
@@ -64,6 +65,10 @@ export class RegisterFilterService {
 
   get municipality(): number | null {
     return this.filter.value.filter?.BldMunicipality ?? null;
+  }
+
+  resetFilter(): void {
+    this.updateFilter(this.defaultFilter, FILTER_REGISTER)
   }
 
   setBuildingsGlobalIdFilter(globalIds: string[]) {
@@ -98,7 +103,7 @@ export class RegisterFilterService {
     //   filter.filter.BldMunicipality = DEFAULT_MUNICIPALITY;
     // }
     this.filter.next(filter);
-    sessionStorage.setItem(key, JSON.stringify(filter));
+    localStorage.setItem(key, JSON.stringify(filter));
   }
 
   prepareFilter(fields: never[]) {

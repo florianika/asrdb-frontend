@@ -132,10 +132,11 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
     }
     if (field[NAME_PROP] === 'BldMunicipality') {
-      if (this.filterService.municipality) {
-        control.setValue(this.filterService.municipality);
+      const municipalityValue = value ?? this.filterService.municipality;
+      if (municipalityValue) {
+        control.setValue(municipalityValue);
       }
-      this.mapService.setMunicipality(this.filterService.municipality);
+      this.mapService.setMunicipality(municipalityValue);
     }
     this.formGroup.addControl(fieldName, control);
   }

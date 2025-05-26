@@ -3,18 +3,25 @@
     <h1 i18n class="header-title">Building List</h1>
 
     <div class="spacer"></div>
-    <button mat-icon-button [matTooltip]="'Create a new building'" (click)="addNewBuilding()" [disabled]="isLoadingResults">
+    <button mat-icon-button
+            i18n-matTooltip
+            [matTooltip]="'Create a new building'" (click)="addNewBuilding()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">add</mat-icon>
     </button>
-    <button mat-icon-button [matTooltip]="'Filter buildings'" (click)="openFilter()" [disabled]="isLoadingResults">
+    <button mat-icon-button
+            i18n-matTooltip
+            [matTooltip]="'Filter buildings'" (click)="openFilter()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">filter_alt</mat-icon>
     </button>
-    <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
+    <button mat-icon-button
+            i18n-matTooltip
+            [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
     <ng-container>
       <div style="border-left: 1px solid lightgray; width: 1px; height: 20px"></div>
       <span
+        i18n-matTooltip
         [matTooltip]="'Open log view for selected building(s) - ' + (!selectedBuildings.length ? 'Select an item to enable this option' : '')">
         <button mat-icon-button
                 [disabled]="!selectedBuildings.length || isLoadingResults"
@@ -23,6 +30,15 @@
       </button>
       </span>
       <span
+        i18n-matTooltip
+        [matTooltip]="'Test building(s) data - ' + (!selectedBuildings.length ? 'Select an item to enable this option' : '')">
+        <button mat-icon-button
+                [disabled]="!selectedBuildings.length || isLoadingResults"
+                (click)="startExecutionForSelected()"><mat-icon style="cursor: pointer;">play_arrow</mat-icon>
+        </button>
+      </span>
+      <span
+        i18n-matTooltip
         [matTooltip]="'Filter map for selected building(s) - ' + (!selectedBuildings.length ? 'Select an item to enable this option' : '')">
         <button mat-icon-button
                 (click)="filterSelectedBuildings()" [disabled]="!selectedBuildings.length || isLoadingResults">
@@ -47,8 +63,8 @@
         <td mat-cell *matCellDef="let element"> <mat-checkbox [checked]="this.selectedBuildings.includes(element.GlobalID)" (click)="stopClickEventFiltering($event)" (change)="handleSelect(element.GlobalID)"></mat-checkbox> </td>
       </ng-container>
       <ng-container matColumnDef="GlobalID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Building</th>
-        <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n style="display: none">Building</th>
+        <td mat-cell *matCellDef="let element" style="display: none"> {{element.GlobalID}} </td>
       </ng-container>
       <ng-container matColumnDef="BldMunicipality">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Municipality</th>
@@ -95,6 +111,13 @@
               Edit building details</button>
             <button mat-menu-item i18n (click)="viewLogs(element.GlobalID)"><mat-icon>rule</mat-icon>
               View quality report</button>
+            <button mat-menu-item i18n (click)="startExecutionForBuilding(element.GlobalID)"><mat-icon>play_arrow</mat-icon>
+              Test building data</button>
+            <mat-divider/>
+            <button mat-menu-item i18n (click)="openDeleteDialog(element.GlobalID)">
+              <mat-icon color="warn">delete</mat-icon>
+              Delete building
+            </button>
           </mat-menu>
         </td>
       </ng-container>
@@ -110,3 +133,21 @@
   <mat-paginator [disabled]="isLoadingResults" [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
     [showFirstLastButtons]="true"></mat-paginator>
 </div>
+
+
+<ng-template #deleteConfirmation>
+  <h2 mat-dialog-title i18n>Delete building?</h2>
+  <mat-dialog-content>This will delete all entrances and dwellings belonging to this building
+    and cannot be undone.
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button [disabled]="disableDialogButtons" mat-dialog-close>Cancel</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-button [disabled]="disableDialogButtons" (click)="handleDeleteConfirm()" color="warn">
+      <span i18n *ngIf="!disableDialogButtons">Delete</span>
+      <span *ngIf="disableDialogButtons">
+        <mat-spinner diameter="20"></mat-spinner>
+      </span>
+    </button>
+  </mat-dialog-actions>
+</ng-template>

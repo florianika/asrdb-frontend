@@ -7,6 +7,7 @@
       <ng-container *ngFor="let sectionElement of sideBarElement.sectionElements">
         <mat-list-option
                 [routerLink]="sectionElement.path"
+                (click)="handleClick(sectionElement.title)"
                 [selected]="sectionElement.selected">
           <mat-icon matListItemIcon>{{sectionElement.icon}}</mat-icon>
           {{sectionElement.title}}

@@ -1,22 +1,41 @@
 <div *ngIf="!isLoadingResults" class="building-details-container">
   <mat-card class="building-details-card">
     <mat-card-content>
-      <button
-        mat-icon-button
-        [matTooltip]="'Edit building'"
-        style="float: right;"
-        (click)="editBuilding(building.GlobalID)">
-        <mat-icon>edit</mat-icon>
-      </button>
+      <div class="d-flex">
+        <button
+          mat-icon-button
+          matTooltip="Go to listing view"
+          style="vertical-align: middle"
+          (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="flex-grow-1"></span>
 
-      <button
-        mat-icon-button
-        matTooltip="View building logs"
-        style="vertical-align: middle; float: right;"
-        (click)="gotToLogs()">
-        <mat-icon>rule</mat-icon>
-      </button>
-      <h2 class="details-header" i18n>Details for building: {{building.GlobalID}}</h2>
+        <button
+          mat-icon-button
+          [matTooltip]="'Edit building'"
+          (click)="editBuilding(building.GlobalID)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Test building data"
+          style="vertical-align: middle;"
+          (click)="startExecution()">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Quality report"
+          style="vertical-align: middle;"
+          (click)="gotToLogs()">
+          <mat-icon>rule</mat-icon>
+        </button>
+      </div>
+      <mat-divider class="mt-2 mb-3"></mat-divider>
+      <h2 class="details-header" i18n>
+        <span>Details for building</span>
+      </h2>
       <span class="details-subheader" i18n>Data quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
       <br>
       <span class="details-subheader" i18n>Status of building centroid: <span style="font-weight: bold;">{{getValueFromStatus('BldCentroidStatus')}}</span></span>

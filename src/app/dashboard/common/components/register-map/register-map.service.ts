@@ -66,9 +66,7 @@ export class RegisterMapService {
         });
       }
     });
-    if (this.options.enableFilter) {
-      this.enableFilterPopup();
-    }
+    this.enableFilterPopup();
     if (this.options.enableLegend) {
       this.enableLegend();
     }
@@ -88,7 +86,7 @@ export class RegisterMapService {
     if (this.view) {
       let legend = new Legend({
         view: this.view,
-        visible: true
+        visible: true,
       });
       this.view.ui.add(legend, "bottom-right");
     }
@@ -101,8 +99,12 @@ export class RegisterMapService {
         setTimeout(() => {
           if (isDevMode()) {
             if (this.view?.popup) {
+              this.view.popup.close();
               console.log(this.view.popup?.selectedFeature);
             }
+          }
+          if (!this.options?.enableFilter) {
+            return;
           }
           if (!this.view?.popup?.selectedFeature) {
             return;
@@ -115,7 +117,7 @@ export class RegisterMapService {
             const globalId = this.view.popup.selectedFeature.attributes['EntBldGlobalID'];
             this.registerFilterService.setBuildingGlobalIdFilter(globalId);
           }
-        }, 100);
+        }, 50);
       });
       this.eventsCleanupCallbacks.push(() => {
         cleanup.remove();

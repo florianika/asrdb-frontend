@@ -19,6 +19,7 @@
   flex-direction: column;
   flex-grow: 1;
   margin-bottom: 15px;
+  align-self: start;
 }
 
 .building-last-modified-card :first-child {

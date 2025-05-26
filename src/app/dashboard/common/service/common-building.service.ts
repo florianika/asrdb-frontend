@@ -14,6 +14,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthStateService} from "../../../common/services/auth-state.service";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import UniqueValueInfoProperties = __esri.UniqueValueInfoProperties;
+import PopupTemplateProperties = __esri.PopupTemplateProperties;
 
 type EntityDataResponse = { count: number, data: any, globalIds: string[] };
 
@@ -89,7 +90,7 @@ export class CommonBuildingService {
             ]
           }
         ]
-      }
+      } as PopupTemplateProperties
     });
   }
 

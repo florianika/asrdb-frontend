@@ -63,11 +63,6 @@ export class RegisterLogService {
       .get<{processOutputLogDto: Log[]}>(environment.base_url + this.LOGS_URL + buildingId.replace('{', '').replace('}', ''))
       .subscribe({
         next: (data) => {
-          // TODO: verify this
-          // I am assuming that the processOutputLogDTO will hold all logs
-          // This means that if processOutputLogDTO has more data than loadedLogs, then the process is not finished.
-          // If the returned response has the same data as what is already loaded,
-          // // I will assume that the process has finished.
           if (data.processOutputLogDto.length !== this.loadedLogs.value.length) {
             setTimeout(() => {
               this.loadLogs(buildingId);
@@ -99,7 +94,36 @@ export class RegisterLogService {
     });
   }
 
-  public executeRules(buildingId: string) {
+  public executeRulesForMultipleBuildings(buildingIds: string[]) {
+    this.isExecuting.next(EXECUTING);
+    const data = {
+      BuildingIds: buildingIds.map((buildingId) => buildingId.replace('{', '').replace('}', '')),
+      ExecutionUser: this.authState.getNameId()
+    }
+    this.httpClient
+      .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .subscribe({
+        next: () => {
+          this.isExecuting.next(EXECUTING);
+          this.matSnack.open("Started testing buildings data", 'Ok', {
+            duration: 2000,
+          });
+        },
+        error: (err) => {
+          console.log(err);
+          this.matSnack.open('Action could not be performed', 'Ok', {
+            duration: 3000
+          });
+          this.isExecuting.next(NOT_EXECUTING);
+        },
+      })
+  }
+
+  public executeRules(buildingId: string, loadLogs = true) {
     this.isExecuting.next(EXECUTING);
     const data = {
       BuildingIds: [buildingId.replace('{', '').replace('}', '')],
@@ -114,7 +138,14 @@ export class RegisterLogService {
       .subscribe({
         next: () => {
           this.isExecuting.next(EXECUTING);
-          this.loadLogs(buildingId)
+          if (loadLogs) {
+            this.loadLogs(buildingId)
+          }
+          if (!loadLogs) {
+            this.matSnack.open("Started testing building data", 'Ok', {
+              duration: 2000,
+            });
+          }
         },
         error: (err) => {
           console.log(err);
