@@ -13,6 +13,8 @@ import {FeatureSelectionService} from "./custom-map-logic/feature-selection";
 import {BaseMapChangeService} from "./custom-map-logic/basemap-change";
 import Legend from "@arcgis/core/widgets/Legend";
 import {OSM_BASEMAP} from "./custom-map-logic/BasemapTypes";
+import Collection from "@arcgis/core/core/Collection";
+import Layer from "@arcgis/core/layers/Layer";
 
 export type MapInitOptions = {
   enableFilter: boolean,
@@ -30,6 +32,7 @@ export class RegisterMapService {
   private nativeElement: string | HTMLDivElement | undefined;
   private options: MapInitOptions | undefined;
   private view: MapView | undefined;
+  private graphicsLayer?: GraphicsLayer;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -52,9 +55,9 @@ export class RegisterMapService {
     if (!this.options || !this.nativeElement) {
       throw new Error("Options or nativeElement are not defined");
     }
-    const graphicsLayer = new GraphicsLayer();
+    this.graphicsLayer = new GraphicsLayer();
 
-    const webmap = this.createWebMap(basemap, [graphicsLayer, this.bldlayer, this.entlayer]);
+    const webmap = this.createWebMap(basemap, [this.graphicsLayer, this.bldlayer, this.entlayer]);
     this.view = this.createMapView(webmap);
 
     void this.view.when(() => {
@@ -94,6 +97,16 @@ export class RegisterMapService {
 
   private enableFilterPopup() {
     if (this.view) {
+      this.view.watch('zoom', (newZoom, oldZoom) => {
+        if (!this.view?.map) {
+          return;
+        }
+        if (newZoom < 16) {
+          this.view.map.layers = new Collection<Layer>();
+        } else {
+          this.view.map.layers = new Collection<Layer>([this.graphicsLayer, this.bldlayer, this.entlayer]);
+        }
+      })
       const cleanup = this.view.on('click', () => {
         // event is the event handle returned after the event fires.
         setTimeout(() => {
@@ -141,6 +154,7 @@ export class RegisterMapService {
         }
       }),
       map: webmap,
+      zoom: 20
     });
   }
 
@@ -179,7 +193,7 @@ export class RegisterMapService {
     const query = this.bldlayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
-    void this.view.goTo(extend.count !== 0 ? extend.extent : {
+    void this.view.goTo(extend.extent ? extend.extent : {
       center: [19.818, 41.3285],
       zoom: 18
     });
