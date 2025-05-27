@@ -61,7 +61,7 @@ export class SignupService {
       lastName: signupForm.lastName ?? '',
       email: signupForm.email,
       password: signupForm.password,
-      municipalityCode: signupForm.municipality
+      municipalityCode: signupForm.municipality?.toString()
     };
     this.httpClient.post<any>(environment.base_url + '/auth/signup', JSON.stringify(data), {
       headers: {
