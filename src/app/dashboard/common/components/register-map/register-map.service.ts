@@ -106,7 +106,7 @@ export class RegisterMapService {
         } else {
           this.view.map.layers = new Collection<Layer>([this.graphicsLayer, this.bldlayer, this.entlayer]);
         }
-      })
+      });
       const cleanup = this.view.on('click', () => {
         // event is the event handle returned after the event fires.
         setTimeout(() => {

@@ -22,6 +22,8 @@ import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import {OSM_BASEMAP} from "../../common/components/register-map/custom-map-logic/BasemapTypes";
 import SketchProperties = __esri.SketchProperties;
 import {AuthStateService, DEFAULT_MUNICIPALITY} from "../../../common/services/auth-state.service";
+import Collection from "@arcgis/core/core/Collection";
+import Layer from "@arcgis/core/layers/Layer";
 
 @Injectable({providedIn: 'root'})
 export class EntityCreationMapService {
@@ -146,6 +148,23 @@ export class EntityCreationMapService {
         this.view!.goTo(mainGraphic);
       }
     });
+    this.view.watch('zoom', (newZoom, oldZoom) => {
+      setTimeout(() => {
+        if (!this.view?.map) {
+          return;
+        }
+        if (newZoom < 16) {
+          this.view.map.layers = new Collection<Layer>([this.graphicsLayer]);
+        } else {
+          const layers = new Collection<Layer>([this.graphicsLayer]);
+          if (this.availableTools.includes('polygon')) {
+            layers.push(this.bldLayer);
+          }
+          this.view.map.layers = layers;
+        }
+      }, 500);
+    });
+
     this.createSketch();
     if (this.municipality.value && this.municipality.value !== 99) {
       void this.filterBuildingData(`BldMunicipality=${this.municipality.value.toString()}`);
