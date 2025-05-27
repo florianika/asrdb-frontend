@@ -77,13 +77,10 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   public isResolvingLog = this.logService.isResolvingLog;
   public buildingQuality = this.logService.bldQuality;
   public displayedColumns = [
-    'reference',
-    'bldId',
-    'entId',
-    'dwlId',
-    'qualityMessageAl',
     'entityType',
     'variable',
+    'reference',
+    'qualityMessageAl',
     'qualityStatus',
     'qualityAction',
     'actions'
@@ -176,8 +173,9 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
       const variableCondition = this.filter.variable ? log.variable === this.filter.variable : true;
       const entityCondition = this.filter.entityType ? log.entityType === this.filter.entityType : true;
       const qualityActionCondition = this.filter.qualityAction ? log.qualityAction === this.filter.qualityAction : true;
+      const statusCondition = this.filter.status ? log.qualityStatus === this.filter.status : true;
 
-      return variableCondition && entityCondition && qualityActionCondition;
+      return variableCondition && entityCondition && qualityActionCondition && statusCondition;
     });
     this.resultsLength = this.dataSource.data.length;
   }

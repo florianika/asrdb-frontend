@@ -27,6 +27,20 @@
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label i18n>Status</mat-label>
+    <mat-select [(ngModel)]="filter.status">
+      <mat-option value="PENDING" i18n>
+        PENDING
+      </mat-option>
+      <mat-option value="RESOLVED" i18n>
+        RESOLVED
+      </mat-option>
+    </mat-select>
+    <button matSuffix mat-icon-button *ngIf="filter.status" (click)="clearFormValue($event, 'status')">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
