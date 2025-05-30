@@ -84,6 +84,8 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   isLoadingResults = true;
   selectedBuildings: string[] = [];
   disableDialogButtons = false;
+  loadingDeleteData;
+  toDeleteState;
 
   get filterChips(): Chip[] {
     return Object
@@ -107,6 +109,8 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     private router: Router) {
     this.registerFilterService.setBuildingGlobalIdFilter('');
     this.registerFilterService.setBuildingsGlobalIdFilter([]);
+    this.loadingDeleteData = this.registerDeleteService.deleteDataLoading;
+    this.toDeleteState = this.registerDeleteService.state;
   }
 
   ngOnInit(): void {
@@ -241,6 +245,13 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
       hasBackdrop: true,
       disableClose: true
     });
+    this.registerDeleteService.deleteBuilding(this.idToDelete)
+  }
+
+  handleCancelClick() {
+    this.disableDialogButtons = false;
+    this.deleteDialog?.close();
+    this.registerDeleteService.reset();
   }
 
   handleDeleteConfirm() {
@@ -248,11 +259,11 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
       return;
     }
     this.disableDialogButtons = true;
-    this.registerDeleteService.deleteBuilding(this.idToDelete);
+    this.registerDeleteService.confirmDelete();
     this.registerDeleteService.deleteDone
       .pipe(takeUntil(this.destroy$))
       .subscribe(deleted => {
-      if (deleted) {
+      if (deleted.buildingDone && deleted.entranceDone && deleted.dwellingDone) {
         this.handlePopupClose(JSON.parse(JSON.stringify(this.registerFilterService.getFilter())));
         this.deleteDialog?.close();
         this.disableDialogButtons = false;

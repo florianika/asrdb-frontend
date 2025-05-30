@@ -30,6 +30,7 @@ export class ChipComponent {
   get filteredChips(): Chip[] {
     return this.chips.filter(chip => {
       return chip.value
+        && typeof chip.value === 'string'
         && chip.value?.trim() !== ''
         && !['GlobalID', 'EntBldGlobalID', 'DwlEntGlobalID'].includes(chip.column);
     });

@@ -121,7 +121,7 @@ export class RegisterFilterService {
   }
 
   prepareWhereCase() {
-    const conditions: string[] = [];
+    const conditions: string[] = ['BldQuality <> 0'];
     Object
       .entries(this.filter.value.filter)
       .filter(([, value]) => {
