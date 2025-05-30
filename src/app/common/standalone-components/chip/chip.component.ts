@@ -26,4 +26,12 @@ export class ChipComponent {
   removeChip(chip: Chip) {
     this.remove.emit(chip);
   }
+
+  get filteredChips(): Chip[] {
+    return this.chips.filter(chip => {
+      return chip.value
+        && chip.value?.trim() !== ''
+        && !['GlobalID', 'EntBldGlobalID', 'DwlEntGlobalID'].includes(chip.column);
+    });
+  }
 }

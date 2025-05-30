@@ -13,8 +13,6 @@ import {FeatureSelectionService} from "./custom-map-logic/feature-selection";
 import {BaseMapChangeService} from "./custom-map-logic/basemap-change";
 import Legend from "@arcgis/core/widgets/Legend";
 import {OSM_BASEMAP} from "./custom-map-logic/BasemapTypes";
-import Collection from "@arcgis/core/core/Collection";
-import Layer from "@arcgis/core/layers/Layer";
 
 export type MapInitOptions = {
   enableFilter: boolean,
@@ -101,10 +99,12 @@ export class RegisterMapService {
         if (!this.view?.map) {
           return;
         }
-        if (newZoom < 16) {
-          this.view.map.layers = new Collection<Layer>();
+        if (newZoom < 15) {
+          this.bldlayer.visible = false;
+          this.entlayer.visible = false;
         } else {
-          this.view.map.layers = new Collection<Layer>([this.graphicsLayer, this.bldlayer, this.entlayer]);
+          this.bldlayer.visible = true;
+          this.entlayer.visible = true;
         }
       });
       const cleanup = this.view.on('click', () => {
@@ -154,7 +154,7 @@ export class RegisterMapService {
         }
       }),
       map: webmap,
-      zoom: 20
+      zoom: 20,
     });
   }
 
@@ -186,10 +186,14 @@ export class RegisterMapService {
     if (this.options) {
       this.options.bldWhereCase = whereCondition;
     }
-    const layerView = await this.view.whenLayerView(this.bldlayer);
-    layerView['filter'] = new FeatureFilter({
-      where: whereCondition,
-    });
+    try {
+      const layerView = await this.view.whenLayerView(this.bldlayer);
+      layerView['filter'] = new FeatureFilter({
+        where: whereCondition,
+      });
+    } catch (e) {
+      console.error(e);
+    }
     const query = this.bldlayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);

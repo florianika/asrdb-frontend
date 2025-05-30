@@ -1,5 +1,5 @@
 <div class="chips-container">
-  <div *ngFor="let chip of chips;">
+  <div *ngFor="let chip of filteredChips;">
     <span *ngIf="chip.column !== 'GlobalID'" class="chip">
         <span>{{chip.column}}</span>: <span>{{chip.value | concatenateMessage:20}}</span>
         <mat-icon *ngIf="clearable" class="chip-close-icon" (click)="removeChip(chip)">cancel</mat-icon>

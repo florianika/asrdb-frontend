@@ -153,14 +153,10 @@ export class EntityCreationMapService {
         if (!this.view?.map) {
           return;
         }
-        if (newZoom < 16) {
-          this.view.map.layers = new Collection<Layer>([this.graphicsLayer]);
+        if (newZoom < 15) {
+          this.bldLayer.visible = false;
         } else {
-          const layers = new Collection<Layer>([this.graphicsLayer]);
-          if (this.availableTools.includes('polygon')) {
-            layers.push(this.bldLayer);
-          }
-          this.view.map.layers = layers;
+          this.bldLayer.visible = true;
         }
       }, 500);
     });
