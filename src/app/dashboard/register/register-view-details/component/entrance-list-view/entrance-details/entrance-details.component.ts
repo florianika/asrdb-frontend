@@ -1,22 +1,34 @@
 import { CommonModule } from '@angular/common';
-import {Component, Inject, OnInit, isDevMode, Output, EventEmitter} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  isDevMode,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
+import { catchError, of as observableOf, Subject, takeUntil } from 'rxjs';
 import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
 import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
 import { CommonEntranceService } from 'src/app/dashboard/common/service/common-entrance.service';
 import { CommonRegisterHelperService } from 'src/app/dashboard/common/service/common-helper.service';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import {getDate} from "../../../../model/common-utils";
-import {Log} from "../../../../register-log-view/model/log";
-import {HistoryDetailsComponent} from "../../history-details/history-details.component";
-import {RegisterMapComponent} from "../../../../../common/components/register-map/register-map.component";
-import {DwellingListViewComponent} from "../../dwelling-list-view/dwelling-list-view.component";
-import {CommonStreetService} from "../../../../../common/service/common-street.service";
-import {MatIcon} from "@angular/material/icon";
-import {Router} from "@angular/router";
+import { Log } from '../../../../register-log-view/model/log';
+import { HistoryDetailsComponent } from '../../history-details/history-details.component';
+import { RegisterMapComponent } from '../../../../../common/components/register-map/register-map.component';
+import { DwellingListViewComponent } from '../../dwelling-list-view/dwelling-list-view.component';
+import { CommonStreetService } from '../../../../../common/service/common-street.service';
+import { MatIcon } from '@angular/material/icon';
+import { Router } from '@angular/router';
+import {
+  CommonEntityStructureService,
+  EntityAttribute,
+} from '../../../../../common/service/common-entity-structure.service';
+import { SectionField } from '../../../../constant/common-constants';
+import { ENTRANCE_ENTITY } from '../../../../../../common/constants/common-constants';
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -31,93 +43,28 @@ import {Router} from "@angular/router";
     HistoryDetailsComponent,
     RegisterMapComponent,
     DwellingListViewComponent,
-    MatIcon
+    MatIcon,
   ],
-  standalone: true
+  standalone: true,
 })
 export class EntranceDetailsComponent implements OnInit {
   isLoadingResults = true;
   entrance: any;
+  titleSection: SectionField[] = [];
 
   sections = [
     {
       title: 'Technical variables',
-      entries: [
-        {
-          title: '',
-          propName: 'EntCensus2023',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'EntAddressID',
-          value: '',
-          log: '',
-          logType: ''
-        },
-      ]
+      entries: [] as SectionField[],
     },
     {
       title: 'Identifying variables',
-      entries: [
-        {
-          title: '',
-          propName: 'EntPointStatus',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'EntBuildingNumber',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'EntEntranceNumber',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'EntTown',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'EntZipCode',
-          value: '',
-          log: '',
-          logType: ''
-        },
-      ]
+      entries: [] as SectionField[],
     },
     {
       title: 'Describing variables',
-      entries: [
-        {
-          title: '',
-          propName: 'EntDwellingRecs',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'EntDwellingExpec',
-          value: '',
-          log: '',
-          logType: ''
-        },
-      ]
-    }
+      entries: [] as SectionField[],
+    },
   ];
 
   private subscriber = new Subject();
@@ -134,16 +81,33 @@ export class EntranceDetailsComponent implements OnInit {
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private commonStreetService: CommonStreetService,
     private matSnack: MatSnackBar,
+    private commonEntityStructureService: CommonEntityStructureService,
     private router: Router,
-    @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[], buildingGlobalId: string, building: any}) {
-      this.id = this.data.globalId;
-      this.logs = this.data.logs;
-      this.buildingGlobalId = this.data.buildingGlobalId;
-      this.building = this.data.building;
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      globalId: string;
+      logs: Log[];
+      buildingGlobalId: string;
+      building: any;
     }
+  ) {
+    this.id = this.data.globalId;
+    this.logs = this.data.logs;
+    this.buildingGlobalId = this.data.buildingGlobalId;
+    this.building = this.data.building;
+    this.commonEntityStructureService.structureLoaded
+      .pipe(takeUntil(this.subscriber))
+      .subscribe(response => {
+        if (!response.loading && response.structure) {
+          this.prepareStructure(response.structure);
+        }
+      });
+  }
 
   ngOnInit(): void {
-    this.loadEntrance().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    this.loadEntrance()
+      .pipe(takeUntil(this.subscriber))
+      .subscribe(res => this.handleResponse(res));
   }
 
   getTitle(column: string) {
@@ -151,7 +115,13 @@ export class EntranceDetailsComponent implements OnInit {
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.entrance[column]) ?? 'Unknown';
+    return (
+      this.commonBuildingRegisterHelper.getValueFromStatus(
+        this.fields,
+        column,
+        this.entrance[column]
+      ) ?? 'Unknown'
+    );
   }
 
   dwellingUpdated(id: string) {
@@ -159,7 +129,9 @@ export class EntranceDetailsComponent implements OnInit {
   }
 
   openEditView() {
-    void this.router.navigateByUrl(`/dashboard/register/form/ENTRANCE/${this.buildingGlobalId}?entranceId=${this.id}`);
+    void this.router.navigateByUrl(
+      `/dashboard/register/form/ENTRANCE/${this.buildingGlobalId}?entranceId=${this.id}`
+    );
   }
 
   private prepareWhereCase() {
@@ -171,7 +143,9 @@ export class EntranceDetailsComponent implements OnInit {
       console.log('Entrance', res);
     }
     if (!res) {
-      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {
+        duration: 3000,
+      });
       this.isLoadingResults = false;
       return;
     }
@@ -179,28 +153,41 @@ export class EntranceDetailsComponent implements OnInit {
       this.fields = res.data.fields;
     }
 
-    const entrance = res.data.features.map((feature: any) => feature.attributes)[0];
-    const streetId = entrance.EntStrGlobalID.replace('{', '').replace('}', '');
+    const entrance = res.data.features.map(
+      (feature: any) => feature.attributes
+    )[0];
+    const streetId = entrance.EntStrGlobalID?.replace('{', '').replace('}', '');
 
-    this.commonStreetService.getStreets({
-      where: `GlobalID = '${streetId}'`,
-      outFields: ['GlobalID', 'StrNameCore']
-    }).subscribe((streetRes) => {
-        const street = streetRes.data.features.map((feature: any) => feature.attributes)[0];
+    if (!streetId) {
+      this.data = entrance;
+      this.entrance = entrance;
+      this.commonEntityStructureService.getEntityStructure(ENTRANCE_ENTITY);
+      return;
+    }
+
+    this.commonStreetService
+      .getStreets({
+        where: `GlobalID = '${streetId}'`,
+        outFields: ['GlobalID', 'StrNameCore'],
+      })
+      .subscribe(streetRes => {
+        const street = streetRes.data.features.map(
+          (feature: any) => feature.attributes
+        )[0];
         entrance.EntStrGlobalID = street?.StrNameCore;
         this.data = entrance;
         this.isLoadingResults = false;
 
-        this.entrance = res.data.features.map((feature: any) => feature.attributes)[0];
-        this.fillSections();
-        this.isLoadingResults = false;
+        this.entrance = res.data.features.map(
+          (feature: any) => feature.attributes
+        )[0];
+        this.commonEntityStructureService.getEntityStructure(ENTRANCE_ENTITY);
       });
   }
 
   private fillSections() {
     this.sections.forEach(section => {
-      section.entries.forEach(entry => {
-        entry.title = this.getTitle(entry.propName);
+      section.entries.forEach((entry: SectionField) => {
         entry.value = this.getValueFromStatus(entry.propName);
         const log = this.logs.find(log => log.variable === entry.propName);
         entry.log = log?.qualityMessageEn ?? '';
@@ -212,16 +199,73 @@ export class EntranceDetailsComponent implements OnInit {
   private loadEntrance() {
     this.isLoadingResults = true;
     const filter = {
-      where: this.prepareWhereCase()
+      where: this.prepareWhereCase(),
     } as Partial<QueryFilter>;
-    return this.commonEntranceService.getEntranceData(filter).pipe(catchError((err) => {
-      console.log(err);
-      this.matSnack.open('Could not load entrance. Please try again.', 'Ok', {
-        duration: 3000
-      });
-      return observableOf(null);
-    }));
+    return this.commonEntranceService.getEntranceData(filter).pipe(
+      catchError(err => {
+        console.log(err);
+        this.matSnack.open('Could not load entrance. Please try again.', 'Ok', {
+          duration: 3000,
+        });
+        return observableOf(null);
+      })
+    );
   }
 
-  protected readonly getDate = getDate;
+  private prepareStructure(structure: EntityAttribute[]) {
+    const visibleFields = structure.reduce(
+      (acc, attr: EntityAttribute) => {
+        if (attr.section !== 'none' && !attr.internal) {
+          if (attr.section === 'technical') {
+            acc.technical.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'identifier') {
+            acc.identifying.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'info') {
+            acc.describing.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'title') {
+            acc.title.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          }
+        }
+        return acc;
+      },
+      {
+        technical: [] as SectionField[],
+        identifying: [] as SectionField[],
+        describing: [] as SectionField[],
+        title: [] as SectionField[],
+      }
+    );
+
+    this.sections[0].entries = visibleFields.technical;
+    this.sections[1].entries = visibleFields.identifying;
+    this.sections[2].entries = visibleFields.describing;
+    this.titleSection = visibleFields.title;
+
+    this.fillSections();
+    this.isLoadingResults = false;
+  }
 }

@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {getDate} from "../../register/model/common-utils";
+import { Injectable } from '@angular/core';
+import { getDate } from '../../register/model/common-utils';
 
 @Injectable()
 export class CommonRegisterHelperService {
@@ -11,7 +11,11 @@ export class CommonRegisterHelperService {
     return field.alias;
   }
 
-  getMunicipality(fields: any[], column: string, code: number | string): string | number {
+  getMunicipality(
+    fields: any[],
+    column: string,
+    code: number | string
+  ): string | number {
     const codeValues = this.getCodeValues(fields, column, code);
     if (!codeValues) {
       return code;
@@ -28,7 +32,7 @@ export class CommonRegisterHelperService {
       return 'Not applicable';
     }
     if (this.isDateField(fields, column)) {
-      return getDate((code as number) as any);
+      return getDate(code as number as any);
     }
     if (column === 'BldArea') {
       return Math.round(Number(code)).toString();

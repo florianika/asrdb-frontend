@@ -1,4 +1,3 @@
-
 export const BUILDING_HIDDEN_FIELDS = [
   'last_edited_user',
   'last_edited_date',
@@ -44,5 +43,5 @@ export const STREET_HIDDEN_FIELDS = [
   'external_creator_date',
   'external_editor_date',
   'DwlQuality',
-  'DwlID'
+  'DwlID',
 ];

@@ -1,12 +1,9 @@
 import { NgModule } from '@angular/core';
-import {AdministrationRoutingModule} from './administration-routing.module';
+import { AdministrationRoutingModule } from './administration-routing.module';
 
 @NgModule({
-  declarations: [
-  ],
-  imports: [
-    AdministrationRoutingModule
-  ],
-  providers: []
+  declarations: [],
+  imports: [AdministrationRoutingModule],
+  providers: [],
 })
-export class AdministrationModule { }
+export class AdministrationModule {}

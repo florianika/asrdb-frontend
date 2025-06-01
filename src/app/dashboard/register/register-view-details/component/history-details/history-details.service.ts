@@ -1,12 +1,12 @@
-import {Injectable} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import {BehaviorSubject, catchError, of, zip} from "rxjs";
-import {environment} from "../../../../../../environments/environment";
-import {User} from "../../../../../model/User.model";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, catchError, of, zip } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
+import { User } from '../../../../../model/User.model';
 
 @Injectable()
 export class HistoryDetailsService {
-  private readonly USER_DETAILS_API = '/auth/users/'
+  private readonly USER_DETAILS_API = '/auth/users/';
   private createUser = new BehaviorSubject('');
   private updateUser = new BehaviorSubject('');
 
@@ -18,8 +18,7 @@ export class HistoryDetailsService {
     return this.updateUser.asObservable();
   }
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   loadUserDetails(createUser: string, updateUser?: string) {
     const requests = [];
@@ -28,19 +27,25 @@ export class HistoryDetailsService {
     requests.push(createUserDetailsRequest);
     requests.push(updateUserDetailsRequest);
     zip(...requests).subscribe({
-      next: (response: ({userDTO: User} | null)[]) => {
+      next: (response: ({ userDTO: User } | null)[]) => {
         const createUserDetail = response[0]?.userDTO;
-        const createUserText = (createUserDetail?.name ?? "") + ' ' + (createUserDetail?.lastName ?? "");
+        const createUserText =
+          (createUserDetail?.name ?? '') +
+          ' ' +
+          (createUserDetail?.lastName ?? '');
         this.createUser.next(createUserText.trim());
 
         const updateUserDetail = response[1]?.userDTO;
-        const updateUserText = (updateUserDetail?.name ?? "") + ' ' + (updateUserDetail?.lastName ?? "");
+        const updateUserText =
+          (updateUserDetail?.name ?? '') +
+          ' ' +
+          (updateUserDetail?.lastName ?? '');
         this.updateUser.next(updateUserText.trim());
       },
-      error: (err) => {
+      error: err => {
         console.error(err);
-      }
-    })
+      },
+    });
   }
 
   private getUserDetailsRequest(user?: string) {
@@ -48,7 +53,12 @@ export class HistoryDetailsService {
       return of(null);
     }
     return this.http
-      .get<{userDTO: User}>(environment.base_url + this.USER_DETAILS_API + user)
-      .pipe(catchError(error => of(null)));
+      .get<{
+        userDTO: User;
+      }>(environment.base_url + this.USER_DETAILS_API + user)
+      .pipe(catchError(error => {
+        console.error('Error fetching user details:', error);
+        return of(null);
+      }));
   }
 }

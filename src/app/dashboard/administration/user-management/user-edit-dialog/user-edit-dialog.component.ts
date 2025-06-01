@@ -2,12 +2,12 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Role } from 'src/app/model/RolePermissions.model';
 import { User } from 'src/app/model/User.model';
-import {MUNICIPALITIES} from "../../../../common/data/municipalities";
+import { MUNICIPALITIES } from '../../../../common/data/municipalities';
 
 @Component({
   selector: 'asrdb-user-edit-dialog',
   templateUrl: './user-edit-dialog.component.html',
-  styleUrls: ['./user-edit-dialog.component.css']
+  styleUrls: ['./user-edit-dialog.component.css'],
 })
 export class UserEditDialogComponent {
   role: Role = 'ADMIN';

@@ -1,4 +1,3 @@
-
 export const EDITABLE_PROP = 'editable';
 export const ALIAS_PROP = 'alias';
 export const DOMAIN_PROP = 'domain';
@@ -7,3 +6,11 @@ export const NAME_PROP = 'name';
 export const LENGTH_PROP = 'length';
 export const DEFAULT_VALUE_PROP = 'defaultValue';
 export const NULLABLE_PROP = 'nullable';
+
+export type SectionField = {
+  title: string;
+  propName: string;
+  value: string;
+  log: string;
+  logType: string;
+};

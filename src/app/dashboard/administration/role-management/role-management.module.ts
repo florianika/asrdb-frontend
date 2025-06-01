@@ -2,20 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { RoleManagementRoutingModule } from './role-management-routing.module';
-import {RoleManagementComponent} from './role-management.component';
-import {FormsModule} from '@angular/forms';
-import {MatTableModule} from '@angular/material/table';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatSortModule} from '@angular/material/sort';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInputModule} from '@angular/material/input';
-import {RoleManagementService} from './role-management.service';
+import { RoleManagementComponent } from './role-management.component';
+import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { RoleManagementService } from './role-management.service';
 import { RoleTableComponent } from './role-table/role-table.component';
 import { MatCardModule } from '@angular/material/card';
 import { RoleCreateDialogComponent } from './role-create-dialog/role-create-dialog.component';
@@ -25,9 +25,8 @@ import { PermissionSelectorComponent } from 'src/app/common/standalone-component
 import { RoleSelectorComponent } from 'src/app/common/standalone-components/role-selector/role-selector.component';
 import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
 import { RoleDeleteDialogComponent } from './role-delete-dialog/role-delete-dialog.component';
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {CommonEsriAuthService} from "../../common/service/common-esri-auth.service";
-
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +34,7 @@ import {CommonEsriAuthService} from "../../common/service/common-esri-auth.servi
     RoleTableComponent,
     RoleCreateDialogComponent,
     RoleEditDialogComponent,
-    RoleDeleteDialogComponent
+    RoleDeleteDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -57,11 +56,8 @@ import {CommonEsriAuthService} from "../../common/service/common-esri-auth.servi
     EntityTypeSelectorComponent,
     VariableSelectorComponent,
     PermissionSelectorComponent,
-    MatTooltipModule
+    MatTooltipModule,
   ],
-  providers: [
-    RoleManagementService,
-    CommonEsriAuthService
-  ]
+  providers: [RoleManagementService, CommonEsriAuthService],
 })
-export class RoleManagementModule { }
+export class RoleManagementModule {}

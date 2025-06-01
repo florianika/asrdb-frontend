@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {EntityManageResponse} from '../model/entity-req-res';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {Dwelling} from '../model/dwelling';
-import {AuthStateService} from "../../../common/services/auth-state.service";
-import {CommonStreetService} from "../../common/service/common-street.service";
-import {Street} from "../model/street";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { EntityManageResponse } from '../model/entity-req-res';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Dwelling } from '../model/dwelling';
+import { AuthStateService } from '../../../common/services/auth-state.service';
+import { CommonStreetService } from '../../common/service/common-street.service';
+import { Street } from '../model/street';
 
 @Injectable()
 export class StreetManagementService {
@@ -16,26 +16,33 @@ export class StreetManagementService {
 
   private responseHandler = () => ({
     next: (response: EntityManageResponse) => {
-      if (!response['addResults']?.[0]?.success && !response['updateResults']?.[0]?.success) {
+      if (
+        !response['addResults']?.[0]?.success &&
+        !response['updateResults']?.[0]?.success
+      ) {
         this.snackBar.open('Could not save street data', 'Ok', {
-          duration: 3000
+          duration: 3000,
         });
       }
       this.isSaving.next(false);
     },
     error: () => {
       this.isSaving.next(false);
-      this.snackBar.open('There was an error when trying to save street data', 'Ok', {
-        duration: 3000
-      });
-    }
+      this.snackBar.open(
+        'There was an error when trying to save street data',
+        'Ok',
+        {
+          duration: 3000,
+        }
+      );
+    },
   });
 
   constructor(
     private commonStreetService: CommonStreetService,
     private snackBar: MatSnackBar,
-    private authState: AuthStateService) {
-  }
+    private authState: AuthStateService
+  ) {}
 
   public saveStreet(streetDetails: Street) {
     if (streetDetails.GlobalID) {
@@ -49,14 +56,18 @@ export class StreetManagementService {
     street.external_creator = `{${this.authState.getNameId()}}` ?? '';
     street.external_creator_date = String(Date.now());
     const features = this.createFeatures(street);
-    this.commonStreetService.createFeature(features).subscribe(this.responseHandler());
+    this.commonStreetService
+      .createFeature(features)
+      .subscribe(this.responseHandler());
   }
 
   private updateStreet(street: Street) {
     street.external_editor = `{${this.authState.getNameId()}}` ?? '';
     street.external_editor_date = String(Date.now());
     const features = this.createFeatures(street);
-    this.commonStreetService.updateFeature(features).subscribe(this.responseHandler());
+    this.commonStreetService
+      .updateFeature(features)
+      .subscribe(this.responseHandler());
   }
 
   private createFeatures(street: Street) {
@@ -69,7 +80,7 @@ export class StreetManagementService {
     });
     return [
       {
-        'attributes': cleanedAttributes
+        attributes: cleanedAttributes,
       },
     ];
   }

@@ -14,9 +14,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SigninService } from './signin.service';
 
 @NgModule({
-  declarations: [
-    SigninComponent
-  ],
+  declarations: [SigninComponent],
   imports: [
     CommonModule,
     SigninRoutingModule,
@@ -27,10 +25,8 @@ import { SigninService } from './signin.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
-  providers: [
-    SigninService,
-  ]
+  providers: [SigninService],
 })
-export class SigninModule { }
+export class SigninModule {}

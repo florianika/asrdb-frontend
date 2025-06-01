@@ -8,7 +8,7 @@ import { AuthStateService } from 'src/app/common/services/auth-state.service';
 import { SigninResponse } from 'src/app/model/JWT.model';
 import { environment } from 'src/environments/environment';
 
-export type Credentials = { username: string, password: string };
+export type Credentials = { username: string; password: string };
 
 @Injectable()
 export class SigninService {
@@ -18,59 +18,69 @@ export class SigninService {
       this.authStateService.setJWT(signinResponse);
       this.getEsriCredentials();
     },
-    error: (error) => {
+    error: error => {
       console.error(error);
       this.signingIn.next(false);
       this.authStateService.setLoginState(false);
       this.matSnack.open('Username or password not correct', 'Ok', {
-        duration: 3000
+        duration: 3000,
       });
-    }
+    },
   } as Observer<SigninResponse>;
 
   constructor(
     private authStateService: AuthStateService,
     private httpClient: HttpClient,
     private router: Router,
-    private matSnack: MatSnackBar) { }
+    private matSnack: MatSnackBar
+  ) {}
 
-  signin(loginData: Partial<{ email: string | null, password: string | null }>) {
+  signin(
+    loginData: Partial<{ email: string | null; password: string | null }>
+  ) {
     this.signingIn.next(true);
     const data = {
       email: loginData.email,
-      password: loginData.password
+      password: loginData.password,
     };
-    this.httpClient.post<SigninResponse>(environment.base_url + '/auth/login', JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).subscribe(this.signinObserver);
+    this.httpClient
+      .post<SigninResponse>(
+        environment.base_url + '/auth/login',
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .subscribe(this.signinObserver);
   }
 
   createSigninForm() {
     return new FormGroup({
       email: new FormControl('', [Validators.email]),
-      password: new FormControl('')
+      password: new FormControl(''),
     });
   }
 
   getEsriCredentials() {
-    this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/login')
+    this.httpClient
+      .get<Credentials>(environment.base_url + '/auth/gis/login')
       .subscribe({
-      next: async (credentials) => {
-        try {
-          this.authStateService.initEsriConfig(credentials);
-          void this.router.navigateByUrl('/dashboard');
-          this.authStateService.setLoginState(true);
-          this.signingIn.next(false);
-        } catch (error) {
+        next: async credentials => {
+          try {
+            this.authStateService.initEsriConfig(credentials);
+            void this.router.navigateByUrl('/dashboard');
+            this.authStateService.setLoginState(true);
+            this.signingIn.next(false);
+          } catch (error) {
+            this.handleError(error);
+          }
+        },
+        error: error => {
           this.handleError(error);
-        }
-      },
-      error: (error) => {
-        this.handleError(error);
-      }
-    });
+        },
+      });
   }
 
   private handleError(error: any) {
@@ -78,7 +88,7 @@ export class SigninService {
     this.signingIn.next(false);
     this.authStateService.setLoginState(false);
     this.matSnack.open('Could not load credentials. Please try again.', 'Ok', {
-      duration: 3000
+      duration: 3000,
     });
   }
 

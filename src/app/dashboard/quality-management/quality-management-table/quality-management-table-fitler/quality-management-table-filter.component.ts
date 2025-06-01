@@ -1,21 +1,24 @@
-import {Component, Inject} from '@angular/core';
-import {QualityRuleFilter} from '../model/quality-rule-filter';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {MatSelectChange} from '@angular/material/select';
-import {EntityType} from '../../quality-management-config';
+import { Component, Inject } from '@angular/core';
+import { QualityRuleFilter } from '../model/quality-rule-filter';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { EntityType } from '../../quality-management-config';
 
 export const FILTER_CONFIG_PREFIX = 'filter-config-';
 
 @Component({
   selector: 'asrdb-quality-management-table-filter',
   templateUrl: './quality-management-table-filter.component.html',
-  styleUrls: ['./quality-management-table-filter.component.css']
+  styleUrls: ['./quality-management-table-filter.component.css'],
 })
 export class QualityManagementTableFilterComponent {
   filterConfig: QualityRuleFilter;
   qualityType!: EntityType;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {filter: QualityRuleFilter, qualityType: EntityType}) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: { filter: QualityRuleFilter; qualityType: EntityType }
+  ) {
     this.filterConfig = data.filter;
     this.qualityType = data.qualityType;
   }
@@ -35,7 +38,10 @@ export class QualityManagementTableFilterComponent {
   }
 
   applyFilter() {
-    localStorage.setItem(FILTER_CONFIG_PREFIX + this.qualityType, JSON.stringify(this.filterConfig));
+    localStorage.setItem(
+      FILTER_CONFIG_PREFIX + this.qualityType,
+      JSON.stringify(this.filterConfig)
+    );
     return this.filterConfig;
   }
 }

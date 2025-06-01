@@ -1,36 +1,45 @@
-import {Component, Inject} from '@angular/core';
-import {AsyncPipe, NgIf} from "@angular/common";
-import {MatButton} from "@angular/material/button";
+import { Component, Inject } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { MatButton } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
-  MatDialogContent, MatDialogRef,
-  MatDialogTitle
-} from "@angular/material/dialog";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {takeUntil} from "rxjs";
-import {RegisterDeleteService} from "../../../register/register-table-view/register-delete.service";
-import {EntityType} from "../../../quality-management/quality-management-config";
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { RegisterDeleteService } from '../../../register/register-table-view/register-delete.service';
+import { EntityType } from '../../../quality-management/quality-management-config';
+import {
+  BUILDING_ENTITY,
+  DWELLING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../../../common/constants/common-constants';
 
-export type EntityDeleteDialogData = { type: EntityType, idToDelete: string, reload: () => void };
+export type EntityDeleteDialogData = {
+  type: EntityType;
+  idToDelete: string;
+  reload: () => void;
+};
 
 @Component({
   selector: 'asrdb-entity-delete-confirmation-doalog',
   standalone: true,
   imports: [
-      AsyncPipe,
-      MatButton,
-      MatDialogActions,
-      MatDialogClose,
-      MatDialogContent,
-      MatDialogTitle,
-      MatProgressSpinner,
-      NgIf
+    AsyncPipe,
+    MatButton,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogTitle,
+    MatProgressSpinner,
+    NgIf,
   ],
   providers: [RegisterDeleteService],
   templateUrl: './entity-delete-confirmation-dialog.component.html',
-  styleUrl: './entity-delete-confirmation-dialog.component.css'
+  styleUrl: './entity-delete-confirmation-dialog.component.css',
 })
 export class EntityDeleteConfirmationDialogComponent {
   private deleteDialog?: MatDialogRef<any>;
@@ -43,20 +52,21 @@ export class EntityDeleteConfirmationDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: EntityDeleteDialogData,
-    private registerDeleteService: RegisterDeleteService) {
+    private registerDeleteService: RegisterDeleteService
+  ) {
     this.idToDelete = data.idToDelete;
     this.reload = data.reload;
     this.loadingDeleteData = this.registerDeleteService.deleteDataLoading;
     this.toDeleteState = this.registerDeleteService.state;
 
     switch (data.type) {
-      case 'BUILDING':
+      case BUILDING_ENTITY:
         this.registerDeleteService.deleteBuilding(this.idToDelete);
         break;
-      case 'ENTRANCE':
+      case ENTRANCE_ENTITY:
         this.registerDeleteService.deleteEntrance(this.idToDelete);
         break;
-      case 'DWELLING':
+      case DWELLING_ENTITY:
         this.registerDeleteService.deleteDwelling(this.idToDelete);
         break;
       default:
@@ -76,13 +86,16 @@ export class EntityDeleteConfirmationDialogComponent {
     }
     this.disableDialogButtons = true;
     this.registerDeleteService.confirmDelete();
-    this.registerDeleteService.deleteDone
-      .subscribe(deleted => {
-        if (deleted.buildingDone && deleted.entranceDone && deleted.dwellingDone) {
-          this.reload();
-          this.deleteDialog?.close();
-          this.disableDialogButtons = false;
-        }
-      });
+    this.registerDeleteService.deleteDone.subscribe(deleted => {
+      if (
+        deleted.buildingDone &&
+        deleted.entranceDone &&
+        deleted.dwellingDone
+      ) {
+        this.reload();
+        this.deleteDialog?.close();
+        this.disableDialogButtons = false;
+      }
+    });
   }
 }

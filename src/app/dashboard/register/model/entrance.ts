@@ -21,22 +21,22 @@ export type Entrance = {
   Point: {
     X: number;
     Y: number;
-  }
+  };
   external_creator: string;
   external_creator_date: string;
   external_editor: string;
   external_editor_date: string;
-}
+};
 
 export type EntranceFilter = {
   filter: {
-    EntBuildingNumber: number,
-    EntEntranceNumber: number,
-    EntPointStatus: string,
-    GlobalID: string,
-    EntBldGlobalID?: string
+    EntBuildingNumber: number;
+    EntEntranceNumber: number;
+    EntPointStatus: string;
+    GlobalID: string;
+    EntBldGlobalID?: string;
   };
   options: {
     EntPointStatus: any[];
-  }
-}
+  };
+};

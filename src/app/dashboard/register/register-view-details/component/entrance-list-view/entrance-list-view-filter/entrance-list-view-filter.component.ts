@@ -11,16 +11,26 @@ import { EntranceFilter } from 'src/app/dashboard/register/model/entrance';
 @Component({
   selector: 'asrdb-entrance-list-view-filter',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatSelectModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+  ],
   templateUrl: './entrance-list-view-filter.component.html',
-  styleUrls: ['./entrance-list-view-filter.component.css']
+  styleUrls: ['./entrance-list-view-filter.component.css'],
 })
 export class EntranceListViewFilterComponent {
-
   filterConfig: EntranceFilter;
   showBuildingIdFilter: boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {filter: EntranceFilter, showBuildingIdFilter: boolean}) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: { filter: EntranceFilter; showBuildingIdFilter: boolean }
+  ) {
     this.filterConfig = data.filter;
     this.showBuildingIdFilter = data.showBuildingIdFilter;
   }

@@ -1,26 +1,26 @@
-import {ElementRef, Injectable, isDevMode} from '@angular/core';
+import { ElementRef, Injectable, isDevMode } from '@angular/core';
 
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import WebMap from '@arcgis/core/WebMap';
-import {CommonBuildingService} from '../../service/common-building.service';
-import {CommonEntranceService} from '../../service/common-entrance.service';
-import {CommonEsriAuthService} from '../../service/common-esri-auth.service';
-import {RegisterFilterService} from '../../../register/register-table-view/register-filter.service';
-import {FeatureSelectionService} from "./custom-map-logic/feature-selection";
-import {BaseMapChangeService} from "./custom-map-logic/basemap-change";
-import Legend from "@arcgis/core/widgets/Legend";
-import {OSM_BASEMAP} from "./custom-map-logic/BasemapTypes";
+import { CommonBuildingService } from '../../service/common-building.service';
+import { CommonEntranceService } from '../../service/common-entrance.service';
+import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
+import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { FeatureSelectionService } from './custom-map-logic/feature-selection';
+import { BaseMapChangeService } from './custom-map-logic/basemap-change';
+import Legend from '@arcgis/core/widgets/Legend';
+import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
 
 export type MapInitOptions = {
-  enableFilter: boolean,
-  enableSelection: boolean,
-  bldWhereCase: string,
-  entWhereCase: string,
-  enableLegend: boolean
-}
+  enableFilter: boolean;
+  enableSelection: boolean;
+  bldWhereCase: string;
+  entWhereCase: string;
+  enableLegend: boolean;
+};
 
 @Injectable()
 export class RegisterMapService {
@@ -38,12 +38,17 @@ export class RegisterMapService {
     private registerFilterService: RegisterFilterService,
     private baseMapChangeService: BaseMapChangeService,
     private featureSelectionService: FeatureSelectionService,
-    private esriAuthService: CommonEsriAuthService) {
+    private esriAuthService: CommonEsriAuthService
+  ) {
     this.bldlayer = this.buildingService.bldLayer;
     this.entlayer = this.entranceService.entLayer;
   }
 
-  async init(mapViewEl?: ElementRef, options?: MapInitOptions, basemap?: any): Promise<MapView> {
+  async init(
+    mapViewEl?: ElementRef,
+    options?: MapInitOptions,
+    basemap?: any
+  ): Promise<MapView> {
     if (mapViewEl) {
       this.nativeElement = mapViewEl.nativeElement;
     }
@@ -51,11 +56,15 @@ export class RegisterMapService {
       this.options = options;
     }
     if (!this.options || !this.nativeElement) {
-      throw new Error("Options or nativeElement are not defined");
+      throw new Error('Options or nativeElement are not defined');
     }
     this.graphicsLayer = new GraphicsLayer();
 
-    const webmap = this.createWebMap(basemap, [this.graphicsLayer, this.bldlayer, this.entlayer]);
+    const webmap = this.createWebMap(basemap, [
+      this.graphicsLayer,
+      this.bldlayer,
+      this.entlayer,
+    ]);
     this.view = this.createMapView(webmap);
 
     void this.view.when(() => {
@@ -63,7 +72,7 @@ export class RegisterMapService {
         this.view.popup.set('dockOptions', {
           breakpoint: false,
           buttonEnabled: false,
-          position: 'top-left'
+          position: 'top-left',
         });
       }
     });
@@ -76,26 +85,34 @@ export class RegisterMapService {
     void this.filterEntranceData(this.options.entWhereCase);
 
     if (this.options.enableSelection) {
-      this.featureSelectionService.createFeatureSelection(this.view, webmap, this.eventsCleanupCallbacks);
+      this.featureSelectionService.createFeatureSelection(
+        this.view,
+        webmap,
+        this.eventsCleanupCallbacks
+      );
     }
-    void this.baseMapChangeService.createBasemapChangeAction(this.view, this.reload.bind(this), this.eventsCleanupCallbacks);
+    void this.baseMapChangeService.createBasemapChangeAction(
+      this.view,
+      this.reload.bind(this),
+      this.eventsCleanupCallbacks
+    );
 
     return this.view;
   }
 
   private enableLegend() {
     if (this.view) {
-      let legend = new Legend({
+      const legend = new Legend({
         view: this.view,
         visible: true,
       });
-      this.view.ui.add(legend, "bottom-right");
+      this.view.ui.add(legend, 'bottom-right');
     }
   }
 
   private enableFilterPopup() {
     if (this.view) {
-      this.view.watch('zoom', (newZoom, oldZoom) => {
+      this.view.watch('zoom', (newZoom) => {
         if (!this.view?.map) {
           return;
         }
@@ -122,12 +139,18 @@ export class RegisterMapService {
           if (!this.view?.popup?.selectedFeature) {
             return;
           }
-          if (this.view.popup!.selectedFeature!.layer?.title === 'ASRDB Buildings') {
-            const globalId = this.view.popup.selectedFeature.attributes['GlobalID'];
+          if (
+            this.view.popup!.selectedFeature!.layer?.title === 'ASRDB Buildings'
+          ) {
+            const globalId =
+              this.view.popup.selectedFeature.attributes['GlobalID'];
             this.registerFilterService.setBuildingGlobalIdFilter(globalId);
           }
-          if (this.view.popup.selectedFeature.layer?.title === 'ASRDB Entrances') {
-            const globalId = this.view.popup.selectedFeature.attributes['EntBldGlobalID'];
+          if (
+            this.view.popup.selectedFeature.layer?.title === 'ASRDB Entrances'
+          ) {
+            const globalId =
+              this.view.popup.selectedFeature.attributes['EntBldGlobalID'];
             this.registerFilterService.setBuildingGlobalIdFilter(globalId);
           }
         }, 50);
@@ -147,11 +170,11 @@ export class RegisterMapService {
           // Disables the dock button from the popup
           buttonEnabled: false,
           // Ignore the default sizes that trigger responsive docking
-          breakpoint: false
+          breakpoint: false,
         },
         visibleElements: {
           closeButton: false,
-        }
+        },
       }),
       map: webmap,
       zoom: 20,
@@ -165,8 +188,8 @@ export class RegisterMapService {
       applicationProperties: {
         viewing: {
           search: {
-            enabled: true
-          }
+            enabled: true,
+          },
         },
       },
     });
@@ -197,10 +220,14 @@ export class RegisterMapService {
     const query = this.bldlayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
-    void this.view.goTo(extend.extent ? extend.extent : {
-      center: [19.818, 41.3285],
-      zoom: 18
-    });
+    void this.view.goTo(
+      extend.extent
+        ? extend.extent
+        : {
+            center: [19.818, 41.3285],
+            zoom: 18,
+          }
+    );
   }
 
   async filterEntranceData(whereCondition: string) {

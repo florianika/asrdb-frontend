@@ -1,31 +1,36 @@
-import {ElementRef, Injectable} from '@angular/core';
-import {CommonEsriAuthService} from '../../common/service/common-esri-auth.service';
+import { ElementRef, Injectable } from '@angular/core';
+import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
 import WebMap from '@arcgis/core/WebMap';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {MapData} from '../model/map-data';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { MapData } from '../model/map-data';
 import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Point from '@arcgis/core/geometry/Point';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {EntityType} from "../../quality-management/quality-management-config";
-import {ActivatedRoute} from "@angular/router";
-import {BaseMapChangeService} from "../../common/components/register-map/custom-map-logic/basemap-change";
-import {CommonBuildingService} from "../../common/service/common-building.service";
-import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
-import {OSM_BASEMAP} from "../../common/components/register-map/custom-map-logic/BasemapTypes";
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { EntityType } from '../../quality-management/quality-management-config';
+import { ActivatedRoute } from '@angular/router';
+import { BaseMapChangeService } from '../../common/components/register-map/custom-map-logic/basemap-change';
+import { CommonBuildingService } from '../../common/service/common-building.service';
+import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
+import { OSM_BASEMAP } from '../../common/components/register-map/custom-map-logic/BasemapTypes';
+import {
+  AuthStateService,
+  DEFAULT_MUNICIPALITY,
+} from '../../../common/services/auth-state.service';
+import {
+  BUILDING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../../common/constants/common-constants';
 import SketchProperties = __esri.SketchProperties;
-import {AuthStateService, DEFAULT_MUNICIPALITY} from "../../../common/services/auth-state.service";
-import Collection from "@arcgis/core/core/Collection";
-import Layer from "@arcgis/core/layers/Layer";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class EntityCreationMapService {
   private valueUpdate = new Subject<MapData>();
   private graphicsLayer!: GraphicsLayer;
@@ -62,8 +67,11 @@ export class EntityCreationMapService {
     private buildingService: CommonBuildingService,
     private authState: AuthStateService
   ) {
-    this.municipality = new BehaviorSubject<number | null>(this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY);
-    this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
+    this.municipality = new BehaviorSubject<number | null>(
+      this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY
+    );
+    this.entranceId =
+      this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
     this.bldLayer = this.buildingService.bldLayer as FeatureLayer;
     (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];
     (this.bldLayer.renderer as UniqueValueRenderer).defaultSymbol = {
@@ -71,13 +79,15 @@ export class EntityCreationMapService {
       color: 'rgb(119,119,119)',
       outline: {
         // autocasts as new SimpleLineSymbol()
-        color: "rgb(119,119,119)",
-        width: 3
-      } as any
+        color: 'rgb(119,119,119)',
+        width: 3,
+      } as any,
     } as any;
     this.municipalityObservable.subscribe(municipality => {
       if (municipality && municipality !== 99 && this.view) {
-        void this.filterBuildingData(`BldMunicipality=${municipality.toString()}`);
+        void this.filterBuildingData(
+          `BldMunicipality=${municipality.toString()}`
+        );
       }
     });
   }
@@ -86,12 +96,16 @@ export class EntityCreationMapService {
     this.municipality.next(municipality);
   }
 
-  public async initBuildingCreationMap(mapViewEl: ElementRef, entityType?: EntityType, editingGeometry?: any[]) {
+  public async initBuildingCreationMap(
+    mapViewEl: ElementRef,
+    entityType?: EntityType,
+    editingGeometry?: any[]
+  ) {
     const availableCreateTools = [];
-    if (entityType === 'BUILDING' && !editingGeometry?.length) {
+    if (entityType === BUILDING_ENTITY && !editingGeometry?.length) {
       availableCreateTools.push('polygon');
     }
-    if (entityType === 'ENTRANCE') {
+    if (entityType === ENTRANCE_ENTITY) {
       if (!this.entranceId) {
         availableCreateTools.push('point');
       }
@@ -105,7 +119,12 @@ export class EntityCreationMapService {
     });
   }
 
-  private async init(mapViewEl?: ElementRef, availableTools?: string[], editingGeometry?: any[], basemap?: any): Promise<MapView> {
+  private async init(
+    mapViewEl?: ElementRef,
+    availableTools?: string[],
+    editingGeometry?: any[],
+    basemap?: any
+  ): Promise<MapView> {
     if (mapViewEl) {
       this.nativeElement = mapViewEl.nativeElement;
     }
@@ -117,11 +136,14 @@ export class EntityCreationMapService {
     }
 
     if (!this.nativeElement || !this.availableTools) {
-      throw new Error("MapView element or available tools are not defined");
+      throw new Error('MapView element or available tools are not defined');
     }
 
     this.graphicsLayer = new GraphicsLayer();
-    const mainGraphic: Graphic | null = this.addExistingGraphics(this.editingGeometry, this.graphicsLayer);
+    const mainGraphic: Graphic | null = this.addExistingGraphics(
+      this.editingGeometry,
+      this.graphicsLayer
+    );
     const layers: any[] = [this.graphicsLayer];
     if (this.availableTools.includes('polygon')) {
       layers.push(this.bldLayer);
@@ -132,9 +154,9 @@ export class EntityCreationMapService {
       applicationProperties: {
         viewing: {
           search: {
-            enabled: true
-          }
-        }
+            enabled: true,
+          },
+        },
       },
     });
 
@@ -148,25 +170,27 @@ export class EntityCreationMapService {
         this.view!.goTo(mainGraphic);
       }
     });
-    this.view.watch('zoom', (newZoom, oldZoom) => {
+    this.view.watch('zoom', (newZoom) => {
       setTimeout(() => {
         if (!this.view?.map) {
           return;
         }
-        if (newZoom < 15) {
-          this.bldLayer.visible = false;
-        } else {
-          this.bldLayer.visible = true;
-        }
+        this.bldLayer.visible = newZoom >= 15;
       }, 500);
     });
 
     this.createSketch();
     if (this.municipality.value && this.municipality.value !== 99) {
-      void this.filterBuildingData(`BldMunicipality=${this.municipality.value.toString()}`);
+      void this.filterBuildingData(
+        `BldMunicipality=${this.municipality.value.toString()}`
+      );
     }
 
-    void this.basemapService.createBasemapChangeAction(this.view, this.reload.bind(this), this.eventsCleanupCallbacks);
+    void this.basemapService.createBasemapChangeAction(
+      this.view,
+      this.reload.bind(this),
+      this.eventsCleanupCallbacks
+    );
     return this.view;
   }
 
@@ -186,10 +210,10 @@ export class EntityCreationMapService {
           undoRedoMenu: false,
           selectionTools: {
             'rectangle-selection': false,
-            'lasso-selection': false
+            'lasso-selection': false,
           },
-          settingsMenu: false
-        }
+          settingsMenu: false,
+        },
       } as SketchProperties);
       this.view.ui.add(sketch, 'top-right');
       this.registerCreateEvent(sketch);
@@ -197,11 +221,18 @@ export class EntityCreationMapService {
       this.registerDeleteEvent(sketch);
       if (this.createdGraphic) {
         setTimeout(() => {
-          this.addExistingGraphics([{
-            ...this.createdGraphic.geometry!.toJSON(),
-            id: this.createdGraphic.attributes.id,
-            type: this.createdGraphic.geometry!.toJSON().rings ? 'polygon' : 'point'
-          }], sketch.layer);
+          this.addExistingGraphics(
+            [
+              {
+                ...this.createdGraphic.geometry!.toJSON(),
+                id: this.createdGraphic.attributes.id,
+                type: this.createdGraphic.geometry!.toJSON().rings
+                  ? 'polygon'
+                  : 'point',
+              },
+            ],
+            sketch.layer
+          );
         }, 100);
       }
     }
@@ -212,24 +243,35 @@ export class EntityCreationMapService {
   }
 
   private registerDeleteEvent(sketch: Sketch) {
-    const cleanup = sketch.on('delete', (event) => {
+    const cleanup = sketch.on('delete', event => {
       if (event.graphics[0].attributes.id?.toString().startsWith('{')) {
         // stop the delete by adding back the graphic in the layer
         setTimeout(() => {
-          this.addExistingGraphics([{
-            ...event.graphics[0].geometry!.toJSON(),
-            id: event.graphics[0].attributes.id,
-            type: event.graphics[0].geometry!.toJSON().rings ? 'polygon' : 'point'
-          }], sketch.layer);
+          this.addExistingGraphics(
+            [
+              {
+                ...event.graphics[0].geometry!.toJSON(),
+                id: event.graphics[0].attributes.id,
+                type: event.graphics[0].geometry!.toJSON().rings
+                  ? 'polygon'
+                  : 'point',
+              },
+            ],
+            sketch.layer
+          );
         }, 100);
-        this.matSnackBar.open('You cannot delete already existing entities!', 'Ok', {
-          duration: 3000
-        });
+        this.matSnackBar.open(
+          'You cannot delete already existing entities!',
+          'Ok',
+          {
+            duration: 3000,
+          }
+        );
         return;
       }
       this.valueDelete.next({
         ...event.graphics[0].geometry!.toJSON(),
-        id: event.graphics[0].attributes.id
+        id: event.graphics[0].attributes.id,
       });
       this.createdGraphic = null;
 
@@ -241,32 +283,42 @@ export class EntityCreationMapService {
   }
 
   private registerUpdateEvent(sketch: Sketch) {
-    const cleanup = sketch.on('update', (event) => {
+    const cleanup = sketch.on('update', event => {
       if (event.state === 'complete') {
-        const centroid = event.graphics[0].geometry!.type === 'polygon'
-        ? (event.graphics[0].geometry as any)['centroid']
-        : {
-          latitude: (event.graphics[0].geometry as any).latitude,
-          longitude: (event.graphics[0].geometry as any).longitude
-        };
+        const centroid =
+          event.graphics[0].geometry!.type === 'polygon'
+            ? (event.graphics[0].geometry as any)['centroid']
+            : {
+                latitude: (event.graphics[0].geometry as any).latitude,
+                longitude: (event.graphics[0].geometry as any).longitude,
+              };
         this.valueUpdate.next({
           ...event.graphics[0].geometry!.toJSON(),
           id: event.graphics[0].attributes.id,
           centroid: centroid,
           spatialReference: {
-            latestWkid: (event.graphics[0].geometry!.spatialReference as any)['latestWkid'],
-            wkid: event.graphics[0].geometry!.spatialReference.wkid
-          }
+            latestWkid: (event.graphics[0].geometry!.spatialReference as any)[
+              'latestWkid'
+            ],
+            wkid: event.graphics[0].geometry!.spatialReference.wkid,
+          },
         });
-        const existingItemIndex = this.editingGeometry?.findIndex(el => el.id === event.graphics[0].attributes.id);
+        const existingItemIndex = this.editingGeometry?.findIndex(
+          el => el.id === event.graphics[0].attributes.id
+        );
         if (existingItemIndex !== -1) {
           if (this.editingGeometry![existingItemIndex!].rings) {
-            this.editingGeometry![existingItemIndex!].rings = event.graphics[0].geometry.toJSON().rings;
-            this.editingGeometry![existingItemIndex!].spatialReference = event.graphics[0].geometry.toJSON().spatialReference;
+            this.editingGeometry![existingItemIndex!].rings =
+              event.graphics[0].geometry.toJSON().rings;
+            this.editingGeometry![existingItemIndex!].spatialReference =
+              event.graphics[0].geometry.toJSON().spatialReference;
           } else {
-            this.editingGeometry![existingItemIndex!].x = event.graphics[0].geometry.toJSON().x;
-            this.editingGeometry![existingItemIndex!].y = event.graphics[0].geometry.toJSON().y;
-            this.editingGeometry![existingItemIndex!].spatialReference = event.graphics[0].geometry.toJSON().spatialReference;
+            this.editingGeometry![existingItemIndex!].x =
+              event.graphics[0].geometry.toJSON().x;
+            this.editingGeometry![existingItemIndex!].y =
+              event.graphics[0].geometry.toJSON().y;
+            this.editingGeometry![existingItemIndex!].spatialReference =
+              event.graphics[0].geometry.toJSON().spatialReference;
           }
         } else {
           this.createdGraphic = event.graphics[0];
@@ -279,31 +331,35 @@ export class EntityCreationMapService {
   }
 
   private registerCreateEvent(sketch: Sketch) {
-    const cleanup = sketch.on('create', (event) => {
+    const cleanup = sketch.on('create', event => {
       if (event.state === 'complete') {
         const type = event.graphic.geometry!.type;
-        const id = type === 'polygon' ? null : ('New (' + Math.random() + ')');
-        const centroid = event.graphic.geometry!.type === 'polygon'
-        ? (event.graphic.geometry! as any)['centroid']
-        : {
-          latitude: (event.graphic.geometry! as any).latitude,
-          longitude: (event.graphic.geometry! as any).longitude
-        };
+        const id = type === 'polygon' ? null : 'New (' + Math.random() + ')';
+        const centroid =
+          event.graphic.geometry!.type === 'polygon'
+            ? (event.graphic.geometry! as any)['centroid']
+            : {
+                latitude: (event.graphic.geometry! as any).latitude,
+                longitude: (event.graphic.geometry! as any).longitude,
+              };
         this.valueUpdate.next({
           ...event.graphic.geometry!.toJSON(),
           id: id,
           centroid: centroid,
           spatialReference: {
-            latestWkid: (event.graphic.geometry?.spatialReference as any)['latestWkid'],
-            wkid: event.graphic.geometry?.spatialReference.wkid
-          }
+            latestWkid: (event.graphic.geometry?.spatialReference as any)[
+              'latestWkid'
+            ],
+            wkid: event.graphic.geometry?.spatialReference.wkid,
+          },
         });
         event.graphic.attributes = {
-          id: id
+          id: id,
         };
         this.createdGraphic = event.graphic;
 
-        sketch.availableCreateTools = sketch.availableCreateTools?.filter(tool => tool !== type) ?? [];
+        sketch.availableCreateTools =
+          sketch.availableCreateTools?.filter(tool => tool !== type) ?? [];
       }
     });
 
@@ -312,42 +368,47 @@ export class EntityCreationMapService {
     });
   }
 
-  private addExistingGraphics(editingGeometry: any[] | undefined, graphicsLayer: GraphicsLayer) {
+  private addExistingGraphics(
+    editingGeometry: any[] | undefined,
+    graphicsLayer: GraphicsLayer
+  ) {
     let mainGraphic: Graphic | null = null;
 
     editingGeometry?.forEach(g => {
-      const geometry = g.type === 'point'
-        ? new Point({
-          x: g.x,
-          y: g.y,
-          spatialReference: g.spatialReference
-        })
-        : new Polygon({
-          rings: g.rings,
-          spatialReference: g.spatialReference
-        });
+      const geometry =
+        g.type === 'point'
+          ? new Point({
+              x: g.x,
+              y: g.y,
+              spatialReference: g.spatialReference,
+            })
+          : new Polygon({
+              rings: g.rings,
+              spatialReference: g.spatialReference,
+            });
 
-      const symbol = g.type === 'point'
-        ? new SimpleMarkerSymbol({
-          style: 'circle',
-          outline: {
-            width: '1px'
-          },
-          size: 6,
-          color: this.entranceId === g.id ? 'white' : 'red'
-        })
-        : new SimpleFillSymbol({
-          style: 'forward-diagonal',
-          outline: {
-            width: '3px'
-          }
-        });
+      const symbol =
+        g.type === 'point'
+          ? new SimpleMarkerSymbol({
+              style: 'circle',
+              outline: {
+                width: '1px',
+              },
+              size: 6,
+              color: this.entranceId === g.id ? 'white' : 'red',
+            })
+          : new SimpleFillSymbol({
+              style: 'forward-diagonal',
+              outline: {
+                width: '3px',
+              },
+            });
       const graphic = new Graphic({
         geometry,
         symbol,
         attributes: {
-          id: g.id
-        }
+          id: g.id,
+        },
       });
       if (geometry.type === 'polygon') {
         mainGraphic = graphic;
@@ -369,10 +430,14 @@ export class EntityCreationMapService {
     query.where = whereCondition;
     try {
       const extend = await this.bldLayer.queryExtent(query);
-      void this.view.goTo(extend.count !== 0 ? extend.extent : {
-        center: [19.818, 41.3285],
-        zoom: 9
-      });
+      void this.view.goTo(
+        extend.count !== 0
+          ? extend.extent
+          : {
+              center: [19.818, 41.3285],
+              zoom: 9,
+            }
+      );
     } catch (e) {
       console.log(e);
       void this.filterBuildingData(whereCondition, --retires);

@@ -9,7 +9,7 @@ import { RegisterLogTableComponent } from './register-log-table/register-log-tab
   standalone: true,
   imports: [CommonModule, RegisterLogTableComponent],
   templateUrl: './register-log-view.component.html',
-  styleUrls: ['./register-log-view.component.css']
+  styleUrls: ['./register-log-view.component.css'],
 })
 export class RegisterLogViewComponent implements OnInit {
   private readonly BUILDINGS = 'buildings';
@@ -17,18 +17,24 @@ export class RegisterLogViewComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private matSnackBar: MatSnackBar) { }
+    private matSnackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     const queryParamMap = this.activatedRoute.snapshot.queryParamMap;
 
     if (queryParamMap.has(this.BUILDINGS)) {
-      const buildings = this.activatedRoute.snapshot.queryParamMap.get(this.BUILDINGS) ?? '';
+      const buildings =
+        this.activatedRoute.snapshot.queryParamMap.get(this.BUILDINGS) ?? '';
       this.buildings = buildings.split(',');
     } else {
-      this.matSnackBar.open('No building ids found. Please reload the page', 'Ok', {
-        duration: 3000
-      });
+      this.matSnackBar.open(
+        'No building ids found. Please reload the page',
+        'Ok',
+        {
+          duration: 3000,
+        }
+      );
     }
   }
 }

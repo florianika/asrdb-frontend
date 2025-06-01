@@ -1,4 +1,11 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
 import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,20 +15,21 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import {
   FILTER_CONFIG_PREFIX,
-  QualityManagementTableFilterComponent
+  QualityManagementTableFilterComponent,
 } from './quality-management-table-fitler/quality-management-table-filter.component';
 import { QualityRuleFilter } from './model/quality-rule-filter';
-import {MatSort} from "@angular/material/sort";
-import { mkConfig, generateCsv, asBlob, CsvOutput } from "export-to-csv";
-
+import { MatSort } from '@angular/material/sort';
+import { mkConfig, generateCsv, asBlob, CsvOutput } from 'export-to-csv';
 
 @Component({
   selector: 'asrdb-quality-management-table',
   templateUrl: './quality-management-table.component.html',
   styleUrls: ['./quality-management-table.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class QualityManagementTableComponent implements OnInit, AfterViewInit, OnDestroy {
+export class QualityManagementTableComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -58,8 +66,7 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
   private csvConfig = mkConfig(this.config as any);
 
   get filterChips(): Chip[] {
-    return Object
-      .entries(this.filterConfig)
+    return Object.entries(this.filterConfig)
       .filter(([, value]) => !!value)
       .map(([key, value]) => ({ column: key, value: value }));
   }
@@ -68,21 +75,22 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
     private qualityManagementService: QualityManagementService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private matDialog: MatDialog) {
+    private matDialog: MatDialog
+  ) {
     this.init();
-    this.activatedRoute.paramMap.pipe(takeUntil(this.subscription)).subscribe(() => {
-      this.init();
-      this.reload();
-    });
+    this.activatedRoute.paramMap
+      .pipe(takeUntil(this.subscription))
+      .subscribe(() => {
+        this.init();
+        this.reload();
+      });
   }
 
   ngOnInit(): void {
     this.qualityManagementService.getRules(this.qualityType);
   }
 
-  ngAfterViewInit() {
-
-  }
+  ngAfterViewInit() {}
 
   ngOnDestroy(): void {
     this.subscription.next(true);
@@ -93,17 +101,26 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
     if (!this.qualityType) {
       return 'Building';
     }
-    return this.qualityType.charAt(0) + this.qualityType.substring(1).toLowerCase();
+    return (
+      this.qualityType.charAt(0) + this.qualityType.substring(1).toLowerCase()
+    );
   }
 
   openFilter() {
     this.matDialog
       .open(QualityManagementTableFilterComponent, {
-        data: JSON.parse(JSON.stringify({ filter: this.filterConfig, qualityType: this.qualityType })),
+        data: JSON.parse(
+          JSON.stringify({
+            filter: this.filterConfig,
+            qualityType: this.qualityType,
+          })
+        ),
         width: '700px',
       })
       .afterClosed()
-      .subscribe((newFilterConfig: QualityRuleFilter | null) => this.handlePopupClose(newFilterConfig));
+      .subscribe((newFilterConfig: QualityRuleFilter | null) =>
+        this.handlePopupClose(newFilterConfig)
+      );
   }
 
   reload() {
@@ -113,39 +130,62 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
   remove($event: Chip) {
     (this.filterConfig as any)[$event.column] = '';
     this.datasource.filter = JSON.stringify(this.filterConfig);
-    localStorage.setItem(FILTER_CONFIG_PREFIX + this.qualityType, JSON.stringify(this.filterConfig));
+    localStorage.setItem(
+      FILTER_CONFIG_PREFIX + this.qualityType,
+      JSON.stringify(this.filterConfig)
+    );
   }
 
   viewDetails(id: string) {
-    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/details/' + id);
+    this.router.navigateByUrl(
+      '/dashboard/quality-management/' + this.qualityType + '/details/' + id
+    );
   }
 
   edit(id: string) {
-    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/edit/' + id);
+    this.router.navigateByUrl(
+      '/dashboard/quality-management/' + this.qualityType + '/edit/' + id
+    );
   }
 
   add() {
-    this.router.navigateByUrl('/dashboard/quality-management/' + this.qualityType + '/edit');
+    this.router.navigateByUrl(
+      '/dashboard/quality-management/' + this.qualityType + '/edit'
+    );
   }
 
   downloadCSV() {
     const data = this.datasource.data
       .filter((item: any) => {
-        return (!this.filterConfig.localId || item.localId.toLowerCase().includes(this.filterConfig.localId.toLowerCase()))
-          && (!this.filterConfig.variable || item.variable.toLowerCase().includes(this.filterConfig.variable.toLowerCase()))
-          && (!this.filterConfig.ruleStatus || item.ruleStatus.toLowerCase().includes(this.filterConfig.ruleStatus.toLowerCase()))
-          && (!this.filterConfig.qualityAction || item.qualityAction.toLowerCase().includes(this.filterConfig.qualityAction.toLowerCase()));
+        return (
+          (!this.filterConfig.localId ||
+            item.localId
+              .toLowerCase()
+              .includes(this.filterConfig.localId.toLowerCase())) &&
+          (!this.filterConfig.variable ||
+            item.variable
+              .toLowerCase()
+              .includes(this.filterConfig.variable.toLowerCase())) &&
+          (!this.filterConfig.ruleStatus ||
+            item.ruleStatus
+              .toLowerCase()
+              .includes(this.filterConfig.ruleStatus.toLowerCase())) &&
+          (!this.filterConfig.qualityAction ||
+            item.qualityAction
+              .toLowerCase()
+              .includes(this.filterConfig.qualityAction.toLowerCase()))
+        );
       })
       .map((item: any) => {
-      return {
-        localId: item.localId,
-        variable: item.variable,
-        ruleRequirement: item.ruleRequirement,
-        version: item.version,
-        ruleStatus: item.ruleStatus,
-        qualityAction: item.qualityAction
-      }
-    });
+        return {
+          localId: item.localId,
+          variable: item.variable,
+          ruleRequirement: item.ruleRequirement,
+          version: item.version,
+          ruleStatus: item.ruleStatus,
+          qualityAction: item.qualityAction,
+        };
+      });
     const csv: CsvOutput = generateCsv(this.csvConfig as any)(data);
     const blob = asBlob(this.csvConfig)(csv);
     // Get the button in your HTML
@@ -174,31 +214,43 @@ export class QualityManagementTableComponent implements OnInit, AfterViewInit, O
   }
 
   private loadFilter() {
-    const filterConfig = localStorage.getItem(FILTER_CONFIG_PREFIX + this.qualityType);
+    const filterConfig = localStorage.getItem(
+      FILTER_CONFIG_PREFIX + this.qualityType
+    );
     if (filterConfig) {
       try {
         this.handlePopupClose(JSON.parse(filterConfig));
       } catch (e) {
         this.handlePopupClose(this.defaultFilterConfig);
-        localStorage.setItem(FILTER_CONFIG_PREFIX + this.qualityType, JSON.stringify(this.defaultFilterConfig));
+        localStorage.setItem(
+          FILTER_CONFIG_PREFIX + this.qualityType,
+          JSON.stringify(this.defaultFilterConfig)
+        );
         console.error(e);
       }
     } else {
       this.handlePopupClose(this.defaultFilterConfig);
-      localStorage.setItem(FILTER_CONFIG_PREFIX + this.qualityType, JSON.stringify(this.defaultFilterConfig));
+      localStorage.setItem(
+        FILTER_CONFIG_PREFIX + this.qualityType,
+        JSON.stringify(this.defaultFilterConfig)
+      );
     }
   }
 
   private init() {
     this.loadFilter();
-    this.qualityRulesObservable = this.qualityManagementService.qualityRulesAsObservable.pipe(map((value: any) => {
-      this.datasource.data = value;
-      this.datasource.paginator = this.paginator;
-      this.datasource.sort = this.sort;
-      this.loadFilter();
-      return this.datasource;
-    }));
-    this.isLoadingResults = this.qualityManagementService.loadingResultsAsObservable;
+    this.qualityRulesObservable =
+      this.qualityManagementService.qualityRulesAsObservable.pipe(
+        map((value: any) => {
+          this.datasource.data = value;
+          this.datasource.paginator = this.paginator;
+          this.datasource.sort = this.sort;
+          this.loadFilter();
+          return this.datasource;
+        })
+      );
+    this.isLoadingResults =
+      this.qualityManagementService.loadingResultsAsObservable;
     this.qualityType = this.activatedRoute.snapshot.paramMap.get('entity');
     this.datasource.filterPredicate = (data: any, filter) => {
       const filterObject: QualityRuleFilter = JSON.parse(filter);

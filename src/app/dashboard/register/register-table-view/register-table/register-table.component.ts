@@ -6,8 +6,7 @@ import {
   isDevMode,
   OnDestroy,
   OnInit,
-  TemplateRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatMenuModule} from '@angular/material/menu';
@@ -17,26 +16,27 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
-import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chip.component';
+import {Chip, ChipComponent,} from 'src/app/common/standalone-components/chip/chip.component';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {catchError, distinctUntilChanged, merge, of, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {catchError, distinctUntilChanged, merge, of, startWith, Subject, switchMap, takeUntil,} from 'rxjs';
 import {BuildingFilter} from '../../model/building';
 import {QueryFilter} from '../../model/query-filter';
 import {CommonBuildingService} from '../../../common/service/common-building.service';
 import {CommonRegisterHelperService} from '../../../common/service/common-helper.service';
 import {Router} from '@angular/router';
 import {RegisterFilterComponent} from '../../../common/components/register-filter/register-filter.component';
-import {FILTER_REGISTER, RegisterFilterService} from '../register-filter.service';
+import {FILTER_REGISTER, RegisterFilterService,} from '../register-filter.service';
 import {MatDividerModule} from '@angular/material/divider';
-import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
-import {FilterHelper} from "../../../common/helper/filter-helper";
-import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
+import {MatCheckboxChange, MatCheckboxModule,} from '@angular/material/checkbox';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import {FilterHelper} from '../../../common/helper/filter-helper';
+import {RegisterLogService} from '../../register-log-view/register-log-table/register-log.service';
 import {
   EntityDeleteConfirmationDialogComponent,
-  EntityDeleteDialogData
-} from "../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component";
+  EntityDeleteDialogData,
+} from '../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
+import {BUILDING_ENTITY} from '../../../../common/constants/common-constants';
 
 @Component({
   selector: 'asrdb-register-table',
@@ -55,28 +55,39 @@ import {
     MatDividerModule,
     MatCheckboxModule,
     MatTooltipModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
-  providers: [
-    FilterHelper,
-  ],
+  providers: [FilterHelper],
   templateUrl: './register-table.component.html',
   styleUrls: ['./register-table.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy {
+export class RegisterTableComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   private readonly DEFAULT_PAGE = 0;
   private readonly DEFAULT_SIZE = 10;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild("deleteConfirmation") deleteConfirmation?: TemplateRef<any>;
 
-  private columns = ['GlobalID', 'BldMunicipality', 'BldEnumArea', 'BldStatus', 'BldType', 'BldEntranceRecs', 'BldDwellingRecs' , 'BldQuality', 'BldReview'];
+  private columns = [
+    'GlobalID',
+    'BldMunicipality',
+    'BldEnumArea',
+    'BldStatus',
+    'BldType',
+    'BldEntranceRecs',
+    'BldDwellingRecs',
+    'BldQuality',
+    'BldReview',
+  ];
   private destroy$ = new Subject();
   private initialized = false;
 
-  displayedColumns: string[] = ['selection'].concat(this.columns.concat(['actions']));
+  displayedColumns: string[] = ['selection'].concat(
+    this.columns.concat(['actions'])
+  );
   data: never[] = [];
   fields: never[] = [];
   resultsLength = 0;
@@ -84,8 +95,7 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   selectedBuildings: string[] = [];
 
   get filterChips(): Chip[] {
-    return Object
-      .entries(this.registerFilterService.getFilter().filter)
+    return Object.entries(this.registerFilterService.getFilter().filter)
       .filter(([, value]) => {
         return Array.isArray(value) ? value.length : !!value;
       })
@@ -101,29 +111,34 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     private changeDetectionRef: ChangeDetectorRef,
     private filterHelper: FilterHelper,
     private registerLogService: RegisterLogService,
-    private router: Router) {
+    private router: Router
+  ) {
     this.registerFilterService.setBuildingGlobalIdFilter('');
     this.registerFilterService.setBuildingsGlobalIdFilter([]);
   }
 
   ngOnInit(): void {
-    this.registerFilterService.filterObservable.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.reload();
-    });
+    this.registerFilterService.filterObservable
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.reload();
+      });
   }
 
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(() => (this.paginator.pageIndex = 0));
+    this.sort.sortChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => (this.paginator.pageIndex = 0));
 
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
         distinctUntilChanged(),
         takeUntil(this.destroy$),
         startWith({}),
-        switchMap(() => this.loadBuildings()),
+        switchMap(() => this.loadBuildings())
       )
-      .subscribe((res) => this.handleResponse(res));
+      .subscribe(res => this.handleResponse(res));
   }
 
   ngOnDestroy(): void {
@@ -133,56 +148,84 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   getMunicipality(column: string, code: number | string) {
-    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, column, code);
+    return this.commonBuildingRegisterHelper.getMunicipality(
+      this.fields,
+      column,
+      code
+    );
   }
 
   getValueFromStatus(column: string, code: string | string[]) {
     if (Array.isArray(code)) {
-      return code.map(c => this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, c)).join(', ');
+      return code
+        .map(c =>
+          this.commonBuildingRegisterHelper.getValueFromStatus(
+            this.fields,
+            column,
+            c
+          )
+        )
+        .join(', ');
     }
     if (column === 'BldMunicipality') {
       return this.getMunicipality(column, code);
     }
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, code);
+    return this.commonBuildingRegisterHelper.getValueFromStatus(
+      this.fields,
+      column,
+      code
+    );
   }
-
 
   handleSelect(globalId: string) {
     if (this.selectedBuildings.includes(globalId)) {
-      this.selectedBuildings = this.selectedBuildings.filter(selectedBuilding => selectedBuilding !== globalId);
+      this.selectedBuildings = this.selectedBuildings.filter(
+        selectedBuilding => selectedBuilding !== globalId
+      );
     } else {
       this.selectedBuildings.push(globalId);
     }
   }
 
   handleSelectAll(event: MatCheckboxChange) {
-    this.selectedBuildings = event.checked ? this.data.map(el => el['GlobalID']) : [];
+    this.selectedBuildings = event.checked
+      ? this.data.map(el => el['GlobalID'])
+      : [];
   }
 
   openFilter() {
     this.matDialog
       .open(RegisterFilterComponent, {
-        data: JSON.parse(JSON.stringify(this.registerFilterService.getFilter())),
+        data: JSON.parse(
+          JSON.stringify(this.registerFilterService.getFilter())
+        ),
         width: '700px',
       })
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((newFilterConfig: BuildingFilter | null) => this.handlePopupClose(newFilterConfig));
+      .subscribe((newFilterConfig: BuildingFilter | null) =>
+        this.handlePopupClose(newFilterConfig)
+      );
   }
 
   reload() {
     this.loadBuildings()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => this.handleResponse(res));
+      .subscribe(res => this.handleResponse(res));
   }
 
   remove($event: Chip) {
-    const filterCopy = this.filterHelper.removeFilterValue($event, this.registerFilterService.getFilter());
+    const filterCopy = this.filterHelper.removeFilterValue(
+      $event,
+      this.registerFilterService.getFilter()
+    );
     this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 
   viewBuildingDetails(globalId: string) {
-    this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + globalId);
+    this.router.navigateByUrl(
+      '/dashboard/register/details/BUILDING/' + globalId
+    );
   }
 
   editBuildingDetails(globalId: string) {
@@ -194,25 +237,35 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   viewLogsForSelected() {
-    this.router.navigateByUrl('/dashboard/register/logs?buildings=' + this.selectedBuildings.join(','));
+    this.router.navigateByUrl(
+      '/dashboard/register/logs?buildings=' + this.selectedBuildings.join(',')
+    );
   }
 
   startExecutionForSelected() {
-    this.registerLogService.executeRulesForMultipleBuildings(this.selectedBuildings);
+    this.registerLogService.executeRulesForMultipleBuildings(
+      this.selectedBuildings
+    );
     setTimeout(() => {
-      this.handlePopupClose(JSON.parse(JSON.stringify(this.registerFilterService.getFilter())));
+      this.handlePopupClose(
+        JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
+      );
     }, 2000);
   }
 
   startExecutionForBuilding(buildingId: string) {
     this.registerLogService.executeRules(buildingId, false);
     setTimeout(() => {
-      this.handlePopupClose(JSON.parse(JSON.stringify(this.registerFilterService.getFilter())));
+      this.handlePopupClose(
+        JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
+      );
     }, 2000);
   }
 
   filterSelectedBuildings() {
-    this.registerFilterService.setBuildingsGlobalIdFilter(this.selectedBuildings);
+    this.registerFilterService.setBuildingsGlobalIdFilter(
+      this.selectedBuildings
+    );
   }
 
   addNewBuilding() {
@@ -220,7 +273,9 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   filterBuilding(GlobalID: string) {
-    const filterCopy = JSON.parse(JSON.stringify(this.registerFilterService.getFilter()));
+    const filterCopy = JSON.parse(
+      JSON.stringify(this.registerFilterService.getFilter())
+    );
     (filterCopy as any).filter['GlobalID'] = GlobalID;
     this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
@@ -230,18 +285,21 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   openDeleteDialog(globalId: string) {
-    const dialog = this.matDialog.open(EntityDeleteConfirmationDialogComponent, {
-      hasBackdrop: true,
-      disableClose: true,
-      data: {
-        type: 'BUILDING',
-        idToDelete: globalId,
-        reload: () => {
-          this.reload();
-          dialog.close();
-        }
-      } as EntityDeleteDialogData
-    });
+    const dialog = this.matDialog.open(
+      EntityDeleteConfirmationDialogComponent,
+      {
+        hasBackdrop: true,
+        disableClose: true,
+        data: {
+          type: BUILDING_ENTITY,
+          idToDelete: globalId,
+          reload: () => {
+            this.reload();
+            dialog.close();
+          },
+        } as EntityDeleteDialogData,
+      }
+    );
   }
 
   private handlePopupClose(newFilterConfig: BuildingFilter | null) {
@@ -252,20 +310,26 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private loadBuildings() {
     this.isLoadingResults = true;
-    const start = (this.paginator?.pageIndex ?? this.DEFAULT_PAGE) * (this.paginator?.pageSize ?? this.DEFAULT_SIZE);
+    const start =
+      (this.paginator?.pageIndex ?? this.DEFAULT_PAGE) *
+      (this.paginator?.pageSize ?? this.DEFAULT_SIZE);
     const filter = {
       start: start,
       num: this.paginator?.pageSize ?? this.DEFAULT_SIZE,
       outFields: this.columns,
-      where: this.registerFilterService.prepareWhereCase()
+      where: this.registerFilterService.prepareWhereCase(),
     } as Partial<QueryFilter>;
     if (this.sort?.active) {
-      filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
+      filter.orderByFields = [
+        this.sort.active + ' ' + this.sort.direction.toUpperCase(),
+      ];
     }
-    return this.commonBuildingService.getBuildingData(filter).pipe(catchError((err) => {
-      console.log(err);
-      return of(null);
-    }));
+    return this.commonBuildingService.getBuildingData(filter).pipe(
+      catchError(err => {
+        console.log(err);
+        return of(null);
+      })
+    );
   }
 
   private handleResponse(res: any) {
@@ -273,7 +337,9 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
       console.log('Data', res);
     }
     if (!res) {
-      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {
+        duration: 3000,
+      });
       this.isLoadingResults = false;
       return;
     }

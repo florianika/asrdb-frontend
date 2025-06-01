@@ -38,9 +38,13 @@
           <h2 class="details-header" i18n>
             <span>Details for building</span>
           </h2>
-          <span class="details-subheader" i18n>Data quality: <span style="font-weight: bold;">{{getValueFromStatus('BldQuality')}}</span></span>
-          <br>
-          <span class="details-subheader" i18n>Status of building centroid: <span style="font-weight: bold;">{{getValueFromStatus('BldCentroidStatus')}}</span></span>
+          @for (titlePart of titleSection; track titlePart.propName) {
+            <span class="details-subheader mb-1 d-block">
+              <span i18n class="me-1">Data quality:</span>
+              <span style="font-weight: bold;">{{getValueFromStatus(titlePart.propName)}}</span>
+            </span>
+          }
+          <br/>
           <section *ngFor="let section of sections">
             <h3>{{section.title}}</h3>
             <asrdb-building-detail

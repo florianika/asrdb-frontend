@@ -1,17 +1,23 @@
-import {Injectable, isDevMode, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, Observable, Subject, Subscriber, takeUntil} from 'rxjs';
-import {JwtHelperService} from '@auth0/angular-jwt';
-import {JWT, SigninResponse} from 'src/app/model/JWT.model';
-import {Router} from '@angular/router';
+import { Injectable, isDevMode, OnDestroy, OnInit } from '@angular/core';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  Subscriber,
+  takeUntil,
+} from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { JWT, SigninResponse } from 'src/app/model/JWT.model';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {Role} from 'src/app/model/RolePermissions.model';
-import {Credentials} from "../../auth/signin/signin.service";
-import {ESRI_AUTH_KEY} from "../../dashboard/common/service/common-esri-auth.service";
+import { environment } from '../../../environments/environment';
+import { Role } from 'src/app/model/RolePermissions.model';
+import { Credentials } from '../../auth/signin/signin.service';
+import { ESRI_AUTH_KEY } from '../../dashboard/common/service/common-esri-auth.service';
 export const DEFAULT_MUNICIPALITY = 53;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthStateService implements OnInit, OnDestroy {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
@@ -26,7 +32,10 @@ export class AuthStateService implements OnInit, OnDestroy {
   private subscription = new Subject<boolean>();
   private webWorker!: Worker;
 
-  constructor(private router: Router, private httpClient: HttpClient) {
+  constructor(
+    private router: Router,
+    private httpClient: HttpClient
+  ) {
     const item = localStorage.getItem(this.TOKEN_STORAGE_KEY);
     this.tokens = item ? JSON.parse(item) : null;
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
@@ -40,31 +49,36 @@ export class AuthStateService implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.next(true);
     this.subscription.complete();
-    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
+    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE);
   }
 
   logout() {
-    this.httpClient.post(environment.base_url + this.SIGNOUT_URL, {
-      'UserId': this.getNameId()
-    }).pipe(takeUntil(this.subscription)).subscribe({
-      next: () => {
-        this.logoutUser();
-      },
-      error: () => {
-        this.logoutUser();
-      }
-    });
+    this.httpClient
+      .post(environment.base_url + this.SIGNOUT_URL, {
+        UserId: this.getNameId(),
+      })
+      .pipe(takeUntil(this.subscription))
+      .subscribe({
+        next: () => {
+          this.logoutUser();
+        },
+        error: () => {
+          this.logoutUser();
+        },
+      });
   }
 
   refreshToken() {
-    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
+    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE);
     return new Observable(observer => {
-      this.httpClient.post<SigninResponse>(environment.base_url + '/auth/refreshtoken', {
-        'AccessToken': this.tokens?.accessToken,
-        'RefreshToken': this.tokens?.refreshToken
-      }).pipe(takeUntil(this.subscription))
+      this.httpClient
+        .post<SigninResponse>(environment.base_url + '/auth/refreshtoken', {
+          AccessToken: this.tokens?.accessToken,
+          RefreshToken: this.tokens?.refreshToken,
+        })
+        .pipe(takeUntil(this.subscription))
         .subscribe({
-          next: async (newToken) => {
+          next: async newToken => {
             if (isDevMode()) {
               console.log(newToken);
             }
@@ -74,12 +88,13 @@ export class AuthStateService implements OnInit, OnDestroy {
             this.setJWT({
               idToken: newToken.idToken,
               accessToken: newToken.accessToken,
-              refreshToken: newToken.refreshToken
+              refreshToken: newToken.refreshToken,
             });
             this.webWorker.postMessage('');
-            this.httpClient.get<Credentials>(environment.base_url + '/auth/gis/login')
+            this.httpClient
+              .get<Credentials>(environment.base_url + '/auth/gis/login')
               .subscribe({
-                next: async (credentials) => {
+                next: async credentials => {
                   try {
                     this.initEsriConfig(credentials);
                     observer.next(true);
@@ -88,16 +103,16 @@ export class AuthStateService implements OnInit, OnDestroy {
                     observer.error(error);
                   }
                 },
-                error: (error) => {
+                error: error => {
                   this.handleError(error);
                   observer.error(error);
-                }
+                },
               });
           },
           error: () => {
             this.logout();
             observer.error('Error refreshing token');
-          }
+          },
         });
     });
   }
@@ -115,7 +130,7 @@ export class AuthStateService implements OnInit, OnDestroy {
       const isLoggedIn = this.isTokenValid();
       if (!isLoggedIn) {
         this.refreshToken().subscribe({
-          next: (response) => {
+          next: response => {
             if (response) {
               this.handleSuccess(admin, observer);
             } else {
@@ -126,8 +141,8 @@ export class AuthStateService implements OnInit, OnDestroy {
           error: () => {
             this.logout();
             observer.next(false);
-          }
-        })
+          },
+        });
       } else {
         this.handleSuccess(admin, observer);
       }
@@ -233,7 +248,7 @@ export class AuthStateService implements OnInit, OnDestroy {
   }
 
   private logoutUser() {
-    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE)
+    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE);
     this.setLoginState(false);
     localStorage.clear();
     sessionStorage.clear();
@@ -243,7 +258,8 @@ export class AuthStateService implements OnInit, OnDestroy {
   private isTokenValidInternal() {
     let isTokenValid = false;
     try {
-      isTokenValid = !!this.tokens && !this.helper.isTokenExpired(this.tokens.idToken);
+      isTokenValid =
+        !!this.tokens && !this.helper.isTokenExpired(this.tokens.idToken);
     } catch (e) {
       console.error(e);
     }
@@ -253,9 +269,12 @@ export class AuthStateService implements OnInit, OnDestroy {
   private isAuthTokenNearlyExpired() {
     let isTokenNearlyExpired: boolean;
     try {
-      const expirationDate = this.helper.getTokenExpirationDate(this.tokens!.idToken);
+      const expirationDate = this.helper.getTokenExpirationDate(
+        this.tokens!.idToken
+      );
       const startDate = new Date();
-      const seconds = ((expirationDate?.getTime() ?? 0) - startDate.getTime()) / 1000;
+      const seconds =
+        ((expirationDate?.getTime() ?? 0) - startDate.getTime()) / 1000;
       if (isDevMode()) {
         console.log(`Seconds left for auth token: ${seconds}`);
       }
@@ -278,7 +297,8 @@ export class AuthStateService implements OnInit, OnDestroy {
       console.log(`Subscription is: ${this.subscription.closed}`);
     }
 
-    const shouldRefreshToken = isAuthTokenNearlyExpired || isEsriTokenNearlyExpired;
+    const shouldRefreshToken =
+      isAuthTokenNearlyExpired || isEsriTokenNearlyExpired;
     if (shouldRefreshToken && !this.router.url.includes('/auth/')) {
       if (isDevMode()) {
         console.log('Reloaded token');

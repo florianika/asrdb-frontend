@@ -1,22 +1,27 @@
-import {Component, Input, isDevMode, OnDestroy} from '@angular/core';
-import {EntityType} from '../../../quality-management-config';
-import {FormGroup} from '@angular/forms';
-import {catchError, forkJoin, of, Subject, takeUntil} from "rxjs";
-import {CommonBuildingService} from "../../../../common/service/common-building.service";
-import {CommonEntranceService} from "../../../../common/service/common-entrance.service";
-import {CommonDwellingService} from "../../../../common/service/common-dwellings.service";
+import { Component, Input, isDevMode, OnDestroy } from '@angular/core';
+import { EntityType } from '../../../quality-management-config';
+import { FormGroup } from '@angular/forms';
+import { catchError, forkJoin, of, Subject, takeUntil } from 'rxjs';
+import { CommonBuildingService } from '../../../../common/service/common-building.service';
+import { CommonEntranceService } from '../../../../common/service/common-entrance.service';
+import { CommonDwellingService } from '../../../../common/service/common-dwellings.service';
 import {
   BUILDING_HIDDEN_FIELDS,
   STREET_HIDDEN_FIELDS,
-  ENTRANCE_HIDDEN_FIELDS
-} from "../../../../../common/data/hidden-fields";
+  ENTRANCE_HIDDEN_FIELDS,
+} from '../../../../../common/data/hidden-fields';
+import {
+  BUILDING_ENTITY,
+  DWELLING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../../../../common/constants/common-constants';
 
-type SelectOption = { text: string, value: string };
+type SelectOption = { text: string; value: string };
 
 @Component({
   selector: 'asrdb-quality-management-variable-selection',
   templateUrl: './quality-management-variable-selection.component.html',
-  styleUrls: ['./quality-management-variable-selection.component.css']
+  styleUrls: ['./quality-management-variable-selection.component.css'],
 })
 export class QualityManagementVariableSelectionComponent implements OnDestroy {
   @Input() entity!: EntityType;
@@ -27,9 +32,9 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
   private destroy$ = new Subject();
 
   private _variables = new Map<EntityType, SelectOption[]>([
-    ['BUILDING', []],
-    ['ENTRANCE', []],
-    ['DWELLING', []],
+    [BUILDING_ENTITY, []],
+    [ENTRANCE_ENTITY, []],
+    [DWELLING_ENTITY, []],
   ]);
 
   public filterValue = '';
@@ -38,18 +43,20 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
   constructor(
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
-    private dwellingService: CommonDwellingService,
+    private dwellingService: CommonDwellingService
   ) {
     forkJoin([
-        buildingService.getAttributesMetadata(),
-        entranceService.getAttributesMetadata(),
-        dwellingService.getAttributesMetadata()
-      ]
-    )
-      .pipe(takeUntil(this.destroy$), catchError((error) => {
-        console.log(error);
-        return of([]);
-      }))
+      buildingService.getAttributesMetadata(),
+      entranceService.getAttributesMetadata(),
+      dwellingService.getAttributesMetadata(),
+    ])
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          console.log(error);
+          return of([]);
+        })
+      )
       .subscribe({
         next: ([buildingFields, entranceFields, dwellingFields]) => {
           if (isDevMode()) {
@@ -57,13 +64,22 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
             console.log(entranceFields);
             console.log(dwellingFields);
           }
-          this._variables.set('BUILDING', this.mapVariables(buildingFields));
-          this._variables.set('ENTRANCE', this.mapVariables(entranceFields));
-          this._variables.set('DWELLING', this.mapVariables(dwellingFields));
+          this._variables.set(
+            BUILDING_ENTITY,
+            this.mapVariables(buildingFields)
+          );
+          this._variables.set(
+            ENTRANCE_ENTITY,
+            this.mapVariables(entranceFields)
+          );
+          this._variables.set(
+            DWELLING_ENTITY,
+            this.mapVariables(dwellingFields)
+          );
 
           this.filterVariables();
-        }
-      })
+        },
+      });
   }
 
   ngOnDestroy() {
@@ -87,7 +103,9 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
     const variables = this._variables.get(this.entity);
     if (variables && variables.length > 0) {
       this.filteredVariables = variables.filter((variable: SelectOption) => {
-        return variable.value.toLowerCase().includes(this.filterValue.toLowerCase());
+        return variable.value
+          .toLowerCase()
+          .includes(this.filterValue.toLowerCase());
       });
     } else {
       this.filteredVariables = [];
@@ -96,15 +114,16 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
 
   private mapVariables(fields: any[]): SelectOption[] {
     return fields
-      .filter(field =>
-        field.editable
-        && !BUILDING_HIDDEN_FIELDS.includes(field.name)
-        && !ENTRANCE_HIDDEN_FIELDS.includes(field.name)
-        && !STREET_HIDDEN_FIELDS.includes(field.name)
+      .filter(
+        field =>
+          field.editable &&
+          !BUILDING_HIDDEN_FIELDS.includes(field.name) &&
+          !ENTRANCE_HIDDEN_FIELDS.includes(field.name) &&
+          !STREET_HIDDEN_FIELDS.includes(field.name)
       )
       .map(field => ({
         text: field.alias ? field.alias : field.name,
-        value: field.name
+        value: field.name,
       }));
   }
 }

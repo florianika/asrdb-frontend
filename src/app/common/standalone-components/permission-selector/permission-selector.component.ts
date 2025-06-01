@@ -9,11 +9,7 @@ import { Permission } from 'src/app/model/RolePermissions.model';
   selector: 'asrdb-permission-selector',
   templateUrl: './permission-selector.component.html',
   styleUrls: ['./permission-selector.component.css'],
-  imports: [
-    MatSelectModule,
-    MatFormFieldModule,
-    FormsModule
-  ]
+  imports: [MatSelectModule, MatFormFieldModule, FormsModule],
 })
 export class PermissionSelectorComponent {
   @Input() required = false;

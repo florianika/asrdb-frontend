@@ -1,21 +1,25 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {CommonBuildingService} from "../../../common/service/common-building.service";
-import {RegisterFilterService} from "../../../register/register-table-view/register-filter.service";
-import {Subject, takeUntil} from "rxjs";
-import {QueryFilter} from "../../../register/model/query-filter";
-import {BuildingFilter} from "../../../register/model/building";
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { CommonBuildingService } from '../../../common/service/common-building.service';
+import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { Subject, takeUntil } from 'rxjs';
+import { QueryFilter } from '../../../register/model/query-filter';
+import { BuildingFilter } from '../../../register/model/building';
 
 @Component({
   selector: 'asrdb-building-quality-graph',
   templateUrl: './pie-graph.component.html',
-  styleUrls: ['./pie-graph.component.css']
+  styleUrls: ['./pie-graph.component.css'],
 })
 export class PieGraphComponent implements OnInit, OnDestroy {
-
   @Input() fields = [];
   @Input() title = '';
   @Input() variable = '';
-
 
   private existingFilter?: BuildingFilter;
   private destroy = new Subject();
@@ -35,10 +39,9 @@ export class PieGraphComponent implements OnInit, OnDestroy {
     }
     this.uniqueValueInfos = field['domain']?.['codedValues'];
 
-
     this.filterService.filterObservable
       .pipe(takeUntil(this.destroy))
-      .subscribe((filter) => {
+      .subscribe(filter => {
         if (JSON.stringify(filter) === JSON.stringify(this.existingFilter)) {
           return;
         }
@@ -59,35 +62,46 @@ export class PieGraphComponent implements OnInit, OnDestroy {
       returnGeometry: false,
       groupByFieldsForStatistics: [this.variable],
       orderByFields: [this.variable],
-      outStatistics: [{
-        statisticType: 'count',
-        onStatisticField: this.variable,
-        outStatisticFieldName: 'value'
-      }]
+      outStatistics: [
+        {
+          statisticType: 'count',
+          onStatisticField: this.variable,
+          outStatisticFieldName: 'value',
+        },
+      ],
     } as Partial<QueryFilter>;
-    this.commonBuildingService.getBuildingStats(filter)
+    this.commonBuildingService
+      .getBuildingStats(filter)
       .pipe(takeUntil(this.destroy))
       .subscribe((statsResults: __esri.FeatureSet) => {
-        const data = statsResults.features.map((feature) => feature.attributes.value);
-        const labels = statsResults.features.map((feature) => feature.attributes[this.variable]).map((label) => {
-          const newLabel = this.uniqueValueInfos.find(o => o['code'] === label);
-          return newLabel?.['name'] ?? label;
-        });
+        const data = statsResults.features.map(
+          feature => feature.attributes.value
+        );
+        const labels = statsResults.features
+          .map(feature => feature.attributes[this.variable])
+          .map(label => {
+            const newLabel = this.uniqueValueInfos.find(
+              o => o['code'] === label
+            );
+            return newLabel?.['name'] ?? label;
+          });
         this.graph = {
-          data: [{
-            type: 'pie',
-            values: data,
-            labels: labels,
-          }],
+          data: [
+            {
+              type: 'pie',
+              values: data,
+              labels: labels,
+            },
+          ],
           layout: {
             autosize: true,
             title: this.title,
             textinfo: 'label+percent',
             textposition: 'outside',
             automargin: true,
-            legend: {orientation: 'h', side: 'top'}
+            legend: { orientation: 'h', side: 'top' },
           },
-        }
+        };
         this.changeDetectionRef.detectChanges();
       });
   }

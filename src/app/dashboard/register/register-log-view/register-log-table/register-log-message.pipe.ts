@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   standalone: true,
-  name: 'concatenateMessage'
+  name: 'concatenateMessage',
 })
 export class ConcatenateMessagePipe implements PipeTransform {
   transform(value?: string, lenght = 10): string {

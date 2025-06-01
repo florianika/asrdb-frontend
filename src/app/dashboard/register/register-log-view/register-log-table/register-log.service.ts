@@ -3,12 +3,17 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Log } from '../model/log';
 import { environment } from 'src/environments/environment';
-import {EntityType} from "../../../quality-management/quality-management-config";
-import {AuthStateService} from "../../../../common/services/auth-state.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {CommonBuildingService} from "../../../common/service/common-building.service";
-import {CommonEntranceService} from "../../../common/service/common-entrance.service";
-import {CommonDwellingService} from "../../../common/service/common-dwellings.service";
+import { EntityType } from '../../../quality-management/quality-management-config';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonBuildingService } from '../../../common/service/common-building.service';
+import { CommonEntranceService } from '../../../common/service/common-entrance.service';
+import { CommonDwellingService } from '../../../common/service/common-dwellings.service';
+import {
+  BUILDING_ENTITY,
+  DWELLING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../../../common/constants/common-constants';
 
 export const EXECUTING = 1;
 export const NOT_EXECUTING = 2;
@@ -54,16 +59,24 @@ export class RegisterLogService {
     private commonDwellingService: CommonDwellingService,
     private httpClient: HttpClient,
     private authState: AuthStateService,
-    private matSnack: MatSnackBar) {
-  }
+    private matSnack: MatSnackBar
+  ) {}
 
   public loadLogs(buildingId: string) {
     this.isLoading.next(true);
     this.httpClient
-      .get<{processOutputLogDto: Log[]}>(environment.base_url + this.LOGS_URL + buildingId.replace('{', '').replace('}', ''))
+      .get<{
+        processOutputLogDto: Log[];
+      }>(
+        environment.base_url +
+          this.LOGS_URL +
+          buildingId.replace('{', '').replace('}', '')
+      )
       .subscribe({
-        next: (data) => {
-          if (data.processOutputLogDto.length !== this.loadedLogs.value.length) {
+        next: data => {
+          if (
+            data.processOutputLogDto.length !== this.loadedLogs.value.length
+          ) {
             setTimeout(() => {
               this.loadLogs(buildingId);
             }, 3000);
@@ -74,7 +87,7 @@ export class RegisterLogService {
           this.loadedLogs.next(data.processOutputLogDto);
           this.isLoading.next(false);
         },
-        error: (err) => {
+        error: err => {
           console.log(err);
           this.isLoading.next(false);
           this.isExecuting.next(NOT_EXECUTING);
@@ -85,130 +98,143 @@ export class RegisterLogService {
 
   private loadBuildingQuality(buildingId: string) {
     this.commonBuildingService.getBuildingQuality(buildingId).subscribe({
-      next: (quality => {
+      next: quality => {
         this.buildingQuality.next(quality ?? '');
-      }),
-      error: (err) => {
+      },
+      error: err => {
         console.error(err);
-      }
+      },
     });
   }
 
   public executeRulesForMultipleBuildings(buildingIds: string[]) {
     this.isExecuting.next(EXECUTING);
     const data = {
-      BuildingIds: buildingIds.map((buildingId) => buildingId.replace('{', '').replace('}', '')),
-      ExecutionUser: this.authState.getNameId()
-    }
+      BuildingIds: buildingIds.map(buildingId =>
+        buildingId.replace('{', '').replace('}', '')
+      ),
+      ExecutionUser: this.authState.getNameId(),
+    };
     this.httpClient
       .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
       .subscribe({
         next: () => {
           this.isExecuting.next(EXECUTING);
-          this.matSnack.open("Started testing buildings data", 'Ok', {
+          this.matSnack.open('Started testing buildings data', 'Ok', {
             duration: 2000,
           });
         },
-        error: (err) => {
+        error: err => {
           console.log(err);
           this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000
+            duration: 3000,
           });
           this.isExecuting.next(NOT_EXECUTING);
         },
-      })
+      });
   }
 
   public executeRules(buildingId: string, loadLogs = true) {
     this.isExecuting.next(EXECUTING);
     const data = {
       BuildingIds: [buildingId.replace('{', '').replace('}', '')],
-      ExecutionUser: this.authState.getNameId()
-    }
+      ExecutionUser: this.authState.getNameId(),
+    };
     this.httpClient
       .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
       .subscribe({
         next: () => {
           this.isExecuting.next(EXECUTING);
           if (loadLogs) {
-            this.loadLogs(buildingId)
+            this.loadLogs(buildingId);
           }
           if (!loadLogs) {
-            this.matSnack.open("Started testing building data", 'Ok', {
+            this.matSnack.open('Started testing building data', 'Ok', {
               duration: 2000,
             });
           }
         },
-        error: (err) => {
+        error: err => {
           console.log(err);
           this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000
+            duration: 3000,
           });
           this.isExecuting.next(NOT_EXECUTING);
         },
-      })
+      });
   }
 
   public resolveLog(logId: string, buildingId: string) {
     this.isResolving.next(true);
-    this.httpClient.patch(environment.base_url + this.RESOLVE_LOG + logId, null)
+    this.httpClient
+      .patch(environment.base_url + this.RESOLVE_LOG + logId, null)
       .subscribe({
         next: () => {
           this.isResolving.next(false);
           this.executeRules(buildingId);
         },
-        error: (err) => {
+        error: err => {
           this.isResolving.next(false);
           this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000
+            duration: 3000,
           });
           console.log(err);
-        }
+        },
       });
   }
 
   public unresolveLog(logId: string, buildingId: string) {
     this.isResolving.next(true);
-    this.httpClient.patch(environment.base_url + this.UNRESOLVE_LOG + logId, null)
+    this.httpClient
+      .patch(environment.base_url + this.UNRESOLVE_LOG + logId, null)
       .subscribe({
         next: () => {
           this.isResolving.next(false);
           this.executeRules(buildingId);
         },
-        error: (err) => {
+        error: err => {
           this.isResolving.next(false);
           this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000
+            duration: 3000,
           });
           console.log(err);
-        }
+        },
       });
   }
 
-  public getLogForVariable(entityType: EntityType, variable: string, id?: string): Log | undefined {
+  public getLogForVariable(
+    entityType: EntityType,
+    variable: string,
+    id?: string
+  ): Log | undefined {
     if (!id) {
       return undefined;
     }
     const cleanedID = id.replace('{', '').replace('}', '').toLowerCase();
     const matchID = (log: Log): boolean => {
-      return entityType === 'BUILDING' ? log.bldId === cleanedID :
-        entityType === 'ENTRANCE' ? log.entId === cleanedID :
-          entityType === 'DWELLING' ? log.dwlId === cleanedID : false
-    }
-    return this.loadedLogs.value
-      .find(log =>
+      return entityType === BUILDING_ENTITY
+        ? log.bldId === cleanedID
+        : entityType === ENTRANCE_ENTITY
+          ? log.entId === cleanedID
+          : entityType === DWELLING_ENTITY
+            ? log.dwlId === cleanedID
+            : false;
+    };
+    return this.loadedLogs.value.find(
+      log =>
         (log.qualityAction !== 'QUE' || log.qualityStatus === 'PENDING') &&
         log.entityType === entityType &&
         log.variable === variable &&
-        matchID(log));
+        matchID(log)
+    );
   }
 
   public getAllLogs(entityType?: EntityType): Log[] {

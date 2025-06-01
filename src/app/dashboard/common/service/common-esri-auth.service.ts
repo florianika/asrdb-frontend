@@ -11,7 +11,8 @@ export class CommonEsriAuthService implements OnDestroy {
   private subscription = new Subject<boolean>();
 
   constructor(private authState: AuthStateService) {
-    this.authState.getLoginStateAsObservable()
+    this.authState
+      .getLoginStateAsObservable()
       .pipe(takeUntil(this.subscription))
       .subscribe((loginState: boolean) => {
         if (!loginState) {

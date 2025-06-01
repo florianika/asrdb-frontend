@@ -6,33 +6,36 @@ import {
   Input,
   OnInit,
   TemplateRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RegisterLogService} from './register-log.service';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {MatSort, MatSortModule} from '@angular/material/sort';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {MatIconModule} from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatMenuModule} from '@angular/material/menu';
-import {map} from 'rxjs/internal/operators/map';
-import {Observable} from 'rxjs/internal/Observable';
-import {Log} from '../model/log';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {ConcatenateMessagePipe as ConcatinateMessagePipe} from './register-log-message.pipe';
-import {LogExecutionPipe} from './register-log-execution.pipe';
-import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {MatInputModule} from "@angular/material/input";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSelectModule} from "@angular/material/select";
-import {RegisterLogTableFilterComponent} from "./register-log-table-filter/register-log-table-filter.component";
-import {LogFilter} from "../model/log-filter";
-import {Chip, ChipComponent} from "../../../../common/standalone-components/chip/chip.component";
-import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {Router} from "@angular/router";
+import { CommonModule } from '@angular/common';
+import { RegisterLogService } from './register-log.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
+import { map } from 'rxjs/internal/operators/map';
+import { Observable } from 'rxjs/internal/Observable';
+import { Log } from '../model/log';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConcatenateMessagePipe as ConcatinateMessagePipe } from './register-log-message.pipe';
+import { LogExecutionPipe } from './register-log-execution.pipe';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { RegisterLogTableFilterComponent } from './register-log-table-filter/register-log-table-filter.component';
+import { LogFilter } from '../model/log-filter';
+import {
+  Chip,
+  ChipComponent,
+} from '../../../../common/standalone-components/chip/chip.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'asrdb-register-log-table-view',
@@ -55,21 +58,19 @@ import {Router} from "@angular/router";
     MatFormFieldModule,
     MatSelectModule,
     ChipComponent,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
-  providers: [
-    RegisterLogService
-  ],
+  providers: [RegisterLogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register-log-table.component.html',
-  styleUrls: ['./register-log-table.component.css']
+  styleUrls: ['./register-log-table.component.css'],
 })
 export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   @Input() building!: string;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild("confirmResolveDialog") confirmResolveDialog!: TemplateRef<any>;
-  @ViewChild("confirmPendingDialog") confirmPendingDialog!: TemplateRef<any>;
+  @ViewChild('confirmResolveDialog') confirmResolveDialog!: TemplateRef<any>;
+  @ViewChild('confirmPendingDialog') confirmPendingDialog!: TemplateRef<any>;
   private dataSource: MatTableDataSource<Log> = new MatTableDataSource<Log>();
 
   public isLoadingResults = this.logService.isLoadingResults;
@@ -83,7 +84,7 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     'qualityMessageAl',
     'qualityStatus',
     'qualityAction',
-    'actions'
+    'actions',
   ];
   public resultsLength = 0;
   private filter = {
@@ -91,21 +92,21 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     variable: '',
     status: '',
     qualityAction: '',
-    errorLevel: ''
+    errorLevel: '',
   } as LogFilter;
 
-  dataSourceObservable: Observable<MatTableDataSource<Log>> = this.logService.logs.pipe(
-    map(logs => {
-      const dataSource = this.dataSource;
-      dataSource.data = logs;
-      this.resultsLength = logs.length;
-      return dataSource;
-    })
-  );
+  dataSourceObservable: Observable<MatTableDataSource<Log>> =
+    this.logService.logs.pipe(
+      map(logs => {
+        const dataSource = this.dataSource;
+        dataSource.data = logs;
+        this.resultsLength = logs.length;
+        return dataSource;
+      })
+    );
 
   get filterChips(): Chip[] {
-    return Object
-      .entries(this.filter)
+    return Object.entries(this.filter)
       .filter(([, value]) => !!value)
       .map(([key, value]) => ({ column: key, value: value }));
   }
@@ -114,8 +115,8 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     private logService: RegisterLogService,
     private router: Router,
     private changeDetectionRef: ChangeDetectorRef,
-    private matDialog: MatDialog) {
-  }
+    private matDialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.logService.loadLogs(this.building);
@@ -131,14 +132,18 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   }
 
   filterData() {
-    this.matDialog.open(RegisterLogTableFilterComponent, {data: this.filter, width: '700px'})
+    this.matDialog
+      .open(RegisterLogTableFilterComponent, {
+        data: this.filter,
+        width: '700px',
+      })
       .afterClosed()
-      .subscribe((filter) => {
+      .subscribe(filter => {
         if (filter) {
           this.filter = filter;
           this.filterLogs();
         }
-    });
+      });
   }
 
   remove($event: Chip) {
@@ -147,35 +152,56 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   }
 
   resolve(id: string) {
-    this.matDialog.open(this.confirmResolveDialog).afterClosed().subscribe((confirm: boolean) => {
-      if (confirm) {
-        this.logService.resolveLog(id, this.building);
-      }
-    });
+    this.matDialog
+      .open(this.confirmResolveDialog)
+      .afterClosed()
+      .subscribe((confirm: boolean) => {
+        if (confirm) {
+          this.logService.resolveLog(id, this.building);
+        }
+      });
   }
 
   unresolve(id: string) {
-    this.matDialog.open(this.confirmPendingDialog).afterClosed().subscribe((confirm: boolean) => {
-      if (confirm) {
-        this.logService.unresolveLog(id, this.building);
-      }
-    });
+    this.matDialog
+      .open(this.confirmPendingDialog)
+      .afterClosed()
+      .subscribe((confirm: boolean) => {
+        if (confirm) {
+          this.logService.unresolveLog(id, this.building);
+        }
+      });
   }
 
   goToBuildingDetails() {
-    this.router.navigateByUrl('dashboard/register/details/BUILDING/' + this.building);
+    this.router.navigateByUrl(
+      'dashboard/register/details/BUILDING/' + this.building
+    );
   }
 
   private filterLogs() {
     this.paginator.firstPage();
     const logs = this.logService.logsValue;
     this.dataSource.data = logs.filter(log => {
-      const variableCondition = this.filter.variable ? log.variable === this.filter.variable : true;
-      const entityCondition = this.filter.entityType ? log.entityType === this.filter.entityType : true;
-      const qualityActionCondition = this.filter.qualityAction ? log.qualityAction === this.filter.qualityAction : true;
-      const statusCondition = this.filter.status ? log.qualityStatus === this.filter.status : true;
+      const variableCondition = this.filter.variable
+        ? log.variable === this.filter.variable
+        : true;
+      const entityCondition = this.filter.entityType
+        ? log.entityType === this.filter.entityType
+        : true;
+      const qualityActionCondition = this.filter.qualityAction
+        ? log.qualityAction === this.filter.qualityAction
+        : true;
+      const statusCondition = this.filter.status
+        ? log.qualityStatus === this.filter.status
+        : true;
 
-      return variableCondition && entityCondition && qualityActionCondition && statusCondition;
+      return (
+        variableCondition &&
+        entityCondition &&
+        qualityActionCondition &&
+        statusCondition
+      );
     });
     this.resultsLength = this.dataSource.data.length;
   }

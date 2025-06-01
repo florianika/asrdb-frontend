@@ -6,7 +6,7 @@ import { AuthStateService } from '../../services/auth-state.service';
   selector: 'asrdb-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {
   @Input() drawer!: MatDrawer;

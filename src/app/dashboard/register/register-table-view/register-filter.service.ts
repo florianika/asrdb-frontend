@@ -1,10 +1,13 @@
-import {Injectable} from '@angular/core';
-import {BuildingFilter} from '../model/building';
-import {CommonRegisterHelperService} from '../../common/service/common-helper.service';
-import {Chip} from 'src/app/common/standalone-components/chip/chip.component';
-import {BehaviorSubject} from 'rxjs';
-import {MUNICIPALITIES} from "../../../common/data/municipalities";
-import {AuthStateService, DEFAULT_MUNICIPALITY} from "../../../common/services/auth-state.service";
+import { Injectable } from '@angular/core';
+import { BuildingFilter } from '../model/building';
+import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
+import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
+import { BehaviorSubject } from 'rxjs';
+import { MUNICIPALITIES } from '../../../common/data/municipalities';
+import {
+  AuthStateService,
+  DEFAULT_MUNICIPALITY,
+} from '../../../common/services/auth-state.service';
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
 
@@ -39,21 +42,25 @@ export class RegisterFilterService {
       BldType: [] as never[],
       BldQuality: [] as never[],
       BldReview: [] as never[],
-    }
-  }
+    },
+  };
   private filter = new BehaviorSubject<BuildingFilter>(this.defaultFilter);
   private globalIds = new BehaviorSubject<string[]>([]);
 
   private fields: never[] = [];
 
-  constructor(private commonBuildingRegisterHelper: CommonRegisterHelperService, private authState: AuthStateService) {
+  constructor(
+    private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private authState: AuthStateService
+  ) {
     const savedFilterJSON = localStorage.getItem(FILTER_REGISTER);
 
     if (savedFilterJSON) {
       try {
         const filter = JSON.parse(savedFilterJSON);
         if (!filter.filter.BldMunicipality) {
-          filter.filter.BldMunicipality = this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY;
+          filter.filter.BldMunicipality =
+            this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY;
         }
         filter.filter.GlobalID = null;
         this.filter.next(filter);
@@ -68,7 +75,7 @@ export class RegisterFilterService {
   }
 
   resetFilter(): void {
-    this.updateFilter(this.defaultFilter, FILTER_REGISTER)
+    this.updateFilter(this.defaultFilter, FILTER_REGISTER);
   }
 
   setBuildingsGlobalIdFilter(globalIds: string[]) {
@@ -116,21 +123,20 @@ export class RegisterFilterService {
         BldType: this.getOptionsFromDomain('BldType'),
         BldQuality: this.getOptionsFromDomain('BldQuality'),
         BldReview: this.getOptionsFromDomain('BldReview'),
-      }
+      },
     });
   }
 
   prepareWhereCase() {
     const conditions: string[] = ['BldQuality <> 0'];
-    Object
-      .entries(this.filter.value.filter)
+    Object.entries(this.filter.value.filter)
       .filter(([, value]) => {
         return Array.isArray(value) ? value.length : !!value;
       })
       .map(([key, value]) => {
         let finalValue = value;
         if (Array.isArray(value)) {
-          finalValue = value.join(', ')
+          finalValue = value.join(', ');
         }
         return { column: key, value: finalValue } as Chip;
       })
@@ -145,12 +151,21 @@ export class RegisterFilterService {
             }
             return id;
           });
-          const globalIdsCondition = globalIds.map(globalId => `'${globalId}'`).join(',');
+          const globalIdsCondition = globalIds
+            .map(globalId => `'${globalId}'`)
+            .join(',');
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
-        } else if (['BldStatus', 'BldType', 'BldQuality', 'BldReview'].includes(filter.column) && !this.skipOtherFiltersApartFromGlobalId) {
+        } else if (
+          ['BldStatus', 'BldType', 'BldQuality', 'BldReview'].includes(
+            filter.column
+          ) &&
+          !this.skipOtherFiltersApartFromGlobalId
+        ) {
           conditions.push(filter.column + ' in (' + filter.value + ')');
         } else if (!this.skipOtherFiltersApartFromGlobalId) {
-          conditions.push(filter.column + '=' + this.getWhereConditionValue(filter.value));
+          conditions.push(
+            filter.column + '=' + this.getWhereConditionValue(filter.value)
+          );
         }
       });
     return conditions.length ? conditions.join(' and ') : '1=1';
@@ -171,59 +186,72 @@ export class RegisterFilterService {
   }
 
   private getOptions(column: string) {
-    const field = this.commonBuildingRegisterHelper.getField(this.fields, column);
+    const field = this.commonBuildingRegisterHelper.getField(
+      this.fields,
+      column
+    );
     if (!field) {
       return [];
     }
-    return field
-      .domain
-      ?.codedValues
-      ?.map((codeValue: { name: string, code: string | number }) => (
-        {
-          name: codeValue.name,
-          code: codeValue.code,
-        })
-      )
-      ?.sort((a: { name: string, code: string }, b: { name: string, code: string | number }) => {
-        if (a.code > b.code) {
-          return 1;
-        } else if (a.code < b.code) {
-          return -1;
+    return field.domain?.codedValues
+      ?.map((codeValue: { name: string; code: string | number }) => ({
+        name: codeValue.name,
+        code: codeValue.code,
+      }))
+      ?.sort(
+        (
+          a: { name: string; code: string },
+          b: { name: string; code: string | number }
+        ) => {
+          if (a.code > b.code) {
+            return 1;
+          } else if (a.code < b.code) {
+            return -1;
+          }
+          return 0;
         }
-        return 0;
-      });
+      );
   }
 
   private getOptionsFromDomain(domain: string) {
     const options = this.getOptions(domain);
-    return options.length ? options : (this.filter.value.options as any)[domain];
+    return options.length
+      ? options
+      : (this.filter.value.options as any)[domain];
   }
 
   private getBldMunicipalityOptions() {
-    return this.getOptionsFromDomain('BldMunicipality').sort((a: { name: string, code: number }, b: {
-      name: string,
-      code: number
-    }) => {
-      if (a.name > b.name) {
-        return 1;
-      } else if (a.name < b.name) {
-        return -1;
+    return this.getOptionsFromDomain('BldMunicipality').sort(
+      (
+        a: { name: string; code: number },
+        b: {
+          name: string;
+          code: number;
+        }
+      ) => {
+        if (a.name > b.name) {
+          return 1;
+        } else if (a.name < b.name) {
+          return -1;
+        }
+        return 0;
       }
-      return 0;
-    });
+    );
   }
 
   private getWhereConditionValue(value: string | number) {
-    return (typeof value == 'number') ? value : `'${value}'`;
+    return typeof value == 'number' ? value : `'${value}'`;
   }
 
   private noFilterApplied() {
-    return !this.filter.value.filter.BldMunicipality
-      && !this.filter.value.filter.BldType
-      && !this.filter.value.filter.BldStatus.length
-      && !this.filter.value.filter.BldEnumArea
-      && !this.filter.value.filter.BldQuality
-      && !this.filter.value.filter.BldReview
-      && !this.filter.value.filter.GlobalID;
+    return (
+      !this.filter.value.filter.BldMunicipality &&
+      !this.filter.value.filter.BldType &&
+      !this.filter.value.filter.BldStatus.length &&
+      !this.filter.value.filter.BldEnumArea &&
+      !this.filter.value.filter.BldQuality &&
+      !this.filter.value.filter.BldReview &&
+      !this.filter.value.filter.GlobalID
+    );
   }
 }

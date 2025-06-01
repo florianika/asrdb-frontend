@@ -1,0 +1,3 @@
+export const BUILDING_ENTITY = 'BUILDING';
+export const ENTRANCE_ENTITY = 'ENTRANCE';
+export const DWELLING_ENTITY = 'DWELLING';

@@ -1,28 +1,36 @@
-import {TYPE_PROP} from "../constant/common-constants";
+import { TYPE_PROP } from '../constant/common-constants';
 
 export type FormObject = {
-  name: string,
-  alias: string,
-  type: FormObjectType,
-  selectOptions: FormObjectSelectOption[] | null,
-  originalOptions: FormObjectSelectOption[] | null,
-  maxLength?: number
-  hidden?:  boolean
-}
+  name: string;
+  alias: string;
+  type: FormObjectType;
+  selectOptions: FormObjectSelectOption[] | null;
+  originalOptions: FormObjectSelectOption[] | null;
+  maxLength?: number;
+  hidden?: boolean;
+};
 
-export type FormObjectType = 'number' | 'text' | 'text-area' | 'select' | 'date';
+export type FormObjectType =
+  | 'number'
+  | 'text'
+  | 'text-area'
+  | 'select'
+  | 'date';
 export type FormObjectSelectOption = {
-  text: string,
-  value: string | number
+  text: string;
+  value: string | number;
 };
 export type EsriDomain = {
-  codedValues: EsriCodedValue[]
-  name: string
-  type: string
-}
-export type EsriCodedValue = { code: number, name: string };
+  codedValues: EsriCodedValue[];
+  name: string;
+  type: string;
+};
+export type EsriCodedValue = { code: number; name: string };
 
-export function getFormObjectType(esriType: string, length = 0): FormObjectType {
+export function getFormObjectType(
+  esriType: string,
+  length = 0
+): FormObjectType {
   if (esriType === 'esriFieldTypeDate') {
     return 'date';
   }
@@ -32,17 +40,24 @@ export function getFormObjectType(esriType: string, length = 0): FormObjectType 
   return 'number';
 }
 
-export function getFormObjectOptions(type: FormObjectType, domain: EsriDomain): FormObjectSelectOption[] | null {
+export function getFormObjectOptions(
+  type: FormObjectType,
+  domain: EsriDomain
+): FormObjectSelectOption[] | null {
   if (type !== 'select' || !domain || !Array.isArray(domain.codedValues)) {
     return null;
   }
   return domain.codedValues.map(codedValue => ({
     text: codedValue.name,
-    value: codedValue.code
+    value: codedValue.code,
   }));
 }
 
-export function getValue(field: never, fieldName: never, existingBuildingDetails?: any) {
+export function getValue(
+  field: any,
+  fieldName: any,
+  existingBuildingDetails?: any
+) {
   const value = existingBuildingDetails?.[fieldName];
   return field[TYPE_PROP] === 'esriFieldTypeDate'
     ? new Date(value as number)

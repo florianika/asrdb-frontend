@@ -1,14 +1,19 @@
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
-import {AuthStateService} from '../../services/auth-state.service';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs/internal/operators/filter';
-import {FILTER_REGISTER} from "../../../dashboard/register/register-table-view/register-filter.service";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
+import { AuthStateService } from '../../services/auth-state.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/internal/operators/filter';
+import { FILTER_REGISTER } from '../../../dashboard/register/register-table-view/register-filter.service';
 
 @Component({
   selector: 'asrdb-side-bar',
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SideBarComponent implements AfterViewInit {
   sideBarElements = [
@@ -19,10 +24,10 @@ export class SideBarComponent implements AfterViewInit {
           title: 'Dashboard',
           path: 'dashboard/overview',
           icon: 'dashboard',
-          selected: true
+          selected: true,
         },
       ],
-      visible: true
+      visible: true,
     },
     {
       sectionTitle: '',
@@ -35,7 +40,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: true
+      visible: true,
     },
     {
       sectionTitle: '',
@@ -48,7 +53,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: this.isAdmin
+      visible: this.isAdmin,
     },
     {
       sectionTitle: 'Quality Rule Management',
@@ -57,22 +62,22 @@ export class SideBarComponent implements AfterViewInit {
           title: 'Building Rules',
           path: '/dashboard/quality-management/BUILDING',
           icon: 'apartment',
-          selected: false
+          selected: false,
         },
         {
           title: 'Entrance Rules',
           path: '/dashboard/quality-management/ENTRANCE',
           icon: 'meeting_room',
-          selected: false
+          selected: false,
         },
         {
           title: 'Dwelling Rules',
           path: '/dashboard/quality-management/DWELLING',
           icon: 'light',
-          selected: false
+          selected: false,
         },
       ],
-      visible: this.isAdmin
+      visible: this.isAdmin,
     },
     {
       sectionTitle: 'Administration',
@@ -81,31 +86,38 @@ export class SideBarComponent implements AfterViewInit {
           title: 'User administration',
           path: '/dashboard/administration/user-management',
           icon: 'manage_accounts',
-          selected: false
+          selected: false,
         },
         {
           title: 'Role management',
           path: '/dashboard/administration/role-management',
           icon: 'verified_user',
-          selected: false
+          selected: false,
         },
         {
           title: 'Email templates',
           path: '/dashboard/administration/email-template-management',
           icon: 'mail',
-          selected: false
+          selected: false,
         },
       ],
-      visible: this.isAdmin
-    }
+      visible: this.isAdmin,
+    },
   ];
 
-  constructor(private authStateService: AuthStateService, private router: Router, private changeDetection: ChangeDetectorRef) {
-  }
+  constructor(
+    private authStateService: AuthStateService,
+    private router: Router,
+    private changeDetection: ChangeDetectorRef
+  ) {}
 
   ngAfterViewInit(): void {
     this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        )
+      )
       .subscribe(() => {
         this.setSelected();
         this.changeDetection.detectChanges();
@@ -117,7 +129,7 @@ export class SideBarComponent implements AfterViewInit {
   }
 
   handleClick(title: string) {
-    if (["Dashboard", "Building List"].includes(title)) {
+    if (['Dashboard', 'Building List'].includes(title)) {
       localStorage.removeItem(FILTER_REGISTER);
     }
   }
@@ -131,6 +143,8 @@ export class SideBarComponent implements AfterViewInit {
   }
 
   private isSelected(path: string, pathMatch = false): boolean {
-    return pathMatch ? this.router.url === path : this.router.url.includes(path);
+    return pathMatch
+      ? this.router.url === path
+      : this.router.url.includes(path);
   }
 }

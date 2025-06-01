@@ -1,31 +1,37 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, isDevMode } from '@angular/core';
+import { Component, Inject, isDevMode, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
+import { catchError, of as observableOf, Subject, takeUntil } from 'rxjs';
 import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
 import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
 import { CommonDwellingService } from 'src/app/dashboard/common/service/common-dwellings.service';
 import { CommonRegisterHelperService } from 'src/app/dashboard/common/service/common-helper.service';
-import {getDate} from "../../../../model/common-utils";
-import {Log} from "../../../../register-log-view/model/log";
-import {HistoryDetailsComponent} from "../../history-details/history-details.component";
-import {Router} from "@angular/router";
+import { Log } from '../../../../register-log-view/model/log';
+import { HistoryDetailsComponent } from '../../history-details/history-details.component';
+import { DwellingDetailsFormComponent } from '../../../../register-form/dwelling-details-form/dwelling-details-form.component';
+import { MatIcon } from '@angular/material/icon';
 import {
-  DwellingDetailsFormComponent
-} from "../../../../register-form/dwelling-details-form/dwelling-details-form.component";
-import {MatIcon} from "@angular/material/icon";
+  CommonEntityStructureService,
+  EntityAttribute,
+} from '../../../../../common/service/common-entity-structure.service';
+import { SectionField } from '../../../../constant/common-constants';
+import { DWELLING_ENTITY } from '../../../../../../common/constants/common-constants';
 
 export type DwellingDetailsData = {
-  globalId: string,
-  logs: Log[],
-  streetName: string,
-  buildingNumber: string,
-  entranceNumber: string,
-  entranceId?: string
-  entrances?: any[]
+  globalId: string;
+  logs: Log[];
+  streetName: string;
+  buildingNumber: string;
+  entranceNumber: string;
+  entranceId?: string;
+  entrances?: any[];
 };
 
 @Component({
@@ -39,9 +45,9 @@ export type DwellingDetailsData = {
     MatButtonModule,
     BuildingDetailComponent,
     HistoryDetailsComponent,
-    MatIcon
+    MatIcon,
   ],
-  standalone: true
+  standalone: true,
 })
 export class DwellingDetailsComponent implements OnInit {
   isLoadingResults = true;
@@ -54,181 +60,18 @@ export class DwellingDetailsComponent implements OnInit {
   sections = [
     {
       title: 'Technical variables',
-      entries: [
-        {
-          title: '',
-          propName: 'GlobalID',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlEntGlobalID',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlCensus2023',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlAddressID',
-          value: '',
-          log: '',
-logType: ''
-        }
-      ],
+      entries: [] as SectionField[],
     },
     {
       title: 'Identifying variables',
-      entries: [
-        {
-          title: this.STREET_NAME,
-          propName: '',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: this.BUILDING_NUMBER,
-          propName: '',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: this.ENTRANCE_NUMBER,
-          propName: '',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlFloor',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlApartNumber',
-          value: '',
-          log: '',
-logType: ''
-        }
-      ]
+      entries: [] as SectionField[],
     },
     {
       title: 'Describing variables',
-      entries: [
-        {
-          title: '',
-          propName: 'DwlStatus',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlYearConstruction',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlYearElimination',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlType',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlOwnership',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlOccupancy',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlSurface',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlWaterSupply',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlToilet',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlBath',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlHeatingFacility',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlHeatingEnergy',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlAirConditioner',
-          value: '',
-          log: '',
-logType: ''
-        },
-        {
-          title: '',
-          propName: 'DwlSolarPanel',
-          value: '',
-          log: '',
-logType: ''
-        }
-      ]
-    }
+      entries: [] as SectionField[],
+    },
   ];
+  titleSection = [] as SectionField[];
 
   private subscriber = new Subject();
   private fields: any[] = [];
@@ -242,36 +85,54 @@ logType: ''
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matSnack: MatSnackBar,
     private matDialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public data: DwellingDetailsData) {
-      this.id = this.data.globalId;
-      this.logs = this.data.logs;
-      this.entrances = this.data.entrances ?? [];
-      this.entranceId = this.data.entranceId ?? null;
-    }
-
-  ngOnInit(): void {
-    this.loadDwelling().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    private commonEntityStructureService: CommonEntityStructureService,
+    @Inject(MAT_DIALOG_DATA) public data: DwellingDetailsData
+  ) {
+    this.id = this.data.globalId;
+    this.logs = this.data.logs;
+    this.entrances = this.data.entrances ?? [];
+    this.entranceId = this.data.entranceId ?? null;
+    this.commonEntityStructureService.structureLoaded
+      .pipe(takeUntil(this.subscriber))
+      .subscribe(response => {
+        if (!response.loading && response.structure) {
+          this.prepareStructure(response.structure);
+        }
+      });
   }
 
-  getTitle(column: string) {
-    return this.commonBuildingRegisterHelper.getTitle(this.fields, column);
+  ngOnInit(): void {
+    this.loadDwelling()
+      .pipe(takeUntil(this.subscriber))
+      .subscribe(res => this.handleResponse(res));
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.dwelling[column]) ?? 'Unknown';
+    return (
+      this.commonBuildingRegisterHelper.getValueFromStatus(
+        this.fields,
+        column,
+        this.dwelling[column]
+      ) ?? 'Unknown'
+    );
   }
 
   editDwellingDetails() {
-    this.matDialog.open(DwellingDetailsFormComponent, {
-      data: {
-        entrances: this.entrances,
-        id: this.id,
-        entranceId: this.entranceId,
-        logs: this.logs
-      }
-    }).afterClosed().subscribe(() => {
-      this.loadDwelling().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
-    });
+    this.matDialog
+      .open(DwellingDetailsFormComponent, {
+        data: {
+          entrances: this.entrances,
+          id: this.id,
+          entranceId: this.entranceId,
+          logs: this.logs,
+        },
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.loadDwelling()
+          .pipe(takeUntil(this.subscriber))
+          .subscribe(res => this.handleResponse(res));
+      });
   }
 
   private prepareWhereCase() {
@@ -283,23 +144,25 @@ logType: ''
       console.log('Dwelling', res);
     }
     if (!res) {
-      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {
+        duration: 3000,
+      });
       this.isLoadingResults = false;
       return;
     }
     if (res.data.fields.length) {
       this.fields = res.data.fields;
     }
-    this.dwelling = res.data.features.map((feature: any) => feature.attributes)[0];
-    this.fillSections();
-    this.isLoadingResults = false;
+    this.dwelling = res.data.features.map(
+      (feature: any) => feature.attributes
+    )[0];
+    this.commonEntityStructureService.getEntityStructure(DWELLING_ENTITY);
   }
 
   private fillSections() {
     this.sections.forEach(section => {
       section.entries.forEach(entry => {
         if (entry.propName !== '') {
-          entry.title = this.getTitle(entry.propName);
           entry.value = this.getValueFromStatus(entry.propName);
           const log = this.logs.find(log => log.variable === entry.propName);
           entry.log = log?.qualityMessageEn ?? '';
@@ -318,16 +181,73 @@ logType: ''
   private loadDwelling() {
     this.isLoadingResults = true;
     const filter = {
-      where: this.prepareWhereCase()
+      where: this.prepareWhereCase(),
     } as Partial<QueryFilter>;
-    return this.commonEntranceService.getDwellings(filter).pipe(catchError((err) => {
-      console.log(err);
-      this.matSnack.open('Could not load entrance. Please try again.', 'Ok', {
-        duration: 3000
-      });
-      return observableOf(null);
-    }));
+    return this.commonEntranceService.getDwellings(filter).pipe(
+      catchError(err => {
+        console.log(err);
+        this.matSnack.open('Could not load entrance. Please try again.', 'Ok', {
+          duration: 3000,
+        });
+        return observableOf(null);
+      })
+    );
   }
 
-  protected readonly getDate = getDate;
+  private prepareStructure(structure: EntityAttribute[]) {
+    const visibleFields = structure.reduce(
+      (acc, attr: EntityAttribute) => {
+        if (attr.section !== 'none' && !attr.internal) {
+          if (attr.section === 'technical') {
+            acc.technical.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'identifier') {
+            acc.identifying.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'info') {
+            acc.describing.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'title') {
+            acc.title.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          }
+        }
+        return acc;
+      },
+      {
+        technical: [] as SectionField[],
+        identifying: [] as SectionField[],
+        describing: [] as SectionField[],
+        title: [] as SectionField[],
+      }
+    );
+
+    this.sections[0].entries = visibleFields.technical;
+    this.sections[1].entries = visibleFields.identifying;
+    this.sections[2].entries = visibleFields.describing;
+    this.titleSection = visibleFields.title;
+
+    this.fillSections();
+    this.isLoadingResults = false;
+  }
 }

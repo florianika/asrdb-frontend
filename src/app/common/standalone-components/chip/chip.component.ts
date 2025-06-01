@@ -1,9 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import {
-  ConcatenateMessagePipe
-} from "../../../dashboard/register/register-log-view/register-log-table/register-log-message.pipe";
+import { ConcatenateMessagePipe } from '../../../dashboard/register/register-log-view/register-log-table/register-log-message.pipe';
 
 export type Chip = {
   column: string;
@@ -16,12 +20,12 @@ export type Chip = {
   imports: [CommonModule, MatIconModule, ConcatenateMessagePipe],
   templateUrl: './chip.component.html',
   styleUrls: ['./chip.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChipComponent {
   @Input() chips!: Chip[];
   @Input() clearable!: boolean;
-  @Output() remove = new EventEmitter<Chip>;
+  @Output() remove = new EventEmitter<Chip>();
 
   removeChip(chip: Chip) {
     this.remove.emit(chip);
@@ -29,10 +33,12 @@ export class ChipComponent {
 
   get filteredChips(): Chip[] {
     return this.chips.filter(chip => {
-      return chip.value
-        && typeof chip.value === 'string'
-        && chip.value?.trim() !== ''
-        && !['GlobalID', 'EntBldGlobalID', 'DwlEntGlobalID'].includes(chip.column);
+      return (
+        chip.value &&
+        typeof chip.value === 'string' &&
+        chip.value?.trim() !== '' &&
+        !['GlobalID', 'EntBldGlobalID', 'DwlEntGlobalID'].includes(chip.column)
+      );
     });
   }
 }

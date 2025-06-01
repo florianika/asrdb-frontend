@@ -1,53 +1,52 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {catchError, defer, from, map, Observable, of} from 'rxjs';
-import {QueryFilter} from '../../register/model/query-filter';
-import {CommonEsriAuthService} from './common-esri-auth.service';
+import { catchError, defer, from, map, Observable, of } from 'rxjs';
+import { QueryFilter } from '../../register/model/query-filter';
+import { CommonEsriAuthService } from './common-esri-auth.service';
 import { HttpClient } from '@angular/common/http';
-import {environment} from 'src/environments/environment';
-import {EntityManageResponse} from '../../register/model/entity-req-res';
-import MapView from "@arcgis/core/views/MapView";
-import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
-import Collection from "@arcgis/core/core/Collection";
-import Geometry from "@arcgis/core/geometry/Geometry";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {AuthStateService} from "../../../common/services/auth-state.service";
-import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import { environment } from 'src/environments/environment';
+import { EntityManageResponse } from '../../register/model/entity-req-res';
+import MapView from '@arcgis/core/views/MapView';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine.js';
+import Collection from '@arcgis/core/core/Collection';
+import Geometry from '@arcgis/core/geometry/Geometry';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthStateService } from '../../../common/services/auth-state.service';
+import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
 import UniqueValueInfoProperties = __esri.UniqueValueInfoProperties;
 import PopupTemplateProperties = __esri.PopupTemplateProperties;
 
-type EntityDataResponse = { count: number, data: any, globalIds: string[] };
+type EntityDataResponse = { count: number; data: any; globalIds: string[] };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommonBuildingService {
-
   uniqueValueInfos = [
     {
       value: 1,
       label: 'Leja e ndërtimit e lëshuar',
-      symbol: this.getSymbol('#89CE00')
+      symbol: this.getSymbol('#89CE00'),
     },
     {
       value: 2,
       label: 'Në ndërtim',
-      symbol: this.getSymbol('#5BA300')
+      symbol: this.getSymbol('#5BA300'),
     },
     {
       value: 4,
       label: 'Ekzistuese',
-      symbol: this.getSymbol('#B51963')
+      symbol: this.getSymbol('#B51963'),
     },
     {
       value: 5,
       label: 'E rrënuar',
-      symbol: this.getSymbol('#F57600')
+      symbol: this.getSymbol('#F57600'),
     },
     {
       value: 6,
       label: 'E shkatërruar / nuk ekziston më',
-      symbol: this.getSymbol('rgba(145,145,145,0.53)')
+      symbol: this.getSymbol('rgba(145,145,145,0.53)'),
     },
   ] as UniqueValueInfoProperties[];
 
@@ -56,8 +55,7 @@ export class CommonBuildingService {
     return new FeatureLayer({
       title: 'ASRDB Buildings',
       apiKey: token,
-      url: environment.building_url + '?token='
-        + token,
+      url: environment.building_url + '?token=' + token,
       outFields: ['*'],
       renderer: new UniqueValueRenderer({
         field: 'BldStatus',
@@ -79,18 +77,20 @@ export class CommonBuildingService {
             fieldInfos: [
               {
                 fieldName: 'BldStatus',
-                label: 'Status'
-              }, {
+                label: 'Status',
+              },
+              {
                 fieldName: 'BldEntranceRecs',
-                label: 'Number of recorded entrances'
-              }, {
+                label: 'Number of recorded entrances',
+              },
+              {
                 fieldName: 'BldDwellingRecs',
-                label: 'Number of recorded dwellings'
-              }
-            ]
-          }
-        ]
-      } as PopupTemplateProperties
+                label: 'Number of recorded dwellings',
+              },
+            ],
+          },
+        ],
+      } as PopupTemplateProperties,
     });
   }
 
@@ -98,8 +98,8 @@ export class CommonBuildingService {
     private esriAuthService: CommonEsriAuthService,
     private authState: AuthStateService,
     private httpClient: HttpClient,
-    private snackBar: MatSnackBar) {
-  }
+    private snackBar: MatSnackBar
+  ) {}
 
   getSymbol(color: string) {
     return {
@@ -108,8 +108,8 @@ export class CommonBuildingService {
       outline: {
         // autocasts as new SimpleLineSymbol()
         color: color,
-        width: 3
-      }
+        width: 3,
+      },
     };
   }
 
@@ -117,7 +117,9 @@ export class CommonBuildingService {
     return defer(() => from(this.fetchBuildingMunicipality(buildingId)));
   }
 
-  getBuildingData(filter?: Partial<QueryFilter>): Observable<EntityDataResponse | null> {
+  getBuildingData(
+    filter?: Partial<QueryFilter>
+  ): Observable<EntityDataResponse | null> {
     return defer(() => from(this.fetchBuildingData(filter)));
   }
 
@@ -130,86 +132,107 @@ export class CommonBuildingService {
   }
 
   createFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL = environment.building_url
-    + '/addFeatures?token='
-    + this.esriAuthService.getTokenForResource();
+    const addFeatureLayerURL =
+      environment.building_url +
+      '/addFeatures?token=' +
+      this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+    return this.httpClient.post<EntityManageResponse>(
+      addFeatureLayerURL,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       }
-    });
+    );
   }
 
   updateFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL = environment.building_url
-    + '/updateFeatures?token='
-    + this.esriAuthService.getTokenForResource();
+    const addFeatureLayerURL =
+      environment.building_url +
+      '/updateFeatures?token=' +
+      this.esriAuthService.getTokenForResource();
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(addFeatureLayerURL, body, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+    return this.httpClient.post<EntityManageResponse>(
+      addFeatureLayerURL,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       }
-    });
+    );
   }
 
   getBuildingQuality(bldId: string): Observable<string | null> {
     const filter = {
       where: `GlobalID = '${bldId}'`,
-      outFields: ['BldQuality']
-    } as Partial<QueryFilter>
-    return this.getBuildingData(filter)
-      .pipe(
-        catchError((err: any) => {
-          return this.handleError(err);
-        }),
-        map((res: EntityDataResponse | null) => {
-          if (!res) {
-            return res;
-          }
-          const [attributes] = res.data.features.map((field: any) => field.attributes);
-          const codedValues = res.data.fields[0].domain.codedValues;
-          return codedValues
-            .find((codedValue: {name: string, code: number}) => codedValue.code === attributes.BldQuality)
-            ?.name ?? '-';
-        })
-      )
+      outFields: ['BldQuality'],
+    } as Partial<QueryFilter>;
+    return this.getBuildingData(filter).pipe(
+      catchError((err: any) => {
+        return this.handleError(err);
+      }),
+      map((res: EntityDataResponse | null) => {
+        if (!res) {
+          return res;
+        }
+        const [attributes] = res.data.features.map(
+          (field: any) => field.attributes
+        );
+        const codedValues = res.data.fields[0].domain.codedValues;
+        return (
+          codedValues.find(
+            (codedValue: { name: string; code: number }) =>
+              codedValue.code === attributes.BldQuality
+          )?.name ?? '-'
+        );
+      })
+    );
   }
 
   resetStatus(bldId: string, callback?: () => void) {
     const filter = {
       where: `GlobalID = '${bldId}'`,
-      outFields: ['GlobalID', 'OBJECTID']
-    } as Partial<QueryFilter>
+      outFields: ['GlobalID', 'OBJECTID'],
+    } as Partial<QueryFilter>;
     this.getBuildingData(filter)
-      .pipe(catchError((err: any) => {
-        return this.handleError(err);
-      }))
+      .pipe(
+        catchError((err: any) => {
+          return this.handleError(err);
+        })
+      )
       .subscribe({
         next: (res: any) => {
           this.handleResponse(res, callback);
         },
         error: (err: any) => {
           return this.handleError(err);
-        }
+        },
       });
   }
 
   private handleResponse(res: any, callback?: () => void) {
-    const [attributes] = res.data.features.map((field: any) => field.attributes);
+    const [attributes] = res.data.features.map(
+      (field: any) => field.attributes
+    );
     const object = {
       GlobalID: attributes.GlobalID,
       OBJECTID: attributes.OBJECTID,
-      BldQuality: 9
-    }
-    this.updateFeature([{
-      attributes: object
-    }]).subscribe({
+      BldQuality: 9,
+    };
+    this.updateFeature([
+      {
+        attributes: object,
+      },
+    ]).subscribe({
       next: (response: EntityManageResponse) => {
-        const responseData = response['addResults']?.[0] ?? response['updateResults']?.[0];
+        const responseData =
+          response['addResults']?.[0] ?? response['updateResults']?.[0];
         if (!responseData?.success) {
           this.snackBar.open('Could not update value', 'Ok', {
-            duration: 3000
+            duration: 3000,
           });
           return;
         }
@@ -217,7 +240,7 @@ export class CommonBuildingService {
       },
       error: (err: any) => {
         return this.handleError(err);
-      }
+      },
     });
   }
 
@@ -229,39 +252,48 @@ export class CommonBuildingService {
   executeAutomaticRules(buildingId: string, callback?: () => void) {
     const body = {
       buildingIds: [buildingId.replace('{', '').replace('}', '')],
-      executionUser: this.authState.getNameId()
-    }
+      executionUser: this.authState.getNameId(),
+    };
     this.httpClient
-      .post(environment.base_url + '/qms/check/automatic', JSON.stringify(body), {
-        headers: {
-          'Content-Type': 'application/json'
+      .post(
+        environment.base_url + '/qms/check/automatic',
+        JSON.stringify(body),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      })
+      )
       .subscribe({
         next: () => {
           callback?.();
         },
-        error: (err) => {
-          this.snackBar.open('Could not start automatic rules execution', 'Ok', {
-            duration: 3000
-          });
+        error: err => {
+          this.snackBar.open(
+            'Could not start automatic rules execution',
+            'Ok',
+            {
+              duration: 3000,
+            }
+          );
           callback?.();
           return this.handleError(err);
-        }
-      })
+        },
+      });
   }
 
   // This function is called when user completes drawing a rectangle
   // on the map. Use the rectangle to select features in the layer and table
-  async checkIntersectingBuildings(view: MapView, geometries: Collection<Geometry>) {
+  async checkIntersectingBuildings(
+    view: MapView,
+    geometries: Collection<Geometry>
+  ) {
     const query = this.bldLayer.createQuery();
     query.geometry = await geometryEngine.union(geometries.toArray());
     query.outFields = ['GlobalID'];
     const response = await this.bldLayer.queryFeatures(query);
     const JSONResponse = await response.toJSON();
-    return JSONResponse
-      .features
-      .map((o: any) => o.attributes['GlobalID'])
+    return JSONResponse.features.map((o: any) => o.attributes['GlobalID'])
       .length;
   }
 
@@ -272,11 +304,15 @@ export class CommonBuildingService {
     dataQuery.outFields = ['*'];
     dataQuery.outStatistics = [];
     dataQuery.returnGeometry = false;
-    const features = await (await this.bldLayer.queryFeatures(dataQuery)).toJSON();
+    const features = await (
+      await this.bldLayer.queryFeatures(dataQuery)
+    ).toJSON();
     return features.fields;
   }
 
-  private async fetchBuildingData(filter?: Partial<QueryFilter>): Promise<EntityDataResponse | null> {
+  private async fetchBuildingData(
+    filter?: Partial<QueryFilter>
+  ): Promise<EntityDataResponse | null> {
     const dataQuery = this.bldLayer.createQuery();
     dataQuery.start = filter?.start ?? 0;
     dataQuery.num = filter?.num ?? 5;
@@ -294,13 +330,17 @@ export class CommonBuildingService {
 
     try {
       const featureCount = await this.bldLayer.queryFeatureCount(dataQuery);
-      const features = await (await this.bldLayer.queryFeatures(dataQuery)).toJSON();
-      const globalIds = (await (await this.bldLayer.queryFeatures(globalIdQuery)).toJSON()).features.map((o: any) => o.attributes['GlobalID']);
+      const features = await (
+        await this.bldLayer.queryFeatures(dataQuery)
+      ).toJSON();
+      const globalIds = (
+        await (await this.bldLayer.queryFeatures(globalIdQuery)).toJSON()
+      ).features.map((o: any) => o.attributes['GlobalID']);
 
       return {
         count: featureCount,
         data: features,
-        globalIds
+        globalIds,
       };
     } catch (e) {
       console.log(e);
@@ -317,10 +357,12 @@ export class CommonBuildingService {
     dataQuery.returnGeometry = false;
 
     try {
-      const features = await (await this.bldLayer.queryFeatures(dataQuery)).toJSON();
+      const features = await (
+        await this.bldLayer.queryFeatures(dataQuery)
+      ).toJSON();
 
       return {
-        data: features
+        data: features,
       };
     } catch (e) {
       console.log(e);
@@ -333,19 +375,29 @@ export class CommonBuildingService {
     query.where = filter.where ?? '1=1';
     query.outFields = filter.outFields ?? ['*'];
     query.returnGeometry = false;
-    query.groupByFieldsForStatistics = filter.groupByFieldsForStatistics ?? ['BldStatus'];
+    query.groupByFieldsForStatistics = filter.groupByFieldsForStatistics ?? [
+      'BldStatus',
+    ];
     query.orderByFields = filter.orderByFields ?? ['BldStatus'];
-    query.outStatistics = filter.outStatistics ?? [{
-      statisticType: 'count',
-      onStatisticField: 'BldStatus',
-      outStatisticFieldName: 'value'
-    }] as __esri.StatisticDefinition[];
+    query.outStatistics =
+      filter.outStatistics ??
+      ([
+        {
+          statisticType: 'count',
+          onStatisticField: 'BldStatus',
+          outStatisticFieldName: 'value',
+        },
+      ] as __esri.StatisticDefinition[]);
     return await this.bldLayer.queryFeatures(query);
   }
 
   private createRequestBody(features: any[]) {
     const data = [];
-    data.push(encodeURIComponent('features') + '=' + encodeURIComponent(JSON.stringify(features)));
+    data.push(
+      encodeURIComponent('features') +
+        '=' +
+        encodeURIComponent(JSON.stringify(features))
+    );
     data.push(encodeURIComponent('f') + '=' + encodeURIComponent('json'));
     return data.join('&');
   }

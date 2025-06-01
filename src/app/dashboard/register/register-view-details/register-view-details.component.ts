@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, isDevMode } from '@angular/core';
+import { Component, isDevMode, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { BuildingDetailComponent } from './component/building-detail/building-detail.component';
@@ -6,7 +6,7 @@ import { EntranceListViewComponent } from './component/entrance-list-view/entran
 import { DwellingListViewComponent } from './component/dwelling-list-view/dwelling-list-view.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import {Subject, takeUntil, catchError, of} from 'rxjs';
+import { catchError, of, Subject, takeUntil } from 'rxjs';
 import { QueryFilter } from '../model/query-filter';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
@@ -15,12 +15,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { Entrance } from '../model/entrance';
 import { RegisterMapComponent } from '../../common/components/register-map/register-map.component';
 import { RegisterFilterService } from '../register-table-view/register-filter.service';
-import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
-import {getDate} from "../model/common-utils";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {CommonEntranceService} from "../../common/service/common-entrance.service";
-import {HistoryDetailsComponent} from "./component/history-details/history-details.component";
-import {MatDivider} from "@angular/material/divider";
+import { RegisterLogService } from '../register-log-view/register-log-table/register-log.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import { HistoryDetailsComponent } from './component/history-details/history-details.component';
+import { MatDivider } from '@angular/material/divider';
+import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
+import {
+  CommonEntityStructureService,
+  EntityAttribute,
+} from '../../common/service/common-entity-structure.service';
+import { SectionField } from '../constant/common-constants';
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -36,12 +41,11 @@ import {MatDivider} from "@angular/material/divider";
     RegisterMapComponent,
     MatTooltipModule,
     HistoryDetailsComponent,
-    MatDivider
+    MatDivider,
   ],
-  providers: [
-  ],
+  providers: [],
   templateUrl: './register-view-details.component.html',
-  styleUrls: ['./register-view-details.component.css']
+  styleUrls: ['./register-view-details.component.css'],
 })
 export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   isLoadingResults = true;
@@ -52,209 +56,18 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   sections = [
     {
       title: 'Technical variables',
-      entries: [
-        {
-          title: '',
-          propName: 'BldID',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldCensus2023',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldAddressID',
-          value: '',
-          log: '',
-          logType: ''
-        },
-      ]
+      entries: [] as SectionField[],
     },
     {
       title: 'Identifying variables',
-      entries: [
-        {
-          title: '',
-          propName: 'BldMunicipality',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldEnumArea',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldCadastralZone',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldProperty',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldPermitNumber',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldPermitDate',
-          value: '',
-          log: '',
-          logType: ''
-        },
-      ]
+      entries: [] as SectionField[],
     },
     {
       title: 'Describing variables',
-      entries: [
-        {
-          title: '',
-          propName: 'BldStatus',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldYearConstruction',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldYearDemolition',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldType',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldClass',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldArea',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldFloorsAbove',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldFloorsUnder',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldHeight',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldVolume',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldEntranceRecs',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldDwellingRecs',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldPipedWater',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldRainWater',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldWasteWater',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldElectricity',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldPipedGas',
-          value: '',
-          log: '',
-          logType: ''
-        },
-        {
-          title: '',
-          propName: 'BldElevator',
-          value: '',
-          log: '',
-          logType: ''
-        },
-      ]
-    }
+      entries: [] as SectionField[],
+    },
   ];
+  titleSection = [] as SectionField[];
   loadedEntrances: Entrance[] = [];
 
   private destroy$ = new Subject();
@@ -263,26 +76,33 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private commonBuildingService: CommonBuildingService,
     private commonEntranceService: CommonEntranceService,
+    private commonEntityStructureService: CommonEntityStructureService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
     private registerLogService: RegisterLogService,
     private matSnack: MatSnackBar,
     private router: Router,
-    private activatedRoute: ActivatedRoute) {}
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.commonEntityStructureService.structureLoaded
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(response => {
+        if (!response.loading && response.structure) {
+          this.prepareStructure(response.structure);
+          this.loadLogs();
+        }
+      });
+  }
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '';
     if (this.id) {
       this.registerLogService.loadLogs(this.id);
       this.loadBuildingData();
+      this.commonEntityStructureService.getEntityStructure(BUILDING_ENTITY);
     } else {
       void this.router.navigateByUrl('dashboard/register');
     }
-    this.registerLogService.logs.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.fields.length) {
-        this.fillSections();
-      }
-    });
   }
 
   ngOnDestroy(): void {
@@ -295,11 +115,21 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   }
 
   getMunicipality(): string | number {
-    return this.commonBuildingRegisterHelper.getMunicipality(this.fields, 'BldMunicipality', this.building.BldMunicipality);
+    return this.commonBuildingRegisterHelper.getMunicipality(
+      this.fields,
+      'BldMunicipality',
+      this.building.BldMunicipality
+    );
   }
 
   getValueFromStatus(column: string) {
-    return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.building[column]) ?? 'Unknown';
+    return (
+      this.commonBuildingRegisterHelper.getValueFromStatus(
+        this.fields,
+        column,
+        this.building[column]
+      ) ?? ''
+    );
   }
 
   editBuilding(globalId: string) {
@@ -315,7 +145,9 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   }
 
   markEntranceAsUntestedData(entranceId: string) {
-    const entrance = this.loadedEntrances.find(entrance => entrance.GlobalID === entranceId);
+    const entrance = this.loadedEntrances.find(
+      entrance => entrance.GlobalID === entranceId
+    );
     if (entrance) {
       // Update entrance
       this.commonEntranceService.resetStatus(entranceId);
@@ -344,6 +176,16 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('dashboard/register');
   }
 
+  private loadLogs() {
+    this.registerLogService.logs
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.fields.length) {
+          this.fillSections();
+        }
+      });
+  }
+
   private prepareWhereCase() {
     return `GlobalID='${this.id}'`;
   }
@@ -353,14 +195,18 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       console.log('Data', res);
     }
     if (!res) {
-      this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
+      this.matSnack.open('Could not load result. Please try again', 'Ok', {
+        duration: 3000,
+      });
       this.isLoadingResults = false;
       return;
     }
     if (res.data.fields.length) {
       this.fields = res.data.fields;
     }
-    this.building = res.data.features.map((feature: any) => feature.attributes)[0];
+    this.building = res.data.features.map(
+      (feature: any) => feature.attributes
+    )[0];
     this.fillSections();
     this.isLoadingResults = false;
   }
@@ -368,12 +214,19 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   private fillSections() {
     this.sections.forEach(section => {
       section.entries.forEach(entry => {
-        entry.title = this.getTitle(entry.propName);
         entry.value = this.getValue(entry);
-        entry.log = this.registerLogService.getLogForVariable('BUILDING', entry.propName, this.id)
-          ?.qualityMessageEn ?? '';
-        entry.logType = this.registerLogService.getLogForVariable('BUILDING', entry.propName, this.id)
-          ?.qualityAction ?? '';
+        entry.log =
+          this.registerLogService.getLogForVariable(
+            BUILDING_ENTITY,
+            entry.propName,
+            this.id
+          )?.qualityMessageEn ?? '';
+        entry.logType =
+          this.registerLogService.getLogForVariable(
+            BUILDING_ENTITY,
+            entry.propName,
+            this.id
+          )?.qualityAction ?? '';
       });
     });
   }
@@ -387,20 +240,76 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   private loadBuilding() {
     this.isLoadingResults = true;
     const filter = {
-      where: this.prepareWhereCase()
+      where: this.prepareWhereCase(),
     } as Partial<QueryFilter>;
-    return this.commonBuildingService.getBuildingData(filter).pipe(catchError((err) => {
-      console.log(err);
-      this.matSnack.open('Could not load building. Please try again.', 'Ok', {
-        duration: 3000
-      });
-      return of(null);
-    }));
+    return this.commonBuildingService.getBuildingData(filter).pipe(
+      catchError(err => {
+        console.log(err);
+        this.matSnack.open('Could not load building. Please try again.', 'Ok', {
+          duration: 3000,
+        });
+        return of(null);
+      })
+    );
   }
 
   private loadBuildingData() {
-    this.loadBuilding().pipe(takeUntil(this.destroy$)).subscribe((res) => this.handleResponse(res));
+    this.loadBuilding()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(res => this.handleResponse(res));
   }
 
-  protected readonly getDate = getDate;
+  private prepareStructure(structure: EntityAttribute[]) {
+    const visibleFields = structure.reduce(
+      (acc, attr: EntityAttribute) => {
+        if (attr.section !== 'none' && !attr.internal) {
+          if (attr.section === 'technical') {
+            acc.technical.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'identification') {
+            acc.identifying.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'info') {
+            acc.describing.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          } else if (attr.section === 'title') {
+            acc.title.push({
+              title: attr.label.en,
+              propName: attr.name,
+              value: '',
+              log: '',
+              logType: '',
+            } as SectionField);
+          }
+        }
+        return acc;
+      },
+      {
+        technical: [] as SectionField[],
+        identifying: [] as SectionField[],
+        describing: [] as SectionField[],
+        title: [] as SectionField[],
+      }
+    );
+
+    this.sections[0].entries = visibleFields.technical;
+    this.sections[1].entries = visibleFields.identifying;
+    this.sections[2].entries = visibleFields.describing;
+    this.titleSection = visibleFields.title;
+  }
 }

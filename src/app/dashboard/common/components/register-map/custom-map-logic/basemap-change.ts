@@ -1,38 +1,56 @@
 import MapView from '@arcgis/core/views/MapView';
-import Popup from "@arcgis/core/widgets/Popup";
-import {Injectable} from "@angular/core";
-import {CUSTOM_BASEMAP, HYBRID_BASEMAP, OSM_BASEMAP} from "./BasemapTypes";
+import Popup from '@arcgis/core/widgets/Popup';
+import { Injectable } from '@angular/core';
+import { CUSTOM_BASEMAP, HYBRID_BASEMAP, OSM_BASEMAP } from './BasemapTypes';
 
 @Injectable()
 export class BaseMapChangeService {
-  async createBasemapChangeAction(view: MapView, webmapCallback: Function, eventsCleanupCallbacks: any[]) {
+  async createBasemapChangeAction(
+    view: MapView,
+    webmapCallback: Function,
+    eventsCleanupCallbacks: any[]
+  ) {
     const basemap = this.createBasemapButton();
-    const popup = await this.createPopupForBasemapChange(webmapCallback, eventsCleanupCallbacks);
+    const popup = await this.createPopupForBasemapChange(
+      webmapCallback,
+      eventsCleanupCallbacks
+    );
     this.registerBasemapEventListener(popup, basemap, eventsCleanupCallbacks);
 
-    view.ui.add(basemap, "top-left");
+    view.ui.add(basemap, 'top-left');
     view.ui.add(popup);
   }
 
-  private async createPopupForBasemapChange(webmapCallback: Function, eventsCleanupCallbacks: any[]) {
+  private async createPopupForBasemapChange(
+    webmapCallback: Function,
+    eventsCleanupCallbacks: any[]
+  ) {
     const popup = new Popup({
-      title: "Change base map",
+      title: 'Change base map',
       dockEnabled: true,
       dockOptions: {
         // Disables the dock button from the popup
         buttonEnabled: false,
         // Ignore the default sizes that trigger responsive docking
-        breakpoint: false
+        breakpoint: false,
       },
       visibleElements: {
-        closeButton: true
-      }
+        closeButton: true,
+      },
     });
-    popup.content = await this.createPopupContent(webmapCallback, popup, eventsCleanupCallbacks);
+    popup.content = await this.createPopupContent(
+      webmapCallback,
+      popup,
+      eventsCleanupCallbacks
+    );
     return popup;
   }
 
-  private registerBasemapEventListener(popup: Popup, basemap: HTMLDivElement, eventsCleanupCallbacks: any[]) {
+  private registerBasemapEventListener(
+    popup: Popup,
+    basemap: HTMLDivElement,
+    eventsCleanupCallbacks: any[]
+  ) {
     const basemapEventListener = () => {
       popup.open();
     };
@@ -42,14 +60,30 @@ export class BaseMapChangeService {
     });
   }
 
-  private async createPopupContent(webmapCallback: Function, popup: Popup, eventsCleanupCallbacks: any[]) {
+  private async createPopupContent(
+    webmapCallback: Function,
+    popup: Popup,
+    eventsCleanupCallbacks: any[]
+  ) {
     const popupContent = document.createElement('div');
-    popupContent.style.width = "100%";
-    popupContent.style.height = "100%";
+    popupContent.style.width = '100%';
+    popupContent.style.height = '100%';
 
-    const hybridMap = this.createHybridMapItem(webmapCallback, popup, eventsCleanupCallbacks);
-    const osmMap = this.createOsmMapItem(webmapCallback, popup, eventsCleanupCallbacks);
-    const customMap = await this.createCustomMapItem(webmapCallback, popup, eventsCleanupCallbacks);
+    const hybridMap = this.createHybridMapItem(
+      webmapCallback,
+      popup,
+      eventsCleanupCallbacks
+    );
+    const osmMap = this.createOsmMapItem(
+      webmapCallback,
+      popup,
+      eventsCleanupCallbacks
+    );
+    const customMap = await this.createCustomMapItem(
+      webmapCallback,
+      popup,
+      eventsCleanupCallbacks
+    );
 
     popupContent.appendChild(hybridMap);
     popupContent.appendChild(osmMap);
@@ -57,15 +91,19 @@ export class BaseMapChangeService {
     return popupContent;
   }
 
-  private createOsmMapItem(webmapCallback: Function, popup: Popup, eventsCleanupCallbacks: any[]) {
+  private createOsmMapItem(
+    webmapCallback: Function,
+    popup: Popup,
+    eventsCleanupCallbacks: any[]
+  ) {
     const osmMap = document.createElement('div');
-    osmMap.id = "basemap-osm-selection";
-    osmMap.className = "esri-widget esri-interactive basemap-item";
+    osmMap.id = 'basemap-osm-selection';
+    osmMap.className = 'esri-widget esri-interactive basemap-item';
     const popupContentSpanIcon2 = document.createElement('span');
-    popupContentSpanIcon2.className = "esri-icon-basemap";
+    popupContentSpanIcon2.className = 'esri-icon-basemap';
     const popupContentSpan2 = document.createElement('span');
-    popupContentSpan2.textContent = "OSM map";
-    popupContentSpan2.className = "basemap-type-item"
+    popupContentSpan2.textContent = 'OSM map';
+    popupContentSpan2.className = 'basemap-type-item';
     osmMap.appendChild(popupContentSpanIcon2);
     osmMap.appendChild(popupContentSpan2);
     const osmMapEventListener = () => {
@@ -79,15 +117,19 @@ export class BaseMapChangeService {
     return osmMap;
   }
 
-  private createHybridMapItem(webmapCallback: Function, popup: Popup, eventsCleanupCallbacks: any[]) {
+  private createHybridMapItem(
+    webmapCallback: Function,
+    popup: Popup,
+    eventsCleanupCallbacks: any[]
+  ) {
     const hybridMap = document.createElement('div');
-    hybridMap.id = "basemap-hybrid-selection";
-    hybridMap.className = "esri-widget esri-interactive basemap-item";
+    hybridMap.id = 'basemap-hybrid-selection';
+    hybridMap.className = 'esri-widget esri-interactive basemap-item';
     const popupContentSpanIcon = document.createElement('span');
-    popupContentSpanIcon.className = "esri-icon-basemap";
+    popupContentSpanIcon.className = 'esri-icon-basemap';
     const popupContentSpan = document.createElement('span');
-    popupContentSpan.textContent = "Hybrid map";
-    popupContentSpan.className = "basemap-type-item"
+    popupContentSpan.textContent = 'Hybrid map';
+    popupContentSpan.className = 'basemap-type-item';
     hybridMap.appendChild(popupContentSpanIcon);
     hybridMap.appendChild(popupContentSpan);
     const hybridMapEventListener = () => {
@@ -101,15 +143,19 @@ export class BaseMapChangeService {
     return hybridMap;
   }
 
-  private async createCustomMapItem(webmapCallback: Function, popup: Popup, eventsCleanupCallbacks: any[]) {
+  private async createCustomMapItem(
+    webmapCallback: Function,
+    popup: Popup,
+    eventsCleanupCallbacks: any[]
+  ) {
     const hybridMap = document.createElement('div');
-    hybridMap.id = "basemap-custom-selection";
-    hybridMap.className = "esri-widget esri-interactive basemap-item";
+    hybridMap.id = 'basemap-custom-selection';
+    hybridMap.className = 'esri-widget esri-interactive basemap-item';
     const popupContentSpanIcon = document.createElement('span');
-    popupContentSpanIcon.className = "esri-icon-basemap";
+    popupContentSpanIcon.className = 'esri-icon-basemap';
     const popupContentSpan = document.createElement('span');
-    popupContentSpan.textContent = "Custom map";
-    popupContentSpan.className = "basemap-type-item"
+    popupContentSpan.textContent = 'Custom map';
+    popupContentSpan.className = 'basemap-type-item';
     hybridMap.appendChild(popupContentSpanIcon);
     hybridMap.appendChild(popupContentSpan);
     const customMapEventListener = () => {
@@ -126,10 +172,11 @@ export class BaseMapChangeService {
   private createBasemapButton() {
     const basemap = document.createElement('div');
     const span = document.createElement('span');
-    basemap.id = "basemap-selection";
-    basemap.className = "esri-widget esri-widget--button esri-widget esri-interactive";
+    basemap.id = 'basemap-selection';
+    basemap.className =
+      'esri-widget esri-widget--button esri-widget esri-interactive';
     basemap.title = 'Change map type';
-    span.className = "esri-icon-basemap";
+    span.className = 'esri-icon-basemap';
     basemap.appendChild(span);
     return basemap;
   }

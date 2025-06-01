@@ -7,12 +7,12 @@ import { BehaviorSubject, Observer } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export type SignupForm = FormGroup<{
-    email: FormControl<string | null>;
-    firstName: FormControl<string | null>;
-    lastName: FormControl<string | null>;
-    password: FormControl<string | null>;
-    confirmPassword: FormControl<string | null>;
-    municipality: FormControl<string | null>;
+  email: FormControl<string | null>;
+  firstName: FormControl<string | null>;
+  lastName: FormControl<string | null>;
+  password: FormControl<string | null>;
+  confirmPassword: FormControl<string | null>;
+  municipality: FormControl<string | null>;
 }>;
 
 export type SignupFormValue = Partial<{
@@ -32,24 +32,37 @@ export class SignupService {
       this.signingUp.next(false);
       this.router.navigateByUrl('/auth/signin');
     },
-    error: (error) => {
+    error: error => {
       this.signingUp.next(false);
       console.error(error);
       this.matSnack.open('Could not sign up. Please try again later', 'Ok', {
-        duration: 3000
+        duration: 3000,
       });
-    }
+    },
   } as Observer<any>;
 
-  constructor(private httpClient: HttpClient, private router: Router, private matSnack: MatSnackBar) { }
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router,
+    private matSnack: MatSnackBar
+  ) {}
 
   createSignupForm(): SignupForm {
     return new FormGroup({
       email: new FormControl('', [Validators.email, Validators.required]),
-      firstName: new FormControl('', [Validators.required, Validators.pattern(/^[a-z]+$/i)]),
+      firstName: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[a-z]+$/i),
+      ]),
       lastName: new FormControl('', [Validators.pattern(/^[a-z]+$/i)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-      confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+      ]),
+      confirmPassword: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+      ]),
       municipality: new FormControl('', [Validators.required]),
     });
   }
@@ -61,13 +74,15 @@ export class SignupService {
       lastName: signupForm.lastName ?? '',
       email: signupForm.email,
       password: signupForm.password,
-      municipalityCode: signupForm.municipality?.toString()
+      municipalityCode: signupForm.municipality?.toString(),
     };
-    this.httpClient.post<any>(environment.base_url + '/auth/signup', JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).subscribe(this.signupObserver);
+    this.httpClient
+      .post<any>(environment.base_url + '/auth/signup', JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .subscribe(this.signupObserver);
   }
 
   get signingUpAsObservable() {

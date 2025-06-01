@@ -1,28 +1,36 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {MatStepperModule} from '@angular/material/stepper';
-import {BuildingCreationComponent} from './building-creation/building-creation.component';
-import {BuildingDetailsFormComponent} from './building-details-form/building-details-form.component';
-import {EntranceDetailsFormComponent} from './entrance-details-form/entrance-details-form.component';
-import {CommonBuildingService} from '../../common/service/common-building.service';
-import {CommonEntranceService} from '../../common/service/common-entrance.service';
-import {map, Subject, takeUntil, zip} from 'rxjs';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {BuildingManagementService} from './building-creation.service';
-import {Centroid, Point} from '../model/map-data';
-import {Building} from '../model/building';
-import {Entrance} from '../model/entrance';
-import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatStepperModule } from '@angular/material/stepper';
+import { BuildingCreationComponent } from './building-creation/building-creation.component';
+import { BuildingDetailsFormComponent } from './building-details-form/building-details-form.component';
+import { EntranceDetailsFormComponent } from './entrance-details-form/entrance-details-form.component';
+import { CommonBuildingService } from '../../common/service/common-building.service';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import { catchError, map, Subject, takeUntil, zip } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { BuildingManagementService } from './building-creation.service';
+import { Centroid, Point } from '../model/map-data';
+import { Building } from '../model/building';
+import { Entrance } from '../model/entrance';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 import Geometry from '@arcgis/core/geometry/Geometry';
-import {EntranceManagementService} from './entrance-creation.service';
-import {EntityType} from "../../quality-management/quality-management-config";
-import {RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
-import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {EntityCreationMapService} from "./entity-management-map.service";
-import {BaseMapChangeService} from "../../common/components/register-map/custom-map-logic/basemap-change";
+import { EntranceManagementService } from './entrance-creation.service';
+import { EntityType } from '../../quality-management/quality-management-config';
+import { RegisterLogService } from '../register-log-view/register-log-table/register-log.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { EntityCreationMapService } from './entity-management-map.service';
+import { BaseMapChangeService } from '../../common/components/register-map/custom-map-logic/basemap-change';
+import {
+  BUILDING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../../common/constants/common-constants';
+import {
+  CommonEntityStructureService,
+  EntityAttribute,
+} from '../../common/service/common-entity-structure.service';
 
 @Component({
   selector: 'asrdb-register-form',
@@ -37,11 +45,17 @@ import {BaseMapChangeService} from "../../common/components/register-map/custom-
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
   ],
-  providers: [BuildingManagementService, EntranceManagementService, RegisterLogService, EntityCreationMapService, BaseMapChangeService],
+  providers: [
+    BuildingManagementService,
+    EntranceManagementService,
+    RegisterLogService,
+    EntityCreationMapService,
+    BaseMapChangeService,
+  ],
   templateUrl: './register-form.component.html',
-  styleUrls: ['./register-form.component.css']
+  styleUrls: ['./register-form.component.css'],
 })
 export class RegisterFormComponent implements OnInit {
   @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
@@ -49,12 +63,11 @@ export class RegisterFormComponent implements OnInit {
   private isSavingBuilding = this.buildingManagementService.isSavingObservable;
   private isSavingEntrance = this.entranceManagementService.isSavingObservable;
 
-  isSaving = zip([this.isSavingBuilding, this.isSavingEntrance])
-    .pipe(
-      map(([isSavingBuilding, isSavingEntrance]) => {
-        return isSavingBuilding || isSavingEntrance;
-      })
-    );
+  isSaving = zip([this.isSavingBuilding, this.isSavingEntrance]).pipe(
+    map(([isSavingBuilding, isSavingEntrance]) => {
+      return isSavingBuilding || isSavingEntrance;
+    })
+  );
 
   isLoadingData = true;
 
@@ -64,7 +77,7 @@ export class RegisterFormComponent implements OnInit {
   existingBuildingGeometry?: Geometry;
   existingEntrancesDetails?: Entrance[];
   existingEntrancesGeometry?: Geometry[];
-
+  structure: EntityAttribute[] = [];
 
   mapDetails = new FormGroup({});
   buildingDetails = new FormGroup({});
@@ -75,11 +88,11 @@ export class RegisterFormComponent implements OnInit {
   readonly entranceId: string | null;
 
   get isBuilding() {
-    return this.entityType === 'BUILDING';
+    return this.entityType === BUILDING_ENTITY;
   }
 
   get isEntrance() {
-    return this.entityType === 'ENTRANCE';
+    return this.entityType === ENTRANCE_ENTITY;
   }
 
   constructor(
@@ -88,49 +101,100 @@ export class RegisterFormComponent implements OnInit {
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
     private registerLogService: RegisterLogService,
+    private commonEntityStructureService: CommonEntityStructureService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private matDialog: MatDialog,
-    private matSnackBar: MatSnackBar) {
-    this.entranceId = this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
+    private matSnackBar: MatSnackBar
+  ) {
+    this.entranceId =
+      this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
   }
 
   ngOnInit(): void {
-    this.entityType = this.activatedRoute.snapshot.paramMap.get('entity') as EntityType ?? undefined;
+    this.entityType =
+      (this.activatedRoute.snapshot.paramMap.get('entity') as EntityType) ??
+      undefined;
     if (!this.entityType) {
       this.router.navigateByUrl('dashboard/register');
       this.matSnackBar.open('No entity type provided', 'Ok', {
-        duration: 3000
+        duration: 3000,
       });
       return;
     }
-    this.buildingId = this.activatedRoute.snapshot.paramMap.get('id') ?? undefined;
+    this.buildingId =
+      this.activatedRoute.snapshot.paramMap.get('id') ?? undefined;
 
-    if (this.entityType === 'ENTRANCE' && !this.buildingId) {
-      this.matSnackBar.open('Creating an entrance before a building is not permitted', 'Ok', {
-        duration: 3000
-      });
+    if (this.entityType === ENTRANCE_ENTITY && !this.buildingId) {
+      this.matSnackBar.open(
+        'Creating an entrance before a building is not permitted',
+        'Ok',
+        {
+          duration: 3000,
+        }
+      );
       void this.router.navigateByUrl('dashboard/register');
       return;
     }
 
     if (this.buildingId) {
       this.registerLogService.loadLogs(this.buildingId);
+      this.commonEntityStructureService.getEntityStructure(this.entityType);
+
       const getBuildingRequest = this.buildingService
-        .getBuildingData({ returnGeometry: true, where: `globalID='${this.buildingId}'` })
+        .getBuildingData({
+          returnGeometry: true,
+          where: `globalID='${this.buildingId}'`,
+        })
         .pipe(takeUntil(this.subscriber));
       const getEntranceRequest = this.entranceService
-        .getEntranceData({ returnGeometry: true, where: `EntBldGlobalID='${this.buildingId}'` })
+        .getEntranceData({
+          returnGeometry: true,
+          where: `EntBldGlobalID='${this.buildingId}'`,
+        })
         .pipe(takeUntil(this.subscriber));
+      this.commonEntityStructureService.structureLoaded
+        .pipe(takeUntil(this.subscriber))
+        .subscribe(response => {
+          if (!response.loading && response.structure) {
+            this.structure = response.structure;
+          }
+        });
 
-      zip([getBuildingRequest, getEntranceRequest]).subscribe(([building, entrances]) => {
-        this.existingBuildingDetails = building?.data.features[0].attributes;
-        this.existingBuildingGeometry = { ...building?.data.features[0].geometry, type: 'polygon', id: this.buildingId };
+      zip([getBuildingRequest, getEntranceRequest])
+        .pipe(
+          catchError(error => {
+            this.matSnackBar.open(
+              'Error loading data: ' + error.message,
+              'Ok',
+              {
+                duration: 5000,
+              }
+            );
+            this.isLoadingData = false;
+            return [];
+          })
+        )
+        .subscribe(([building, entrances]) => {
+          this.existingBuildingDetails = building?.data.features[0].attributes;
+          this.existingBuildingGeometry = {
+            ...building?.data.features[0].geometry,
+            type: 'polygon',
+            id: this.buildingId,
+          };
 
-        this.existingEntrancesDetails = entrances?.data.features.map((featrue: any) => featrue.attributes);
-        this.existingEntrancesGeometry = entrances?.data.features.map((featrue: any) => ({ ...featrue.geometry, type: 'point', id: featrue.attributes.GlobalID }));
-        this.isLoadingData = false;
-      });
+          this.existingEntrancesDetails = entrances?.data.features.map(
+            (featrue: any) => featrue.attributes
+          );
+          this.existingEntrancesGeometry = entrances?.data.features.map(
+            (featrue: any) => ({
+              ...featrue.geometry,
+              type: 'point',
+              id: featrue.attributes.GlobalID,
+            })
+          );
+          this.isLoadingData = false;
+        });
     } else {
       this.isLoadingData = false;
     }
@@ -140,7 +204,7 @@ export class RegisterFormComponent implements OnInit {
     if (this.buildingId === centroid.id || !centroid.id) {
       this.buildingDetails.patchValue({
         BldLatitude: centroid.latitude,
-        BldLongitude: centroid.longitude
+        BldLongitude: centroid.longitude,
       });
     } else if (centroid.id) {
       this.entranceCentroids.push(centroid);
@@ -151,15 +215,22 @@ export class RegisterFormComponent implements OnInit {
     if (!this.cancelConfirmDialog) {
       return this.closeDialog();
     }
-    this.matDialog.open(this.cancelConfirmDialog).afterClosed().subscribe(confirm => {
-      if (confirm) {
-        this.closeDialog()
-      }
-    });
+    this.matDialog
+      .open(this.cancelConfirmDialog)
+      .afterClosed()
+      .subscribe(confirm => {
+        if (confirm) {
+          this.closeDialog();
+        }
+      });
   }
 
   save() {
-    if (this.mapDetails.invalid || this.buildingDetails.invalid || this.entranceDetails.invalid) {
+    if (
+      this.mapDetails.invalid ||
+      this.buildingDetails.invalid ||
+      this.entranceDetails.invalid
+    ) {
       this.showErrorMessage();
       return;
     }
@@ -169,26 +240,41 @@ export class RegisterFormComponent implements OnInit {
 
     if (this.isBuilding) {
       const buildingPoly = (this.mapDetails.value as any)['buildingPoly'];
-      this.buildingManagementService.saveBuilding(buildingPoly, buildingDetails);
+      this.buildingManagementService.saveBuilding(
+        buildingPoly,
+        buildingDetails
+      );
     } else if (this.isEntrance && this.buildingId) {
       const entranceToSave = this.getEntrancePointToSave();
       if (!entranceToSave) {
         this.showErrorMessage();
         return;
       }
-      this.entranceManagementService.saveEntranceEntity(entranceToSave as Point, entranceDetails, this.buildingId);
-      this.buildingService.resetStatus(this.buildingId, () => {this.goToDetails()});
+      this.entranceManagementService.saveEntranceEntity(
+        entranceToSave as Point,
+        entranceDetails,
+        this.buildingId
+      );
+      this.buildingService.resetStatus(this.buildingId, () => {
+        this.goToDetails();
+      });
     }
   }
 
   private goToDetails() {
-    void this.router.navigateByUrl('/dashboard/register/details/BUILDING/' + this.buildingId);
+    void this.router.navigateByUrl(
+      '/dashboard/register/details/BUILDING/' + this.buildingId
+    );
   }
 
   private showErrorMessage() {
-    this.matSnackBar.open('Data cannot be saved. Please check the form for invalid data.', 'Ok', {
-      duration: 3000
-    });
+    this.matSnackBar.open(
+      'Data cannot be saved. Please check the form for invalid data.',
+      'Ok',
+      {
+        duration: 3000,
+      }
+    );
     this.mapDetails.markAllAsTouched();
     this.buildingDetails.markAllAsTouched();
     this.entranceDetails.markAllAsTouched();
@@ -196,10 +282,12 @@ export class RegisterFormComponent implements OnInit {
 
   private closeDialog() {
     this.matSnackBar.open('All changes were discarded', 'Ok', {
-      duration: 3000
+      duration: 3000,
     });
     if (this.buildingId) {
-      this.router.navigateByUrl('dashboard/register/details/BUILDING/' + this.buildingId);
+      this.router.navigateByUrl(
+        'dashboard/register/details/BUILDING/' + this.buildingId
+      );
     } else {
       this.router.navigateByUrl('dashboard/register');
     }
@@ -222,7 +310,7 @@ export class RegisterFormComponent implements OnInit {
     const entrance = {} as any;
     const centroid = this.entranceCentroids.find(centroid => {
       if (!centroid.id) {
-        throw new Error("Centroid must have an id for the entrance");
+        throw new Error('Centroid must have an id for the entrance');
       }
       if (this.entranceId) {
         return centroid.id === this.entranceId;
@@ -238,9 +326,10 @@ export class RegisterFormComponent implements OnInit {
     });
     entrance['GlobalID'] = this.entranceId ?? undefined;
     if (this.entranceId) {
-      entrance['OBJECTID'] = this.existingEntrancesDetails
-        ?.find(ent => ent.GlobalID === this.entranceId as string)
-        ?.OBJECTID ?? '';
+      entrance['OBJECTID'] =
+        this.existingEntrancesDetails?.find(
+          ent => ent.GlobalID === (this.entranceId as string)
+        )?.OBJECTID ?? '';
     }
     entrance['EntLatitude'] = centroid?.latitude;
     entrance['EntLongitude'] = centroid?.longitude;

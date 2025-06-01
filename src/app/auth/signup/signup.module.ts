@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 import { SignupRoutingModule } from './signup-routing.module';
 import { SignupComponent } from './signup.component';
@@ -12,12 +12,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SignupService } from './signup.service';
-import {MatSelectModule} from "@angular/material/select";
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  declarations: [
-    SignupComponent
-  ],
+  declarations: [SignupComponent],
   imports: [
     CommonModule,
     SignupRoutingModule,
@@ -30,8 +28,8 @@ import {MatSelectModule} from "@angular/material/select";
     MatButtonModule,
     MatSnackBarModule,
     MatSelectModule,
-    NgOptimizedImage
+    NgOptimizedImage,
   ],
-  providers: [SignupService]
+  providers: [SignupService],
 })
-export class SignupModule { }
+export class SignupModule {}

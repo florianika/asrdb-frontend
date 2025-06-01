@@ -16,12 +16,14 @@
       <span *ngIf="isBuilding"> building</span>
     </h1>
     <asrdb-building-details-form
-      *ngIf="isBuilding"
+      *ngIf="isBuilding && structure"
+      [structure]="structure"
       [formGroup]="buildingDetails"
       [existingBuildingDetails]="existingBuildingDetails">
     </asrdb-building-details-form>
     <asrdb-entrance-details-form
-      *ngIf="isEntrance"
+      *ngIf="isEntrance && structure"
+      [structure]="structure"
       [buildingId]="buildingId"
       [formGroup]="entranceDetails"
       [existingEntrancesDetails]="existingEntrancesDetails">

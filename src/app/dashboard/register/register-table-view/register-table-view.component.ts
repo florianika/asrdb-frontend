@@ -6,13 +6,8 @@ import { RegisterTableComponent } from './register-table/register-table.componen
 @Component({
   selector: 'asrdb-register-table-view',
   standalone: true,
-  imports: [
-    CommonModule,
-    RegisterMapComponent,
-    RegisterTableComponent
-  ],
+  imports: [CommonModule, RegisterMapComponent, RegisterTableComponent],
   templateUrl: './register-table-view.component.html',
-  styleUrls: ['./register-table-view.component.css']
+  styleUrls: ['./register-table-view.component.css'],
 })
-export class RegisterTableViewComponent {
-}
+export class RegisterTableViewComponent {}

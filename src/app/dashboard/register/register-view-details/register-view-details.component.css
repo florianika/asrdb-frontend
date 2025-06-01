@@ -1,14 +1,5 @@
 @import 'https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/light/main.css';
 
-.building-details-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 13px;
-}
-
 .building-details-card {
   display: flex;
   flex-grow: 1;

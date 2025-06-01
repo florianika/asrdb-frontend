@@ -1,19 +1,16 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {BuildingDetailComponent} from "../building-detail/building-detail.component";
-import {MatCardModule} from "@angular/material/card";
-import {getDate} from "../../../model/common-utils";
-import {HistoryDetailsService} from "./history-details.service";
+import {CommonModule} from '@angular/common';
+import {MatCardModule} from '@angular/material/card';
+import {getDate} from '../../../model/common-utils';
+import {HistoryDetailsService} from './history-details.service';
 
 @Component({
   selector: 'asrdb-history-details',
   standalone: true,
-  imports: [CommonModule, BuildingDetailComponent, MatCardModule],
-  providers: [
-    HistoryDetailsService
-  ],
+  imports: [CommonModule, MatCardModule],
+  providers: [HistoryDetailsService],
   templateUrl: './history-details.component.html',
-  styleUrls: ['./history-details.component.css']
+  styleUrls: ['./history-details.component.css'],
 })
 export class HistoryDetailsComponent implements OnInit {
   @Input() externalCreator!: string;
@@ -25,10 +22,12 @@ export class HistoryDetailsComponent implements OnInit {
   externalCreatorObservable = this.historyService.createUserObservable;
   externalUpdaterObservable = this.historyService.updateUserObservable;
 
-  constructor(private historyService: HistoryDetailsService) {
-  }
+  constructor(private historyService: HistoryDetailsService) {}
 
   ngOnInit() {
-    this.historyService.loadUserDetails(this.externalCreator, this.externalUpdater);
+    this.historyService.loadUserDetails(
+      this.externalCreator,
+      this.externalUpdater
+    );
   }
 }

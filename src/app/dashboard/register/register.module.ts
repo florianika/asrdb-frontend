@@ -18,9 +18,9 @@ import { CommonDwellingService } from '../common/service/common-dwellings.servic
 import { CommonEsriAuthService } from '../common/service/common-esri-auth.service';
 import { CommonRegisterHelperService } from '../common/service/common-helper.service';
 import { RegisterFilterService } from './register-table-view/register-filter.service';
-import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {RegisterLogService} from "./register-log-view/register-log-table/register-log.service";
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RegisterLogService } from './register-log-view/register-log-table/register-log.service';
+import { CommonEntityStructureService } from '../common/service/common-entity-structure.service';
 
 @NgModule({
   declarations: [],
@@ -47,7 +47,8 @@ import {RegisterLogService} from "./register-log-view/register-log-table/registe
     CommonEsriAuthService,
     CommonRegisterHelperService,
     RegisterFilterService,
-    RegisterLogService
-  ]
+    RegisterLogService,
+    CommonEntityStructureService,
+  ],
 })
-export class RegisterModule { }
+export class RegisterModule {}

@@ -21,23 +21,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
-import {MatListModule} from '@angular/material/list';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { QualityManagementTableFilterComponent } from './quality-management-table/quality-management-table-fitler/quality-management-table-filter.component';
 import { VariableSelectorComponent } from 'src/app/common/standalone-components/variable-selector/variable-selector.component';
-import {ACE_CONFIG, AceConfigInterface, AceModule} from "ngx-ace-wrapper";
-import {
-  QualityManagementVariableSelectionComponent
-} from "./quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {CommonEsriAuthService} from "../common/service/common-esri-auth.service";
-import {CommonBuildingService} from "../common/service/common-building.service";
-import {CommonEntranceService} from "../common/service/common-entrance.service";
-import {CommonDwellingService} from "../common/service/common-dwellings.service";
+import { ACE_CONFIG, AceConfigInterface, AceModule } from 'ngx-ace-wrapper';
+import { QualityManagementVariableSelectionComponent } from './quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonEsriAuthService } from '../common/service/common-esri-auth.service';
+import { CommonBuildingService } from '../common/service/common-building.service';
+import { CommonEntranceService } from '../common/service/common-entrance.service';
+import { CommonDwellingService } from '../common/service/common-dwellings.service';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
   readOnly: false,
-  minLines: 20
+  minLines: 20,
 };
 
 @NgModule({
@@ -46,7 +44,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     QualityManagementEditComponent,
     QualityManagementFormComponent,
     QualityManagementTableFilterComponent,
-    QualityManagementVariableSelectionComponent
+    QualityManagementVariableSelectionComponent,
   ],
   imports: [
     CommonModule,
@@ -71,7 +69,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     FormsModule,
     VariableSelectorComponent,
     AceModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   providers: [
     QualityManagementService,
@@ -81,8 +79,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     CommonDwellingService,
     {
       provide: ACE_CONFIG,
-      useValue: DEFAULT_ACE_CONFIG
-    }
-  ]
+      useValue: DEFAULT_ACE_CONFIG,
+    },
+  ],
 })
-export class QualityManagementModule { }
+export class QualityManagementModule {}

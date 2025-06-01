@@ -1,6 +1,17 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { EntityType, QualityAction, QualityRule, RuleStatus } from '../../quality-management-config';
+import {
+  EntityType,
+  QualityAction,
+  QualityRule,
+  RuleStatus,
+} from '../../quality-management-config';
 import { QualityManagementService } from '../../quality-management.service';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,12 +19,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import 'brace';
 import 'brace/mode/sql.js';
 import 'brace/theme/github';
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'asrdb-quality-management-form',
   templateUrl: './quality-management-form.component.html',
-  styleUrls: ['./quality-management-form.component.css']
+  styleUrls: ['./quality-management-form.component.css'],
 })
 export class QualityManagementFormComponent implements OnInit {
   @Input() rule?: QualityRule;
@@ -38,56 +49,97 @@ export class QualityManagementFormComponent implements OnInit {
     private qualityManagementService: QualityManagementService,
     private matDialog: MatDialog,
     private matSnackBar: MatSnackBar,
-    private router: Router,
-  ) {
-
-  }
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.firstFormGroup = new FormGroup({
-      localId: new FormControl<string>(this.rule?.localId ?? '', [Validators.required]),
-      entityType: new FormControl<EntityType>({ value: this.rule?.entityType ?? this.qualityType, disabled: true }, [Validators.required]),
-      variable: new FormControl<string>(this.rule?.variable ?? '', [Validators.required]),
-      nameAl: new FormControl<string>(this.rule?.nameAl ?? ''),
-      nameEn: new FormControl<string>(this.rule?.nameEn ?? ''),
-      descriptionAl: new FormControl<string>(this.rule?.descriptionAl ?? ''),
-      descriptionEn: new FormControl<string>(this.rule?.descriptionEn ?? ''),
-    }, { updateOn: 'blur' });
+    this.firstFormGroup = new FormGroup(
+      {
+        localId: new FormControl<string>(this.rule?.localId ?? '', [
+          Validators.required,
+        ]),
+        entityType: new FormControl<EntityType>(
+          { value: this.rule?.entityType ?? this.qualityType, disabled: true },
+          [Validators.required]
+        ),
+        variable: new FormControl<string>(this.rule?.variable ?? '', [
+          Validators.required,
+        ]),
+        nameAl: new FormControl<string>(this.rule?.nameAl ?? ''),
+        nameEn: new FormControl<string>(this.rule?.nameEn ?? ''),
+        descriptionAl: new FormControl<string>(this.rule?.descriptionAl ?? ''),
+        descriptionEn: new FormControl<string>(this.rule?.descriptionEn ?? ''),
+      },
+      { updateOn: 'blur' }
+    );
 
-    this.secondFormGroup = new FormGroup({
-      qualityAction: new FormControl<QualityAction>(this.rule?.qualityAction ?? 'AUT', [Validators.required]),
-      ruleStatus: new FormControl<RuleStatus>(this.rule?.ruleStaus ?? 'ACTIVE', [Validators.required]),
-      ruleRequirement: new FormControl<string>(this.rule?.ruleRequirement ?? ''),
-      remark: new FormControl<string>(this.rule?.remark ?? ''),
-      qualityMessageAl: new FormControl<string>(this.rule?.qualityMessageAl ?? '', [Validators.required]),
-      qualityMessageEn: new FormControl<string>(this.rule?.qualityMessageEn ?? '', [Validators.required]),
-    }, { updateOn: 'blur' });
+    this.secondFormGroup = new FormGroup(
+      {
+        qualityAction: new FormControl<QualityAction>(
+          this.rule?.qualityAction ?? 'AUT',
+          [Validators.required]
+        ),
+        ruleStatus: new FormControl<RuleStatus>(
+          this.rule?.ruleStaus ?? 'ACTIVE',
+          [Validators.required]
+        ),
+        ruleRequirement: new FormControl<string>(
+          this.rule?.ruleRequirement ?? ''
+        ),
+        remark: new FormControl<string>(this.rule?.remark ?? ''),
+        qualityMessageAl: new FormControl<string>(
+          this.rule?.qualityMessageAl ?? '',
+          [Validators.required]
+        ),
+        qualityMessageEn: new FormControl<string>(
+          this.rule?.qualityMessageEn ?? '',
+          [Validators.required]
+        ),
+      },
+      { updateOn: 'blur' }
+    );
 
-    this.thirdFormGroup = new FormGroup({
-      expression: new FormControl<string>(this.rule?.expression ?? '', [Validators.required])
-    }, { updateOn: 'blur' });
+    this.thirdFormGroup = new FormGroup(
+      {
+        expression: new FormControl<string>(this.rule?.expression ?? '', [
+          Validators.required,
+        ]),
+      },
+      { updateOn: 'blur' }
+    );
   }
 
   updateExpression(event: string) {
-    console.log(event)
-    this.thirdFormGroup.setValue({
-      'expression': event
-    }, {
-      emitEvent: false
-    })
+    console.log(event);
+    this.thirdFormGroup.setValue(
+      {
+        expression: event,
+      },
+      {
+        emitEvent: false,
+      }
+    );
   }
 
   save() {
-    if (this.firstFormGroup.invalid || this.secondFormGroup.invalid || this.thirdFormGroup.invalid) {
-      this.matSnackBar.open('Please check the form for invalid fields marked in red', 'Ok', {
-        duration: 5000
-      });
+    if (
+      this.firstFormGroup.invalid ||
+      this.secondFormGroup.invalid ||
+      this.thirdFormGroup.invalid
+    ) {
+      this.matSnackBar.open(
+        'Please check the form for invalid fields marked in red',
+        'Ok',
+        {
+          duration: 5000,
+        }
+      );
       return;
     }
     const rule = {
       ...this.firstFormGroup.getRawValue(),
       ...this.secondFormGroup.getRawValue(),
-      ...this.thirdFormGroup.getRawValue()
+      ...this.thirdFormGroup.getRawValue(),
     } as any;
     if (this.id) {
       rule.id = this.id;
@@ -101,9 +153,11 @@ export class QualityManagementFormComponent implements OnInit {
     this.matDialog
       .open(this.cancelDialog)
       .afterClosed()
-      .subscribe((confirm) => {
+      .subscribe(confirm => {
         if (confirm) {
-          void this.router.navigate(['/dashboard/quality-management/' + this.qualityType]);
+          void this.router.navigate([
+            '/dashboard/quality-management/' + this.qualityType,
+          ]);
         }
       });
   }
@@ -133,7 +187,7 @@ export class QualityManagementFormComponent implements OnInit {
             qualityMessageEn: this.rule?.qualityMessageEn ?? '',
           });
           this.thirdFormGroup.setValue({
-            expression: this.rule?.expression ?? ''
+            expression: this.rule?.expression ?? '',
           });
         }
       });

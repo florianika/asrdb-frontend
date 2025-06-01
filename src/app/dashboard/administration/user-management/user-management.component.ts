@@ -5,22 +5,32 @@ import { UserManagementService } from './user-management.service';
 import { User } from 'src/app/model/User.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, map } from 'rxjs';
-import {MUNICIPALITIES} from "../../../common/data/municipalities";
+import { MUNICIPALITIES } from '../../../common/data/municipalities';
 
 @Component({
   selector: 'asrdb-user-management',
   templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.css']
+  styleUrls: ['./user-management.component.css'],
 })
 export class UserManagementComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['id', 'email', 'name', 'lastName', 'municipality','accountStatus', 'accountRole', 'actions'];
-  dataSourceObservable: Observable<MatTableDataSource<User>> = this.userManagementService.usersAsObservable.pipe(
-    map(users => {
-      const dataSource = this.dataSource;
-      dataSource.data = users;
-      return dataSource;
-    })
-  );
+  displayedColumns: string[] = [
+    'id',
+    'email',
+    'name',
+    'lastName',
+    'municipality',
+    'accountStatus',
+    'accountRole',
+    'actions',
+  ];
+  dataSourceObservable: Observable<MatTableDataSource<User>> =
+    this.userManagementService.usersAsObservable.pipe(
+      map(users => {
+        const dataSource = this.dataSource;
+        dataSource.data = users;
+        return dataSource;
+      })
+    );
 
   private dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
 
@@ -30,8 +40,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private userManagementService: UserManagementService) {
-  }
+  constructor(private userManagementService: UserManagementService) {}
 
   ngOnInit(): void {
     this.userManagementService.getUsers();
@@ -52,19 +61,22 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
   toggleAccountStatus(user: User) {
     user.accountStatus === 'ACTIVE'
-    ? this.userManagementService.terminateUser(user.id)
-    : this.userManagementService.activateUser(user.id);
+      ? this.userManagementService.terminateUser(user.id)
+      : this.userManagementService.activateUser(user.id);
   }
 
   mapMunicipality(municipalityCode: string) {
     if (!municipalityCode) {
-      return "-";
+      return '-';
     }
-    const municipality = MUNICIPALITIES.find((el: {name: string, code: number}) => el.code.toString() === municipalityCode);
+    const municipality = MUNICIPALITIES.find(
+      (el: { name: string; code: number }) =>
+        el.code.toString() === municipalityCode
+    );
     if (municipality) {
       return municipality.name;
     } else {
-      return "-";
+      return '-';
     }
   }
 }

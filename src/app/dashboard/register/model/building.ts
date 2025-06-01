@@ -42,7 +42,7 @@ export type Building = {
   BldDwellingRecs: number;
   BldEntranceRecs: number;
   BldAddressID: number;
-}
+};
 
 export type BuildingFilter = {
   filter: {
@@ -60,5 +60,5 @@ export type BuildingFilter = {
     BldType: any[];
     BldQuality: any[];
     BldReview: any[];
-  }
-}
+  };
+};

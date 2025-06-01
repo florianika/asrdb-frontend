@@ -11,16 +11,26 @@ import { DwellingFilter } from 'src/app/dashboard/register/model/dwelling';
 @Component({
   selector: 'asrdb-dwelling-list-view-filter',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatSelectModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+  ],
   templateUrl: './dwelling-list-view-filter.component.html',
-  styleUrls: ['./dwelling-list-view-filter.component.css']
+  styleUrls: ['./dwelling-list-view-filter.component.css'],
 })
 export class DwellingListViewFilterComponent {
-
   filterConfig: DwellingFilter;
   showBuildingIdFilter: boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {filter: DwellingFilter, showBuildingIdFilter: boolean}) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: { filter: DwellingFilter; showBuildingIdFilter: boolean }
+  ) {
     this.filterConfig = data.filter;
     this.showBuildingIdFilter = data.showBuildingIdFilter;
   }
