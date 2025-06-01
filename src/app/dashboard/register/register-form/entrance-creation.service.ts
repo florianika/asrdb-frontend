@@ -51,7 +51,6 @@ export class EntranceManagementService {
     entrance: Entrance,
     buildingGlobalId: string
   ) {
-    this.buildingId = buildingGlobalId;
     entrance.EntQuality = 9;
     const attributes = this.cleanAttributes(
       entrance,
