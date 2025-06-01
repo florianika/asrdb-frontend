@@ -17,7 +17,7 @@ export class CommonStreetService {
     return new FeatureLayer({
       title: 'ASRDB Streets',
       apiKey: token,
-      url: environment.street_url + '?token=' + token,
+      url: environment.street_url,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,

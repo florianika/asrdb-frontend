@@ -17,7 +17,7 @@ export class CommonEntranceService {
     return new FeatureLayer({
       title: 'ASRDB Entrances',
       apiKey: token,
-      url: environment.entrance_url + '?token=' + token,
+      url: environment.entrance_url,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,

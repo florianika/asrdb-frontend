@@ -17,7 +17,7 @@ export class CommonDwellingService {
     return new FeatureLayer({
       title: 'ASRDB Dwellings',
       apiKey: token,
-      url: environment.dwelling_url + '?token=' + token,
+      url: environment.dwelling_url,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,

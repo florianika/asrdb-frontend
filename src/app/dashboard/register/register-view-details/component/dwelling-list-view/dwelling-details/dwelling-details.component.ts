@@ -120,6 +120,7 @@ export class DwellingDetailsComponent implements OnInit {
   editDwellingDetails() {
     this.matDialog
       .open(DwellingDetailsFormComponent, {
+        width: '600px',
         data: {
           entrances: this.entrances,
           id: this.id,

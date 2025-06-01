@@ -76,7 +76,6 @@ export class CommonEntityStructureService {
             structure: response.attributes,
           });
         }
-        console.log(response);
       });
   }
 }

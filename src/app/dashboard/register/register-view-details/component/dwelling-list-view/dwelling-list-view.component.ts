@@ -216,6 +216,7 @@ export class DwellingListViewComponent
   addDwelling() {
     this.matDialog
       .open(DwellingDetailsFormComponent, {
+        width: '600px',
         data: {
           entrances: this.entrances,
           logs: this.registerLogService.getAllLogs(DWELLING_ENTITY),
@@ -265,6 +266,7 @@ export class DwellingListViewComponent
   editDwellingDetails(globalId: string) {
     this.matDialog
       .open(DwellingDetailsFormComponent, {
+        width: '600px',
         data: {
           entrances: this.entrances,
           id: globalId,

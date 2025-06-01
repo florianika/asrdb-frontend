@@ -55,7 +55,7 @@ export class CommonBuildingService {
     return new FeatureLayer({
       title: 'ASRDB Buildings',
       apiKey: token,
-      url: environment.building_url + '?token=' + token,
+      url: environment.building_url,
       outFields: ['*'],
       renderer: new UniqueValueRenderer({
         field: 'BldStatus',
