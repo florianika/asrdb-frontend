@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Subject } from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 import {
   FormObject,
   getFormObjectOptions,
@@ -145,25 +145,29 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
             const municipality =
               data.features[0]?.attributes?.['BldMunicipality'] ??
               DEFAULT_MUNICIPALITY;
-            const filter = {
-              where: `StrMunicipality = ${municipality}`,
-            } as Partial<QueryFilter>;
-            this.streetService
-              .getAllStreetsForMunicipality(filter)
-              .subscribe((streets: any) => {
-                this.streets = streets.data.features.map((street: any) => {
-                  return {
-                    text: street.attributes['StrNameCore'],
-                    value: street.attributes['GlobalID'],
-                  };
-                });
-
-                this.fields.forEach(field => {
-                  this.createFormControlForField(field);
-                  this.createFormObject(field);
-                });
-              });
+            this.loadStreets(municipality);
           });
+      });
+  }
+
+  loadStreets(municipality: string) {
+    const filter = {
+      where: `StrMunicipality = ${municipality}`,
+    } as Partial<QueryFilter>;
+    this.streetService
+      .getAllStreetsForMunicipality(filter)
+      .subscribe((streets: any) => {
+        this.streets = streets.data.features.map((street: any) => {
+          return {
+            text: street.attributes['StrNameCore'],
+            value: street.attributes['GlobalID'],
+          };
+        });
+
+        this.fields.forEach(field => {
+          this.createFormControlForField(field);
+          this.createFormObject(field);
+        });
       });
   }
 
