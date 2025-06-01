@@ -39,7 +39,6 @@ import {MatDivider} from "@angular/material/divider";
     MatDivider
   ],
   providers: [
-    RegisterLogService
   ],
   templateUrl: './register-view-details.component.html',
   styleUrls: ['./register-view-details.component.css']

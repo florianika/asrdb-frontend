@@ -1,11 +1,19 @@
-<h2 mat-dialog-title i18n>Entrance details</h2>
 <mat-dialog-content *ngIf="!isLoadingResults" class="mat-typography" style="color: initial; margin: 10px;">
   <div class="row">
-    <mat-card class="col-12 col-md-8">
+    <mat-card class="col-12 col-md-4">
       <mat-card-content>
-        <h2 class="details-header" i18n>Details for building: {{entrance.GlobalID}}</h2>
-        <span class="details-subheader" i18n>Data Quality: <span
-          style="font-weight: bold;">{{getValueFromStatus('EntQuality')}}</span></span>
+        <h2 class="details-header" i18n>
+          Entrance details
+          <button class="float-end" mat-icon-button (click)="openEditView()" mat-dialog-close>
+            <mat-icon>edit</mat-icon>
+          </button>
+        </h2>
+        <span class="details-subheader" i18n>Data Quality: <span style="font-weight: bold;">
+          {{getValueFromStatus('EntQuality')}}</span>
+        </span>
+        <span class="details-subheader" i18n>Point status: <span style="font-weight: bold;">
+          {{getValueFromStatus('EntPointStatus')}}</span>
+        </span>
         <section *ngFor="let section of sections">
           <h3>{{section.title}}</h3>
           <asrdb-building-detail
@@ -19,7 +27,7 @@
         </section>
       </mat-card-content>
     </mat-card>
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-8">
       <asrdb-history-details
         [externalCreator]="entrance.external_creator"
         [externalCreationDate]="entrance.external_creator_date"
@@ -34,11 +42,8 @@
         [skipOtherFiltersApartFromGlobalId]="true"
         [small]="true"
       ></asrdb-register-map>
-    </div>
-    <div class="col-12 mt-3">
       <asrdb-dwelling-list-view
-        *ngIf="id"
-        [entranceId]="id"
+        [entranceId]="id!"
         [entrances]="[entrance]"
         [buildingNumber]="building.BldProperty"
         (dwellingUpdated)="dwellingUpdated($event)"

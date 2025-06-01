@@ -3,16 +3,16 @@ import {
   Component,
   EventEmitter,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
-  isDevMode
+  ViewChild
 } from '@angular/core';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
-import {Subject, merge, takeUntil, startWith, switchMap, catchError, of as observableOf} from 'rxjs';
+import {catchError, merge, of as observableOf, startWith, Subject, switchMap, takeUntil} from 'rxjs';
 import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chip.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
@@ -30,13 +30,19 @@ import {EntranceDetailsComponent} from './entrance-details/entrance-details.comp
 import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
+import {CommonStreetService} from "../../../../common/service/common-street.service";
+import {
+  EntityDeleteConfirmationDialogComponent,
+  EntityDeleteDialogData
+} from "../../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component";
+import {MatDivider} from "@angular/material/divider";
 
 @Component({
   selector: 'asrdb-entrance-list-view',
   templateUrl: './entrance-list-view.component.html',
   styleUrls: ['./entrance-list-view.component.css'],
   standalone: true,
-  providers: [CommonEntranceService],
+  providers: [CommonEntranceService, CommonStreetService],
   imports: [
     MatIconModule,
     MatTableModule,
@@ -48,9 +54,9 @@ import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
     ChipComponent,
     MatProgressSpinnerModule,
     CommonModule,
-    EntranceListViewFilterComponent,
     MatTooltipModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDivider
   ]
 })
 export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -67,6 +73,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   private columns = [
     'EntBldGlobalID',
+    'EntStrGlobalID',
     'GlobalID',
     'ObjectID',
     'EntBuildingNumber',
@@ -107,8 +114,9 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   constructor(
-    private commonEntranceBuildingService: CommonEntranceService,
+    private commonEntranceService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private commonStreetService: CommonStreetService,
     private matDialog: MatDialog,
     private matSnack: MatSnackBar,
     private registerLogService: RegisterLogService,
@@ -165,6 +173,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
 
   viewEntranceDetails(globalId: string) {
     this.matDialog.open(EntranceDetailsComponent, {
+      width: '80vw',
       data: {
         globalId,
         buildingGlobalId: this.buildingGlobalId,
@@ -189,6 +198,23 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     this.selectedEntrance = entranceId;
   }
 
+  openDeleteDialog(globalId: string) {
+    const dialog = this.matDialog.open(EntityDeleteConfirmationDialogComponent, {
+      hasBackdrop: true,
+      disableClose: true,
+      data: {
+        type: 'ENTRANCE',
+        idToDelete: globalId,
+        reload: () => {
+          this.reload();
+          this.selectedEntrance = undefined;
+          this.entranceSelected.emit("");
+          dialog.close();
+        }
+      } as EntityDeleteDialogData
+    });
+  }
+
   private handlePopupClose(newFilterConfig: EntranceFilter | null) {
     if (newFilterConfig) {
       this.filterConfig = newFilterConfig;
@@ -197,7 +223,7 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private prepareWhereCase() {
-    const conditions: string[] = [];
+    const conditions: string[] = ['EntQuality <> 0'];
     Object
       .entries(this.filterConfig.filter)
       .filter(([, value]) => !!value)
@@ -223,10 +249,14 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
     if (this.sort?.active) {
       filter.orderByFields = [this.sort.active + ' ' + this.sort.direction.toUpperCase()];
     }
-    return this.commonEntranceBuildingService.getEntranceData(filter).pipe(catchError((err) => {
-      console.error(err);
-      return observableOf(null);
-    }));
+    return this.commonEntranceService
+      .getEntranceData(filter)
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          return observableOf(null);
+        })
+      );
   }
 
   private handleResponse(res: any) {
@@ -242,17 +272,35 @@ export class EntranceListViewComponent implements OnInit, AfterViewInit, OnDestr
       this.fields = res.data.fields;
     }
     this.resultsLength = res.count;
-    this.data = res.data.features.map((feature: any) => feature.attributes);
-    this.isLoadingResults = false;
-    this.prepareFilter();
-    this.entrancesLoaded.emit(this.data);
+
+    const attributes = res.data.features.map((feature: any) => feature.attributes);
+    const streetIds = attributes.map((el: any) => el.EntStrGlobalID.replace('{', '').replace('}', ''));
+
+    this.commonStreetService.getStreets({
+      where: `GlobalID in (${streetIds.map((id: string) => `'${id}'`).join(',')})`,
+      outFields: ['GlobalID', 'StrNameCore']
+    }).pipe(takeUntil(this.destroy$))
+      .subscribe((streetRes) => {
+        const streets = streetRes.data.features.map((feature: any) => feature.attributes);
+        attributes.forEach((attribute: any) => {
+          const street = streets
+            .find((streat: any) => streat.GlobalID === attribute.EntStrGlobalID);
+          attribute.EntStrGlobalID = street?.StrNameCore;
+        });
+        this.data = attributes;
+        this.isLoadingResults = false;
+        this.prepareFilter();
+        this.entrancesLoaded.emit(this.data);
+      });
   }
 
   private prepareFilter() {
     this.filterConfig = {
       ...this.filterConfig,
       options: {
-        EntPointStatus: this.getOptions('EntPointStatus').length ? this.getOptions('EntPointStatus') : this.filterConfig.options.EntPointStatus,
+        EntPointStatus: this.getOptions('EntPointStatus').length
+          ? this.getOptions('EntPointStatus')
+          : this.filterConfig.options.EntPointStatus,
       }
     };
   }

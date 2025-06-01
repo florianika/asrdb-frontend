@@ -3,37 +3,40 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  isDevMode,
   OnDestroy,
   OnInit,
-  ViewChild,
-  isDevMode,
-  TemplateRef
+  TemplateRef,
+  ViewChild
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { Chip, ChipComponent } from 'src/app/common/standalone-components/chip/chip.component';
-import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {Subject, merge, takeUntil, startWith, switchMap, catchError, of, distinctUntilChanged} from 'rxjs';
-import { BuildingFilter } from '../../model/building';
-import { QueryFilter } from '../../model/query-filter';
-import { CommonBuildingService } from '../../../common/service/common-building.service';
-import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
-import { Router } from '@angular/router';
-import { RegisterFilterComponent } from '../../../common/components/register-filter/register-filter.component';
+import {CommonModule} from '@angular/common';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {Chip, ChipComponent} from 'src/app/common/standalone-components/chip/chip.component';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {catchError, distinctUntilChanged, merge, of, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {BuildingFilter} from '../../model/building';
+import {QueryFilter} from '../../model/query-filter';
+import {CommonBuildingService} from '../../../common/service/common-building.service';
+import {CommonRegisterHelperService} from '../../../common/service/common-helper.service';
+import {Router} from '@angular/router';
+import {RegisterFilterComponent} from '../../../common/components/register-filter/register-filter.component';
 import {FILTER_REGISTER, RegisterFilterService} from '../register-filter.service';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import {FilterHelper} from "../../../common/helper/filter-helper";
 import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
-import {RegisterDeleteService} from "../register-delete.service";
+import {
+  EntityDeleteConfirmationDialogComponent,
+  EntityDeleteDialogData
+} from "../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component";
 
 @Component({
   selector: 'asrdb-register-table',
@@ -56,8 +59,6 @@ import {RegisterDeleteService} from "../register-delete.service";
   ],
   providers: [
     FilterHelper,
-    RegisterLogService,
-    RegisterDeleteService
   ],
   templateUrl: './register-table.component.html',
   styleUrls: ['./register-table.component.css'],
@@ -74,8 +75,6 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   private columns = ['GlobalID', 'BldMunicipality', 'BldEnumArea', 'BldStatus', 'BldType', 'BldEntranceRecs', 'BldDwellingRecs' , 'BldQuality', 'BldReview'];
   private destroy$ = new Subject();
   private initialized = false;
-  private deleteDialog?: MatDialogRef<any>;
-  private idToDelete?: string;
 
   displayedColumns: string[] = ['selection'].concat(this.columns.concat(['actions']));
   data: never[] = [];
@@ -83,9 +82,6 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   resultsLength = 0;
   isLoadingResults = true;
   selectedBuildings: string[] = [];
-  disableDialogButtons = false;
-  loadingDeleteData;
-  toDeleteState;
 
   get filterChips(): Chip[] {
     return Object
@@ -105,12 +101,9 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
     private changeDetectionRef: ChangeDetectorRef,
     private filterHelper: FilterHelper,
     private registerLogService: RegisterLogService,
-    private registerDeleteService: RegisterDeleteService,
     private router: Router) {
     this.registerFilterService.setBuildingGlobalIdFilter('');
     this.registerFilterService.setBuildingsGlobalIdFilter([]);
-    this.loadingDeleteData = this.registerDeleteService.deleteDataLoading;
-    this.toDeleteState = this.registerDeleteService.state;
   }
 
   ngOnInit(): void {
@@ -237,37 +230,17 @@ export class RegisterTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   openDeleteDialog(globalId: string) {
-    if (!this.deleteConfirmation) {
-      return;
-    }
-    this.idToDelete = globalId;
-    this.deleteDialog = this.matDialog.open(this.deleteConfirmation, {
+    const dialog = this.matDialog.open(EntityDeleteConfirmationDialogComponent, {
       hasBackdrop: true,
-      disableClose: true
-    });
-    this.registerDeleteService.deleteBuilding(this.idToDelete)
-  }
-
-  handleCancelClick() {
-    this.disableDialogButtons = false;
-    this.deleteDialog?.close();
-    this.registerDeleteService.reset();
-  }
-
-  handleDeleteConfirm() {
-    if (!this.idToDelete) {
-      return;
-    }
-    this.disableDialogButtons = true;
-    this.registerDeleteService.confirmDelete();
-    this.registerDeleteService.deleteDone
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(deleted => {
-      if (deleted.buildingDone && deleted.entranceDone && deleted.dwellingDone) {
-        this.handlePopupClose(JSON.parse(JSON.stringify(this.registerFilterService.getFilter())));
-        this.deleteDialog?.close();
-        this.disableDialogButtons = false;
-      }
+      disableClose: true,
+      data: {
+        type: 'BUILDING',
+        idToDelete: globalId,
+        reload: () => {
+          this.reload();
+          dialog.close();
+        }
+      } as EntityDeleteDialogData
     });
   }
 

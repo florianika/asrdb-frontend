@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit, isDevMode } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogModule} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil, catchError, of as observableOf } from 'rxjs';
 import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
@@ -12,6 +12,21 @@ import { CommonRegisterHelperService } from 'src/app/dashboard/common/service/co
 import {getDate} from "../../../../model/common-utils";
 import {Log} from "../../../../register-log-view/model/log";
 import {HistoryDetailsComponent} from "../../history-details/history-details.component";
+import {Router} from "@angular/router";
+import {
+  DwellingDetailsFormComponent
+} from "../../../../register-form/dwelling-details-form/dwelling-details-form.component";
+import {MatIcon} from "@angular/material/icon";
+
+export type DwellingDetailsData = {
+  globalId: string,
+  logs: Log[],
+  streetName: string,
+  buildingNumber: string,
+  entranceNumber: string,
+  entranceId?: string
+  entrances?: any[]
+};
 
 @Component({
   selector: 'asrdb-dwelling-details',
@@ -23,7 +38,8 @@ import {HistoryDetailsComponent} from "../../history-details/history-details.com
     MatCardModule,
     MatButtonModule,
     BuildingDetailComponent,
-    HistoryDetailsComponent
+    HistoryDetailsComponent,
+    MatIcon
   ],
   standalone: true
 })
@@ -218,14 +234,19 @@ logType: ''
   private fields: any[] = [];
   private id: string | null = '';
   private logs: Log[] = [];
+  private entrances: any[] = [];
+  private entranceId: string | null = null;
 
   constructor(
     private commonEntranceService: CommonDwellingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matSnack: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[], streetName: string, buildingNumber: string, entranceNumber: string}) {
+    private matDialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: DwellingDetailsData) {
       this.id = this.data.globalId;
       this.logs = this.data.logs;
+      this.entrances = this.data.entrances ?? [];
+      this.entranceId = this.data.entranceId ?? null;
     }
 
   ngOnInit(): void {
@@ -238,6 +259,19 @@ logType: ''
 
   getValueFromStatus(column: string) {
     return this.commonBuildingRegisterHelper.getValueFromStatus(this.fields, column, this.dwelling[column]) ?? 'Unknown';
+  }
+
+  editDwellingDetails() {
+    this.matDialog.open(DwellingDetailsFormComponent, {
+      data: {
+        entrances: this.entrances,
+        id: this.id,
+        entranceId: this.entranceId,
+        logs: this.logs
+      }
+    }).afterClosed().subscribe(() => {
+      this.loadDwelling().pipe(takeUntil(this.subscriber)).subscribe((res) => this.handleResponse(res));
+    });
   }
 
   private prepareWhereCase() {

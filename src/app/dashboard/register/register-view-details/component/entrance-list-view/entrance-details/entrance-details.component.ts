@@ -14,6 +14,9 @@ import {Log} from "../../../../register-log-view/model/log";
 import {HistoryDetailsComponent} from "../../history-details/history-details.component";
 import {RegisterMapComponent} from "../../../../../common/components/register-map/register-map.component";
 import {DwellingListViewComponent} from "../../dwelling-list-view/dwelling-list-view.component";
+import {CommonStreetService} from "../../../../../common/service/common-street.service";
+import {MatIcon} from "@angular/material/icon";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -27,7 +30,8 @@ import {DwellingListViewComponent} from "../../dwelling-list-view/dwelling-list-
     BuildingDetailComponent,
     HistoryDetailsComponent,
     RegisterMapComponent,
-    DwellingListViewComponent
+    DwellingListViewComponent,
+    MatIcon
   ],
   standalone: true
 })
@@ -128,7 +132,9 @@ export class EntranceDetailsComponent implements OnInit {
   constructor(
     private commonEntranceService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private commonStreetService: CommonStreetService,
     private matSnack: MatSnackBar,
+    private router: Router,
     @Inject(MAT_DIALOG_DATA) public data: {globalId: string, logs: Log[], buildingGlobalId: string, building: any}) {
       this.id = this.data.globalId;
       this.logs = this.data.logs;
@@ -152,6 +158,10 @@ export class EntranceDetailsComponent implements OnInit {
     this.markEntranceAsUntestedData.emit(id);
   }
 
+  openEditView() {
+    void this.router.navigateByUrl(`/dashboard/register/form/ENTRANCE/${this.buildingGlobalId}?entranceId=${this.id}`);
+  }
+
   private prepareWhereCase() {
     return `GlobalID='${this.id}'`;
   }
@@ -168,9 +178,23 @@ export class EntranceDetailsComponent implements OnInit {
     if (res.data.fields.length) {
       this.fields = res.data.fields;
     }
-    this.entrance = res.data.features.map((feature: any) => feature.attributes)[0];
-    this.fillSections();
-    this.isLoadingResults = false;
+
+    const entrance = res.data.features.map((feature: any) => feature.attributes)[0];
+    const streetId = entrance.EntStrGlobalID.replace('{', '').replace('}', '');
+
+    this.commonStreetService.getStreets({
+      where: `GlobalID = '${streetId}'`,
+      outFields: ['GlobalID', 'StrNameCore']
+    }).subscribe((streetRes) => {
+        const street = streetRes.data.features.map((feature: any) => feature.attributes)[0];
+        entrance.EntStrGlobalID = street?.StrNameCore;
+        this.data = entrance;
+        this.isLoadingResults = false;
+
+        this.entrance = res.data.features.map((feature: any) => feature.attributes)[0];
+        this.fillSections();
+        this.isLoadingResults = false;
+      });
   }
 
   private fillSections() {

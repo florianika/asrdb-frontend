@@ -3,6 +3,7 @@ import {CommonBuildingService} from "../../common/service/common-building.servic
 import {CommonEntranceService} from "../../common/service/common-entrance.service";
 import {CommonDwellingService} from "../../common/service/common-dwellings.service";
 import {BehaviorSubject, catchError, Observable, of} from "rxjs";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable()
 export class RegisterDeleteService {
@@ -28,7 +29,8 @@ export class RegisterDeleteService {
   constructor(
     private commonBuildingService: CommonBuildingService,
     private commonEntranceService: CommonEntranceService,
-    private commonDwellingService: CommonDwellingService
+    private commonDwellingService: CommonDwellingService,
+    private matSnack: MatSnackBar
   ) { }
 
   reset() {
@@ -102,6 +104,11 @@ export class RegisterDeleteService {
       .subscribe((entrances) => {
       if (!entrances?.data?.features?.length) {
         this.deleteDataLoading.next(false);
+        this.state.next({
+          buildingsToDelete: this.buildingsToDelete,
+          entrancesToDelete: this.entrancesToDelete,
+          dwellingsToDelete: this.dwellingsToDelete
+        });
         return;
       }
       const entranceRequests = entrances?.data?.features
@@ -139,6 +146,12 @@ export class RegisterDeleteService {
       .pipe(catchError(err => of(null)))
       .subscribe((entrances) => {
         if (!entrances?.data?.features?.length) {
+          this.state.next({
+            buildingsToDelete: this.buildingsToDelete,
+            entrancesToDelete: this.entrancesToDelete,
+            dwellingsToDelete: this.dwellingsToDelete
+          });
+          this.deleteDataLoading.next(false);
           return;
         }
         const entranceRequests = entrances?.data?.features
@@ -163,8 +176,9 @@ export class RegisterDeleteService {
   }
 
   private loadDwellingToDelete(dwellingId: string) {
+    this.deleteDataLoading.next(true);
     this.commonDwellingService.getDwellings({
-      where: `GloablID='${dwellingId}'`,
+      where: `GlobalID='${dwellingId}'`,
       returnGeometry: false,
       outFields: ["GlobalID", "OBJECTID"],
       num: 9999
@@ -181,6 +195,12 @@ export class RegisterDeleteService {
             {attributes: attributes}
           ));
         this.dwellingsToDelete = dwellingRequests ?? [];
+        this.state.next({
+          buildingsToDelete: this.buildingsToDelete,
+          entrancesToDelete: this.entrancesToDelete,
+          dwellingsToDelete: this.dwellingsToDelete
+        });
+        this.deleteDataLoading.next(false);
       });
   }
 
@@ -214,9 +234,6 @@ export class RegisterDeleteService {
   }
 
   private deleteData() {
-    if (!this.buildingsToDelete.length) {
-      return;
-    }
     if (isDevMode()) {
       console.log("Building to delete", this.buildingsToDelete);
       console.log("Entrance To delete", this.entrancesToDelete);
@@ -235,48 +252,75 @@ export class RegisterDeleteService {
   private deleteDwellingData() {
     if (this.dwellingsToDelete.length) {
       this.commonDwellingService.updateFeature(this.dwellingsToDelete)
-        .pipe(catchError(err => of(null)))
+        .pipe(catchError(err => {
+          console.error("Error deleting dwellings", err);
+          this.matSnack.open("Error deleting dwellings", "Close", {
+            duration: 5000
+          });
+          return of(null);
+        }))
         .subscribe(res => {
-            this.dwellingsToDelete = [];
-            this.state.next({
-              buildingsToDelete: this.buildingsToDelete,
-              entrancesToDelete: this.entrancesToDelete,
-              dwellingsToDelete: this.dwellingsToDelete
-            });
-            setTimeout(() => {
-              this.reloadSignal();
-              this.deleteEntranceData();
-            }, 1000); // Delay to ensure the UI updates properly
+          if (!res) {
+            return;
           }
-        );
+          this.dwellingsToDelete = [];
+          this.state.next({
+            buildingsToDelete: this.buildingsToDelete,
+            entrancesToDelete: this.entrancesToDelete,
+            dwellingsToDelete: this.dwellingsToDelete
+          });
+          setTimeout(() => {
+            this.reloadSignal();
+            this.deleteEntranceData();
+          }, 1000); // Delay to ensure the UI updates properly
+        }
+      );
     }
   }
 
   private deleteEntranceData() {
     if (this.entrancesToDelete.length) {
       this.commonEntranceService.updateFeature(this.entrancesToDelete)
-        .pipe(catchError(err => of(null)))
+        .pipe(catchError(err => {
+          console.error("Error deleting entrances", err);
+          this.matSnack.open("Error deleting entrances", "Close", {
+            duration: 5000
+          });
+          return of(null);
+        }))
         .subscribe(res => {
-            this.entrancesToDelete = [];
-            this.state.next({
-              buildingsToDelete: this.buildingsToDelete,
-              entrancesToDelete: this.entrancesToDelete,
-              dwellingsToDelete: this.dwellingsToDelete
-            });
-            setTimeout(() => {
-              this.reloadSignal();
-              this.deleteBuildingData();
-            }, 1000); // Delay to ensure the UI updates properly
+          if (!res) {
+            return;
           }
-        );
+          this.entrancesToDelete = [];
+          this.state.next({
+            buildingsToDelete: this.buildingsToDelete,
+            entrancesToDelete: this.entrancesToDelete,
+            dwellingsToDelete: this.dwellingsToDelete
+          });
+          setTimeout(() => {
+            this.reloadSignal();
+            this.deleteBuildingData();
+          }, 1000); // Delay to ensure the UI updates properly
+        }
+      );
     }
   }
 
   private deleteBuildingData() {
     if (this.buildingsToDelete.length) {
       this.commonBuildingService.updateFeature(this.buildingsToDelete)
-        .pipe(catchError(err => of(null)))
+        .pipe(catchError(err => {
+          console.error("Error deleting buildings", err);
+          this.matSnack.open("Error deleting buildings", "Close", {
+            duration: 5000
+          });
+          return of(null);
+        }))
         .subscribe(res => {
+          if (!res) {
+            return;
+          }
           this.buildingsToDelete = [];
           this.state.next({
               buildingsToDelete: this.buildingsToDelete,

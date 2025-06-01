@@ -19,6 +19,7 @@ import { CommonEsriAuthService } from '../common/service/common-esri-auth.servic
 import { CommonRegisterHelperService } from '../common/service/common-helper.service';
 import { RegisterFilterService } from './register-table-view/register-filter.service';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {RegisterLogService} from "./register-log-view/register-log-table/register-log.service";
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     CommonDwellingService,
     CommonEsriAuthService,
     CommonRegisterHelperService,
-    RegisterFilterService
+    RegisterFilterService,
+    RegisterLogService
   ]
 })
 export class RegisterModule { }

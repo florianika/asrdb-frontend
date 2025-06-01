@@ -28,7 +28,7 @@ import {DwellingFilter} from '../../../model/dwelling';
 import {QueryFilter} from '../../../model/query-filter';
 import {CommonDwellingService} from '../../../../common/service/common-dwellings.service';
 import {CommonRegisterHelperService} from '../../../../common/service/common-helper.service';
-import {DwellingDetailsComponent} from './dwelling-details/dwelling-details.component';
+import {DwellingDetailsComponent, DwellingDetailsData} from './dwelling-details/dwelling-details.component';
 import {
   DwellingDetailsFormComponent
 } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
@@ -36,6 +36,11 @@ import {Entrance} from '../../../model/entrance';
 import {RegisterLogService} from "../../../register-log-view/register-log-table/register-log.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatDivider} from "@angular/material/divider";
+import {
+  EntityDeleteConfirmationDialogComponent,
+  EntityDeleteDialogData
+} from "../../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component";
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -57,7 +62,8 @@ import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
     CommonModule,
     EntranceListViewFilterComponent,
     MatTooltipModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDivider
   ]
 })
 export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
@@ -72,7 +78,6 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
 
   private columns = [
     'GlobalID',
-    'StreetName',
     'BldNumber',
     'EntNumber',
     'DwlFloor',
@@ -175,7 +180,7 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         switchMap(() => this.loadDwellings()),
       ).subscribe((res) => this.handleResponse(res));
       const entrance = this.entrances.find(e => e.GlobalID === changes['entranceId'].currentValue);
-      this.entranceNumber = entrance?.EntEntranceNumber?.toString() ?? 'Unknown';
+      this.entranceNumber = entrance?.EntEntranceNumber?.toString() ?? '';
     }
   }
 
@@ -220,9 +225,11 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
         logs: this.registerLogService.getAllLogs('DWELLING')
           .filter(log => globalId.toLowerCase().includes(log.dwlId?.toLowerCase() as string)),
         streetName: this.streetName,
-        buildingNumber: this.buildingNumber,
-        entranceNumber: this.entranceNumber
-      },
+        buildingNumber: this.buildingNumber?.toString() ?? '',
+        entranceNumber: this.entranceNumber ?? '',
+        entranceId: this.entranceId,
+        entrances: this.entrances,
+      } as DwellingDetailsData,
     });
   }
 
@@ -240,8 +247,23 @@ export class DwellingListViewComponent implements OnInit, OnDestroy, AfterViewIn
     });
   }
 
+  openDeleteDialog(globalId: string) {
+    const dialog = this.matDialog.open(EntityDeleteConfirmationDialogComponent, {
+      hasBackdrop: true,
+      disableClose: true,
+      data: {
+        type: 'DWELLING',
+        idToDelete: globalId,
+        reload: () => {
+          this.reload();
+          dialog.close();
+        }
+      } as EntityDeleteDialogData
+    });
+  }
+
   private prepareWhereCase() {
-    const conditions: string[] = [];
+    const conditions: string[] = [`DwlQuality <> 0`];
     Object
       .entries(this.filterConfig.filter)
       .filter(([, value]: any) => !!value)
