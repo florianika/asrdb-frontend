@@ -4,6 +4,7 @@ import {CommonEntranceService} from '../../common/service/common-entrance.servic
 import {CommonDwellingService} from '../../common/service/common-dwellings.service';
 import {BehaviorSubject, catchError, of} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {AuthStateService} from "../../../common/services/auth-state.service";
 
 @Injectable()
 export class RegisterDeleteService {
@@ -29,7 +30,8 @@ export class RegisterDeleteService {
     private commonBuildingService: CommonBuildingService,
     private commonEntranceService: CommonEntranceService,
     private commonDwellingService: CommonDwellingService,
-    private matSnack: MatSnackBar
+    private matSnack: MatSnackBar,
+    private authState: AuthStateService
   ) {}
 
   reset() {
@@ -81,6 +83,8 @@ export class RegisterDeleteService {
           const attributes = {
             ...building.data.features[0]?.attributes,
             BldQuality: 0,
+            external_editor: `{${this.authState.getNameId()}}` ?? '',
+            external_editor_date: String(Date.now())
           };
           this.buildingsToDelete.push({ attributes: attributes });
           this.state.next({
@@ -123,6 +127,8 @@ export class RegisterDeleteService {
             GlobalID: feature.attributes.GlobalID as string,
             OBJECTID: feature.attributes.OBJECTID,
             EntQuality: 0,
+            external_editor: `{${this.authState.getNameId()}}` ?? '',
+            external_editor_date: String(Date.now())
           }))
           ?.map((attributes: any) => ({ attributes: attributes }));
         if (entranceRequests.length > 0) {
@@ -168,6 +174,8 @@ export class RegisterDeleteService {
             GlobalID: feature.attributes.GlobalID as string,
             OBJECTID: feature.attributes.OBJECTID,
             EntQuality: 0,
+            external_editor: `{${this.authState.getNameId()}}` ?? '',
+            external_editor_date: String(Date.now())
           }))
           ?.map((attributes: any) => ({ attributes: attributes }));
         if (entranceRequests.length > 0) {
@@ -201,6 +209,8 @@ export class RegisterDeleteService {
             GlobalID: feature.attributes.GlobalID as string,
             OBJECTID: feature.attributes.OBJECTID,
             DwlQuality: 0,
+            external_editor: `{${this.authState.getNameId()}}` ?? '',
+            external_editor_date: String(Date.now())
           }))
           ?.map((attributes: any) => ({ attributes: attributes }));
         this.dwellingsToDelete = dwellingRequests ?? [];
@@ -232,6 +242,8 @@ export class RegisterDeleteService {
             GlobalID: feature.attributes.GlobalID as string,
             OBJECTID: feature.attributes.OBJECTID,
             DwlQuality: 0,
+            external_editor: `{${this.authState.getNameId()}}` ?? '',
+            external_editor_date: String(Date.now())
           }))
           ?.map((attributes: any) => ({ attributes: attributes }));
         this.dwellingsToDelete = dwellingRequests ?? [];
