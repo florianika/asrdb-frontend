@@ -40,8 +40,8 @@
           </h2>
           @for (titlePart of titleSection; track titlePart.propName) {
             <span class="details-subheader mb-1 d-block">
-              <span i18n class="me-1">Data quality:</span>
-              <span style="font-weight: bold;">{{getValueFromStatus(titlePart.propName)}}</span>
+              <span i18n class="me-1">{{titlePart.title}}:</span>
+              <span style="font-weight: bold;" i18n>{{getValueFromStatus(titlePart.propName)}}</span>
             </span>
           }
           <br/>

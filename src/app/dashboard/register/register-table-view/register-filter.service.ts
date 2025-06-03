@@ -175,7 +175,7 @@ export class RegisterFilterService {
     if (entranceId) {
       return `EntBldGlobalID='${entranceId}'`;
     }
-    if (!this.globalIds.getValue()?.length && this.noFilterApplied()) {
+    if (!this.globalIds.getValue()?.length || this.noFilterApplied() || this.globalIds.getValue()?.length > 100) {
       return '1=1';
     }
     return `EntBldGlobalID in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
@@ -245,7 +245,7 @@ export class RegisterFilterService {
 
   private noFilterApplied() {
     return (
-      !this.filter.value.filter.BldMunicipality &&
+      // !this.filter.value.filter.BldMunicipality &&
       !this.filter.value.filter.BldType &&
       !this.filter.value.filter.BldStatus.length &&
       !this.filter.value.filter.BldEnumArea &&
