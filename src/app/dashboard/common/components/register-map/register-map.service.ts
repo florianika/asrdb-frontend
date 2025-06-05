@@ -31,6 +31,8 @@ export class RegisterMapService {
   private options: MapInitOptions | undefined;
   private view: MapView | undefined;
   private graphicsLayer?: GraphicsLayer;
+  private customZoom: null | number = null;
+  private alreadyFocused = false;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -116,9 +118,11 @@ export class RegisterMapService {
         if (!this.view?.map) {
           return;
         }
+        this.customZoom = Math.min(newZoom, 18);
         if (newZoom < 15) {
           this.bldlayer.visible = false;
           this.entlayer.visible = false;
+          this.alreadyFocused = false;
         } else {
           this.bldlayer.visible = true;
           this.entlayer.visible = true;
@@ -177,7 +181,7 @@ export class RegisterMapService {
         },
       }),
       map: webmap,
-      zoom: 20,
+      zoom: 15,
     });
   }
 
@@ -220,14 +224,32 @@ export class RegisterMapService {
     const query = this.bldlayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
-    void this.view.goTo(
-      extend.extent
-        ? extend.extent
-        : {
-            center: [19.818, 41.3285],
-            zoom: 18,
-          }
-    );
+    const goTo = extend.extent
+      ? { target: extend.extent }
+      : { center: [19.818, 41.3285], zoom: 18 };
+    const size = this.getBuildingIdsSize(whereCondition);
+    switch (size) {
+      case 1: {
+        void this.view.goTo(goTo);
+        this.alreadyFocused = true;
+        break;
+      }
+      case 0: {
+        if (this.alreadyFocused) {
+          return;
+        }
+        if (this.customZoom) {
+          void this.view.goTo({...goTo, zoom: this.customZoom });
+        } else {
+          void this.view.goTo(goTo);
+        }
+        break;
+      }
+      default: {
+        void this.view.goTo(goTo);
+        break;
+      }
+    }
   }
 
   async filterEntranceData(whereCondition: string) {
@@ -245,5 +267,15 @@ export class RegisterMapService {
 
   private reload(basemap: any) {
     void this.init(undefined, undefined, basemap);
+  }
+
+  private getBuildingIdsSize(whereCondition: string): number {
+    const splitCondition = whereCondition.split(' ');
+    const globalIdIndex = splitCondition.indexOf('GlobalID');
+    if (globalIdIndex === -1 || globalIdIndex + 2 >= splitCondition.length) {
+      return 0;
+    }
+    const globalIdValue = splitCondition[globalIdIndex + 2];
+    return globalIdValue.split(',').length;
   }
 }

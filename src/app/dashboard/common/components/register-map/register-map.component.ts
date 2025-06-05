@@ -1,9 +1,9 @@
 import {
   Component,
   ElementRef,
-  Input,
+  Input, OnChanges,
   OnDestroy,
-  OnInit,
+  OnInit, SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -25,7 +25,7 @@ import { FeatureSelectionService } from './custom-map-logic/feature-selection';
   templateUrl: './register-map.component.html',
   styleUrls: ['./register-map.component.css'],
 })
-export class RegisterMapComponent implements OnInit, OnDestroy {
+export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   @Input() enableFilter = true;
   @Input() enableSelection = true;
   @Input() enableLegend = false;
@@ -64,6 +64,14 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
         this.registerFilterService.prepareWhereCaseForEntrance(this.entranceGlobalId)
       );
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['entranceGlobalId']) {
+      void this.registerMapService.filterEntranceData(
+        this.registerFilterService.prepareWhereCaseForEntrance(this.entranceGlobalId)
+      );
+    }
   }
 
   ngOnDestroy(): void {

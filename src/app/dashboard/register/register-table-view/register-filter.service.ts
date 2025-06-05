@@ -176,7 +176,7 @@ export class RegisterFilterService {
       return `GlobalID='${entranceId}'`;
     }
     if (!this.globalIds.getValue()?.length || this.noFilterApplied() || this.globalIds.getValue()?.length > 100) {
-      return '1=1';
+      return '1!=1';
     }
     return `EntBldGlobalID in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
   }
