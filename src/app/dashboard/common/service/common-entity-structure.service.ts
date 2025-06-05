@@ -33,19 +33,21 @@ export class CommonEntityStructureService {
   structureLoaded = new BehaviorSubject<{
     loading: boolean;
     structure: EntityAttribute[] | null;
+    type: EntityType | null;
   }>({
     loading: true,
     structure: null,
+    type: null
   });
 
   constructor(private httpClient: HttpClient) {}
 
   public getEntityStructure(entityType: EntityType) {
-    this.structureLoaded.next({ loading: true, structure: null });
+    this.structureLoaded.next({ loading: true, structure: null, type: entityType });
     // Check if the structure is already cached
     if (this.structureCache.has(entityType)) {
       const cachedStructure = this.structureCache.get(entityType);
-      this.structureLoaded.next({ loading: false, structure: cachedStructure });
+      this.structureLoaded.next({ loading: false, structure: cachedStructure, type: entityType });
       return;
     }
 
@@ -64,7 +66,7 @@ export class CommonEntityStructureService {
             `Error fetching structure for entity type ${entityType}:`,
             error
           );
-          this.structureLoaded.next({ loading: false, structure: null });
+          this.structureLoaded.next({ loading: false, structure: null, type: entityType });
           return of(null);
         })
       )
@@ -74,6 +76,7 @@ export class CommonEntityStructureService {
           this.structureLoaded.next({
             loading: false,
             structure: response.attributes,
+            type: entityType
           });
         }
       });

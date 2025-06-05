@@ -173,7 +173,7 @@ export class RegisterFilterService {
 
   prepareWhereCaseForEntrance(entranceId?: string) {
     if (entranceId) {
-      return `EntBldGlobalID='${entranceId}'`;
+      return `GlobalID='${entranceId}'`;
     }
     if (!this.globalIds.getValue()?.length || this.noFilterApplied() || this.globalIds.getValue()?.length > 100) {
       return '1=1';

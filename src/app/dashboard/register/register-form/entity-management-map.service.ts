@@ -395,7 +395,7 @@ export class EntityCreationMapService {
                 width: '1px',
               },
               size: 6,
-              color: this.entranceId === g.id ? 'white' : 'red',
+              color: this.entranceId === g.id ? 'blue' : 'red',
             })
           : new SimpleFillSymbol({
               style: 'forward-diagonal',

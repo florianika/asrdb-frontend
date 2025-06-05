@@ -61,7 +61,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy {
 
     this.registerFilterService.globalIdsObservable.subscribe(async () => {
       await this.registerMapService.filterEntranceData(
-        this.registerFilterService.prepareWhereCaseForEntrance()
+        this.registerFilterService.prepareWhereCaseForEntrance(this.entranceGlobalId)
       );
     });
   }

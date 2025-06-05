@@ -15,7 +15,7 @@
           [type]="formItem.type"
           [maxlength]="formItem.maxLength ?? null"
         >
-        <span matTextSuffix *ngIf="formItem.maxLength">{{formGroup.controls[formItem.name].value.length ?? 0}}/{{formItem.maxLength}}</span>
+        <span matTextSuffix *ngIf="formItem.maxLength">{{formGroup.controls[formItem.name].value?.length ?? 0}}/{{formItem.maxLength}}</span>
 
         <mat-select *ngIf="formItem.type === 'select'" [formControlName]="formItem.name">
           <div class="search-field-container">

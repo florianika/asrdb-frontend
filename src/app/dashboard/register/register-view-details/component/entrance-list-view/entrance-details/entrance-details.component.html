@@ -36,11 +36,12 @@
         [externalUpdateDate]="entrance.external_editor_date"
       ></asrdb-history-details>
       <asrdb-register-map
-        *ngIf="buildingGlobalId"
+        *ngIf="buildingGlobalId && id"
         [enableFilter]="false"
         [enableSelection]="false"
         [buildingGlobalId]="buildingGlobalId"
         [skipOtherFiltersApartFromGlobalId]="true"
+        [entranceGlobalId]="id"
         [small]="true"
       ></asrdb-register-map>
       <asrdb-dwelling-list-view

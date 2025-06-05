@@ -151,6 +151,7 @@ export class RegisterFormComponent implements OnInit {
         .getEntranceData({
           returnGeometry: true,
           where: `EntBldGlobalID='${this.buildingId}'`,
+          num: 9999
         })
         .pipe(takeUntil(this.subscriber));
       this.commonEntityStructureService.structureLoaded

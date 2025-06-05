@@ -87,7 +87,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.commonEntityStructureService.structureLoaded
       .pipe(takeUntil(this.destroy$))
       .subscribe(response => {
-        if (!response.loading && response.structure) {
+        if (!response.loading && response.structure && response.type === BUILDING_ENTITY) {
           this.prepareStructure(response.structure);
           this.loadLogs();
         }

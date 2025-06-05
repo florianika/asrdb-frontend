@@ -1,34 +1,27 @@
-import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  isDevMode,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, of as observableOf, Subject, takeUntil } from 'rxjs';
-import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
-import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
-import { CommonEntranceService } from 'src/app/dashboard/common/service/common-entrance.service';
-import { CommonRegisterHelperService } from 'src/app/dashboard/common/service/common-helper.service';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { Log } from '../../../../register-log-view/model/log';
-import { HistoryDetailsComponent } from '../../history-details/history-details.component';
-import { RegisterMapComponent } from '../../../../../common/components/register-map/register-map.component';
-import { DwellingListViewComponent } from '../../dwelling-list-view/dwelling-list-view.component';
-import { CommonStreetService } from '../../../../../common/service/common-street.service';
-import { MatIcon } from '@angular/material/icon';
-import { Router } from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {Component, EventEmitter, Inject, isDevMode, OnInit, Output,} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {catchError, of as observableOf, Subject, takeUntil} from 'rxjs';
+import {BuildingDetailComponent} from '../../building-detail/building-detail.component';
+import {QueryFilter} from 'src/app/dashboard/register/model/query-filter';
+import {CommonEntranceService} from 'src/app/dashboard/common/service/common-entrance.service';
+import {CommonRegisterHelperService} from 'src/app/dashboard/common/service/common-helper.service';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import {Log} from '../../../../register-log-view/model/log';
+import {HistoryDetailsComponent} from '../../history-details/history-details.component';
+import {RegisterMapComponent} from '../../../../../common/components/register-map/register-map.component';
+import {DwellingListViewComponent} from '../../dwelling-list-view/dwelling-list-view.component';
+import {CommonStreetService} from '../../../../../common/service/common-street.service';
+import {MatIcon} from '@angular/material/icon';
+import {Router} from '@angular/router';
 import {
   CommonEntityStructureService,
   EntityAttribute,
 } from '../../../../../common/service/common-entity-structure.service';
-import { SectionField } from '../../../../constant/common-constants';
-import { ENTRANCE_ENTITY } from '../../../../../../common/constants/common-constants';
+import {SectionField} from '../../../../constant/common-constants';
+import {ENTRANCE_ENTITY} from '../../../../../../common/constants/common-constants';
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -98,7 +91,7 @@ export class EntranceDetailsComponent implements OnInit {
     this.commonEntityStructureService.structureLoaded
       .pipe(takeUntil(this.subscriber))
       .subscribe(response => {
-        if (!response.loading && response.structure) {
+        if (!response.loading && response.structure && response.type === ENTRANCE_ENTITY) {
           this.prepareStructure(response.structure);
         }
       });

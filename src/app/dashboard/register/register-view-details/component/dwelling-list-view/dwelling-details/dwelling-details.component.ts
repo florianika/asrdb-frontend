@@ -1,28 +1,26 @@
-import { CommonModule } from '@angular/common';
-import { Component, Inject, isDevMode, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import {CommonModule} from '@angular/common';
+import {Component, Inject, isDevMode, OnInit} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogModule,} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {catchError, of as observableOf, Subject, takeUntil} from 'rxjs';
+import {BuildingDetailComponent} from '../../building-detail/building-detail.component';
+import {QueryFilter} from 'src/app/dashboard/register/model/query-filter';
+import {CommonDwellingService} from 'src/app/dashboard/common/service/common-dwellings.service';
+import {CommonRegisterHelperService} from 'src/app/dashboard/common/service/common-helper.service';
+import {Log} from '../../../../register-log-view/model/log';
+import {HistoryDetailsComponent} from '../../history-details/history-details.component';
 import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogModule,
-} from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, of as observableOf, Subject, takeUntil } from 'rxjs';
-import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
-import { QueryFilter } from 'src/app/dashboard/register/model/query-filter';
-import { CommonDwellingService } from 'src/app/dashboard/common/service/common-dwellings.service';
-import { CommonRegisterHelperService } from 'src/app/dashboard/common/service/common-helper.service';
-import { Log } from '../../../../register-log-view/model/log';
-import { HistoryDetailsComponent } from '../../history-details/history-details.component';
-import { DwellingDetailsFormComponent } from '../../../../register-form/dwelling-details-form/dwelling-details-form.component';
-import { MatIcon } from '@angular/material/icon';
+  DwellingDetailsFormComponent
+} from '../../../../register-form/dwelling-details-form/dwelling-details-form.component';
+import {MatIcon} from '@angular/material/icon';
 import {
   CommonEntityStructureService,
   EntityAttribute,
 } from '../../../../../common/service/common-entity-structure.service';
-import { SectionField } from '../../../../constant/common-constants';
-import { DWELLING_ENTITY } from '../../../../../../common/constants/common-constants';
+import {SectionField} from '../../../../constant/common-constants';
+import {DWELLING_ENTITY} from '../../../../../../common/constants/common-constants';
 
 export type DwellingDetailsData = {
   globalId: string;
@@ -95,7 +93,7 @@ export class DwellingDetailsComponent implements OnInit {
     this.commonEntityStructureService.structureLoaded
       .pipe(takeUntil(this.subscriber))
       .subscribe(response => {
-        if (!response.loading && response.structure) {
+        if (!response.loading && response.structure && response.type === DWELLING_ENTITY) {
           this.prepareStructure(response.structure);
         }
       });
