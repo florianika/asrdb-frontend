@@ -53,6 +53,10 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
       console.log('The map is ready.');
     });
 
+    if (this.small) {
+      this.registerMapService.isOnlyOneBuilding = true;
+    }
+
     this.registerFilterService.filterObservable.subscribe(async () => {
       await this.registerMapService.filterBuildingData(
         this.registerFilterService.prepareWhereCase()
@@ -67,7 +71,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['entranceGlobalId']) {
+    if (changes['entranceGlobalId'] && changes['entranceGlobalId'].currentValue) {
       void this.registerMapService.filterEntranceData(
         this.registerFilterService.prepareWhereCaseForEntrance(this.entranceGlobalId)
       );

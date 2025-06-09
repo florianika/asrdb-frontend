@@ -129,7 +129,11 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.commonStructureService.structureLoaded.subscribe(response => {
       if (!response.loading && response.structure) {
         this.structure = response.structure;
-        this.loadDwellingById(data.id);
+        if (data.id) {
+          this.loadDwellingById(data.id);
+        } else {
+          this.initForm();
+        }
       }
     });
 

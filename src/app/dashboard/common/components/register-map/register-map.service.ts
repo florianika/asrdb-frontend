@@ -34,6 +34,8 @@ export class RegisterMapService {
   private customZoom: null | number = null;
   private alreadyFocused = false;
 
+  public isOnlyOneBuilding = false;
+
   constructor(
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
@@ -201,8 +203,13 @@ export class RegisterMapService {
 
   cleanup() {
     this.eventsCleanupCallbacks.forEach(event => event());
+    this.eventsCleanupCallbacks = [];
+    this.isOnlyOneBuilding = false;
     if (this.view) {
       this.view.destroy();
+      this.view = undefined;
+      this.alreadyFocused = false;
+      this.customZoom = null;
     }
   }
 
@@ -227,6 +234,12 @@ export class RegisterMapService {
     const goTo = extend.extent
       ? { target: extend.extent }
       : { center: [19.818, 41.3285], zoom: 18 };
+    if (this.isOnlyOneBuilding) {
+      setTimeout(() => {
+        void this.view?.goTo(extend.extent);
+        return
+      }, 500);
+    }
     const size = this.getBuildingIdsSize(whereCondition);
     switch (size) {
       case 1: {
@@ -247,6 +260,7 @@ export class RegisterMapService {
       }
       default: {
         void this.view.goTo(goTo);
+        this.alreadyFocused = true;
         break;
       }
     }
