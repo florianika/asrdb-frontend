@@ -26,6 +26,7 @@ import {
   EntityAttribute,
 } from '../../common/service/common-entity-structure.service';
 import { SectionField } from '../constant/common-constants';
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -42,6 +43,7 @@ import { SectionField } from '../constant/common-constants';
     MatTooltipModule,
     HistoryDetailsComponent,
     MatDivider,
+    MatProgressSpinner,
   ],
   providers: [],
   templateUrl: './register-view-details.component.html',

@@ -45,6 +45,7 @@ export class EntityDeleteConfirmationDialogComponent {
   private deleteDialog?: MatDialogRef<any>;
   private readonly idToDelete?: string;
 
+  type?:EntityType;
   disableDialogButtons = false;
   loadingDeleteData;
   toDeleteState;
@@ -54,6 +55,7 @@ export class EntityDeleteConfirmationDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: EntityDeleteDialogData,
     private registerDeleteService: RegisterDeleteService
   ) {
+    this.type = data.type;
     this.idToDelete = data.idToDelete;
     this.reload = data.reload;
     this.loadingDeleteData = this.registerDeleteService.deleteDataLoading;
@@ -98,4 +100,7 @@ export class EntityDeleteConfirmationDialogComponent {
       }
     });
   }
+
+  protected readonly ENTRANCE_ENTITY = ENTRANCE_ENTITY;
+  protected readonly DWELLING_ENTITY = DWELLING_ENTITY;
 }

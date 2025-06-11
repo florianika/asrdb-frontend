@@ -44,6 +44,7 @@ import {
   EntityDeleteDialogData,
 } from '../../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
 import {DWELLING_ENTITY} from '../../../../../common/constants/common-constants';
+import {CommonBuildingService} from "../../../../common/service/common-building.service";
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -72,6 +73,7 @@ export class DwellingListViewComponent
   implements OnInit, OnDestroy, AfterViewInit, OnChanges
 {
   @Input() entranceId?: string;
+  @Input() buildingGlobalId?: string;
   @Input() buildingNumber?: number;
   @Input() entrances: Entrance[] = [];
 
@@ -135,6 +137,7 @@ export class DwellingListViewComponent
   }
 
   constructor(
+    private commonBuildingService: CommonBuildingService,
     private commonDwellingBuildingService: CommonDwellingService,
     private commonEntranceBuildingService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
@@ -292,6 +295,9 @@ export class DwellingListViewComponent
           type: DWELLING_ENTITY,
           idToDelete: globalId,
           reload: () => {
+            if (this.buildingGlobalId) {
+              this.commonBuildingService.executeAutomaticRules(this.buildingGlobalId);
+            }
             this.reload();
             dialog.close();
           },

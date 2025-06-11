@@ -72,6 +72,8 @@ export class CommonEntityStructureService {
       )
       .subscribe((response: EntityStructure | null) => {
         if (response) {
+          // sort the attributes by order in ascending order
+          response.attributes.sort((a, b) => a.order - b.order);
           this.structureCache.set(entityType, response.attributes);
           this.structureLoaded.next({
             loading: false,

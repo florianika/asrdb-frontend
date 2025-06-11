@@ -103,7 +103,7 @@ export class RegisterDeleteService {
     this.deleteDataLoading.next(true);
     this.commonEntranceService
       .getEntranceData({
-        where: `EntBldGlobalID='${buildingId}'`,
+        where: `EntBldGlobalID='${buildingId}' AND EntQuality <> 0`,
         returnGeometry: false,
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
@@ -227,7 +227,7 @@ export class RegisterDeleteService {
     this.deleteDataLoading.next(true);
     this.commonDwellingService
       .getDwellings({
-        where: `DwlEntGlobalID in (${globalIds.map((id: string) => `'${id}'`).join(',')})`,
+        where: `DwlEntGlobalID in (${globalIds.map((id: string) => `'${id}'`).join(',')}) AND DwlQuality <> 0`,
         returnGeometry: false,
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,

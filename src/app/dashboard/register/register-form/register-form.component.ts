@@ -205,7 +205,8 @@ export class RegisterFormComponent implements OnInit {
     if (this.buildingId === centroid.id || !centroid.id) {
       this.buildingDetails.patchValue({
         BldLatitude: centroid.latitude,
-        BldLongitude: centroid.longitude,
+        BldLongitude: centroid.longitude
+        // BldCentroidStatus: 1
       });
     } else if (centroid.id) {
       this.entranceCentroids.push(centroid);
@@ -334,6 +335,7 @@ export class RegisterFormComponent implements OnInit {
     }
     entrance['EntLatitude'] = centroid?.latitude;
     entrance['EntLongitude'] = centroid?.longitude;
+    // entrance['EntPointStatus'] = 1;
     return entrance;
   }
 

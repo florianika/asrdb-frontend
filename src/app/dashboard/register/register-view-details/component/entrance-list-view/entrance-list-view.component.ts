@@ -48,6 +48,7 @@ import {
 } from '../../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
 import { MatDivider } from '@angular/material/divider';
 import { ENTRANCE_ENTITY } from '../../../../../common/constants/common-constants';
+import {CommonBuildingService} from "../../../../common/service/common-building.service";
 
 @Component({
   selector: 'asrdb-entrance-list-view',
@@ -133,6 +134,7 @@ export class EntranceListViewComponent
     private commonEntranceService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private commonStreetService: CommonStreetService,
+    private commonBuildingService: CommonBuildingService,
     private matDialog: MatDialog,
     private matSnack: MatSnackBar,
     private registerLogService: RegisterLogService,
@@ -252,6 +254,9 @@ export class EntranceListViewComponent
           type: ENTRANCE_ENTITY,
           idToDelete: globalId,
           reload: () => {
+            if (this.buildingGlobalId) {
+              this.commonBuildingService.executeAutomaticRules(this.buildingGlobalId);
+            }
             this.reload();
             this.selectedEntrance = undefined;
             this.entranceSelected.emit('');

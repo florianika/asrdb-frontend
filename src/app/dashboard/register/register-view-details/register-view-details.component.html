@@ -1,4 +1,4 @@
-<div *ngIf="!isLoadingResults" class="building-details-container">
+<div *ngIf="!isLoadingResults; else loader" class="building-details-container">
   <div class="row">
     <div class="col-12 col-md-4 pe-0">
       <mat-card class="building-details-card">
@@ -86,6 +86,7 @@
         <div class="mt-3">
           <asrdb-dwelling-list-view
             [entranceId]="selectedEntrance"
+            [buildingGlobalId]="building.GlobalID"
             [entrances]="loadedEntrances"
             [buildingNumber]="building.BldProperty"
             (dwellingUpdated)="markEntranceAsUntestedData($event)"
@@ -95,3 +96,10 @@
     </div>
   </div>
 </div>
+
+<ng-template #loader>
+  <div class="asrbd-loading-shade-full">
+    <mat-spinner diameter="40"></mat-spinner>
+    <div class="loading-text" i18n>Loading building details...</div>
+  </div>
+</ng-template>

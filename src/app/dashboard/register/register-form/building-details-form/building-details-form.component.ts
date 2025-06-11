@@ -116,8 +116,8 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
               role &&
               role.toLowerCase() in structureEntry.display &&
               // @ts-ignore
-              ['write'].includes(structureEntry.display[role.toLowerCase()]) &&
-              !['map', 'none'].includes(structureEntry.section)
+              (['write'].includes(structureEntry.display[role.toLowerCase()]) || structureEntry.section === 'map') &&
+              structureEntry.section !== 'none'
             );
           });
         if (!this.formGroup) {
@@ -179,14 +179,21 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       selectOptions: fieldOptions,
       originalOptions: fieldOptions,
       maxLength: field[LENGTH_PROP],
-      hidden: ['BldLatitude', 'BldLongitude'].includes(field[NAME_PROP]),
+      hidden: this.isFieldHidden(field[NAME_PROP]),
     });
+  }
+
+  private isFieldHidden(name: string): boolean {
+    const field = this.structure.find(structureEntry => structureEntry.name === name);
+    return !field || field.section === 'map' || field.section === 'none';
   }
 
   private createFormControlForField(field: any) {
     const fieldName = field[NAME_PROP];
     const value = getValue(field, fieldName, this.existingBuildingDetails);
-    const defaultValue = field[DEFAULT_VALUE_PROP] ?? '';
+    const defaultValue = field[TYPE_PROP] === 'esriFieldTypeDate'
+      ? null
+      : field[DEFAULT_VALUE_PROP] ?? '';
     const control = new FormControl(
       value || value === 0 ? value : defaultValue
     );
@@ -204,7 +211,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       this.mapService.setMunicipality(municipalityValue);
     }
     if (field[NAME_PROP] === 'BldPermitDate') {
-      if (value && value.toUTCString() === 'Thu, 01 Jan 1970 00:00:00 GMT') {
+      if (value && value.toUTCString() === 'Thu, 01 Jan 1970 00:00:00 GMT' || isNaN(value.getDate())) {
         console.log(value);
         control.setValue(null);
       }
