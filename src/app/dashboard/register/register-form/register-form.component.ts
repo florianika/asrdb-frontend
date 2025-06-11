@@ -144,13 +144,13 @@ export class RegisterFormComponent implements OnInit {
       const getBuildingRequest = this.buildingService
         .getBuildingData({
           returnGeometry: true,
-          where: `globalID='${this.buildingId}'`,
+          where: `globalID='${this.buildingId}' AND BldQuality <> 0`,
         })
         .pipe(takeUntil(this.subscriber));
       const getEntranceRequest = this.entranceService
         .getEntranceData({
           returnGeometry: true,
-          where: `EntBldGlobalID='${this.buildingId}'`,
+          where: `EntBldGlobalID='${this.buildingId}' AND EntQuality <> 0`,
           num: 9999
         })
         .pipe(takeUntil(this.subscriber));

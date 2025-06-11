@@ -45,6 +45,7 @@ import {
 } from '../../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
 import {DWELLING_ENTITY} from '../../../../../common/constants/common-constants';
 import {CommonBuildingService} from "../../../../common/service/common-building.service";
+import {AuthStateService} from "../../../../../common/services/auth-state.service";
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -141,6 +142,7 @@ export class DwellingListViewComponent
     private commonDwellingBuildingService: CommonDwellingService,
     private commonEntranceBuildingService: CommonEntranceService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private authStateService: AuthStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private registerLogService: RegisterLogService,
     private viewContainerRef: ViewContainerRef,
@@ -201,6 +203,10 @@ export class DwellingListViewComponent
       );
       this.entranceNumber = entrance?.EntEntranceNumber?.toString() ?? '';
     }
+  }
+
+  get isAdmin() {
+    return this.authStateService.isAdmin();
   }
 
   ngOnDestroy(): void {

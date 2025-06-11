@@ -65,11 +65,13 @@
               <mat-icon>light</mat-icon> View dwelling details</button>
             <button mat-menu-item i18n (click)="editDwellingDetails(element.GlobalID)">
               <mat-icon>edit</mat-icon> Edit dwelling details</button>
-            <mat-divider/>
-            <button mat-menu-item i18n (click)="openDeleteDialog(element.GlobalID)">
-              <mat-icon color="warn">delete</mat-icon>
-              Delete dwelling
-            </button>
+            @if (isAdmin) {
+              <mat-divider/>
+              <button mat-menu-item i18n (click)="openDeleteDialog(element.GlobalID)">
+                <mat-icon color="warn">delete</mat-icon>
+                Delete dwelling
+              </button>
+            }
           </mat-menu>
         </td>
       </ng-container>

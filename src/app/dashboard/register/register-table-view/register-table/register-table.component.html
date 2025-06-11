@@ -113,11 +113,13 @@
               View quality report</button>
             <button mat-menu-item i18n (click)="startExecutionForBuilding(element.GlobalID)"><mat-icon>play_arrow</mat-icon>
               Test building data</button>
-            <mat-divider/>
-            <button mat-menu-item i18n (click)="openDeleteDialog(element.GlobalID)">
-              <mat-icon color="warn">delete</mat-icon>
-              Delete building
-            </button>
+            @if (isAdmin) {
+              <mat-divider/>
+              <button mat-menu-item i18n (click)="openDeleteDialog(element.GlobalID)">
+                <mat-icon color="warn">delete</mat-icon>
+                Delete building
+              </button>
+            }
           </mat-menu>
         </td>
       </ng-container>

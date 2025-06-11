@@ -37,6 +37,7 @@ import {
   EntityDeleteDialogData,
 } from '../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
 import {BUILDING_ENTITY} from '../../../../common/constants/common-constants';
+import {AuthStateService} from "../../../../common/services/auth-state.service";
 
 @Component({
   selector: 'asrdb-register-table',
@@ -106,6 +107,7 @@ export class RegisterTableComponent
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
+    private authStateService: AuthStateService,
     private matDialog: MatDialog,
     private matSnack: MatSnackBar,
     private changeDetectionRef: ChangeDetectorRef,
@@ -145,6 +147,10 @@ export class RegisterTableComponent
     this.destroy$.next(true);
     this.destroy$.complete();
     this.registerFilterService.resetFilter();
+  }
+
+  get isAdmin() {
+    return this.authStateService.isAdmin();
   }
 
   getMunicipality(column: string, code: number | string) {

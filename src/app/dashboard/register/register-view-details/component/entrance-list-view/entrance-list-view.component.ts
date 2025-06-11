@@ -49,6 +49,7 @@ import {
 import { MatDivider } from '@angular/material/divider';
 import { ENTRANCE_ENTITY } from '../../../../../common/constants/common-constants';
 import {CommonBuildingService} from "../../../../common/service/common-building.service";
+import {AuthStateService} from "../../../../../common/services/auth-state.service";
 
 @Component({
   selector: 'asrdb-entrance-list-view',
@@ -135,6 +136,7 @@ export class EntranceListViewComponent
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private commonStreetService: CommonStreetService,
     private commonBuildingService: CommonBuildingService,
+    private authStateService: AuthStateService,
     private matDialog: MatDialog,
     private matSnack: MatSnackBar,
     private registerLogService: RegisterLogService,
@@ -174,6 +176,10 @@ export class EntranceListViewComponent
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  get isAdmin() {
+    return this.authStateService.isAdmin();
   }
 
   getValueFromStatus(column: string, code: string) {

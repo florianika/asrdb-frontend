@@ -178,7 +178,7 @@ export class RegisterFilterService {
     if (!this.globalIds.getValue()?.length || this.noFilterApplied() || this.globalIds.getValue()?.length > 100) {
       return '1!=1';
     }
-    return `EntBldGlobalID in (${this.globalIds.getValue().map(id => '\'' + id + '\'')})`;
+    return `EntBldGlobalID in (${this.globalIds.getValue().map(id => '\'' + id + '\'')}) AND EntQuality <> 0`;
   }
 
   getFilter() {
