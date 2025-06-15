@@ -21,6 +21,7 @@ import { EmailTemplateManagementService } from './email-template-management.serv
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConcatenateMessagePipe } from '../../register/register-log-view/register-log-table/register-log-message.pipe';
 import { NgxEditorModule } from 'ngx-editor';
+import {UserManagementService} from "../user-management/user-management.service";
 
 @NgModule({
   declarations: [
@@ -48,6 +49,6 @@ import { NgxEditorModule } from 'ngx-editor';
     ConcatenateMessagePipe,
     NgxEditorModule,
   ],
-  providers: [EmailTemplateManagementService],
+  providers: [EmailTemplateManagementService, UserManagementService],
 })
 export class EmailTemplateManagementModule {}

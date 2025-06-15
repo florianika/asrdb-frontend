@@ -1,10 +1,11 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {map, Observable} from 'rxjs';
+import {combineLatestWith, Observable} from 'rxjs';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {EmailTemplateManagementService} from '../email-template-management.service';
 import {EmailTemplate} from '../../../../model/EmailTemplate.model';
+import {UserManagementService} from "../../user-management/user-management.service";
 
 @Component({
   selector: 'asrdb-email-template-management-table',
@@ -21,14 +22,7 @@ export class EmailTemplateManagementTableComponent
     'createdTimestamp',
     'actions',
   ];
-  dataSourceObservable: Observable<MatTableDataSource<EmailTemplate>> =
-    this.emailTemplateManagementService.emailTemplatesAsObservable.pipe(
-      map(users => {
-        const dataSource = this.dataSource;
-        dataSource.data = users;
-        return dataSource;
-      })
-    );
+  dataSourceObservable: Observable<MatTableDataSource<EmailTemplate>> | null = null;
 
   private dataSource: MatTableDataSource<EmailTemplate> =
     new MatTableDataSource<EmailTemplate>();
@@ -40,10 +34,31 @@ export class EmailTemplateManagementTableComponent
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private emailTemplateManagementService: EmailTemplateManagementService
-  ) {}
+    private emailTemplateManagementService: EmailTemplateManagementService,
+    private userManagementService: UserManagementService
+  ) {
+    this.emailTemplateManagementService.emailTemplatesAsObservable
+      .pipe(combineLatestWith(this.userManagementService.usersAsObservable))
+      .subscribe(([emails, users]) => {
+        this.dataSource.data = emails?.map((email) => {
+          const user = users.find(
+            (user) => user.id === email.createdUser
+          );
+          return {
+            ...email,
+            createdUser: user ? user.name + ' ' + user.lastName : 'Unknown User',
+          };
+        });
+        this.resultsLength = this.dataSource.data.length;
+        this.dataSourceObservable = new Observable((observer) => {
+          observer.next(this.dataSource);
+          observer.complete();
+        });
+      });
+  }
 
   ngOnInit(): void {
+    this.userManagementService.getUsers();
     this.emailTemplateManagementService.getEmailTemplates();
   }
 
