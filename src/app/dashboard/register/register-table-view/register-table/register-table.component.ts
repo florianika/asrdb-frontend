@@ -146,7 +146,6 @@ export class RegisterTableComponent
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
-    this.registerFilterService.resetFilter();
   }
 
   get isAdmin() {
