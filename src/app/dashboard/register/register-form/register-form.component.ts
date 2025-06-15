@@ -335,7 +335,6 @@ export class RegisterFormComponent implements OnInit {
     }
     entrance['EntLatitude'] = centroid?.latitude;
     entrance['EntLongitude'] = centroid?.longitude;
-    // entrance['EntPointStatus'] = 1;
     return entrance;
   }
 

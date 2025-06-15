@@ -74,9 +74,7 @@ export class DwellingManagementService {
     dwelling.DwlQuality = 9;
     const cleanedAttributes = {} as Partial<Dwelling>;
     Object.entries(dwelling).forEach(([key, value]) => {
-      if (value) {
-        (cleanedAttributes as any)[key] = value;
-      }
+      (cleanedAttributes as any)[key] = value ? value : null;
     });
     return [
       {

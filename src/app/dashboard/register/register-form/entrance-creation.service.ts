@@ -110,8 +110,8 @@ export class EntranceManagementService {
     }
     const cleanedObject = {} as any;
     Object.entries(entrance as any).forEach(([key, value]) => {
-      if (value && key !== 'Point') {
-        cleanedObject[key] = value;
+      if (key !== 'Point') {
+        cleanedObject[key] = value ? value : null;
       }
     });
     return cleanedObject as Entrance;

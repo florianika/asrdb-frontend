@@ -74,9 +74,7 @@ export class StreetManagementService {
     this.isSaving.next(true);
     const cleanedAttributes = {} as Partial<Dwelling>;
     Object.entries(street).forEach(([key, value]) => {
-      if (value) {
-        (cleanedAttributes as any)[key] = value;
-      }
+      (cleanedAttributes as any)[key] = value ? value : null;
     });
     return [
       {
