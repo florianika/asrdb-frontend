@@ -1,32 +1,30 @@
-import { Component, isDevMode, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { BuildingDetailComponent } from './component/building-detail/building-detail.component';
-import { EntranceListViewComponent } from './component/entrance-list-view/entrance-list-view.component';
-import { DwellingListViewComponent } from './component/dwelling-list-view/dwelling-list-view.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, of, Subject, takeUntil } from 'rxjs';
-import { QueryFilter } from '../model/query-filter';
-import { CommonBuildingService } from '../../common/service/common-building.service';
-import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { Entrance } from '../model/entrance';
-import { RegisterMapComponent } from '../../common/components/register-map/register-map.component';
-import { RegisterFilterService } from '../register-table-view/register-filter.service';
-import { RegisterLogService } from '../register-log-view/register-log-table/register-log.service';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { CommonEntranceService } from '../../common/service/common-entrance.service';
-import { HistoryDetailsComponent } from './component/history-details/history-details.component';
-import { MatDivider } from '@angular/material/divider';
-import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
-import {
-  CommonEntityStructureService,
-  EntityAttribute,
-} from '../../common/service/common-entity-structure.service';
-import { SectionField } from '../constant/common-constants';
+import {Component, isDevMode, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatCardModule} from '@angular/material/card';
+import {BuildingDetailComponent} from './component/building-detail/building-detail.component';
+import {EntranceListViewComponent} from './component/entrance-list-view/entrance-list-view.component';
+import {DwellingListViewComponent} from './component/dwelling-list-view/dwelling-list-view.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ActivatedRoute, Router} from '@angular/router';
+import {catchError, of, Subject, takeUntil} from 'rxjs';
+import {QueryFilter} from '../model/query-filter';
+import {CommonBuildingService} from '../../common/service/common-building.service';
+import {CommonRegisterHelperService} from '../../common/service/common-helper.service';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {Entrance} from '../model/entrance';
+import {RegisterMapComponent} from '../../common/components/register-map/register-map.component';
+import {RegisterFilterService} from '../register-table-view/register-filter.service';
+import {RegisterLogService} from '../register-log-view/register-log-table/register-log.service';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {CommonEntranceService} from '../../common/service/common-entrance.service';
+import {HistoryDetailsComponent} from './component/history-details/history-details.component';
+import {MatDivider} from '@angular/material/divider';
+import {BUILDING_ENTITY} from '../../../common/constants/common-constants';
+import {CommonEntityStructureService, EntityAttribute,} from '../../common/service/common-entity-structure.service';
+import {SectionField} from '../constant/common-constants';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {CommentViewComponent} from "./component/comment-view/comment-view.component";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -44,6 +42,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     HistoryDetailsComponent,
     MatDivider,
     MatProgressSpinner,
+    CommentViewComponent,
   ],
   providers: [],
   templateUrl: './register-view-details.component.html',

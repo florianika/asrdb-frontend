@@ -1,0 +1,55 @@
+<mat-card class="comment-container">
+  <mat-card-header>
+    <mat-card-title>
+      <h2 i18n>Comments</h2>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content *ngIf="(commentsObservable$ | async) as comments">
+    <div class="comment-list" *ngIf="!comments.loading; else loader">
+      @if (!comments.comments?.notesDTO?.length) {
+        <p class="w-100 text-center" i18n>No comments found!</p>
+      } @else {
+        @for (comment of comments.comments.notesDTO; track comment.noteId) {
+          <div class="comment-list-container">
+            <div class="fw-bold">
+              <span class="comment-author">{{comment.updatedUser ?? comment.createdUser}}</span>
+              <span class="mx-1">|</span>
+              <span class="comment-date">{{(comment.updatedTimestamp ?? comment.createdTimestamp) | date:'dd/MM/yyyy, hh:mm':'Europe/Tirane'}}</span>
+            </div>
+            <p>{{comment.noteText}}</p>
+          </div>
+        }
+      }
+    </div>
+
+    <hr/>
+    <div class="row">
+      <div class="col me-0 pe-0">
+        <mat-form-field class="w-100" appearance="outline">
+          <textarea
+            matInput
+            i18n-placeholder
+            placeholder="Write comment"
+            [(ngModel)]="comment"
+            rows="2"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="col-2 ps-0 ms-0">
+        <button
+          class="float-end rounded-1 shadow-none"
+          mat-fab color="primary"
+          (click)="saveComment()"
+          [disabled]="savingCommentObservable$ | async">
+          <mat-icon>send</mat-icon>
+      </button>
+      </div>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+<ng-template #loader>
+  <div class="loading-spinner">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+</ng-template>

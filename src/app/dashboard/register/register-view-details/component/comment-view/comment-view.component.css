@@ -1,0 +1,9 @@
+.comment-container {
+  max-height: 400px;
+  overflow-y: hidden;
+}
+
+.comment-list {
+  overflow-y: auto;
+  max-height: 200px;
+}
