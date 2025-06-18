@@ -120,6 +120,7 @@ export class RegisterTableComponent
   }
 
   ngOnInit(): void {
+    this.registerFilterService.resetFilter();
     this.registerFilterService.filterObservable
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {

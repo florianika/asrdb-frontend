@@ -61,6 +61,10 @@ export class EntranceManagementService {
     if (attributes?.GlobalID) {
       attributes.external_editor = `{${this.authState.getNameId()}}` ?? '';
       attributes.external_editor_date = String(Date.now());
+      if (attributes.EntLatitude === null || attributes.EntLongitude === null) {
+        delete attributes.EntLatitude;
+        delete attributes.EntLongitude;
+      }
       this.updateEntrance([
         {
           geometry: {

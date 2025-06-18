@@ -4,8 +4,8 @@ export type Entrance = {
   EntID: number;
   EntAddressID: string;
   EntQuality: number;
-  EntLatitude: number;
-  EntLongitude: number;
+  EntLatitude?: number;
+  EntLongitude?: number;
   EntBuildingNumber: number;
   EntEntranceNumber: number;
   EntTown: number;
