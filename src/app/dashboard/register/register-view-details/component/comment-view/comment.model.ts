@@ -14,4 +14,5 @@ export interface CreateComment {
   bldId: string;
   noteText: string;
   createdUser: string;
+  userId: string;
 }

@@ -187,7 +187,7 @@ export class AuthStateService implements OnInit, OnDestroy {
 
   getName(): string {
     const jwtToken = this.getDecodedJWT();
-    return jwtToken?.name ?? '';
+    return jwtToken?.unique_name ?? '';
   }
 
   getSurname(): string {

@@ -3,6 +3,7 @@ import {Comments, CreateComment} from "./comment.model";
 import {BehaviorSubject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {environment} from "../../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class CommentService {
       .replace('{', '')
       .replace('}', '')
       .trim();
-    this.httpClient.get<Comments>(`/qms/notes/buildings/${cleanedBuildingId}`).subscribe({
+    this.httpClient.get<Comments>(environment.base_url + `/qms/notes/buildings/${cleanedBuildingId}`).subscribe({
       next: (data) => {
         this.comments.next({
           loading: false,
@@ -67,7 +68,7 @@ export class CommentService {
       return;
     }
     this.savingComment.next(true);
-    this.httpClient.post("/qms/notes", comment).subscribe({
+    this.httpClient.post(environment.base_url + "/qms/notes", comment).subscribe({
       next: () => {
         this.loadComments(comment.bldId);
         this.savingComment.next(false);

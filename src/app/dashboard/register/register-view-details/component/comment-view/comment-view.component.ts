@@ -50,7 +50,8 @@ export class CommentViewComponent implements OnInit {
     const commentData = {
       bldId: this.buildingId.replace('{', '').replace('}', '').trim(),
       noteText: this.comment,
-      createdUser: this.authStateService.getFullName()
+      createdUser: this.authStateService.getFullName(),
+      userId: this.authStateService.getNameId() || ''
     } as CreateComment;
 
     this.commentService.saveComment(commentData);
