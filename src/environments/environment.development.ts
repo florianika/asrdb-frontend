@@ -9,6 +9,8 @@ export const environment = {
     'https://salstatstaging.tddev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/2',
   street_url:
     'https://salstatstaging.tddev.it/arcgis/rest/services/SALSTAT/asrbd/FeatureServer/3',
+  municipality_url:
+    'https://services7.arcgis.com/E9FE1JuiACmTPbPv/ArcGIS/rest/services/Municipality/FeatureServer/7',
   token_url:
     'https://salstatstaging.tddev.it/portal/sharing/rest/generateToken',
 };

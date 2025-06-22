@@ -13,6 +13,7 @@ import { FeatureSelectionService } from './custom-map-logic/feature-selection';
 import { BaseMapChangeService } from './custom-map-logic/basemap-change';
 import Legend from '@arcgis/core/widgets/Legend';
 import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
+import {CommonMunicipalityService} from "../../service/common-municipality.service";
 
 export type MapInitOptions = {
   enableFilter: boolean;
@@ -26,6 +27,7 @@ export type MapInitOptions = {
 export class RegisterMapService {
   private bldlayer;
   private entlayer;
+  private municipalityLayer;
   private eventsCleanupCallbacks: (() => void)[] = [];
   private nativeElement: string | HTMLDivElement | undefined;
   private options: MapInitOptions | undefined;
@@ -40,6 +42,7 @@ export class RegisterMapService {
   constructor(
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
+    private municipalityService: CommonMunicipalityService,
     private registerFilterService: RegisterFilterService,
     private baseMapChangeService: BaseMapChangeService,
     private featureSelectionService: FeatureSelectionService,
@@ -47,6 +50,7 @@ export class RegisterMapService {
   ) {
     this.bldlayer = this.buildingService.bldLayer;
     this.entlayer = this.entranceService.entLayer;
+    this.municipalityLayer = this.municipalityService.municipalityLayer;
   }
 
   async init(
@@ -67,8 +71,9 @@ export class RegisterMapService {
 
     const webmap = this.createWebMap(basemap, [
       this.graphicsLayer,
-      this.bldlayer,
+      this.municipalityLayer,
       this.entlayer,
+      this.bldlayer,
     ]);
     this.view = this.createMapView(webmap);
 

@@ -29,6 +29,7 @@ import {
   ENTRANCE_ENTITY,
 } from '../../../common/constants/common-constants';
 import SketchProperties = __esri.SketchProperties;
+import {CommonMunicipalityService} from "../../common/service/common-municipality.service";
 
 @Injectable({ providedIn: 'root' })
 export class EntityCreationMapService {
@@ -36,6 +37,7 @@ export class EntityCreationMapService {
   private graphicsLayer!: GraphicsLayer;
   private eventsCleanupCallbacks: (() => void)[] = [];
   private readonly bldLayer;
+  private readonly municipalityLayer;
   private municipality;
   private view: MapView | undefined = undefined;
   private createdGraphic: any | null = null;
@@ -66,6 +68,7 @@ export class EntityCreationMapService {
     private activatedRoute: ActivatedRoute,
     private basemapService: BaseMapChangeService,
     private buildingService: CommonBuildingService,
+    private municipalityService: CommonMunicipalityService,
     private authState: AuthStateService
   ) {
     this.municipality = new BehaviorSubject<number | null>(
@@ -73,6 +76,7 @@ export class EntityCreationMapService {
     );
     this.entranceId =
       this.activatedRoute.snapshot.queryParamMap.get('entranceId') ?? '';
+    this.municipalityLayer = this.municipalityService.municipalityLayer;
     this.bldLayer = this.buildingService.bldLayer as FeatureLayer;
     (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];
     (this.bldLayer.renderer as UniqueValueRenderer).defaultSymbol = {
@@ -148,6 +152,7 @@ export class EntityCreationMapService {
     const layers: any[] = [this.graphicsLayer];
     if (this.availableTools.includes('polygon')) {
       layers.push(this.bldLayer);
+      layers.push(this.municipalityLayer);
     }
     const webmap = new WebMap({
       basemap: basemap ?? OSM_BASEMAP,

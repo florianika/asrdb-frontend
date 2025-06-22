@@ -61,8 +61,6 @@ export class CommonBuildingService {
         field: 'BldStatus',
         uniqueValueInfos: this.uniqueValueInfos as UniqueValueInfoProperties[],
       }),
-      minScale: 0,
-      maxScale: 0,
       legendEnabled: true,
       // create a new popupTemplate for the layer
       popupTemplate: {

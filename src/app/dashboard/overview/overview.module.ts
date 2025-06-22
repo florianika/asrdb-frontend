@@ -23,6 +23,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PieGraphComponent } from './components/pie-graph/pie-graph.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FilterHelper } from '../common/helper/filter-helper';
+import {CommonMunicipalityService} from "../common/service/common-municipality.service";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -48,6 +49,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     CommonEsriAuthService,
     CommonBuildingService,
     CommonEntranceService,
+    CommonMunicipalityService,
     RegisterFilterService,
     CommonRegisterHelperService,
     FilterHelper,
