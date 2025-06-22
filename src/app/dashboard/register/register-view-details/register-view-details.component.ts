@@ -174,7 +174,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.router.navigateByUrl('dashboard/register');
+    this.router.navigateByUrl('dashboard/register?from=details');
   }
 
   private loadLogs() {

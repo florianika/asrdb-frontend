@@ -23,7 +23,7 @@ import {BuildingFilter} from '../../model/building';
 import {QueryFilter} from '../../model/query-filter';
 import {CommonBuildingService} from '../../../common/service/common-building.service';
 import {CommonRegisterHelperService} from '../../../common/service/common-helper.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {RegisterFilterComponent} from '../../../common/components/register-filter/register-filter.component';
 import {FILTER_REGISTER, RegisterFilterService,} from '../register-filter.service';
 import {MatDividerModule} from '@angular/material/divider';
@@ -113,14 +113,20 @@ export class RegisterTableComponent
     private changeDetectionRef: ChangeDetectorRef,
     private filterHelper: FilterHelper,
     private registerLogService: RegisterLogService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.registerFilterService.setBuildingGlobalIdFilter('');
     this.registerFilterService.setBuildingsGlobalIdFilter([]);
   }
 
   ngOnInit(): void {
-    this.registerFilterService.resetFilter();
+    // Check the previous url from history to determine if we need to reload the filter.
+    const previousUrl = this.activatedRoute.snapshot.queryParamMap.get('from');
+    if (!previousUrl || previousUrl !== 'details') {
+      this.registerFilterService.resetFilter();
+    }
+
     this.registerFilterService.filterObservable
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
