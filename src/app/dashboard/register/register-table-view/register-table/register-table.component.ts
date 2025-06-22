@@ -122,8 +122,9 @@ export class RegisterTableComponent
 
   ngOnInit(): void {
     // Check the previous url from history to determine if we need to reload the filter.
-    const previousUrl = this.activatedRoute.snapshot.queryParamMap.get('from');
-    if (!previousUrl || previousUrl !== 'details') {
+    const previousUrlQueryParam = this.activatedRoute.snapshot.queryParamMap.get('from');
+    const currentUrl = this.router.url;
+    if (!previousUrlQueryParam || previousUrlQueryParam !== 'details') {
       this.registerFilterService.resetFilter();
     }
 

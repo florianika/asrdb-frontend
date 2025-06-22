@@ -39,6 +39,7 @@ export class EntityCreationMapService {
   private municipality;
   private view: MapView | undefined = undefined;
   private createdGraphic: any | null = null;
+  private totalResults = null;
 
   get valueChanged() {
     return this.valueUpdate.asObservable();
@@ -175,7 +176,7 @@ export class EntityCreationMapService {
         if (!this.view?.map) {
           return;
         }
-        this.bldLayer.visible = newZoom >= 15;
+        this.bldLayer.visible = newZoom >= 15 || !!(this.totalResults && this.totalResults < 1000);
       }, 500);
     });
 
@@ -430,6 +431,8 @@ export class EntityCreationMapService {
     query.where = whereCondition;
     try {
       const extend = await this.bldLayer.queryExtent(query);
+      this.totalResults = extend.count;
+      this.bldLayer.visible = extend.count < 1000;
       void this.view.goTo(
         extend.count !== 0
           ? extend.extent

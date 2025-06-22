@@ -53,21 +53,7 @@ export class RegisterFilterService {
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private authState: AuthStateService
   ) {
-    const savedFilterJSON = localStorage.getItem(FILTER_REGISTER);
-
-    if (savedFilterJSON) {
-      try {
-        const filter = JSON.parse(savedFilterJSON);
-        if (!filter.filter.BldMunicipality) {
-          filter.filter.BldMunicipality =
-            this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY;
-        }
-        filter.filter.GlobalID = null;
-        this.filter.next(filter);
-      } catch (e) {
-        console.log('Filter could not be initialised');
-      }
-    }
+    this.init();
   }
 
   get municipality(): number | null {
@@ -75,7 +61,7 @@ export class RegisterFilterService {
   }
 
   resetFilter(): void {
-    this.updateFilter(this.defaultFilter, FILTER_REGISTER);
+    this.init();
   }
 
   setBuildingsGlobalIdFilter(globalIds: string[]) {
@@ -253,5 +239,25 @@ export class RegisterFilterService {
       !this.filter.value.filter.BldReview &&
       !this.filter.value.filter.GlobalID
     );
+  }
+
+  private init() {
+    const savedFilterJSON = localStorage.getItem(FILTER_REGISTER);
+
+    if (savedFilterJSON) {
+      try {
+        const filter = JSON.parse(savedFilterJSON);
+        if (!filter.filter.BldMunicipality) {
+          filter.filter.BldMunicipality =
+            this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY;
+        }
+        filter.filter.GlobalID = null;
+        this.filter.next(filter);
+      } catch (e) {
+        console.log('Filter could not be initialised');
+      }
+    } else {
+      this.updateFilter(this.defaultFilter, FILTER_REGISTER);
+    }
   }
 }

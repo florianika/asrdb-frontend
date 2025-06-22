@@ -33,6 +33,7 @@ export class RegisterMapService {
   private graphicsLayer?: GraphicsLayer;
   private customZoom: null | number = null;
   private alreadyFocused = false;
+  private totalResults = null;
 
   public isOnlyOneBuilding = false;
 
@@ -121,7 +122,8 @@ export class RegisterMapService {
           return;
         }
         this.customZoom = Math.min(newZoom, 18);
-        if (newZoom < 15) {
+        const lessThan1000 = this.totalResults && this.totalResults < 1000;
+        if (newZoom < 15 && !lessThan1000) {
           this.bldlayer.visible = false;
           this.entlayer.visible = false;
           this.alreadyFocused = false;
@@ -231,6 +233,14 @@ export class RegisterMapService {
     const query = this.bldlayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
+    this.totalResults = extend.count;
+    if (this.totalResults && this.totalResults < 1000) {
+      this.bldlayer.visible = true;
+      this.entlayer.visible = true;
+    } else {
+      this.bldlayer.visible = false;
+      this.entlayer.visible = false;
+    }
     const goTo = extend.extent
       ? { target: extend.extent }
       : { center: [19.818, 41.3285], zoom: 18 };
