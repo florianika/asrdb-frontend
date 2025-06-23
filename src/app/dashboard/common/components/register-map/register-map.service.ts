@@ -217,6 +217,7 @@ export class RegisterMapService {
       this.view = undefined;
       this.alreadyFocused = false;
       this.customZoom = null;
+      this.totalResults = null;
     }
   }
 
@@ -239,7 +240,7 @@ export class RegisterMapService {
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
     this.totalResults = extend.count;
-    if (this.totalResults && this.totalResults < 1000) {
+    if ((this.totalResults && this.totalResults < 1000) || (this.customZoom && this.customZoom >= 15)) {
       this.bldlayer.visible = true;
       this.entlayer.visible = true;
     } else {
