@@ -15,7 +15,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {Entrance} from '../model/entrance';
 import {RegisterMapComponent} from '../../common/components/register-map/register-map.component';
 import {RegisterFilterService} from '../register-table-view/register-filter.service';
-import {RegisterLogService} from '../register-log-view/register-log-table/register-log.service';
+import {NOT_EXECUTING, RegisterLogService} from '../register-log-view/register-log-table/register-log.service';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {CommonEntranceService} from '../../common/service/common-entrance.service';
 import {HistoryDetailsComponent} from './component/history-details/history-details.component';
@@ -70,6 +70,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   ];
   titleSection = [] as SectionField[];
   loadedEntrances: Entrance[] = [];
+  isExecutingRules = false;
 
   private destroy$ = new Subject();
   private fields: any[] = [];
@@ -167,10 +168,22 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   }
 
   startExecution() {
-    this.registerLogService.executeRules(this.id!, false);
-    setTimeout(() => {
-      this.loadBuildingData();
-    }, 500);
+    this.registerLogService.executeRules(this.id!);
+    this.matSnack.open('Started execution of quality rules', 'Ok', {
+      duration: 5000,
+    });
+    this.isExecutingRules = true;
+    const subscription = this.registerLogService.isExecutingRules
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+      if (value === NOT_EXECUTING) {
+        this.matSnack.open('Execution of quality rules finished. Reloading logs!', 'Ok', {
+          duration: 5000,
+        });
+        subscription.unsubscribe();
+        this.loadBuildingData();
+      }
+    });
   }
 
   goBack() {
@@ -182,6 +195,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.fields.length) {
+          this.isExecutingRules = false;
           this.fillSections();
         }
       });

@@ -19,13 +19,20 @@
               (click)="editBuilding(building.GlobalID)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button
-              mat-icon-button
-              matTooltip="Test building data"
-              style="vertical-align: middle;"
-              (click)="startExecution()">
-              <mat-icon>play_arrow</mat-icon>
-            </button>
+            @if (isExecutingRules) {
+              <span class="align-content-center">
+                <mat-spinner diameter="20"></mat-spinner>
+              </span>
+            } @else {
+              <button
+                mat-icon-button
+                matTooltip="Test building data"
+                style="vertical-align: middle;"
+                [disabled]="isExecutingRules"
+                (click)="startExecution()">
+                <mat-icon>play_arrow</mat-icon>
+              </button>
+            }
             <button
               mat-icon-button
               matTooltip="Quality report"
