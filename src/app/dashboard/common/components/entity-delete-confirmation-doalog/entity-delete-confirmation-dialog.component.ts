@@ -103,4 +103,5 @@ export class EntityDeleteConfirmationDialogComponent {
 
   protected readonly ENTRANCE_ENTITY = ENTRANCE_ENTITY;
   protected readonly DWELLING_ENTITY = DWELLING_ENTITY;
+  protected readonly BUILDING_ENTITY = BUILDING_ENTITY;
 }

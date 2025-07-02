@@ -1,0 +1,17 @@
+.rules-list {
+  height: 180px;
+  overflow-y: auto;
+}
+
+.selected-rules-group {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.selected-rules-group:first-child {
+  padding-left: 0 !important;
+}
+
+.selected-rules-group:last-child {
+  padding-right: 0 !important;
+}

@@ -61,6 +61,19 @@ export class EmailTemplateManagementService {
       });
   }
 
+  getEmailTemplateFromList(templateId: number): EmailTemplate | undefined {
+    if (this.emailTemplates.value) {
+      return this.emailTemplates.value.find(template => {
+        if (template.emailTemplateId === templateId) {
+          this.emailTemplate.next(template);
+          return true;
+        }
+        return false;
+      });
+    }
+    return undefined;
+  }
+
   getEmailTemplate(templateId: number) {
     this.loading.next(true);
     return this.httpClient

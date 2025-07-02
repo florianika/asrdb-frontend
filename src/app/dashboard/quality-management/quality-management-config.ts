@@ -25,9 +25,21 @@ export type QualityRulesResponse = {
   rulesDTO: QualityRule[];
 };
 
+export type ActiveQualityRulesResponse = {
+  shortRulesDTO: QualityRule[];
+};
+
 export type QualityRuleResponse = {
   rulesDTO: QualityRule;
 };
+
+export type ShortQualityRule = {
+  id: number,
+  localId: string;
+  entityType: EntityType;
+  nameAl: string;
+  nameEn: string;
+}
 
 export type QualityRule = {
   id: number;

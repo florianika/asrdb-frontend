@@ -41,6 +41,12 @@ const routes: Routes = [
       ),
     canActivate: [GuardAdminService],
   },
+  {
+    path: 'field-work',
+    loadChildren: () =>
+      import('./field-work/field-work.module').then(m => m.FieldWorkModule),
+    canActivate: [GuardAdminService],
+  }
 ];
 
 @NgModule({

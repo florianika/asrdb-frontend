@@ -1,0 +1,50 @@
+<div class="col-12 mt-2">
+  <div class="d-flex">
+    <p class="fs-5" i18n>Statistics</p>
+    <span class="flex-grow-1"></span>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="startFieldWorkJobExecution()"
+      [disabled]="!fieldWorkState().activeFieldWork || fieldWorkState().isLoading || fieldWorkState().isSaving || statistics().loading"
+    >
+      <span i18n>Test selected rules</span>
+      <mat-icon>play_arrow</mat-icon>
+    </button>
+  </div>
+  <div class="asrbd-table-container">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="municipality">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Municipality </th>
+        <td mat-cell *matCellDef="let row"> {{row.municipality}} </td>
+      </ng-container>
+      <ng-container matColumnDef="ruleStatistics">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Rule Statistics </th>
+        <td mat-cell *matCellDef="let row"> {{row.ruleStatistics}} </td>
+      </ng-container>
+      <ng-container matColumnDef="bldStatistics">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Building Statistics </th>
+        <td mat-cell *matCellDef="let row"> {{row.bldStatistics}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="6">
+          @if (fieldWorkState().isLoading || statistics().loading) {
+            <div class="loading-spinner">
+              <mat-spinner diameter="50"></mat-spinner>
+              <p class="mt-2" i18n>Loading field works...</p>
+            </div>
+          } @else {
+            <p class="w-100 text-center mt-5" i18n>No statistics found!</p>
+            <p class="w-100 text-center" i18n>Select some rules and click the "Test selected rules" button to generate some statistics</p>
+          }
+        </td>
+      </tr>
+    </table>
+  </div>
+  <mat-paginator [pageSize]="30"></mat-paginator>
+</div>

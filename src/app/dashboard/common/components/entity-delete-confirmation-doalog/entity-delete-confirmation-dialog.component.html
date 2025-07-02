@@ -25,7 +25,15 @@
       </li>
     }
   </ul>
-  <span i18n>This will delete all entrances and dwellings belonging to this building and <b>cannot</b> be undone.</span>
+  @if (type === BUILDING_ENTITY) {
+    <span i18n>This will delete the building, all entrances and all dwellings belonging to this building. This operation <b>cannot</b> be undone.</span>
+  }
+  @if (type === ENTRANCE_ENTITY) {
+    <span i18n>This will delete the entrance and all dwellings belonging to this entrance. This operation <b>cannot</b> be undone.</span>
+  }
+  @if (type === DWELLING_ENTITY) {
+    <span i18n>This will delete the dwellings. This operation <b>cannot</b> be undone.</span>
+  }
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button [disabled]="disableDialogButtons || (loadingDeleteData | async)" (click)="handleCancelClick()" mat-dialog-close>Cancel</button>

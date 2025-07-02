@@ -56,6 +56,18 @@ export class SideBarComponent implements AfterViewInit {
       visible: this.isAdmin,
     },
     {
+      sectionTitle: '',
+      sectionElements: [
+        {
+          title: 'Field Work',
+          path: 'dashboard/field-work',
+          icon: 'home_work',
+          selected: true,
+        },
+      ],
+      visible: this.isAdmin,
+    },
+    {
       sectionTitle: 'Quality Rule Management',
       sectionElements: [
         {

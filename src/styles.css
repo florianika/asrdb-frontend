@@ -72,3 +72,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 .esri-legend {
   max-width: 200px;
 }
+
+.mdc-list-item__primary-text {
+  width: 100%;
+}

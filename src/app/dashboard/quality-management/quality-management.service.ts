@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {
+  ActiveQualityRulesResponse,
   QualityManagementConfig,
   QualityRule,
   QualityRuleResponse,
-  QualityRulesResponse,
+  QualityRulesResponse, ShortQualityRule,
 } from './quality-management-config';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, of } from 'rxjs';
@@ -30,6 +31,11 @@ export class QualityManagementService {
     private router: Router
   ) {}
 
+  public activeRules = signal({
+    rules: [] as ShortQualityRule[],
+    loading: false,
+  });
+
   public get qualityRulesAsObservable() {
     return this.qualityRules.asObservable();
   }
@@ -44,6 +50,31 @@ export class QualityManagementService {
 
   public get isSavingAsObservable() {
     return this.isSaving.asObservable();
+  }
+
+  public getActiveRules() {
+    this.activeRules.update((state) => ({
+      ...state,
+      loading: true,
+    }));
+    this.httpClient
+      .get<ActiveQualityRulesResponse>(environment.base_url + '/qms/rules/active')
+      .pipe(
+        catchError(err => {
+          this.snack.open('Could not load active quality rules', 'Ok', {
+            duration: 3000,
+          });
+          console.log(err);
+          return of({ shortRulesDTO: [] });
+        })
+      )
+      .subscribe((res: ActiveQualityRulesResponse) => {
+        this.activeRules.update((state) => ({
+          ...state,
+          rules: res.shortRulesDTO,
+          loading: false,
+        }));
+      });
   }
 
   public getRules(type: string | null) {
