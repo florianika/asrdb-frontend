@@ -268,6 +268,9 @@ export class QualityManagementTableComponent
     if (newFilter) {
       this.datasource.filter = JSON.stringify(newFilter);
       this.filterConfig = newFilter;
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
     }
   }
 }

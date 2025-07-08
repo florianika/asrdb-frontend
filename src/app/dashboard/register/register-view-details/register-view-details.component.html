@@ -36,10 +36,30 @@
             <button
               mat-icon-button
               matTooltip="Quality report"
+              i18n-matTooltip
               style="vertical-align: middle;"
               (click)="gotToLogs()">
               <mat-icon>rule</mat-icon>
             </button>
+
+            <button mat-icon-button
+                    *ngIf="building?.BldReview == 3"
+                    i18n-matTooltip
+                    matTooltip="Approve or Reopen review"
+                    [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openApproveReview()">
+                <mat-icon>check</mat-icon>
+                <span i18n>Approve review</span>
+              </button>
+              <button mat-menu-item (click)="openRejectReview()">
+                <mat-icon>replay</mat-icon>
+                <span i18n>Reopen review</span>
+              </button>
+            </mat-menu>
+
           </div>
           <mat-divider class="mt-2 mb-3"></mat-divider>
           <h2 class="details-header" i18n>
@@ -110,6 +130,32 @@
     </div>
   </div>
 </div>
+
+<ng-template #approveReview>
+  <h2 mat-dialog-title i18n>Approve review</h2>
+  <mat-dialog-content>
+    <p i18n>
+      This will mark the building as <b>Review Approved</b>. Are you sure you want to approve the review for this building?
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close i18n [disabled]="isUpdatingFeature">Cancel</button>
+    <button mat-button color="primary" (click)="approveReviewForBuilding()" i18n [disabled]="isUpdatingFeature">Approve</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #rejectReview>
+  <h2 mat-dialog-title i18n>Reopen review</h2>
+  <mat-dialog-content>
+    <p i18n>
+      This will mark the building as <b>Reopened</b>. Are you sure you want to reopen the review for this building?
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close i18n [disabled]="isUpdatingFeature">Cancel</button>
+    <button mat-button color="primary" (click)="rejectReviewForBuilding()" i18n [disabled]="isUpdatingFeature">Reopen</button>
+  </mat-dialog-actions>
+</ng-template>
 
 <ng-template #loader>
   <div class="asrbd-loading-shade-full">

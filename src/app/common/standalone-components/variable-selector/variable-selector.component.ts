@@ -1,7 +1,7 @@
 import {
   Component,
   EventEmitter,
-  Input,
+  Input, isDevMode,
   OnDestroy,
   Output,
 } from '@angular/core';
@@ -101,9 +101,11 @@ export class VariableSelectorComponent implements OnDestroy {
       )
       .subscribe({
         next: ([buildingFields, entranceFields, dwellingFields]) => {
-          console.log(buildingFields);
-          console.log(entranceFields);
-          console.log(dwellingFields);
+          if (isDevMode()) {
+            console.log(buildingFields);
+            console.log(entranceFields);
+            console.log(dwellingFields);
+          }
 
           this._variables.set(
             BUILDING_ENTITY,
@@ -147,9 +149,7 @@ export class VariableSelectorComponent implements OnDestroy {
       .filter(
         field =>
           field.editable &&
-          !BUILDING_HIDDEN_FIELDS.includes(field.name) &&
-          !ENTRANCE_HIDDEN_FIELDS.includes(field.name) &&
-          !STREET_HIDDEN_FIELDS.includes(field.name)
+          !field.name.includes('_')
       )
       .map(field => ({
         text: field.alias ? field.alias : field.name,

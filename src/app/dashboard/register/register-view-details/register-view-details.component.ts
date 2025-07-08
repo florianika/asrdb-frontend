@@ -1,4 +1,4 @@
-import {Component, isDevMode, OnDestroy, OnInit} from '@angular/core';
+import {Component, isDevMode, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {BuildingDetailComponent} from './component/building-detail/building-detail.component';
@@ -25,6 +25,8 @@ import {CommonEntityStructureService, EntityAttribute,} from '../../common/servi
 import {SectionField} from '../constant/common-constants';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {CommentViewComponent} from "./component/comment-view/comment-view.component";
+import {MatMenu, MatMenuModule} from "@angular/material/menu";
+import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'asrdb-register-view-details',
@@ -43,13 +45,19 @@ import {CommentViewComponent} from "./component/comment-view/comment-view.compon
     MatDivider,
     MatProgressSpinner,
     CommentViewComponent,
+    MatMenuModule,
+    MatDialogModule
   ],
   providers: [],
   templateUrl: './register-view-details.component.html',
   styleUrls: ['./register-view-details.component.css'],
 })
 export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild("approveReview") approveReview?: any;
+  @ViewChild("rejectReview") rejectReview?: any;
+
   isLoadingResults = true;
+  isUpdatingFeature = false;
   building: any;
   selectedEntrance: string | undefined;
   id?: string = '';
@@ -74,6 +82,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject();
   private fields: any[] = [];
+  private dialog?: MatDialogRef<any>;
 
   constructor(
     private commonBuildingService: CommonBuildingService,
@@ -84,7 +93,8 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     private registerLogService: RegisterLogService,
     private matSnack: MatSnackBar,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private matDialog: MatDialog
   ) {
     this.commonEntityStructureService.structureLoaded
       .pipe(takeUntil(this.destroy$))
@@ -188,6 +198,84 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
 
   goBack() {
     this.router.navigateByUrl('dashboard/register?from=details');
+  }
+
+  openApproveReview() {
+    if (this.approveReview) {
+      this.dialog = this.matDialog.open(this.approveReview);
+    }
+  }
+
+  approveReviewForBuilding() {
+    this.isUpdatingFeature = true;
+    const feature = {
+      attributes: {
+        ...this.building,
+        BldReview: 2,
+      }
+    }
+    this.commonBuildingService
+      .updateFeature([feature])
+      .pipe(takeUntil(this.destroy$), catchError(err => {
+        console.error('Error updating feature', err);
+        this.isUpdatingFeature = false;
+        this.matSnack.open('Could not approve review. Please try again.', 'Ok', {
+          duration: 3000,
+        });
+        return of(null);
+      }))
+      .subscribe(feature => {
+        if (feature) {
+          if (isDevMode()) {
+            console.log('Feature updated', feature);
+          }
+          this.matSnack.open('Review approved successfully', 'Ok', {
+            duration: 3000,
+          });
+          this.dialog?.close();
+          this.loadBuildingData();
+        }
+        this.isUpdatingFeature = false;
+      })
+  }
+
+  openRejectReview() {
+    if (this.rejectReview) {
+      this.dialog = this.matDialog.open(this.rejectReview);
+    }
+  }
+
+  rejectReviewForBuilding() {
+    this.isUpdatingFeature = true;
+    const feature = {
+      attributes: {
+        ...this.building,
+        BldReview: 5,
+      }
+    }
+    this.commonBuildingService
+      .updateFeature([feature])
+      .pipe(takeUntil(this.destroy$), catchError(err => {
+        console.error('Error updating feature', err);
+        this.isUpdatingFeature = false;
+        this.matSnack.open('Could not reject review. Please try again.', 'Ok', {
+          duration: 3000,
+        });
+        return of(null);
+      }))
+      .subscribe(feature => {
+        if (feature) {
+          if (isDevMode()) {
+            console.log('Feature updated', feature);
+          }
+          this.matSnack.open('Review reopened successfully', 'Ok', {
+            duration: 3000,
+          });
+          this.dialog?.close();
+          this.loadBuildingData();
+        }
+        this.isUpdatingFeature = false;
+      });
   }
 
   private loadLogs() {
