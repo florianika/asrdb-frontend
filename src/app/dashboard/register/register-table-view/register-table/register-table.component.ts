@@ -222,7 +222,9 @@ export class RegisterTableComponent
   }
 
   reload() {
-    this.paginator.pageIndex = 0;
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
     this.loadBuildings()
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => this.handleResponse(res));

@@ -259,7 +259,7 @@ export class RegisterMapService {
     const size = this.getBuildingIdsSize(whereCondition);
     switch (size) {
       case 1: {
-        void this.view.goTo(goTo);
+        void this.view?.goTo(goTo);
         this.alreadyFocused = true;
         break;
       }
@@ -268,14 +268,14 @@ export class RegisterMapService {
           return;
         }
         if (this.customZoom) {
-          void this.view.goTo({...goTo, zoom: this.customZoom });
+          void this.view?.goTo({...goTo, zoom: this.customZoom });
         } else {
-          void this.view.goTo(goTo);
+          void this.view?.goTo(goTo);
         }
         break;
       }
       default: {
-        void this.view.goTo(goTo);
+        void this.view?.goTo(goTo);
         this.alreadyFocused = true;
         break;
       }

@@ -78,8 +78,9 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     private authStateService: AuthStateService,
     private commonStructureService: CommonEntityStructureService
   ) {
-    this.commonStructureService.getEntityStructure(BUILDING_ENTITY);
-    this.commonStructureService.structureLoaded.subscribe(response => {
+    this.commonStructureService.structureLoaded
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(response => {
       if (!response.loading && response.structure) {
         this.structure = response.structure;
         this.initForm();
@@ -87,13 +88,13 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-
+  ngOnInit() {
+    this.commonStructureService.getEntityStructure(BUILDING_ENTITY);
   }
 
   private initForm() {
     const role = this.authStateService.getRole();
-    this.buildingService
+    const subscription = this.buildingService
       .getAttributesMetadata()
       .pipe(takeUntil(this.onDestroy))
       .subscribe((fieldsResponse: any[]) => {
@@ -128,11 +129,12 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
           this.createFormObject(field);
         });
 
-        this.formGroup.controls['BldMunicipality'].valueChanges
+        this.formGroup.controls['BldMunicipality']?.valueChanges
           .pipe(takeUntil(this.onDestroy), distinctUntilChanged())
           .subscribe(data => {
             this.mapService.setMunicipality(data);
           });
+        subscription.unsubscribe();
       });
   }
 
