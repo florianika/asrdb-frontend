@@ -46,6 +46,7 @@ import {
 import {DWELLING_ENTITY} from '../../../../../common/constants/common-constants';
 import {CommonBuildingService} from "../../../../common/service/common-building.service";
 import {AuthStateService} from "../../../../../common/services/auth-state.service";
+import {CommonStreetService} from "../../../../common/service/common-street.service";
 
 @Component({
   selector: 'asrdb-dwelling-list-view',
@@ -141,6 +142,7 @@ export class DwellingListViewComponent
     private commonBuildingService: CommonBuildingService,
     private commonDwellingBuildingService: CommonDwellingService,
     private commonEntranceBuildingService: CommonEntranceService,
+    private commonStreetService: CommonStreetService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private authStateService: AuthStateService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -202,6 +204,8 @@ export class DwellingListViewComponent
         e => e.GlobalID === changes['entranceId'].currentValue
       );
       this.entranceNumber = entrance?.EntEntranceNumber?.toString() ?? '';
+      this.buildingNumber = entrance?.EntBuildingNumber ?? undefined;
+      this.streetName = entrance?.EntStrGlobalID ?? '';
     }
   }
 

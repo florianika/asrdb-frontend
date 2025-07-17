@@ -243,6 +243,30 @@ export class DwellingDetailsComponent implements OnInit {
 
     this.sections[0].entries = visibleFields.technical;
     this.sections[1].entries = visibleFields.identifying;
+
+    // TODO: Remove hardcoded fields when the structure is ready
+    this.sections[1].entries.push({
+      title: this.STREET_NAME,
+      propName: '',
+      value: this.data.streetName,
+      log: '',
+      logType: '',
+    } as SectionField);
+    this.sections[1].entries.push({
+      title: this.BUILDING_NUMBER,
+      propName: '',
+      value: this.data.buildingNumber,
+      log: '',
+      logType: '',
+    } as SectionField);
+    this.sections[1].entries.push({
+      title: this.ENTRANCE_NUMBER,
+      propName: '',
+      value: this.data.entranceNumber,
+      log: '',
+      logType: '',
+    } as SectionField);
+
     this.sections[2].entries = visibleFields.describing;
     this.titleSection = visibleFields.title;
 

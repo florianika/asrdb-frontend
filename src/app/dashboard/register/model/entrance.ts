@@ -8,6 +8,7 @@ export type Entrance = {
   EntLongitude?: number;
   EntBuildingNumber: number;
   EntEntranceNumber: number;
+  EntStrGlobalID: string;
   EntTown: number;
   EntZipCode: number;
   created_user: string;
