@@ -5,7 +5,6 @@ import {FieldWorkService, SelectedRule} from "../../field-work.service";
 import {MatFormField, MatLabel, MatSuffix} from "@angular/material/form-field";
 import {MatOptgroup, MatOption, MatSelect} from "@angular/material/select";
 import {BUILDING_ENTITY, DWELLING_ENTITY, ENTRANCE_ENTITY} from "../../../../common/constants/common-constants";
-import {AuthStateService} from "../../../../common/services/auth-state.service";
 import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {ShortQualityRule} from "../../../quality-management/quality-management-config";
@@ -15,6 +14,8 @@ import {
   FieldWorkFormStep3StatisticTableComponent
 } from "./field-work-form-step3-statistic-table/field-work-form-step3-statistic-table.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Router} from "@angular/router";
+import {FieldWorkStatisticService} from "../../field-work-statistic.service";
 
 @Component({
   selector: 'asrdb-field-work-form-step3',
@@ -36,7 +37,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     FieldWorkFormStep3StatisticTableComponent
   ],
   providers: [
-    QualityManagementService
+    QualityManagementService,
+    FieldWorkStatisticService
   ],
   templateUrl: './field-work-form-step3.component.html',
   styleUrl: './field-work-form-step3.component.css'
@@ -45,8 +47,9 @@ export class FieldWorkFormStep3Component {
 
   private _qualityManagementService = inject(QualityManagementService);
   private _fieldWorkService = inject(FieldWorkService);
-  private _authStateService = inject(AuthStateService);
   private _matSnackBar = inject(MatSnackBar);
+  private _router = inject(Router);
+  private _fieldWorkStatisticService = inject(FieldWorkStatisticService);
   private idRef: null | number = null;
 
   public selectControl = new FormControl('');
@@ -66,6 +69,7 @@ export class FieldWorkFormStep3Component {
   public fieldWorkState = this._fieldWorkService.fieldWorkState;
   public selectedRules = this._fieldWorkService.selectedRules;
   public filterValue = signal('');
+  public statistics = this._fieldWorkStatisticService.statistics;
 
   constructor() {
     this._qualityManagementService.getActiveRules();
@@ -94,15 +98,10 @@ export class FieldWorkFormStep3Component {
   }
 
   addRule(id: number) {
-    const userId = this._authStateService.getNameId();
-    if (!userId) {
-      console.error('User ID is not available');
-      return;
-    }
     if (!id) {
       return;
     }
-    this._fieldWorkService.addRule(id, userId);
+    this._fieldWorkService.addRule(id);
     this.resetFilterValue();
     this.selectControl.setValue('');
   }
@@ -131,10 +130,18 @@ export class FieldWorkFormStep3Component {
       this._matSnackBar.open('Please select at least one rule', 'Close', { duration: 3000 });
       return;
     }
+    if (this.statistics().statistics.length === 0) {
+      this._matSnackBar.open('Please generate statistics before proceeding', 'Close', { duration: 3000 });
+      return;
+    }
     this.fieldWorkState.update((state) => ({
       ...state,
       currentStep: Math.min(state.currentStep + 1, 3)
     }));
+  }
+
+  public handleClose() {
+    void this._router.navigate(['/dashboard/field-work']);
   }
 
   protected readonly BUILDING_ENTITY  = BUILDING_ENTITY;

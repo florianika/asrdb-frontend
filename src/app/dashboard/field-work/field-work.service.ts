@@ -1,8 +1,9 @@
-import {Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {BehaviorSubject, catchError, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Router} from "@angular/router";
 
 export type FieldWork = {
   "fieldWorkId": number,
@@ -47,6 +48,11 @@ export type FieldWorkCreateRequest = {
   providedIn: 'root'
 })
 export class FieldWorkService {
+
+  private matSnackBar = inject(MatSnackBar);
+  private httpClient = inject(HttpClient);
+  private router = inject(Router);
+
   private fieldWorks = new BehaviorSubject<{
     loading: boolean,
     fieldWorks: FieldWork[],
@@ -68,8 +74,6 @@ export class FieldWorkService {
   get fieldWorksAsObservable() {
     return this.fieldWorks.asObservable();
   }
-
-  constructor(private httpClient: HttpClient, private matSnackBar: MatSnackBar) { }
 
   public loadSelectedRules(fieldWorkId: number) {
     this.selectedRules.update((state) => ({
@@ -195,17 +199,40 @@ export class FieldWorkService {
       });
   }
 
-  public addRule(ruleId: number, createdUser: string) {
+  public openFieldWork(fieldWorkId: number) {
+    this.fieldWorkState.update(state => ({
+      ...state,
+      isLoading: true
+    }));
+    this.httpClient
+      .post(environment.base_url + `/qms/fieldwork/${fieldWorkId}/open`, {})
+      .pipe(catchError(error => {
+        console.error(error);
+        this.matSnackBar.open('Error opening field work', 'Close', {duration: 3000});
+        return of(null);
+      }))
+      .subscribe(res => {
+        if (!res) {
+          this.fieldWorkState.update(state => ({
+            ...state,
+            isLoading: false
+          }));
+          return;
+        }
+        this.getActiveFieldWorkStatus(fieldWorkId);
+      });
+  }
+
+  public addRule(ruleId: number) {
     const request = {
-      fieldWorkId: this.fieldWorkState().activeFieldWork?.fieldWorkId,
       ruleId: ruleId,
-      createdUser: createdUser
     }
     this.selectedRules.update((state) => ({
       ...state,
       loading: true,
     }));
-    if (!request.fieldWorkId) {
+    const fieldWorkId = this.fieldWorkState().activeFieldWork?.fieldWorkId;
+    if (!fieldWorkId) {
       console.error('No active field work found');
       this.selectedRules.update((state) => ({
         ...state,
@@ -214,7 +241,7 @@ export class FieldWorkService {
       return;
     }
     this.httpClient
-      .post<{message: string}>(environment.base_url + `/qms/fieldwork/${request.fieldWorkId}/rules`, request)
+      .post<{message: string}>(environment.base_url + `/qms/fieldwork/${fieldWorkId}/rules`, request)
       .pipe(catchError(error => {
         console.error(error);
         this.matSnackBar.open('Error adding rule', 'Close', {duration: 3000});
@@ -262,6 +289,49 @@ export class FieldWorkService {
           return;
         }
         this.loadSelectedRules(this.fieldWorkState().activeFieldWork?.fieldWorkId || 0);
+      });
+  }
+
+  private getActiveFieldWorkStatus(fieldWorkId: number, retries = 20) {
+    this.fieldWorkState.update(state => ({
+      ...state,
+      isLoading: true
+    }));
+    this.httpClient
+      .get<{ fieldWorkDTO: FieldWork }>(environment.base_url + `/qms/fieldwork/${fieldWorkId}`)
+      .pipe(catchError(error => {
+        console.error(error);
+        this.matSnackBar.open('Error fetching field work status', 'Close', {duration: 3000});
+        return of(null);
+      }))
+      .subscribe(res => {
+        if (!res) {
+          this.fieldWorkState.update(state => ({
+            ...state,
+            isLoading: false
+          }));
+          return;
+        }
+        if (res.fieldWorkDTO.fieldWorkStatus === 'OPEN') {
+          this.fieldWorkState.update(state => ({
+            ...state,
+            isLoading: false,
+          }));
+          this.matSnackBar.open('Field work opened successfully', 'Close', {duration: 3000});
+          void this.router.navigate(['/dashboard/field-work']);
+          return;
+        }
+        if (res.fieldWorkDTO.fieldWorkStatus === 'FAILED' || retries === 0) {
+          this.fieldWorkState.update(state => ({
+            ...state,
+            isLoading: false,
+          }));
+          this.matSnackBar.open('Field work failed to open. Please try again.', 'Close', {duration: 5000});
+          return;
+        }
+        setTimeout(() => {
+          this.getActiveFieldWorkStatus(fieldWorkId, retries - 1);
+        }, 5000);
       });
   }
 }

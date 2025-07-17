@@ -76,3 +76,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 .mdc-list-item__primary-text {
   width: 100%;
 }
+
+.full-height-stepper {
+  height: calc(100vh - 185px) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: auto;
+}
+
+.mat-drawer {
+  z-index: 1 !important;
+}

@@ -98,7 +98,9 @@ export class FieldWorkStatisticService {
             statistics: []
           });
         } else {
-          this.getFieldWorkJobExecutionStatus(jobId);
+          setTimeout(() => {
+            this.getFieldWorkJobExecutionStatus(jobId);
+          }, 5000);
         }
       });
   }

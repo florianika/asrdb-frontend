@@ -11,6 +11,7 @@ import {AsyncPipe} from "@angular/common";
 import {EmailTemplate} from "../../../../model/EmailTemplate.model";
 import {Editor, NgxEditorModule} from "ngx-editor";
 import {MatIcon} from "@angular/material/icon";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'asrdb-field-work-form-step2',
@@ -39,6 +40,7 @@ export class FieldWorkFormStep2Component {
 
   private _fieldWorkService = inject(FieldWorkService);
   private _emailTemplateService = inject(EmailTemplateManagementService);
+  private _router = inject(Router);
 
   public fieldWorkState = this._fieldWorkService.fieldWorkState;
   public emailTemplates$ = this._emailTemplateService.emailTemplatesAsObservable;
@@ -78,5 +80,9 @@ export class FieldWorkFormStep2Component {
 
   public setSelectedEmailTemplate(emailTemplateId: number) {
     this.selectedEmailTemplate = this._emailTemplateService.getEmailTemplateFromList(emailTemplateId);
+  }
+
+  public handleClose() {
+    void this._router.navigate(['/dashboard/field-work']);
   }
 }

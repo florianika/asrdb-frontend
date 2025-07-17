@@ -44,7 +44,6 @@ import {MatIcon} from "@angular/material/icon";
     MatIcon
   ],
   providers: [
-    FieldWorkStatisticService
   ],
   templateUrl: './field-work-form-step3-statistic-table.component.html',
   styleUrl: './field-work-form-step3-statistic-table.component.css'
@@ -69,6 +68,7 @@ export class FieldWorkFormStep3StatisticTableComponent implements AfterViewInit 
   constructor() {
     effect(() => {
       this.dataSource.data = this.statistics().statistics;
+      this.dataSource.paginator?.firstPage();
     });
   }
 
