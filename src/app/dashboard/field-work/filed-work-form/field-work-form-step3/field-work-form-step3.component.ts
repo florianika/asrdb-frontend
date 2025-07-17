@@ -104,10 +104,20 @@ export class FieldWorkFormStep3Component {
     this._fieldWorkService.addRule(id);
     this.resetFilterValue();
     this.selectControl.setValue('');
+    this.statistics.update(state => ({
+      ...state,
+      statistics: []
+    }));
+    this.showRegenerateStatisticsMessage();
   }
 
   removeRule(id: number) {
     this._fieldWorkService.removeRule(id);
+    this.statistics.update(state => ({
+      ...state,
+      statistics: []
+    }));
+    this.showRegenerateStatisticsMessage();
   }
 
   notInSelectedRules(id: number): boolean {
@@ -142,6 +152,10 @@ export class FieldWorkFormStep3Component {
 
   public handleClose() {
     void this._router.navigate(['/dashboard/field-work']);
+  }
+
+  private showRegenerateStatisticsMessage() {
+    this._matSnackBar.open("You changed the selected rules, please generate statistics again", 'Close', { duration: 3000 });
   }
 
   protected readonly BUILDING_ENTITY  = BUILDING_ENTITY;
