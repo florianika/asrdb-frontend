@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {CommonEsriAuthService} from './common-esri-auth.service';
 import {environment} from 'src/environments/environment';
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
 
 @Injectable({
   providedIn: 'root',
@@ -9,15 +10,23 @@ import {environment} from 'src/environments/environment';
 export class CommonMunicipalityService {
 
   get municipalityLayer(): FeatureLayer {
-    const token = this.esriAuthService.getTokenForResource();
+    const lineSymbol = new SimpleLineSymbol({
+      color: [0, 0, 139, 1], // RGBA Red
+      width: 1,
+      style: "solid"
+    });
+
+    const lineRenderer = new SimpleRenderer({
+      symbol: lineSymbol
+    });
+
     return new FeatureLayer({
-      title: 'ASRDB Municipality Layer',
+      title: 'ASRDB Municipality',
       url: environment.municipality_url,
       outFields: ['*'],
+      renderer: lineRenderer
     });
   }
 
-  constructor(
-    private esriAuthService: CommonEsriAuthService
-  ) {}
+  constructor() {}
 }
