@@ -86,4 +86,22 @@ export class CommentService {
     })
   }
 
+  public deleteComment(buildingId: string, commentId: number) {
+    const url = `${environment.base_url}/qms/notes/${commentId}`;
+    this.httpClient.delete(url).subscribe({
+      next: () => {
+        this.matSnackBar.open('Comment deleted successfully', 'Ok', {
+          duration: 3000
+        });
+        // Reload comments after deletion
+        this.loadComments(buildingId);
+      },
+      error: (error) => {
+        console.error('Error deleting comment:', error);
+        this.matSnackBar.open('Could not delete comment. Please try again', 'Ok', {
+          duration: 3000
+        });
+      }
+    });
+  }
 }

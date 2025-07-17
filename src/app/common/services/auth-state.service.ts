@@ -174,6 +174,10 @@ export class AuthStateService implements OnInit, OnDestroy {
     return this.getDecodedJWT()?.role === 'ADMIN';
   }
 
+  isSupervisor() {
+    return this.getDecodedJWT()?.role === 'SUPERVISOR';
+  }
+
   setJWT(newJWT: SigninResponse) {
     this.tokens = newJWT;
     localStorage.setItem(this.TOKEN_STORAGE_KEY, JSON.stringify(this.tokens));

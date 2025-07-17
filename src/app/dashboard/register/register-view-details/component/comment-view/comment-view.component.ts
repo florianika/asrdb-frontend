@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {CommentService} from "./comment.service";
 import {MatCardModule} from "@angular/material/card";
 import {CommonModule} from "@angular/common";
@@ -10,6 +10,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {AuthStateService} from "../../../../../common/services/auth-state.service";
 import {CreateComment} from "./comment.model";
+import {MatTooltip} from "@angular/material/tooltip";
+import {MatDialog, MatDialogClose, MatDialogModule} from "@angular/material/dialog";
 
 @Component({
   selector: 'asrdb-comment-view',
@@ -22,7 +24,8 @@ import {CreateComment} from "./comment.model";
     MatInputModule,
     FormsModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule
   ],
   providers:[CommentService],
   templateUrl: './comment-view.component.html',
@@ -30,11 +33,16 @@ import {CreateComment} from "./comment.model";
 })
 export class CommentViewComponent implements OnInit {
   @Input() buildingId: string | undefined;
+  @ViewChild("deleteConfirmation") deleteConfirmation?: TemplateRef<any>;
+
   public commentsObservable$ = this.commentService.commentsAsObservable;
   public savingCommentObservable$ = this.commentService.savingCommentAsObservable;
   public comment = '';
 
-  constructor(private commentService: CommentService, private authStateService: AuthStateService) {
+  constructor(
+    private commentService: CommentService,
+    private authStateService: AuthStateService,
+    private matDialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -56,5 +64,30 @@ export class CommentViewComponent implements OnInit {
 
     this.commentService.saveComment(commentData);
     this.comment = ''; // Clear the comment input after saving
+  }
+
+  public deleteComment(commentId: number): void {
+    if (!this.buildingId || !commentId || !this.deleteConfirmation) {
+      return;
+    }
+    const ref = this.matDialog
+      .open(this.deleteConfirmation)
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.commentService.deleteComment(this.buildingId!, commentId);
+        }
+        ref.unsubscribe();
+      });
+  }
+
+  public isOwner(commentUserId: string): boolean {
+    if (!commentUserId) {
+      return false;
+    }
+    const currentUserId = this.authStateService.getNameId();
+    const isAdmin = this.authStateService.isAdmin() || this.authStateService.isSupervisor();
+    const isCurrentUser = currentUserId ? commentUserId === currentUserId : false
+    return isAdmin || isCurrentUser;
   }
 }

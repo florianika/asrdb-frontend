@@ -6,7 +6,8 @@ export interface Comments {
     "createdUser": string,
     "createdTimestamp": string,
     "updatedUser": string,
-    "updatedTimestamp": string
+    "updatedTimestamp": string,
+    "userId": string
   }[]
 }
 
