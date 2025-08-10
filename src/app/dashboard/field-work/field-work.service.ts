@@ -19,7 +19,6 @@ export type FieldWork = {
   "updatedTimestamp"?: string,
   "remarks"?: string
 }
-
 export type SelectedRule = {
   id: number,
   localId: string,
@@ -31,17 +30,21 @@ export type SelectedRule = {
   ruleLocalId: string,
   ruleEntityType: string,
 }
-
 export type FieldWorkListResponse = {
   fieldworksDTO: FieldWork[],
 }
-
 export type FieldWorkCreateRequest = {
   fieldWorkName: string,
   description: string,
   startDate: string,
   endDate: string,
   createdUser: string,
+}
+export type FieldWorkClosureStatusResponse = {
+  fieldwork_id: string,
+  can_be_closed: boolean,
+  reasons: string,
+  last_checked: string,
 }
 
 @Injectable({
@@ -70,6 +73,7 @@ export class FieldWorkService {
     rules: [] as SelectedRule[],
     loading: false,
   });
+  public canBeClosed = signal<FieldWorkClosureStatusResponse | null>(null);
 
   get fieldWorksAsObservable() {
     return this.fieldWorks.asObservable();
@@ -289,6 +293,24 @@ export class FieldWorkService {
           return;
         }
         this.loadSelectedRules(this.fieldWorkState().activeFieldWork?.fieldWorkId || 0);
+      });
+  }
+
+  public canFieldWorkBeClosed(fieldWorkId: number) {
+    this.httpClient
+      .get<FieldWorkClosureStatusResponse>(environment.base_url + `/qms/fieldwork/${fieldWorkId}/can-be-closed`)
+      .pipe(catchError(error => {
+        console.error(error);
+        this.matSnackBar.open('Error checking if field work can be closed', 'Close', {duration: 3000});
+        return of(null);
+      }))
+      .subscribe(res => {
+        if (!res) {
+          this.canBeClosed.set(null);
+          this.matSnackBar.open('Error checking field work closure status', 'Close', {duration: 3000});
+          return;
+        }
+        this.canBeClosed.set(res);
       });
   }
 

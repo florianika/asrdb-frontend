@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, effect,
   isDevMode,
   OnDestroy,
 } from '@angular/core';
@@ -19,6 +19,7 @@ import { RegisterFilterComponent } from '../common/components/register-filter/re
 import { MatDialog } from '@angular/material/dialog';
 import { QueryFilter } from '../register/model/query-filter';
 import { FilterHelper } from '../common/helper/filter-helper';
+import {FieldWorkService} from "../field-work/field-work.service";
 
 @Component({
   selector: 'asrdb-overview',
@@ -30,6 +31,8 @@ export class OverviewComponent implements OnDestroy {
   private destroy = new Subject();
   public fields = [];
   public filterObservable = this.registerFilterService.filterObservable;
+  public fieldWorkState = this.fieldWorkService.fieldWorkState;
+  public fieldWorkCanBeClosed = this.fieldWorkService.canBeClosed;
 
   constructor(
     private authState: AuthStateService,
@@ -38,7 +41,8 @@ export class OverviewComponent implements OnDestroy {
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private matDialog: MatDialog,
     private filterHelper: FilterHelper,
-    private changeDetectionRef: ChangeDetectorRef
+    private changeDetectionRef: ChangeDetectorRef,
+    private fieldWorkService: FieldWorkService
   ) {
     this.commonBuildingService
       .getAttributesMetadata()
@@ -52,6 +56,15 @@ export class OverviewComponent implements OnDestroy {
 
     this.registerFilterService.filterObservable.subscribe(() => {
       this.reload();
+    });
+
+    this.fieldWorkService.getActiveFieldWork();
+
+    effect(() => {
+      const fieldWorkId = this.fieldWorkState().activeFieldWork?.fieldWorkId;
+      if (fieldWorkId) {
+        this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId);
+      }
     });
   }
 
@@ -120,6 +133,10 @@ export class OverviewComponent implements OnDestroy {
       column,
       code
     );
+  }
+
+  closeFieldWork() {
+
   }
 
   private reload() {
