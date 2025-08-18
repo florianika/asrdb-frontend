@@ -20,6 +20,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { QueryFilter } from '../register/model/query-filter';
 import { FilterHelper } from '../common/helper/filter-helper';
 import {FieldWorkService} from "../field-work/field-work.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'asrdb-overview',
@@ -42,7 +43,8 @@ export class OverviewComponent implements OnDestroy {
     private matDialog: MatDialog,
     private filterHelper: FilterHelper,
     private changeDetectionRef: ChangeDetectorRef,
-    private fieldWorkService: FieldWorkService
+    private fieldWorkService: FieldWorkService,
+    private router: Router
   ) {
     this.commonBuildingService
       .getAttributesMetadata()
@@ -136,7 +138,12 @@ export class OverviewComponent implements OnDestroy {
   }
 
   closeFieldWork() {
-
+    void this.router.navigate(['/dashboard/field-work'], {
+      queryParams: {
+        action: 'close',
+        fieldWorkId: this.fieldWorkState().activeFieldWork?.fieldWorkId,
+      }
+    });
   }
 
   private reload() {

@@ -41,7 +41,7 @@ export type FieldWorkCreateRequest = {
   createdUser: string,
 }
 export type FieldWorkClosureStatusResponse = {
-  fieldwork_id: string,
+  fieldwork_id: number,
   can_be_closed: boolean,
   reasons: string,
   last_checked: string,

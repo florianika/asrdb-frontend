@@ -1,0 +1,14 @@
+  <mat-stepper [linear]="true" [selectedIndex]="fieldWorkStatistics().step" (selectedIndexChange)="updateIndex($event)">
+    <mat-step>
+      <ng-template matStepLabel i18n>Closure statistics</ng-template>
+      <asrdb-step-1-field-work-closure-statistics></asrdb-step-1-field-work-closure-statistics>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel i18n>Email templates</ng-template>
+      <asrdb-step-2-field-work-closure-email></asrdb-step-2-field-work-closure-email>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel i18n>Closure confirmation</ng-template>
+      <asrdb-step-3-field-work-closure-summary></asrdb-step-3-field-work-closure-summary>
+    </mat-step>
+  </mat-stepper>

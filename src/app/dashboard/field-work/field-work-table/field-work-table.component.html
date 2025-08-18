@@ -35,11 +35,12 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
         <td mat-cell *matCellDef="let row">
-          <button *ngIf="row.fieldWorkStatus === 'NEW'" mat-icon-button [matMenuTriggerFor]="menu">
+          <button *ngIf="showActions(row)" mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button *ngIf="row.fieldWorkStatus === 'NEW'" mat-menu-item (click)="editFieldWork(row)" i18n>Edit</button>
+            <button *ngIf="isNew(row)" mat-menu-item (click)="editFieldWork(row)" i18n>Edit field work</button>
+            <button *ngIf="canBeClosed(row)" mat-menu-item (click)="openDeleteFieldWork(row.fieldWorkId)" i18n>Close field work</button>
           </mat-menu>
         </td>
       </ng-container>

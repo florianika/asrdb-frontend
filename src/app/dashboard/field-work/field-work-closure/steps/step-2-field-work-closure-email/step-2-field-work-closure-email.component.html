@@ -1,0 +1,32 @@
+<div class="full-height-stepper">
+  <div class="row mt-2">
+    <div class="col-12 col-md-4">
+      <mat-form-field class="w-100" appearance="outline">
+        <mat-label i18n>Email template</mat-label>
+        <mat-select required (selectionChange)="setSelectedEmailTemplate($event.value)">
+          @for (emailTemplate of emailTemplates$ | async; track emailTemplate.emailTemplateId) {
+            <mat-option [value]="emailTemplate.emailTemplateId">{{emailTemplate.subject}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-md-6">
+      <mat-label class="mb-2 d-inline-block" i18n>Email body</mat-label>
+      <div class="NgxEditor__Wrapper">
+        <ngx-editor [editor]="editor" [ngModel]="selectedEmailTemplate?.body" [disabled]="true"> </ngx-editor>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end mt-4 mb-1">
+    <button mat-button i18n [disabled]="fieldWorkStatistics().loading" (click)="close()">Close</button>
+    <span class="flex-grow-1"></span>
+    <button class="me-2" mat-raised-button color="primary" [disabled]="fieldWorkStatistics().loading" (click)="back()">
+      <mat-icon class="me-0">arrow_back_ios</mat-icon>
+      <span i18n>Previous</span>
+    </button>
+    <button mat-raised-button color="primary" [disabled]="fieldWorkStatistics().loading" (click)="next()">
+      <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
+      <span i18n>Next</span>
+    </button>
+  </div>
+</div>

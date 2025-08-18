@@ -1,8 +1,7 @@
 <mat-stepper
   [linear]="true"
   [selectedIndex]="fieldWorkState().currentStep"
-  (selectionChange)="updateCurrentTab($event.selectedIndex)"
-  #stepper>
+  (selectionChange)="updateCurrentTab($event.selectedIndex)">
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel i18n>General Details</ng-template>
     <asrdb-field-work-form-step1 [formGroup]="firstFormGroup"/>

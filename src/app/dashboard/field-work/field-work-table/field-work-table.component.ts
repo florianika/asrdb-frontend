@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, effect, inject, ViewChild} from '@angular/core';
 import {FieldWork, FieldWorkService} from "../field-work.service";
 import {AsyncPipe, DatePipe, NgIf} from "@angular/common";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
@@ -9,7 +9,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'asrdb-field-work-table',
@@ -31,8 +32,16 @@ import {Router} from "@angular/router";
   styleUrl: './field-work-table.component.css'
 })
 export class FieldWorkTableComponent implements AfterViewInit {
-  public fieldWorks$ = this.filedWorkService.fieldWorksAsObservable;
-  public fieldWorkState = this.filedWorkService.fieldWorkState;
+  @ViewChild(MatPaginator) paginator?: MatPaginator;
+  @ViewChild(MatSort) sort?: MatSort;
+
+  private fieldWorkService = inject(FieldWorkService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+
+  public fieldWorks$ = this.fieldWorkService.fieldWorksAsObservable;
+  public fieldWorkState = this.fieldWorkService.fieldWorkState;
+  public fieldWorkCanBeClosed = this.fieldWorkService.canBeClosed;
   public columns = [
     'fieldWorkName',
     'startDate',
@@ -43,12 +52,16 @@ export class FieldWorkTableComponent implements AfterViewInit {
   ];
   public dataSource: MatTableDataSource<FieldWork> = new MatTableDataSource<FieldWork>();
 
-  @ViewChild(MatPaginator) paginator?: MatPaginator;
-  @ViewChild(MatSort) sort?: MatSort;
+  constructor() {
+    this.fieldWorkService.loadAllFieldWorks();
+    this.fieldWorkService.getActiveFieldWork();
 
-  constructor(private filedWorkService: FieldWorkService, private router: Router) {
-    this.filedWorkService.loadAllFieldWorks();
-    this.filedWorkService.getActiveFieldWork();
+    effect(() => {
+      const fieldWorkId = this.fieldWorkState().activeFieldWork?.fieldWorkId;
+      if (fieldWorkId) {
+        this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId);
+      }
+    });
 
     this.fieldWorks$.subscribe((fieldWorkState) => {
       this.dataSource.data = fieldWorkState.fieldWorks;
@@ -62,13 +75,37 @@ export class FieldWorkTableComponent implements AfterViewInit {
     if (this.sort) {
       this.dataSource.sort = this.sort;
     }
+    this.activatedRoute.queryParams.subscribe((params) => {
+      if (params['action'] === 'close' && params['fieldWorkId']) {
+        this.openDeleteFieldWork(params['fieldWorkId']);
+      }
+    })
   }
 
   addNewFieldWork() {
-    this.router.navigateByUrl('dashboard/field-work/create');
+    void this.router.navigateByUrl('dashboard/field-work/create');
   }
 
   editFieldWork(row: FieldWork) {
-    this.router.navigateByUrl('dashboard/field-work/edit/' + row.fieldWorkId);
+    void this.router.navigateByUrl('dashboard/field-work/edit/' + row.fieldWorkId);
+  }
+
+  showActions(row: FieldWork) {
+    return this.isNew(row) || this.canBeClosed(row);
+  }
+
+  // TODO: Remove 'true' condition when the backend is ready
+  isNew(row: FieldWork) {
+    return true || row.fieldWorkStatus === 'NEW'
+  }
+
+  // TODO: Remove 'true' condition when the backend is ready
+  canBeClosed(row: FieldWork): boolean {
+    return true || row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldwork_id
+      && !!this.fieldWorkCanBeClosed()?.can_be_closed
+  }
+
+  openDeleteFieldWork(fieldWorkId: number) {
+    void this.router.navigateByUrl('dashboard/field-work/close/' + fieldWorkId);
   }
 }
