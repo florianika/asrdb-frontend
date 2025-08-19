@@ -12,7 +12,7 @@ export type FieldWork = {
   "fieldWorkStatus": string,
   "description": string,
   "fieldWorkName": string,
-  "emailTemplateId": number,
+  "openEmailTemplateId": number,
   "createdUser": string,
   "createdTimestamp": string,
   "updatedUser"?: string,
@@ -168,6 +168,34 @@ export class FieldWorkService {
             isSaving: false,
           }));
           this.matSnackBar.open('Field work update failed. Please try again.', 'Close', {duration: 5000});
+          return;
+        }
+        this.getActiveFieldWork(this.fieldWorkState().currentStep + 1);
+      });
+  }
+
+  public assignEmailTemplate(emailTemplateId: number, fieldWorkId: number) {
+    this.fieldWorkState.update((state) => ({
+      ...state,
+      isSaving: true
+    }));
+    const request = {
+      emailTemplateId: emailTemplateId,
+    };
+    this.httpClient
+      .patch<{message: string}>(environment.base_url + `/qms/fieldwork/${fieldWorkId}/email/template/open`, request)
+      .pipe(catchError(error => {
+        console.error(error);
+        this.matSnackBar.open('Error assigning email template', 'Close', {duration: 3000});
+        return of(null);
+      }))
+      .subscribe(res => {
+        if (!res) {
+          this.fieldWorkState.update((state) => ({
+            ...state,
+            isSaving: false,
+          }));
+          this.matSnackBar.open('Email template assignment failed. Please try again.', 'Close', {duration: 5000});
           return;
         }
         this.getActiveFieldWork(this.fieldWorkState().currentStep + 1);

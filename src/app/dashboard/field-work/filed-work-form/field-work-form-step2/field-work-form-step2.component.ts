@@ -50,7 +50,7 @@ export class FieldWorkFormStep2Component {
   constructor() {
     this._emailTemplateService.getEmailTemplates();
     effect(() => {
-      const value = this.fieldWorkState().activeFieldWork?.emailTemplateId;
+      const value = this.fieldWorkState().activeFieldWork?.openEmailTemplateId;
       if (value && (!this.selectedEmailTemplate || this.selectedEmailTemplate.emailTemplateId !== value)) {
         this.selectedEmailTemplate = this._emailTemplateService.getEmailTemplateFromList(value);
       }
@@ -62,12 +62,9 @@ export class FieldWorkFormStep2Component {
       this.formGroup.markAllAsTouched();
       return;
     }
-    const data = {
-      emailTemplateId: this.formGroup.value.emailTemplateId,
-    };
     const activeFieldWork = this.fieldWorkState().activeFieldWork;
     if (activeFieldWork) {
-      this._fieldWorkService.updateFieldWork(data, activeFieldWork.fieldWorkId);
+      this._fieldWorkService.assignEmailTemplate(this.formGroup.value.emailTemplateId, activeFieldWork.fieldWorkId);
     }
   }
 

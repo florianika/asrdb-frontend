@@ -88,7 +88,7 @@ export class FiledWorkFormComponent implements OnInit {
           endDate: new Date(activeFieldWork.endDate),
         });
         this.secondFormGroup.patchValue({
-          emailTemplateId: activeFieldWork.emailTemplateId,
+          emailTemplateId: activeFieldWork.openEmailTemplateId,
         });
       }
     }, {allowSignalWrites: true});
