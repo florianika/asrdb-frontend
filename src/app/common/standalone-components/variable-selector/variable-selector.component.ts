@@ -1,35 +1,18 @@
-import {
-  Component,
-  EventEmitter,
-  Input, isDevMode,
-  OnDestroy,
-  Output,
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import {
-  MatFormFieldAppearance,
-  MatFormFieldModule,
-} from '@angular/material/form-field';
-import { MatSelectModule, MatSelectChange } from '@angular/material/select';
-import { EntityType } from 'src/app/model/RolePermissions.model';
-import { CommonModule } from '@angular/common';
-import { CommonBuildingService } from '../../../dashboard/common/service/common-building.service';
-import { CommonEntranceService } from '../../../dashboard/common/service/common-entrance.service';
-import { CommonDwellingService } from '../../../dashboard/common/service/common-dwellings.service';
-import { catchError, forkJoin, of, Subject, takeUntil } from 'rxjs';
-import {
-  BUILDING_HIDDEN_FIELDS,
-  STREET_HIDDEN_FIELDS,
-  ENTRANCE_HIDDEN_FIELDS,
-} from '../../data/hidden-fields';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import {
-  BUILDING_ENTITY,
-  DWELLING_ENTITY,
-  ENTRANCE_ENTITY,
-} from '../../constants/common-constants';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output,} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatFormFieldAppearance, MatFormFieldModule,} from '@angular/material/form-field';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {EntityType} from 'src/app/model/RolePermissions.model';
+import {CommonModule} from '@angular/common';
+import {CommonBuildingService} from '../../../dashboard/common/service/common-building.service';
+import {CommonEntranceService} from '../../../dashboard/common/service/common-entrance.service';
+import {CommonDwellingService} from '../../../dashboard/common/service/common-dwellings.service';
+import {Subject, takeUntil} from 'rxjs';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {BUILDING_ENTITY, DWELLING_ENTITY, ENTRANCE_ENTITY,} from '../../constants/common-constants';
+import {CommonEntityStructureService} from "../../../dashboard/common/service/common-entity-structure.service";
 
 type SelectOption = { text: string; value: string };
 
@@ -53,7 +36,7 @@ type SelectOption = { text: string; value: string };
     CommonDwellingService,
   ],
 })
-export class VariableSelectorComponent implements OnDestroy {
+export class VariableSelectorComponent implements OnInit, OnDestroy {
   @Input() required = false;
   @Input() disabled = false;
   @Input() variable = '';
@@ -83,44 +66,25 @@ export class VariableSelectorComponent implements OnDestroy {
   }
 
   constructor(
-    private buildingService: CommonBuildingService,
-    private entranceService: CommonEntranceService,
-    private dwellingService: CommonDwellingService
+    private commonEntityStructureService: CommonEntityStructureService,
   ) {
-    forkJoin([
-      buildingService.getAttributesMetadata(),
-      entranceService.getAttributesMetadata(),
-      dwellingService.getAttributesMetadata(),
-    ])
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError(error => {
-          console.error(error);
-          return of([]);
-        })
-      )
-      .subscribe({
-        next: ([buildingFields, entranceFields, dwellingFields]) => {
-          if (isDevMode()) {
-            console.log(buildingFields);
-            console.log(entranceFields);
-            console.log(dwellingFields);
-          }
+  }
 
-          this._variables.set(
-            BUILDING_ENTITY,
-            this.mapVariables(buildingFields)
-          );
-          this._variables.set(
-            ENTRANCE_ENTITY,
-            this.mapVariables(entranceFields)
-          );
-          this._variables.set(
-            DWELLING_ENTITY,
-            this.mapVariables(dwellingFields)
-          );
-        },
+  ngOnInit() {
+    this.commonEntityStructureService.structureLoaded
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        if (!response.loading && response.structure && response.type) {
+          const variables = response.structure
+            .filter(el => el.selectable)
+            .map(el => ({
+              text: el.label.al,
+              value: el.name,
+            }));
+          this._variables.set(response.type as EntityType, variables);
+        }
       });
+    this.commonEntityStructureService.getAllEntityStructures();
   }
 
   ngOnDestroy() {
@@ -142,18 +106,5 @@ export class VariableSelectorComponent implements OnDestroy {
     $event.stopPropagation();
     $event.preventDefault();
     this.filterValue = '';
-  }
-
-  private mapVariables(fields: any[]): SelectOption[] {
-    return fields
-      .filter(
-        field =>
-          field.editable &&
-          !field.name.includes('_')
-      )
-      .map(field => ({
-        text: field.alias ? field.alias : field.name,
-        value: field.name,
-      }));
   }
 }

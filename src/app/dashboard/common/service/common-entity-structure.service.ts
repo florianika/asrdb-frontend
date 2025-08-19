@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { EntityType } from '../../../model/RolePermissions.model';
-import { environment } from '../../../../environments/environment';
-import { BehaviorSubject, catchError, of } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {EntityType} from '../../../model/RolePermissions.model';
+import {environment} from '../../../../environments/environment';
+import {BehaviorSubject, catchError, of} from 'rxjs';
+import {BUILDING_ENTITY, DWELLING_ENTITY, ENTRANCE_ENTITY} from "../../../common/constants/common-constants";
 
 type EntityStructure = {
   attributes: EntityAttribute[];
@@ -82,5 +83,13 @@ export class CommonEntityStructureService {
           });
         }
       });
+  }
+
+  public getAllEntityStructures() {
+    const requests = [
+      this.getEntityStructure(BUILDING_ENTITY),
+      this.getEntityStructure(ENTRANCE_ENTITY),
+      this.getEntityStructure(DWELLING_ENTITY)
+    ]
   }
 }

@@ -32,6 +32,7 @@ import { CommonEsriAuthService } from '../common/service/common-esri-auth.servic
 import { CommonBuildingService } from '../common/service/common-building.service';
 import { CommonEntranceService } from '../common/service/common-entrance.service';
 import { CommonDwellingService } from '../common/service/common-dwellings.service';
+import {CommonEntityStructureService} from "../common/service/common-entity-structure.service";
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
   readOnly: false,
@@ -77,6 +78,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     CommonBuildingService,
     CommonEntranceService,
     CommonDwellingService,
+    CommonEntityStructureService,
     {
       provide: ACE_CONFIG,
       useValue: DEFAULT_ACE_CONFIG,

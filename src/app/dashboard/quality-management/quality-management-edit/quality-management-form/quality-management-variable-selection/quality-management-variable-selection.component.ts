@@ -1,20 +1,9 @@
-import { Component, Input, isDevMode, OnDestroy } from '@angular/core';
-import { EntityType } from '../../../quality-management-config';
-import { FormGroup } from '@angular/forms';
-import { catchError, forkJoin, of, Subject, takeUntil } from 'rxjs';
-import { CommonBuildingService } from '../../../../common/service/common-building.service';
-import { CommonEntranceService } from '../../../../common/service/common-entrance.service';
-import { CommonDwellingService } from '../../../../common/service/common-dwellings.service';
-import {
-  BUILDING_HIDDEN_FIELDS,
-  STREET_HIDDEN_FIELDS,
-  ENTRANCE_HIDDEN_FIELDS,
-} from '../../../../../common/data/hidden-fields';
-import {
-  BUILDING_ENTITY,
-  DWELLING_ENTITY,
-  ENTRANCE_ENTITY,
-} from '../../../../../common/constants/common-constants';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {EntityType} from '../../../quality-management-config';
+import {FormGroup} from '@angular/forms';
+import {Subject, takeUntil} from 'rxjs';
+import {BUILDING_ENTITY, DWELLING_ENTITY, ENTRANCE_ENTITY,} from '../../../../../common/constants/common-constants';
+import {CommonEntityStructureService} from "../../../../common/service/common-entity-structure.service";
 
 type SelectOption = { text: string; value: string };
 
@@ -23,7 +12,7 @@ type SelectOption = { text: string; value: string };
   templateUrl: './quality-management-variable-selection.component.html',
   styleUrls: ['./quality-management-variable-selection.component.css'],
 })
-export class QualityManagementVariableSelectionComponent implements OnDestroy {
+export class QualityManagementVariableSelectionComponent implements OnInit, OnDestroy {
   @Input() entity!: EntityType;
   @Input() label!: string;
   @Input() variable!: string;
@@ -41,45 +30,26 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
   public filteredVariables: SelectOption[] = [];
 
   constructor(
-    private buildingService: CommonBuildingService,
-    private entranceService: CommonEntranceService,
-    private dwellingService: CommonDwellingService
+    private commonEntityStructureService: CommonEntityStructureService,
   ) {
-    forkJoin([
-      buildingService.getAttributesMetadata(),
-      entranceService.getAttributesMetadata(),
-      dwellingService.getAttributesMetadata(),
-    ])
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError(error => {
-          console.log(error);
-          return of([]);
-        })
-      )
-      .subscribe({
-        next: ([buildingFields, entranceFields, dwellingFields]) => {
-          if (isDevMode()) {
-            console.log(buildingFields);
-            console.log(entranceFields);
-            console.log(dwellingFields);
-          }
-          this._variables.set(
-            BUILDING_ENTITY,
-            this.mapVariables(buildingFields)
-          );
-          this._variables.set(
-            ENTRANCE_ENTITY,
-            this.mapVariables(entranceFields)
-          );
-          this._variables.set(
-            DWELLING_ENTITY,
-            this.mapVariables(dwellingFields)
-          );
+  }
 
+  ngOnInit() {
+    this.commonEntityStructureService.structureLoaded
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        if (!response.loading && response.structure && response.type) {
+          const variables = response.structure
+            .filter(el => el.selectable)
+            .map(el => ({
+              text: el.label.al,
+              value: el.name,
+            }));
+          this._variables.set(response.type as EntityType, variables);
           this.filterVariables();
-        },
+        }
       });
+    this.commonEntityStructureService.getAllEntityStructures();
   }
 
   ngOnDestroy() {
@@ -110,20 +80,5 @@ export class QualityManagementVariableSelectionComponent implements OnDestroy {
     } else {
       this.filteredVariables = [];
     }
-  }
-
-  private mapVariables(fields: any[]): SelectOption[] {
-    return fields
-      .filter(
-        field =>
-          field.editable &&
-          !BUILDING_HIDDEN_FIELDS.includes(field.name) &&
-          !ENTRANCE_HIDDEN_FIELDS.includes(field.name) &&
-          !STREET_HIDDEN_FIELDS.includes(field.name)
-      )
-      .map(field => ({
-        text: field.alias ? field.alias : field.name,
-        value: field.name,
-      }));
   }
 }
