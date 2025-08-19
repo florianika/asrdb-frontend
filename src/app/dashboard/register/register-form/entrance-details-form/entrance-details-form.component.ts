@@ -114,9 +114,13 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
       .subscribe((fieldsResponse: any[]) => {
         this.fields = this.structure
           .map(structureEntry => {
-            return fieldsResponse.find(
+            const metadataField = fieldsResponse.find(
               field => field[NAME_PROP] === structureEntry.name
             );
+            if (metadataField) {
+              metadataField[ALIAS_PROP] = structureEntry.label.en;
+            }
+            return metadataField;
           })
           .filter(field => {
             if (!field) {
