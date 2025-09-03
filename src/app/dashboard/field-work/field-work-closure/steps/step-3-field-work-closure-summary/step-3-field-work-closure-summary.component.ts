@@ -1,10 +1,26 @@
-import {Component, inject, TemplateRef, ViewChild} from '@angular/core';
-import {FieldWorkClosureService} from "../../field-work-closure.service";
+import {AfterViewInit, Component, inject, TemplateRef, ViewChild} from '@angular/core';
+import {FieldWorkClosureService, FieldWorkClosureStatus} from "../../field-work-closure.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatButton} from "@angular/material/button";
 import {NgxEditorModule} from "ngx-editor";
-import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
+import {MatDialog, MatDialogModule, MatDialogRef, MatDialogState} from "@angular/material/dialog";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow, MatRowDef, MatTable, MatTableDataSource
+} from "@angular/material/table";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatOption} from "@angular/material/core";
+import {MatSelect, MatSelectChange} from "@angular/material/select";
+import {NgForOf} from "@angular/common";
+import {MUNICIPALITIES} from "../../../../../common/data/municipalities";
+import {AggregatedStatistic} from "../../field-work-closure-modal.component";
+import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
   selector: 'asrdb-step-3-field-work-closure-summary',
@@ -13,12 +29,27 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     MatButton,
     NgxEditorModule,
     MatDialogModule,
-    MatProgressSpinner
+    MatProgressSpinner,
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatFormField,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatLabel,
+    MatOption,
+    MatRow,
+    MatRowDef,
+    MatSelect,
+    MatTable,
+    NgForOf,
+    MatPaginator
   ],
   templateUrl: './step-3-field-work-closure-summary.component.html',
   styleUrl: './step-3-field-work-closure-summary.component.css'
 })
-export class Step3FieldWorkClosureSummaryComponent {
+export class Step3FieldWorkClosureSummaryComponent implements AfterViewInit {
   private fieldWorkClosureService = inject(FieldWorkClosureService);
   private router = inject(Router);
   private matDialog = inject(MatDialog);
@@ -27,8 +58,35 @@ export class Step3FieldWorkClosureSummaryComponent {
   private fieldWorkId = this.activatedRoute.snapshot.params['id'];
   private dialogRef: MatDialogRef<any> | undefined;
   public fieldWorkStatistics = this.fieldWorkClosureService.fieldWorkStatistics;
+  public columns = ['municipalityName', 'approvedBuildings', 'fieldworkBuildings', 'progressPercent', 'status'];
+  public datasource = new MatTableDataSource<FieldWorkClosureStatus>();
+  public municipalities = MUNICIPALITIES.sort((a, b) => a.name.localeCompare(b.name));
 
   @ViewChild("confirmationDialog") confirmationDialog?: TemplateRef<any>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor() {
+    if (this.dialogRef?.getState() === MatDialogState.OPEN && this.fieldWorkStatistics().status === 'ERROR' || this.fieldWorkStatistics().status === 'CLOSED') {
+      this.closeDialog();
+    }
+  }
+
+  ngAfterViewInit() {
+    this.datasource.paginator = this.paginator;
+    this.datasource.filterPredicate = (data: FieldWorkClosureStatus, filter: string) => {
+      const filterValue = filter.toLowerCase();
+      return data.municipalityName.toLowerCase().includes(filterValue);
+    }
+  }
+
+  applyFilter(event: MatSelectChange) {
+    const filterValue = event.value;
+    this.datasource.filter = filterValue.trim().toLowerCase();
+
+    if (this.datasource.paginator) {
+      this.datasource.paginator.firstPage();
+    }
+  }
 
   close() {
     void this.router.navigate(['dashboard', 'field-work']);
@@ -42,13 +100,8 @@ export class Step3FieldWorkClosureSummaryComponent {
     }
   }
 
-  // TODO: Implement the logic to close the field work
   closeFieldWork() {
-    this.fieldWorkStatistics.update((prev) => ({
-      ...prev,
-      loading: true,
-      status: ''
-    }));
+    this.fieldWorkClosureService.closeFieldWork(this.fieldWorkId);
   }
 
   closeDialog() {

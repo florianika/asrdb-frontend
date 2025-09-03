@@ -19,7 +19,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
 import {NgForOf} from "@angular/common";
-import {FieldWorkClosureService} from "../../field-work-closure.service";
+import {FieldWorkClosureService, FieldWorkClosureStatistic} from "../../field-work-closure.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MUNICIPALITIES} from "../../../../../common/data/municipalities";
 import {AggregatedStatistic} from "../../field-work-closure-modal.component";
@@ -85,7 +85,8 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
     this.fieldWorkClosureService.executeFieldWorkClosureStatistics(fieldWorkId);
     effect(() => {
       if (!this.fieldWorkStatistics().loading && this.fieldWorkStatistics().stats.length > 0) {
-        this.aggregatedStatisticsDatasource.data = this.fieldWorkStatistics().stats.reduce((acc, stat) => {
+        const stats = this.fieldWorkStatistics().stats as FieldWorkClosureStatistic[];
+        this.aggregatedStatisticsDatasource.data = stats.reduce((acc, stat) => {
           let existing = acc.find(item => item.municipality === stat.municipality && item.quality === stat.quality);
           if (!existing) {
             existing = {
