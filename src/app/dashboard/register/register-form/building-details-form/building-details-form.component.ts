@@ -128,6 +128,8 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
         if (!this.formGroup) {
           this.formGroup = new FormGroup({});
         }
+        this.formStructure = [];
+
         fields.forEach(field => {
           this.createFormControlForField(field);
           this.createFormObject(field);

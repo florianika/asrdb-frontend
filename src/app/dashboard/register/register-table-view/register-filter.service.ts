@@ -33,6 +33,7 @@ export class RegisterFilterService {
       BldType: [],
       BldQuality: [],
       BldReview: [],
+      BldCentroidStatus: [],
       BldEnumArea: '',
       GlobalID: '',
     },
@@ -42,6 +43,7 @@ export class RegisterFilterService {
       BldType: [] as never[],
       BldQuality: [] as never[],
       BldReview: [] as never[],
+      BldCentroidStatus: [] as never[],
     },
   };
   private filter = new BehaviorSubject<BuildingFilter>(this.defaultFilter);
@@ -109,6 +111,7 @@ export class RegisterFilterService {
         BldType: this.getOptionsFromDomain('BldType'),
         BldQuality: this.getOptionsFromDomain('BldQuality'),
         BldReview: this.getOptionsFromDomain('BldReview'),
+        BldCentroidStatus: this.getOptionsFromDomain('BldCentroidStatus'),
       },
     });
   }

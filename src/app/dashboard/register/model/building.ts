@@ -53,6 +53,7 @@ export type BuildingFilter = {
     GlobalID: string;
     BldEnumArea: string;
     BldReview: string[];
+    BldCentroidStatus: string[]
   };
   options: {
     BldMunicipality: any[];
@@ -60,5 +61,6 @@ export type BuildingFilter = {
     BldType: any[];
     BldQuality: any[];
     BldReview: any[];
+    BldCentroidStatus: any[]
   };
 };

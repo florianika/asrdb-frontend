@@ -142,6 +142,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
         if (!this.formGroup) {
           this.formGroup = new FormGroup({});
         }
+        this.formStructure = [];
         // load municipality for building
         this.buildingService
           .getBuildingMunicipality(this.buildingId ?? '')

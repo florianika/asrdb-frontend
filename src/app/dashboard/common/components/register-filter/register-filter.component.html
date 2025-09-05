@@ -76,21 +76,36 @@
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
-    <mat-form-field appearance="outline" class="full-width">
-        <mat-label i18n>Building review</mat-label>
-        <mat-select #reviewSelect
-                [value]="filterConfig.filter.BldReview"
+  <mat-form-field appearance="outline" class="full-width">
+      <mat-label i18n>Building review</mat-label>
+      <mat-select #reviewSelect
+              [value]="filterConfig.filter.BldReview"
+              [multiple]="true"
+              (selectionChange)="changeValue($event, 'BldReview')">
+          <mat-option *ngFor="let type of filterConfig.options.BldReview"
+                      [value]="type.code" (click)="reviewSelect.close()">{{type.name}}</mat-option>
+      </mat-select>
+      <button mat-icon-button matSuffix
+              (click)="cleanValue($event, 'BldReview')"
+              *ngIf="filterConfig.filter.BldReview?.length">
+          <mat-icon>close</mat-icon>
+      </button>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label i18n>Lat/Long status</mat-label>
+    <mat-select #centroidStatusSelect
+                [value]="filterConfig.filter.BldCentroidStatus"
                 [multiple]="true"
-                (selectionChange)="changeValue($event, 'BldReview')">
-            <mat-option *ngFor="let type of filterConfig.options.BldReview"
-                        [value]="type.code" (click)="reviewSelect.close()">{{type.name}}</mat-option>
-        </mat-select>
-        <button mat-icon-button matSuffix
-                (click)="cleanValue($event, 'BldReview')"
-                *ngIf="filterConfig.filter.BldReview?.length">
-            <mat-icon>close</mat-icon>
-        </button>
-    </mat-form-field>
+                (selectionChange)="changeValue($event, 'BldCentroidStatus')">
+      <mat-option *ngFor="let type of filterConfig.options.BldCentroidStatus"
+                  [value]="type.code" (click)="centroidStatusSelect.close()">{{type.name}}</mat-option>
+    </mat-select>
+    <button mat-icon-button matSuffix
+            (click)="cleanValue($event, 'BldCentroidStatus')"
+            *ngIf="filterConfig.filter.BldCentroidStatus?.length">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close i18n>Cancel</button>

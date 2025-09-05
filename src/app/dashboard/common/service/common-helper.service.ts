@@ -25,7 +25,7 @@ export class CommonRegisterHelperService {
 
   getValueFromStatus(fields: any[], column: string, code: string | number) {
     const codeValues = this.getCodeValues(fields, column, code);
-    if (!codeValues && this.isUnknownValue(code)) {
+    if (!codeValues && this.isUnknownValue(code) && !this.isNumberField(fields, column)) {
       return '';
     }
     if (!codeValues && this.isNotApplicable(code)) {
@@ -63,5 +63,10 @@ export class CommonRegisterHelperService {
   private isDateField(fields: any[], column: string) {
     const field = this.getField(fields, column);
     return field?.type === 'esriFieldTypeDate';
+  }
+
+  private isNumberField(fields: any[], column: string) {
+    const field = this.getField(fields, column);
+    return field?.type === 'esriFieldTypeDouble' || field?.type === 'esriFieldTypeInteger' || field?.type === 'esriFieldTypeSmallInteger';
   }
 }

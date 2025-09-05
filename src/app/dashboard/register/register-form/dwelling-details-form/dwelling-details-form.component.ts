@@ -218,9 +218,12 @@ export class DwellingDetailsFormComponent implements OnDestroy {
               !['map', 'none'].includes(structureEntry.section)
             );
           });
+
         if (!this.formGroup) {
           this.formGroup = new FormGroup({});
         }
+        this.formStructure = [];
+
         fields.forEach(field => {
           this.createFormControlForField(field);
           this.createFormObject(field);
