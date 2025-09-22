@@ -40,7 +40,7 @@
         <mat-datepicker #picker></mat-datepicker>
       </ng-container>
 
-      <button mat-icon-button *ngIf="formGroup.controls[formItem.name].value && formItem.type === 'date'"
+      <button mat-icon-button *ngIf="formGroup.controls[formItem.name].value && (formItem.type === 'date' || formItem.type === 'select')"
               (click)="formGroup.controls[formItem.name].setValue(null)"
               matSuffix>
         <mat-icon>close</mat-icon>
