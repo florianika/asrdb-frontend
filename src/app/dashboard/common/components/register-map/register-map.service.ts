@@ -127,8 +127,8 @@ export class RegisterMapService {
           return;
         }
         this.customZoom = Math.min(newZoom, 18);
-        const lessThan1000 = this.totalResults && this.totalResults < 1000;
-        if (newZoom < 15 && !lessThan1000) {
+        const lessThan10000 = this.totalResults && this.totalResults < 10000;
+        if (newZoom < 15 && !lessThan10000) {
           this.bldlayer.visible = false;
           this.entlayer.visible = false;
           this.alreadyFocused = false;
@@ -240,7 +240,7 @@ export class RegisterMapService {
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
     this.totalResults = extend.count;
-    if ((this.totalResults && this.totalResults < 1000) || (this.customZoom && this.customZoom >= 15)) {
+    if ((this.totalResults && this.totalResults < 10000) || (this.customZoom && this.customZoom >= 15)) {
       this.bldlayer.visible = true;
       this.entlayer.visible = true;
     } else {
