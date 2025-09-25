@@ -80,6 +80,7 @@ export class EntranceListViewComponent
   @Input() building?: any;
   @Output() entrancesLoaded = new EventEmitter<Entrance[]>();
   @Output() entranceSelected = new EventEmitter<string>();
+  @Output() entranceDeleted = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -261,12 +262,13 @@ export class EntranceListViewComponent
           idToDelete: globalId,
           reload: () => {
             if (this.buildingGlobalId) {
-              this.commonBuildingService.executeAutomaticRules(this.buildingGlobalId);
+              this.commonBuildingService.executeAutomaticRules(this.buildingGlobalId, () => {
+                this.selectedEntrance = undefined;
+                this.entranceDeleted.emit(globalId);
+                this.entranceSelected.emit('');
+                dialog.close();
+              });
             }
-            this.reload();
-            this.selectedEntrance = undefined;
-            this.entranceSelected.emit('');
-            dialog.close();
           },
         } as EntityDeleteDialogData,
       }

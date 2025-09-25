@@ -114,7 +114,9 @@
             [buildingGlobalId]="building.GlobalID"
             [building]="building"
             (entrancesLoaded)="setEntrances($event)"
-            (entranceSelected)="setSelectedEntrance($event)" >
+            (entranceSelected)="setSelectedEntrance($event)"
+            (entranceDeleted)="reloadView()"
+          >
           </asrdb-entrance-list-view>
         </div>
         <div class="mt-3">
@@ -124,6 +126,7 @@
             [entrances]="loadedEntrances"
             [buildingNumber]="building.BldProperty"
             (dwellingUpdated)="markEntranceAsUntestedData($event)"
+            (dwellingDeleted)="reloadView()"
           ></asrdb-dwelling-list-view>
         </div>
       </div>

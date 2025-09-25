@@ -95,8 +95,6 @@ export class EntityDeleteConfirmationDialogComponent {
         deleted.dwellingDone
       ) {
         this.reload();
-        this.deleteDialog?.close();
-        this.disableDialogButtons = false;
       }
     });
   }

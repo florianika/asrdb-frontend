@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {Component, EventEmitter, Inject, isDevMode, OnInit, Output,} from '@angular/core';
+import {Component, Inject, isDevMode, OnInit,} from '@angular/core';
 import {MatCardModule} from '@angular/material/card';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {catchError, of as observableOf, Subject, takeUntil} from 'rxjs';
@@ -22,6 +22,8 @@ import {
 } from '../../../../../common/service/common-entity-structure.service';
 import {SectionField} from '../../../../constant/common-constants';
 import {ENTRANCE_ENTITY} from '../../../../../../common/constants/common-constants';
+import {RegisterLogService} from "../../../../register-log-view/register-log-table/register-log.service";
+import {CommonBuildingService} from "../../../../../common/service/common-building.service";
 
 @Component({
   selector: 'asrdb-entrance-details',
@@ -67,12 +69,12 @@ export class EntranceDetailsComponent implements OnInit {
   protected buildingGlobalId = '';
   protected building;
 
-  @Output() markEntranceAsUntestedData = new EventEmitter<string>();
-
   constructor(
     private commonEntranceService: CommonEntranceService,
+    private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private commonStreetService: CommonStreetService,
+    private registerLogService: RegisterLogService,
     private matSnack: MatSnackBar,
     private commonEntityStructureService: CommonEntityStructureService,
     private router: Router,
@@ -85,7 +87,11 @@ export class EntranceDetailsComponent implements OnInit {
     }
   ) {
     this.id = this.data.globalId;
-    this.logs = this.data.logs;
+    this.logs = this.registerLogService
+      .getAllLogs(ENTRANCE_ENTITY)
+      .filter(log =>
+        this.id!.toLowerCase().includes(log.entId?.toLowerCase() as string)
+      );
     this.buildingGlobalId = this.data.buildingGlobalId;
     this.building = this.data.building;
     this.commonEntityStructureService.structureLoaded
@@ -98,6 +104,12 @@ export class EntranceDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.registerLogService.logs.subscribe(log => {
+      this.logs = log.filter(l =>
+        this.id!.toLowerCase().includes(l.entId?.toLowerCase() as string)
+      );
+      this.fillSections();
+    })
     this.loadEntrance()
       .pipe(takeUntil(this.subscriber))
       .subscribe(res => this.handleResponse(res));
@@ -117,14 +129,38 @@ export class EntranceDetailsComponent implements OnInit {
     );
   }
 
-  dwellingUpdated(id: string) {
-    this.markEntranceAsUntestedData.emit(id);
+  dwellingUpdated() {
+    this.markEntranceAsUntestedData();
+  }
+
+  dwellingDeleted() {
+    this.loadEntrance()
+      .pipe(takeUntil(this.subscriber))
+      .subscribe(res => this.handleResponse(res));
+    this.registerLogService.loadLogs(this.buildingGlobalId);
   }
 
   openEditView() {
     void this.router.navigateByUrl(
       `/dashboard/register/form/ENTRANCE/${this.buildingGlobalId}?entranceId=${this.id}`
     );
+  }
+
+  private markEntranceAsUntestedData() {
+    if (this.id) {
+      // Update entrance
+      this.commonEntranceService.resetStatus(this.id);
+
+      // Update building
+      this.commonBuildingService.resetStatus(this.buildingGlobalId!, () => {
+        setTimeout(() => {
+          this.loadEntrance()
+            .pipe(takeUntil(this.subscriber))
+            .subscribe(res => this.handleResponse(res));
+          this.registerLogService.loadLogs(this.buildingGlobalId);
+        }, 500);
+      });
+    }
   }
 
   private prepareWhereCase() {

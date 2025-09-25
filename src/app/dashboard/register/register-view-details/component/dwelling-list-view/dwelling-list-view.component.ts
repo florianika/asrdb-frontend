@@ -80,6 +80,7 @@ export class DwellingListViewComponent
   @Input() entrances: Entrance[] = [];
 
   @Output() dwellingUpdated = new EventEmitter<string>();
+  @Output() dwellingDeleted = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -306,10 +307,12 @@ export class DwellingListViewComponent
           idToDelete: globalId,
           reload: () => {
             if (this.buildingGlobalId) {
-              this.commonBuildingService.executeAutomaticRules(this.buildingGlobalId);
+              this.commonBuildingService.executeAutomaticRules(this.buildingGlobalId, () => {
+                // this.reload();
+                this.dwellingDeleted.emit(globalId);
+                dialog.close();
+              });
             }
-            this.reload();
-            dialog.close();
           },
         } as EntityDeleteDialogData,
       }

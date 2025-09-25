@@ -156,6 +156,14 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     this.selectedEntrance = entranceId;
   }
 
+  reloadView() {
+    if (this.id) {
+      this.selectedEntrance = undefined;
+      this.registerLogService.loadLogs(this.id);
+      this.loadBuildingData();
+    }
+  }
+
   markEntranceAsUntestedData(entranceId: string) {
     const entrance = this.loadedEntrances.find(
       entrance => entrance.GlobalID === entranceId

@@ -310,9 +310,10 @@ export class RegisterTableComponent
           type: BUILDING_ENTITY,
           idToDelete: globalId,
           reload: () => {
-            this.commonBuildingService.executeAutomaticRules(globalId);
-            this.reload();
-            dialog.close();
+            this.commonBuildingService.executeAutomaticRules(globalId, () => {
+              this.reload();
+              dialog.close();
+            });
           },
         } as EntityDeleteDialogData,
       }

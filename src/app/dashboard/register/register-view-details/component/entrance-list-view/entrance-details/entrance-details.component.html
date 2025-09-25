@@ -48,7 +48,9 @@
         [entranceId]="id!"
         [entrances]="[entrance]"
         [buildingNumber]="building.BldProperty"
-        (dwellingUpdated)="dwellingUpdated($event)"
+        [buildingGlobalId]="buildingGlobalId"
+        (dwellingUpdated)="dwellingUpdated()"
+        (dwellingDeleted)="dwellingDeleted()"
       ></asrdb-dwelling-list-view>
     </div>
   </div>
