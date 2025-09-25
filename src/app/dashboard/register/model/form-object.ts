@@ -18,7 +18,7 @@ export type FormObjectType =
   | 'date';
 export type FormObjectSelectOption = {
   text: string;
-  value: string | number;
+  value: string | number | null;
 };
 export type EsriDomain = {
   codedValues: EsriCodedValue[];
