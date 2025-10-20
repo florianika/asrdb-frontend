@@ -25,7 +25,7 @@ import {CommonEntityStructureService, EntityAttribute,} from '../../common/servi
 import {SectionField} from '../constant/common-constants';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {CommentViewComponent} from "./component/comment-view/comment-view.component";
-import {MatMenu, MatMenuModule} from "@angular/material/menu";
+import {MatMenuModule} from "@angular/material/menu";
 import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
@@ -63,10 +63,6 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
   id?: string = '';
 
   sections = [
-    {
-      title: 'Technical variables',
-      entries: [] as SectionField[],
-    },
     {
       title: 'Identifying variables',
       entries: [] as SectionField[],
@@ -374,15 +370,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
     const visibleFields = structure.reduce(
       (acc, attr: EntityAttribute) => {
         if (attr.section !== 'none' && !attr.internal) {
-          if (attr.section === 'technical') {
-            acc.technical.push({
-              title: attr.label.en,
-              propName: attr.name,
-              value: '',
-              log: '',
-              logType: '',
-            } as SectionField);
-          } else if (attr.section === 'identification') {
+          if (attr.section === 'identification') {
             acc.identifying.push({
               title: attr.label.en,
               propName: attr.name,
@@ -390,7 +378,7 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
               log: '',
               logType: '',
             } as SectionField);
-          } else if (attr.section === 'info') {
+          } else if (attr.section === 'description') {
             acc.describing.push({
               title: attr.label.en,
               propName: attr.name,
@@ -411,16 +399,14 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
         return acc;
       },
       {
-        technical: [] as SectionField[],
         identifying: [] as SectionField[],
         describing: [] as SectionField[],
         title: [] as SectionField[],
       }
     );
 
-    this.sections[0].entries = visibleFields.technical;
-    this.sections[1].entries = visibleFields.identifying;
-    this.sections[2].entries = visibleFields.describing;
+    this.sections[0].entries = visibleFields.identifying;
+    this.sections[1].entries = visibleFields.describing;
     this.titleSection = visibleFields.title;
   }
 }

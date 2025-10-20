@@ -49,10 +49,6 @@ export class EntranceDetailsComponent implements OnInit {
 
   sections = [
     {
-      title: 'Technical variables',
-      entries: [] as SectionField[],
-    },
-    {
       title: 'Identifying variables',
       entries: [] as SectionField[],
     },
@@ -245,15 +241,7 @@ export class EntranceDetailsComponent implements OnInit {
     const visibleFields = structure.reduce(
       (acc, attr: EntityAttribute) => {
         if (attr.section !== 'none' && !attr.internal) {
-          if (attr.section === 'technical') {
-            acc.technical.push({
-              title: attr.label.en,
-              propName: attr.name,
-              value: '',
-              log: '',
-              logType: '',
-            } as SectionField);
-          } else if (attr.section === 'identifier') {
+          if (attr.section === 'identification') {
             acc.identifying.push({
               title: attr.label.en,
               propName: attr.name,
@@ -261,7 +249,7 @@ export class EntranceDetailsComponent implements OnInit {
               log: '',
               logType: '',
             } as SectionField);
-          } else if (attr.section === 'info') {
+          } else if (attr.section === 'description') {
             acc.describing.push({
               title: attr.label.en,
               propName: attr.name,
@@ -289,9 +277,8 @@ export class EntranceDetailsComponent implements OnInit {
       }
     );
 
-    this.sections[0].entries = visibleFields.technical;
-    this.sections[1].entries = visibleFields.identifying;
-    this.sections[2].entries = visibleFields.describing;
+    this.sections[0].entries = visibleFields.identifying;
+    this.sections[1].entries = visibleFields.describing;
     this.titleSection = visibleFields.title;
 
     this.fillSections();
