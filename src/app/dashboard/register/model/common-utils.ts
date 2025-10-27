@@ -26,8 +26,8 @@ export const MY_FORMATS = {
 
 export const logTypeColorMap = new Map<string, string>([
   ['ERR', 'red'],
-  ['MISS', 'orange'],
-  ['QUE', 'blue'],
+  ['MISS', 'blue'],
+  ['QUE', 'orange'],
   ['AUT', 'green'],
 ]);
 

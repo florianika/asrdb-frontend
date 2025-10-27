@@ -56,18 +56,6 @@ export class SideBarComponent implements AfterViewInit {
       visible: this.isAdmin,
     },
     {
-      sectionTitle: '',
-      sectionElements: [
-        {
-          title: 'Field Work',
-          path: 'dashboard/field-work',
-          icon: 'home_work',
-          selected: true,
-        },
-      ],
-      visible: this.isAdmin,
-    },
-    {
       sectionTitle: 'Quality Rule Management',
       sectionElements: [
         {
@@ -94,6 +82,18 @@ export class SideBarComponent implements AfterViewInit {
     {
       sectionTitle: 'Administration',
       sectionElements: [
+        {
+          sectionTitle: '',
+          sectionElements: [
+            {
+              title: 'Field Work',
+              path: 'dashboard/field-work',
+              icon: 'home_work',
+              selected: true,
+            },
+          ],
+          visible: this.isAdmin,
+        },
         {
           title: 'User administration',
           path: '/dashboard/administration/user-management',
@@ -149,7 +149,7 @@ export class SideBarComponent implements AfterViewInit {
   private setSelected() {
     for (const sideBarElement of this.sideBarElements) {
       for (const sectionElement of sideBarElement.sectionElements) {
-        sectionElement.selected = this.isSelected(sectionElement.path);
+        sectionElement.selected = this.isSelected(sectionElement.path!);
       }
     }
   }
