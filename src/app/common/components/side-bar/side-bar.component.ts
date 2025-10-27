@@ -83,16 +83,10 @@ export class SideBarComponent implements AfterViewInit {
       sectionTitle: 'Administration',
       sectionElements: [
         {
-          sectionTitle: '',
-          sectionElements: [
-            {
-              title: 'Field Work',
-              path: 'dashboard/field-work',
-              icon: 'home_work',
-              selected: true,
-            },
-          ],
-          visible: this.isAdmin,
+          title: 'Field Work',
+          path: 'dashboard/field-work',
+          icon: 'home_work',
+          selected: true,
         },
         {
           title: 'User administration',
@@ -140,6 +134,10 @@ export class SideBarComponent implements AfterViewInit {
     return this.authStateService.isAdmin();
   }
 
+  get isSupervisor(): boolean {
+    return this.authStateService.isSupervisor();
+  }
+
   handleClick(title: string) {
     if (['Dashboard', 'Building List'].includes(title)) {
       localStorage.removeItem(FILTER_REGISTER);
@@ -149,7 +147,7 @@ export class SideBarComponent implements AfterViewInit {
   private setSelected() {
     for (const sideBarElement of this.sideBarElements) {
       for (const sectionElement of sideBarElement.sectionElements) {
-        sectionElement.selected = this.isSelected(sectionElement.path!);
+        sectionElement.selected = !!(sectionElement.path && this.isSelected(sectionElement.path));
       }
     }
   }
