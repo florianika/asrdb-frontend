@@ -6,7 +6,7 @@ import { EXECUTING } from './register-log.service';
   name: 'logExecution',
 })
 export class LogExecutionPipe implements PipeTransform {
-  transform(value?: number): boolean {
+  transform(value?: number | null): boolean {
     return value === EXECUTING;
   }
 }

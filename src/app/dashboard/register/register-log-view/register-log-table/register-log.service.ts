@@ -62,15 +62,15 @@ export class RegisterLogService {
     private matSnack: MatSnackBar
   ) {}
 
-  public loadLogs(buildingId: string) {
+  public loadLogsAfterExecution(buildingId: string) {
     this.isLoading.next(true);
     this.httpClient
       .get<{
         processOutputLogDto: Log[];
       }>(
         environment.base_url +
-          this.LOGS_URL +
-          buildingId.replace('{', '').replace('}', '')
+        this.LOGS_URL +
+        buildingId.replace('{', '').replace('}', '')
       )
       .subscribe({
         next: data => {
@@ -86,6 +86,31 @@ export class RegisterLogService {
           }
           this.loadedLogs.next(data.processOutputLogDto);
           this.isLoading.next(false);
+        },
+        error: err => {
+          console.log(err);
+          this.isLoading.next(false);
+          this.isExecuting.next(NOT_EXECUTING);
+        },
+      });
+    this.loadBuildingQuality(buildingId);
+  }
+
+  public loadLogs(buildingId: string) {
+    this.isLoading.next(true);
+    this.httpClient
+      .get<{
+        processOutputLogDto: Log[];
+      }>(
+        environment.base_url +
+          this.LOGS_URL +
+          buildingId.replace('{', '').replace('}', '')
+      )
+      .subscribe({
+        next: data => {
+          this.loadedLogs.next(data.processOutputLogDto);
+          this.isLoading.next(false);
+          this.isExecuting.next(NOT_EXECUTING);
         },
         error: err => {
           console.log(err);
@@ -154,7 +179,7 @@ export class RegisterLogService {
         next: () => {
           this.isExecuting.next(EXECUTING);
           if (loadLogs) {
-            this.loadLogs(buildingId);
+            this.loadLogsAfterExecution(buildingId);
           }
           if (!loadLogs) {
             this.matSnack.open('Started testing building data', 'Ok', {

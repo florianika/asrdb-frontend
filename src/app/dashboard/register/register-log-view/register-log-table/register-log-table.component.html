@@ -18,11 +18,11 @@
       (click)="goToBuildingDetails()">
       <mat-icon>apartment</mat-icon>
     </button>
-    <ng-container *ngIf="executionStatus | async as isExecuting">
+    <ng-container>
       <button mat-icon-button
               matTooltip="Filter logs"
               (click)="filterData()"
-              [disabled]="isExecuting | logExecution">
+              [disabled]="(executionStatus | async) | logExecution">
         <mat-icon>filter_alt</mat-icon>
       </button>
       <div class="icon-divider"></div>
@@ -31,15 +31,15 @@
         color="primary"
         style="margin-right: 10px;"
         (click)="startExecuting()"
-        [disabled]="isExecuting | logExecution">
-        <ng-container *ngIf="isExecuting | logExecution">
+        [disabled]="(executionStatus | async) | logExecution">
+        <ng-container *ngIf="(executionStatus | async) | logExecution">
           <mat-spinner diameter="20" style="display: inline-block; vertical-align: middle;"></mat-spinner>
           <span>
             Execution in progress
           </span>
         </ng-container>
 
-        <ng-container *ngIf="!(isExecuting | logExecution)">
+        <ng-container *ngIf="!((executionStatus | async) | logExecution)">
           <mat-icon style="vertical-align: middle;">play_arrow</mat-icon>
           <span i18n>
             Test data
