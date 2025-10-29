@@ -49,7 +49,6 @@ export class StreetManagementTableComponent
   @ViewChild(MatSort) sort!: MatSort;
 
   private columns = [
-    'GlobalID',
     'StrMunicipality',
     'StrType',
     'StrNameCore',
@@ -141,6 +140,9 @@ export class StreetManagementTableComponent
         switchMap(() => this.loadStreets())
       )
       .subscribe(res => this.handleResponse(res));
+    this.sort.active = 'StrNameCore';
+    this.sort.direction = 'desc';
+    this.sort.sortChange.emit({ active: this.sort.active, direction: this.sort.direction });
   }
 
   ngOnDestroy(): void {

@@ -25,10 +25,6 @@
 
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="data" class="asrbd-table" matSort>
-      <ng-container matColumnDef="GlobalID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Street</th>
-        <td mat-cell *matCellDef="let element"> {{element.GlobalID}} </td>
-      </ng-container>
       <ng-container matColumnDef="StrMunicipality">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Street municipality</th>
         <td mat-cell *matCellDef="let element"> {{getValueFromStatus('StrMunicipality', element.StrMunicipality)}} </td>

@@ -53,7 +53,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: this.isAdmin,
+      visible: this.isAdmin || this.isSupervisor,
     },
     {
       sectionTitle: 'Quality Rule Management',
@@ -77,7 +77,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: this.isAdmin,
+      visible: this.isAdmin || this.isSupervisor,
     },
     {
       sectionTitle: 'Administration',
@@ -107,7 +107,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: this.isAdmin,
+      visible: this.isAdmin || this.isSupervisor,
     },
   ];
 
