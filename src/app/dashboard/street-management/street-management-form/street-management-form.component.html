@@ -21,7 +21,7 @@
             <mat-form-field class="w-100" appearance="outline">
               <input matInput i18n-placeholder
                      placeholder="Search..."
-                     [value]="inputFilters[formItem.name]"
+                     [value]="inputFilters[formItem.name] ?? ''"
                      (input)="filterInputOptions($event, formItem.name)"
               />
               <button class="z-2" mat-icon-button matSuffix *ngIf="inputFilters[formItem.name]"

@@ -21,6 +21,8 @@ export type MapInitOptions = {
   bldWhereCase: string;
   entWhereCase: string;
   enableLegend: boolean;
+  showBuildingLayer: boolean;
+  showEntranceLayer: boolean;
 };
 
 @Injectable()
@@ -68,13 +70,14 @@ export class RegisterMapService {
       throw new Error('Options or nativeElement are not defined');
     }
     this.graphicsLayer = new GraphicsLayer();
-
-    const webmap = this.createWebMap(basemap, [
-      this.graphicsLayer,
-      this.municipalityLayer,
-      this.entlayer,
-      this.bldlayer,
-    ]);
+    const layers = [this.municipalityLayer, this.graphicsLayer];
+    if (this.options.showBuildingLayer) {
+      layers.push(this.bldlayer);
+    }
+    if (this.options.showEntranceLayer) {
+      layers.push(this.entlayer);
+    }
+    const webmap = this.createWebMap(basemap, layers);
     this.view = this.createMapView(webmap);
 
     void this.view.when(() => {
