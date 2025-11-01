@@ -99,6 +99,57 @@ export class CommonEntranceService {
       });
   }
 
+  mergeEntrances(existingStreetId: string, foundStreetIds: string, callback?: (success: boolean) => void) {
+    this.getEntranceData({
+      where: `GlobalID IN ('${existingStreetId}')`,
+      start: 0,
+      num: 20000,
+      outFields: ['*'],
+    })
+      .pipe(catchError((err: any) => of(null)))
+      .subscribe((res: any) => {
+        if (!res?.data?.features) {
+          console.log("No features found with that EntStrGlobalID");
+          callback?.(false);
+          return;
+        }
+
+        if (!res.data.features.length) {
+          this.snackBar.open("No entrances found for this street. Deleting current street.", "Ok", {
+            duration: 3000,
+          });
+          callback?.(true);
+          return;
+        }
+
+        // Step 2: Modify attributes locally
+        const updates = res.data.features.map((f: any) => {
+          f.attributes.EntStrGlobalID = foundStreetIds;
+          return f;
+        });
+
+        // Step 3: Send update request
+        this.updateFeature(updates).subscribe({
+          next: (response: EntityManageResponse) => {
+            const responseData =
+              response['addResults']?.[0] ?? response['updateResults']?.[0];
+            if (!responseData?.success) {
+              this.snackBar.open('Could not update value', 'Ok', {
+                duration: 3000,
+              });
+              callback?.(false);
+              return;
+            }
+            callback?.(true);
+          },
+          error: (err: any) => {
+            this.handleError(err);
+            callback?.(false);
+          },
+        });
+      });
+  }
+
   private handleResponse(res: any, callback?: () => void) {
     const [attributes] = res.data.features.map(
       (field: any) => field.attributes

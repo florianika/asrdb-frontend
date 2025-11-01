@@ -82,6 +82,24 @@ export class CommonStreetService {
     );
   }
 
+  deleteFeature(features: any): Observable<EntityManageResponse | null> {
+    // const deleteFeatureLayerURL =
+    //   environment.street_url +
+    //   '/deleteFeatures?token=' +
+    //   this.esriAuthService.getTokenForResource();
+    // const body = this.createDeleteRequestBody(features.map((f: any) => f.attributes.GlobalID));
+    // return this.httpClient.post<EntityManageResponse>(
+    //   deleteFeatureLayerURL,
+    //   body,
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //     },
+    //   }
+    // );
+    return of(null);
+  }
+
   resetStatus(dwlId: string, callback?: () => void) {
     const filter = {
       where: `GlobalID = '${dwlId}'`,
@@ -204,6 +222,17 @@ export class CommonStreetService {
       console.error(e);
       return null;
     }
+  }
+
+  private createDeleteRequestBody(objectIds: string[]) {
+    const data = [];
+    data.push(
+      encodeURIComponent('objectIds') +
+        '=' +
+        encodeURIComponent(objectIds.join(','))
+    );
+    data.push(encodeURIComponent('f') + '=' + encodeURIComponent('json'));
+    return data.join('&');
   }
 
   private createRequestBody(features: any[]) {

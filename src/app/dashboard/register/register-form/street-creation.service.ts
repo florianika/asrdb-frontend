@@ -7,6 +7,9 @@ import { AuthStateService } from '../../../common/services/auth-state.service';
 import { CommonStreetService } from '../../common/service/common-street.service';
 import { Street } from '../model/street';
 import {QueryFilter} from "../model/query-filter";
+import {MatDialog} from "@angular/material/dialog";
+import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
+import {CommonEntranceService} from "../../common/service/common-entrance.service";
 
 @Injectable()
 export class StreetManagementService {
@@ -41,8 +44,10 @@ export class StreetManagementService {
 
   constructor(
     private commonStreetService: CommonStreetService,
+    private commonEntranceService: CommonEntranceService,
     private snackBar: MatSnackBar,
-    private authState: AuthStateService
+    private authState: AuthStateService,
+    private matDialog: MatDialog
   ) {}
 
   public saveStreet(streetDetails: Street) {
@@ -51,6 +56,7 @@ export class StreetManagementService {
         streetDetails.StrNameCore,
         streetDetails.StrMunicipality,
         () => this.updateStreet(streetDetails),
+        (foundStreetId: string) => this.mergeStreets(streetDetails, foundStreetId),
         streetDetails.GlobalID
       )
     } else {
@@ -62,7 +68,12 @@ export class StreetManagementService {
     }
   }
 
-  private validateStreetNameUniqueness(name: string, municipality: number, callback: () => void, globalId?: string) {
+  private validateStreetNameUniqueness(
+    name: string,
+    municipality: number,
+    callback: () => void,
+    mergeCallback?: (foundStreetIds: string) => void,
+    globalId?: string) {
     let whereClause = "StrMunicipality=" + municipality + " AND StrNameCore='" + name + "'";
     if (globalId) {
       whereClause += " AND GlobalID<>'" + globalId + "'";
@@ -83,13 +94,20 @@ export class StreetManagementService {
           return;
         }
         if (data && data.count > 0) {
-          this.snackBar.open('A street with this name already exists in the selected municipality.', 'Ok', {
-            duration: 5000,
-          });
-          return;
+          if (!globalId) {
+            this.snackBar.open('A street with this name already exists in the selected municipality.', 'Ok', {
+              duration: 5000,
+            });
+            return;
+          }
+          else if (mergeCallback) {
+            const foundStreetId = data.data.features.map((f: any) => f.attributes.GlobalID)?.[0];
+            mergeCallback(foundStreetId);
+            return;
+          }
         }
         callback();
-      })
+      });
   }
 
   private createStreet(street: Street) {
@@ -108,6 +126,63 @@ export class StreetManagementService {
     this.commonStreetService
       .updateFeature(features)
       .subscribe(this.responseHandler());
+  }
+
+  private mergeStreets(street: Street, foundStreetIds: string) {
+    this.isSaving.next(true);
+    this.matDialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      height: '400px',
+      data: {
+        title: 'Confirm Street Merge',
+        message: `A street with the name "${street.StrNameCore}" already exists in the selected municipality. Do you want to merge the streets? This action will:\n\t- Move all entrances associated with this street to the existing street.\n\t- Delete the current street entry.\n\nThis action cannot be undone.`,
+        confirmButtonText: 'Merge Streets',
+        cancelButtonText: 'Cancel',
+      }
+    }).afterClosed()
+      .subscribe((confirm: boolean | undefined) => {
+        if (confirm) {
+          const existingStreetId = street.GlobalID!;
+          this.commonEntranceService.mergeEntrances(existingStreetId, foundStreetIds, (success: boolean) => {
+            if (success) {
+              this.deleteStreet(existingStreetId);
+            } else {
+              this.snackBar.open('Could not merge streets. Please try again.', 'Ok', {
+                duration: 5000,
+              });
+            }
+          });
+        } else {
+          this.snackBar.open('Street merge cancelled.', 'Ok', {
+            duration: 3000,
+          });
+        }
+    })
+  }
+
+  private deleteStreet(streetId: string) {
+    const features = [
+      {
+        attributes: {
+          GlobalID: streetId,
+        },
+      },
+    ];
+    this.commonStreetService
+      .deleteFeature(features)
+      .pipe(catchError(() => of(null)))
+      .subscribe((data) => {
+        if (!data) {
+          this.snackBar.open('Could not delete duplicate street. Please try again.', 'Ok', {
+            duration: 5000,
+          });
+          return;
+        }
+        this.snackBar.open('Streets merged successfully.', 'Ok', {
+          duration: 5000,
+        });
+        this.isSaving.next(false);
+      });
   }
 
   private createFeatures(street: Street) {
