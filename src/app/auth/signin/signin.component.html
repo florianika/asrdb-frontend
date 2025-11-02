@@ -18,11 +18,11 @@
           <mat-icon matSuffix style="cursor: pointer;" (click)="hiddenPassword = !hiddenPassword">{{hiddenPassword ?
             'visibility' : 'visibility_off'}}</mat-icon>
         </mat-form-field>
-        <!-- <p class="login-card-forgot-password" i18n>Forgot password?</p> -->
+         <p class="login-card-forgot-password" routerLink="/auth/forgot-password" i18n>Forgot password?</p>
       </form>
 
       <button mat-flat-button color="primary" class="full-width" style="height: 52px;" (click)="signin()" [disabled]="loading | async" i18n>Continue</button>
-      <p class="login-card-create-account" routerLink="/auth/signup" i18n>Create an account</p>
+<!--      <p class="login-card-create-account" routerLink="/auth/signup" i18n>Create an account</p>-->
     </mat-card-content>
   </mat-card>
 </section>
