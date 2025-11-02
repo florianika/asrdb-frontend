@@ -19,6 +19,7 @@ import { UserViewDialogComponent } from './user-view-dialog/user-view-dialog.com
 import { UserEditDialogComponent } from './user-edit-dialog/user-edit-dialog.component';
 import { UserManagementService } from './user-management.service';
 import { RoleSelectorComponent } from 'src/app/common/standalone-components/role-selector/role-selector.component';
+import {SignupModule} from "../../../auth/signup/signup.module";
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { RoleSelectorComponent } from 'src/app/common/standalone-components/role
     MatInputModule,
     RoleSelectorComponent,
     ReactiveFormsModule,
+    SignupModule
   ],
   providers: [UserManagementService],
 })

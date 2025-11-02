@@ -2,6 +2,12 @@
   <div class="header-container">
     <h1 i18n class="header-title">User Management</h1>
     <span class="spacer"></span>
+    <button mat-icon-button>
+      <mat-icon (click)="refreshTable()" i18n-title title="Refresh">refresh</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon (click)="addUser()" i18n-title title="Refresh">add</mat-icon>
+    </button>
   </div>
 
   <div class="asrbd-loading-shade" *ngIf="isLoadingResults | async">

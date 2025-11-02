@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observer } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Router} from '@angular/router';
+import {BehaviorSubject, Observer} from 'rxjs';
+import {environment} from 'src/environments/environment';
 
 export type SignupForm = FormGroup<{
   email: FormControl<string | null>;
@@ -30,7 +30,7 @@ export class SignupService {
   private signupObserver = {
     next: (response) => {
       this.signingUp.next(false);
-      this.router.navigateByUrl('/auth/signin');
+      // this.router.navigateByUrl('/auth/signin');
     },
     error: error => {
       this.signingUp.next(false);

@@ -1,11 +1,14 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { UserManagementService } from './user-management.service';
-import { User } from 'src/app/model/User.model';
-import { MatTableDataSource } from '@angular/material/table';
-import { Observable, map } from 'rxjs';
-import { MUNICIPALITIES } from '../../../common/data/municipalities';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {UserManagementService} from './user-management.service';
+import {User} from 'src/app/model/User.model';
+import {MatTableDataSource} from '@angular/material/table';
+import {map, Observable} from 'rxjs';
+import {MUNICIPALITIES} from '../../../common/data/municipalities';
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {SignupComponent} from "../../../auth/signup/signup.component";
+import {SignupService} from "../../../auth/signup/signup.service";
 
 @Component({
   selector: 'asrdb-user-management',
@@ -33,6 +36,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     );
 
   private dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
+  private dialogRef?: MatDialogRef<SignupComponent, any>;
 
   resultsLength = 0;
   isLoadingResults = this.userManagementService.loadingAsObservable;
@@ -40,10 +44,19 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private userManagementService: UserManagementService) {}
+  constructor(
+    private userManagementService: UserManagementService,
+    private signupService: SignupService,
+    private matDialog: MatDialog) {}
 
   ngOnInit(): void {
     this.userManagementService.getUsers();
+    this.signupService.signingUpAsObservable.subscribe((isSigningUp) => {
+      if (!isSigningUp && this.dialogRef) {
+        this.dialogRef.close();
+        this.refreshTable();
+      }
+    })
   }
 
   ngAfterViewInit() {
@@ -78,5 +91,16 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     } else {
       return '-';
     }
+  }
+
+  refreshTable() {
+    this.userManagementService.getUsers();
+  }
+
+  addUser() {
+    this.dialogRef = this.matDialog.open(SignupComponent, {
+      width: '400px',
+      data: { isAdminCreation: true }
+    });
   }
 }
