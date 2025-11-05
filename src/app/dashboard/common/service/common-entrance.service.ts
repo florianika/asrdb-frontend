@@ -101,7 +101,7 @@ export class CommonEntranceService {
 
   mergeEntrances(existingStreetId: string, foundStreetIds: string, callback?: (success: boolean) => void) {
     this.getEntranceData({
-      where: `GlobalID IN ('${existingStreetId}')`,
+      where: `EntStrGlobalID IN ('${existingStreetId}')`,
       start: 0,
       num: 20000,
       outFields: ['*'],

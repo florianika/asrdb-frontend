@@ -170,12 +170,15 @@ export class StreetManagementService {
     ];
     this.commonStreetService
       .deleteFeature(features)
-      .pipe(catchError(() => of(null)))
+      .pipe(catchError((error) => {
+        return of(null);
+      }))
       .subscribe((data) => {
         if (!data) {
           this.snackBar.open('Could not delete duplicate street. Please try again.', 'Ok', {
             duration: 5000,
           });
+          this.isSaving.next(false);
           return;
         }
         this.snackBar.open('Streets merged successfully.', 'Ok', {
