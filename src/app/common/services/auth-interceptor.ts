@@ -13,7 +13,8 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     if (
       req.url.includes('/addFeatures') ||
-      req.url.includes('/updateFeatures')
+      req.url.includes('/updateFeatures') ||
+      req.url.includes('/deleteFeatures')
     ) {
       return next.handle(req);
     }
