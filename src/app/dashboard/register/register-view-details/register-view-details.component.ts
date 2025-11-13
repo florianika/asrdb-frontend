@@ -165,14 +165,16 @@ export class RegisterViewDetailsComponent implements OnInit, OnDestroy {
       entrance => entrance.GlobalID === entranceId
     );
     if (entrance) {
+      this.selectedEntrance = undefined;
+      this.isLoadingResults = true;
       // Update entrance
-      this.commonEntranceService.resetStatus(entranceId);
-
-      // Update building
-      this.commonBuildingService.resetStatus(this.id!, () => {
-        setTimeout(() => {
-          this.loadBuildingData();
-        }, 500);
+      this.commonEntranceService.resetStatus(entranceId, () => {
+        // Update building
+        this.commonBuildingService.resetStatus(this.id!, () => {
+          setTimeout(() => {
+            this.loadBuildingData();
+          }, 500);
+        });
       });
     }
   }

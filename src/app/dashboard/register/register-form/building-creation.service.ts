@@ -113,7 +113,7 @@ export class BuildingManagementService {
           (cleanedAttributes as any)[key] = null;
         }
       } else {
-        (cleanedAttributes as any)[key] = value ? value : null;
+        (cleanedAttributes as any)[key] = (value || value === 0) ? value : null;
       }
     });
     return [

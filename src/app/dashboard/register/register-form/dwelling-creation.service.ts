@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { EntityManageResponse } from '../model/entity-req-res';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonDwellingService } from '../../common/service/common-dwellings.service';
-import { Dwelling } from '../model/dwelling';
-import { AuthStateService } from '../../../common/services/auth-state.service';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {EntityManageResponse} from '../model/entity-req-res';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {CommonDwellingService} from '../../common/service/common-dwellings.service';
+import {Dwelling} from '../model/dwelling';
+import {AuthStateService} from '../../../common/services/auth-state.service';
 
 @Injectable()
 export class DwellingManagementService {
@@ -74,7 +74,7 @@ export class DwellingManagementService {
     dwelling.DwlQuality = 9;
     const cleanedAttributes = {} as Partial<Dwelling>;
     Object.entries(dwelling).forEach(([key, value]) => {
-      (cleanedAttributes as any)[key] = value ? value : null;
+      (cleanedAttributes as any)[key] = (value || value === 0) ? value : null;
     });
     return [
       {
