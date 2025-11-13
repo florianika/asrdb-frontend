@@ -56,7 +56,7 @@ export class CommonRegisterHelperService {
   }
 
   private isUnknownValue(code: string | number) {
-    return (!code && code !== 0) || /^9+$/.test(code.toString());
+    return (!code && code !== 0);
   }
 
   private isNotApplicable(code: string | number) {
