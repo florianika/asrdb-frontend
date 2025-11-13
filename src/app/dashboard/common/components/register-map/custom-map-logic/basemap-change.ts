@@ -1,7 +1,8 @@
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
 import { Injectable } from '@angular/core';
-import { CUSTOM_BASEMAP, HYBRID_BASEMAP, OSM_BASEMAP } from './BasemapTypes';
+import {MAP_2025, HYBRID_BASEMAP, OSM_BASEMAP, MAP_2023} from './BasemapTypes';
+import Basemap from "@arcgis/core/Basemap";
 
 @Injectable()
 export class BaseMapChangeService {
@@ -79,15 +80,24 @@ export class BaseMapChangeService {
       popup,
       eventsCleanupCallbacks
     );
-    const customMap = await this.createCustomMapItem(
+    const customMap2025 = await this.createCustomMapItem(
       webmapCallback,
       popup,
-      eventsCleanupCallbacks
+      eventsCleanupCallbacks,
+      MAP_2025
+    );
+
+    const customMap2023 = await this.createCustomMapItem(
+      webmapCallback,
+      popup,
+      eventsCleanupCallbacks,
+      MAP_2023
     );
 
     popupContent.appendChild(hybridMap);
     popupContent.appendChild(osmMap);
-    popupContent.appendChild(customMap);
+    popupContent.appendChild(customMap2023);
+    popupContent.appendChild(customMap2025);
     return popupContent;
   }
 
@@ -146,20 +156,21 @@ export class BaseMapChangeService {
   private async createCustomMapItem(
     webmapCallback: Function,
     popup: Popup,
-    eventsCleanupCallbacks: any[]
+    eventsCleanupCallbacks: any[],
+    basemap: Basemap
   ) {
     const hybridMap = document.createElement('div');
-    hybridMap.id = 'basemap-custom-selection';
+    hybridMap.id = 'basemap-custom-selection-' + basemap.title;
     hybridMap.className = 'esri-widget esri-interactive basemap-item';
     const popupContentSpanIcon = document.createElement('span');
     popupContentSpanIcon.className = 'esri-icon-basemap';
     const popupContentSpan = document.createElement('span');
-    popupContentSpan.textContent = 'Custom map';
+    popupContentSpan.textContent = basemap.title;
     popupContentSpan.className = 'basemap-type-item';
     hybridMap.appendChild(popupContentSpanIcon);
     hybridMap.appendChild(popupContentSpan);
     const customMapEventListener = () => {
-      webmapCallback(CUSTOM_BASEMAP);
+      webmapCallback(basemap);
       popup.close();
     };
     hybridMap.addEventListener('click', customMapEventListener);
