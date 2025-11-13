@@ -1,7 +1,7 @@
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
 import { Injectable } from '@angular/core';
-import {MAP_2025, HYBRID_BASEMAP, OSM_BASEMAP, MAP_2023} from './BasemapTypes';
+import {MAP_2025, HYBRID_BASEMAP, OSM_BASEMAP, MAP_2023, MAP_2024} from './BasemapTypes';
 import Basemap from "@arcgis/core/Basemap";
 
 @Injectable()
@@ -86,7 +86,12 @@ export class BaseMapChangeService {
       eventsCleanupCallbacks,
       MAP_2025
     );
-
+    const customMap2024 = await this.createCustomMapItem(
+      webmapCallback,
+      popup,
+      eventsCleanupCallbacks,
+      MAP_2024
+    );
     const customMap2023 = await this.createCustomMapItem(
       webmapCallback,
       popup,
@@ -97,6 +102,7 @@ export class BaseMapChangeService {
     popupContent.appendChild(hybridMap);
     popupContent.appendChild(osmMap);
     popupContent.appendChild(customMap2023);
+    popupContent.appendChild(customMap2024);
     popupContent.appendChild(customMap2025);
     return popupContent;
   }
