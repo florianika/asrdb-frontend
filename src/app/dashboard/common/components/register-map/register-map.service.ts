@@ -40,6 +40,7 @@ export class RegisterMapService {
   private customZoom: number | null = null;
   private alreadyFocused = false;
   private totalResults: number | null = null;
+  private _goToDebounce: any;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -115,7 +116,7 @@ export class RegisterMapService {
     this.totalResults = extent.count;
 
     this.updateLayerVisibility();
-    this.handleGoTo(extent.extent ?? { center: [19.818, 41.3285], zoom: 18 });
+    this.handleGoToDebounced(extent.extent ?? { center: [19.818, 41.3285], zoom: 18 });
   }
 
   /** Filter entrance layer (server-side now) */
@@ -128,11 +129,15 @@ export class RegisterMapService {
     await LayerFilterService.filterFeatureLayer(this.entlayer, this.view, whereCondition);
 
     // Optionally, update visibility if needed (same logic as buildings)
-    const extent = await LayerFilterService.queryExtent(this.entlayer, whereCondition);
-    if (extent.count === 0) {
-      this.entlayer.visible = false;
-    } else {
-      this.entlayer.visible = true;
+    try {
+      const extent = await LayerFilterService.queryExtent(this.entlayer, whereCondition);
+      if (extent.count === 0) {
+        this.entlayer.visible = false;
+      } else {
+        this.entlayer.visible = true;
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -176,7 +181,12 @@ export class RegisterMapService {
         break;
       case 0:
         if (!this.alreadyFocused) {
-          void this.view.goTo({ ...goTo, zoom: this.customZoom ?? goTo.zoom });
+          const zoom = this.customZoom ?? goTo.zoom;
+          if (zoom) {
+            void this.view.goTo({ ...goTo, zoom: this.customZoom ?? goTo.zoom });
+          } else {
+            void this.view.goTo(goTo);
+          }
         }
         break;
       default:
@@ -195,5 +205,9 @@ export class RegisterMapService {
 
   private reload(basemap?: any) {
     void this.init(undefined, undefined, basemap);
+  }
+  private handleGoToDebounced(goTo: any) {
+    clearTimeout(this._goToDebounce);
+    this._goToDebounce = setTimeout(() => this.handleGoTo(goTo), 500); // 100ms debounce
   }
 }
