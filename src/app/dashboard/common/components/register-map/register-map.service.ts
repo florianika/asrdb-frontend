@@ -1,24 +1,19 @@
-import { ElementRef, Injectable, isDevMode } from '@angular/core';
-import esriRequest from "@arcgis/core/request";
-
-import MapView from '@arcgis/core/views/MapView';
-import Popup from '@arcgis/core/widgets/Popup';
-import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import WebMap from '@arcgis/core/WebMap';
-import { CommonBuildingService } from '../../service/common-building.service';
-import { CommonEntranceService } from '../../service/common-entrance.service';
-import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
-import { FeatureSelectionService } from './custom-map-logic/feature-selection';
-import { BaseMapChangeService } from './custom-map-logic/basemap-change';
-import Legend from '@arcgis/core/widgets/Legend';
-import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
+import {ElementRef, Injectable} from '@angular/core';
+import {CommonBuildingService} from '../../service/common-building.service';
+import {CommonEntranceService} from '../../service/common-entrance.service';
 import {CommonMunicipalityService} from "../../service/common-municipality.service";
+import {RegisterFilterService} from '../../../register/register-table-view/register-filter.service';
+import {BaseMapChangeService} from './custom-map-logic/basemap-change';
+import {FeatureSelectionService} from './custom-map-logic/feature-selection';
+import {WmtsCapabilitiesService} from './wmts-capabilities.service';
+import {LayerFilterService} from './layer-filter.service';
+import {MapInteractionService} from './map-interaction.service';
+import {createMapView, createWebMap} from './map-view-factory';
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import WMTSLayer from "@arcgis/core/layers/WMTSLayer";
+import MapView from '@arcgis/core/views/MapView';
 import LOD from "@arcgis/core/layers/support/LOD";
-import {WmtsCapabilitiesService} from "./wmts-capabilities.service";
-import {whenOnce} from "@arcgis/core/core/reactiveUtils";
 
 export type MapInitOptions = {
   enableFilter: boolean;
@@ -32,19 +27,19 @@ export type MapInitOptions = {
 
 @Injectable()
 export class RegisterMapService {
-  private bldlayer;
-  private entlayer;
-  private municipalityLayer;
-  private eventsCleanupCallbacks: (() => void)[] = [];
-  private nativeElement: string | HTMLDivElement | undefined;
-  private options: MapInitOptions | undefined;
-  private view: MapView | undefined;
-  private graphicsLayer?: GraphicsLayer;
-  private customZoom: null | number = null;
-  private alreadyFocused = false;
-  private totalResults = null;
-
   public isOnlyOneBuilding = false;
+
+  private view?: MapView;
+  private bldlayer?: FeatureLayer;
+  private entlayer?: FeatureLayer;
+  private municipalityLayer?: FeatureLayer;
+  private graphicsLayer?: GraphicsLayer;
+  private options?: MapInitOptions;
+  private nativeElement?: string | HTMLDivElement;
+  private eventsCleanupCallbacks: (() => void)[] = [];
+  private customZoom: number | null = null;
+  private alreadyFocused = false;
+  private totalResults: number | null = null;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -53,291 +48,152 @@ export class RegisterMapService {
     private registerFilterService: RegisterFilterService,
     private baseMapChangeService: BaseMapChangeService,
     private featureSelectionService: FeatureSelectionService,
-    private wmtsCapabilitiesService: WmtsCapabilitiesService,
-    private esriAuthService: CommonEsriAuthService
+    private wmtsCapabilitiesService: WmtsCapabilitiesService
   ) {
     this.bldlayer = this.buildingService.bldLayer.clone();
     this.entlayer = this.entranceService.entLayer.clone();
     this.municipalityLayer = this.municipalityService.municipalityLayer.clone();
   }
 
-  async init(
-    mapViewEl?: ElementRef,
-    options?: MapInitOptions,
-    basemap?: any
-  ): Promise<MapView> {
-    if (mapViewEl) {
-      this.nativeElement = mapViewEl.nativeElement;
-    }
-    if (options) {
-      this.options = options;
-    }
-    if (!this.options || !this.nativeElement) {
-      throw new Error('Options or nativeElement are not defined');
-    }
+  /** Initialize the map */
+  async init(containerEl?: ElementRef, options?: MapInitOptions, basemap?: any) {
+    if (containerEl) this.nativeElement = containerEl.nativeElement;
+    if (options) this.options = options;
+    if (!this.nativeElement || !this.options) throw new Error('Map container or options missing');
+
     this.graphicsLayer = new GraphicsLayer();
     const layers = [this.municipalityLayer, this.graphicsLayer];
-    if (this.options.showBuildingLayer) {
-      layers.push(this.bldlayer);
-    }
-    if (this.options.showEntranceLayer) {
-      layers.push(this.entlayer);
-    }
-    const webmap = this.createWebMap(basemap, layers);
-    this.view = this.createMapView(webmap);
+    if (this.options.showBuildingLayer) layers.push(this.bldlayer);
+    if (this.options.showEntranceLayer) layers.push(this.entlayer);
 
-    void this.view.when(async () => {
-      if (this.view?.popup) {
-        this.view.popup.set('dockOptions', {
-          breakpoint: false,
-          buttonEnabled: false,
-          position: 'top-left',
-        });
-      }
+    const webmap = createWebMap(basemap, layers);
+    this.view = createMapView(this.nativeElement, webmap, this.options.enableLegend);
 
-      if (this.view) {
-        const wmts = this.view!.map.basemap.baseLayers.find(
-          l => l instanceof WMTSLayer
-        ) as WMTSLayer;
-
-        if (!wmts) {
-          return;
-        }
-
-        const lods = await this.wmtsCapabilitiesService.getLODs(wmts.url);
-
-        if (lods.length > 0) {
-          this.view!.constraints = { lods: lods as LOD[] };
-          console.log('Applied WMTS LODs:', lods);
-        }
-      }
-    });
-
-    this.enableFilterPopup();
-
-    if (this.options.enableLegend) {
-      this.enableLegend();
+    // WMTS LODs
+    const wmts = this.view.map.basemap.baseLayers.find(l => l instanceof WMTSLayer) as WMTSLayer;
+    if (wmts) {
+      const lods = await this.wmtsCapabilitiesService.getLODs(wmts.url);
+      if (lods.length) this.view.constraints = { lods: lods as LOD[] };
     }
 
-    void this.filterBuildingData(this.options.bldWhereCase);
-    void this.filterEntranceData(this.options.entWhereCase);
-
-    if (this.options.enableSelection) {
-      this.featureSelectionService.createFeatureSelection(
-        this.view,
-        webmap,
-        this.eventsCleanupCallbacks
-      );
-    }
-    void this.baseMapChangeService.createBasemapChangeAction(
+    // Map interactions
+    const zoomHandler = MapInteractionService.addZoomWatcher(
       this.view,
-      this.reload.bind(this),
-      this.eventsCleanupCallbacks
+      this.bldlayer!,
+      this.entlayer!,
+      () => this.totalResults,
+      zoom => this.customZoom = zoom
     );
+
+    const popupHandler = MapInteractionService.addPopupHandler(this.view, this.registerFilterService);
+
+    this.eventsCleanupCallbacks.push(() => zoomHandler.remove(), () => popupHandler.remove());
+
+    // Initial filtering
+    await this.filterBuildingData(this.options.bldWhereCase);
+    await this.filterEntranceData(this.options.entWhereCase);
+
+    // Feature selection
+    if (this.options.enableSelection) {
+      this.featureSelectionService.createFeatureSelection(this.view, webmap, this.eventsCleanupCallbacks);
+    }
+
+    // Basemap change
+    await this.baseMapChangeService.createBasemapChangeAction(this.view, this.reload.bind(this), this.eventsCleanupCallbacks);
 
     return this.view;
   }
 
-  private enableLegend() {
-    if (this.view) {
-      const legend = new Legend({
-        view: this.view,
-        visible: true,
-      });
-      this.view.ui.add(legend, 'bottom-right');
-    }
-  }
-
-  private enableFilterPopup() {
-    if (this.view) {
-      // Zoom logic
-      const handler = this.view.watch('zoom', (newZoom) => {
-        if (!this.view?.map) {
-          return;
-        }
-        this.customZoom = Math.min(newZoom, 18);
-        const lessThan10000 = this.totalResults && this.totalResults < 10000;
-        if (newZoom < 15 && !lessThan10000) {
-          this.bldlayer.visible = false;
-          this.entlayer.visible = false;
-          this.alreadyFocused = false;
-        } else {
-          this.bldlayer.visible = true;
-          this.entlayer.visible = true;
-        }
-      });
-      this.eventsCleanupCallbacks.push(() => {
-        handler.remove();
-      })
-
-      // Popup logic
-      const cleanup = this.view.on('click', () => {
-        // event is the event handle returned after the event fires.
-        setTimeout(() => {
-          if (isDevMode()) {
-            if (this.view?.popup) {
-              this.view.popup.close();
-              console.log(this.view.popup?.selectedFeature);
-            }
-          }
-          if (!this.options?.enableFilter) {
-            return;
-          }
-          if (!this.view?.popup?.selectedFeature) {
-            return;
-          }
-          if (
-            this.view.popup!.selectedFeature!.layer?.title === 'ASRDB Buildings'
-          ) {
-            const globalId =
-              this.view.popup.selectedFeature.attributes['GlobalID'];
-            this.registerFilterService.setBuildingGlobalIdFilter(globalId);
-          }
-          if (
-            this.view.popup.selectedFeature.layer?.title === 'ASRDB Entrances'
-          ) {
-            const globalId =
-              this.view.popup.selectedFeature.attributes['EntBldGlobalID'];
-            this.registerFilterService.setBuildingGlobalIdFilter(globalId);
-          }
-        }, 50);
-      });
-      this.eventsCleanupCallbacks.push(() => {
-        cleanup.remove();
-      });
-    }
-  }
-
-  private createMapView(webmap: __esri.WebMap) {
-    return new MapView({
-      container: this.nativeElement,
-      popup: new Popup({
-        dockEnabled: true,
-        dockOptions: {
-          // Disables the dock button from the popup
-          buttonEnabled: false,
-          // Ignore the default sizes that trigger responsive docking
-          breakpoint: false,
-        },
-        visibleElements: {
-          closeButton: false,
-        },
-      }),
-      map: webmap,
-      zoom: 15,
-    });
-  }
-
-  private createWebMap(basemap: any, layers: any[]) {
-    return new WebMap({
-      basemap: basemap ?? OSM_BASEMAP,
-      layers: layers,
-      applicationProperties: {
-        viewing: {
-          search: {
-            enabled: true,
-          },
-        },
-      },
-    });
-  }
-
-  cleanup() {
-    this.eventsCleanupCallbacks.forEach(event => event());
-    this.eventsCleanupCallbacks = [];
-    this.isOnlyOneBuilding = false;
-    if (this.view) {
-      this.view.destroy();
-      this.view = undefined;
-      this.alreadyFocused = false;
-      this.customZoom = null;
-      this.totalResults = null;
-    }
-  }
-
+  /** Filter building layer (server-side) */
   async filterBuildingData(whereCondition: string) {
-    if (!this.view) {
-      return;
-    }
-    if (this.options) {
-      this.options.bldWhereCase = whereCondition;
-    }
+    if (!this.view || !this.bldlayer) return;
 
-    this.bldlayer.definitionExpression = whereCondition;
-    const layerView = await this.view.whenLayerView(this.bldlayer);
-    await whenOnce(() => !layerView.updating); // waits until reload finishes
+    this.options!.bldWhereCase = whereCondition;
+    await LayerFilterService.filterFeatureLayer(this.bldlayer, this.view, whereCondition);
 
-    const query = this.bldlayer.createQuery();
-    query.where = whereCondition;
-    const extend = await this.bldlayer.queryExtent(query);
-    this.totalResults = extend.count;
-    if ((this.totalResults && this.totalResults < 10000) || (this.customZoom && this.customZoom >= 15)) {
-      this.bldlayer.visible = true;
-      this.entlayer.visible = true;
+    const extent = await LayerFilterService.queryExtent(this.bldlayer, whereCondition);
+    this.totalResults = extent.count;
+
+    this.updateLayerVisibility();
+    this.handleGoTo(extent.extent ?? { center: [19.818, 41.3285], zoom: 18 });
+  }
+
+  /** Filter entrance layer (server-side now) */
+  async filterEntranceData(whereCondition: string) {
+    if (!this.view || !this.entlayer) return;
+
+    this.options!.entWhereCase = whereCondition;
+
+    // Use server-side filtering instead of client-side FeatureFilter
+    await LayerFilterService.filterFeatureLayer(this.entlayer, this.view, whereCondition);
+
+    // Optionally, update visibility if needed (same logic as buildings)
+    const extent = await LayerFilterService.queryExtent(this.entlayer, whereCondition);
+    if (extent.count === 0) {
+      this.entlayer.visible = false;
     } else {
+      this.entlayer.visible = true;
+    }
+  }
+
+  /** Clean up map resources */
+  cleanup() {
+    this.eventsCleanupCallbacks.forEach(fn => fn());
+    this.eventsCleanupCallbacks = [];
+    this.view?.destroy();
+    this.view = undefined;
+  }
+
+  /** Private helpers */
+
+  private updateLayerVisibility() {
+    if (!this.bldlayer || !this.entlayer) return;
+
+    const lessThan10000 = this.totalResults && this.totalResults < 10000;
+    if ((this.customZoom && this.customZoom < 15 && !lessThan10000)) {
       this.bldlayer.visible = false;
       this.entlayer.visible = false;
-    }
-    const goTo = extend.extent
-      ? { target: extend.extent }
-      : { center: [19.818, 41.3285], zoom: 18 };
-    if (this.isOnlyOneBuilding) {
-      setTimeout(() => {
-        void this.view?.goTo(extend.extent);
-        return
-      }, 500);
-    }
-    const size = this.getBuildingIdsSize(whereCondition);
-    switch (size) {
-      case 1: {
-        void this.view?.goTo(goTo);
-        this.alreadyFocused = true;
-        break;
-      }
-      case 0: {
-        if (this.alreadyFocused) {
-          return;
-        }
-        if (this.customZoom) {
-          void this.view?.goTo({...goTo, zoom: this.customZoom });
-        } else {
-          void this.view?.goTo(goTo);
-        }
-        break;
-      }
-      default: {
-        void this.view?.goTo(goTo);
-        this.alreadyFocused = true;
-        break;
-      }
+      this.alreadyFocused = false;
+    } else {
+      this.bldlayer.visible = true;
+      this.entlayer.visible = true;
     }
   }
 
-  async filterEntranceData(whereCondition: string) {
-    if (!this.view) {
+  private handleGoTo(goTo: any) {
+    if (!this.view) return;
+
+    if (this.isOnlyOneBuilding) {
+      setTimeout(() => void this.view?.goTo(goTo), 500);
       return;
     }
-    if (this.options) {
-      this.options.entWhereCase = whereCondition;
-    }
-    const layerView = await this.view.whenLayerView(this.entlayer);
-    layerView['filter'] = new FeatureFilter({
-      where: whereCondition,
-    });
-  }
 
-  private reload(basemap: any) {
-    void this.init(undefined, undefined, basemap);
+    const size = this.getBuildingIdsSize(this.options?.bldWhereCase || '');
+    switch (size) {
+      case 1:
+        void this.view.goTo(goTo);
+        this.alreadyFocused = true;
+        break;
+      case 0:
+        if (!this.alreadyFocused) {
+          void this.view.goTo({ ...goTo, zoom: this.customZoom ?? goTo.zoom });
+        }
+        break;
+      default:
+        void this.view.goTo(goTo);
+        this.alreadyFocused = true;
+        break;
+    }
   }
 
   private getBuildingIdsSize(whereCondition: string): number {
-    const splitCondition = whereCondition.split(' ');
-    const globalIdIndex = splitCondition.indexOf('GlobalID');
-    if (globalIdIndex === -1 || globalIdIndex + 2 >= splitCondition.length) {
-      return 0;
-    }
-    const globalIdValue = splitCondition[globalIdIndex + 2];
-    return globalIdValue.split(',').length;
+    const split = whereCondition.split(' ');
+    const idx = split.indexOf('GlobalID');
+    if (idx === -1 || idx + 2 >= split.length) return 0;
+    return split[idx + 2].split(',').length;
   }
 
+  private reload(basemap?: any) {
+    void this.init(undefined, undefined, basemap);
+  }
 }
