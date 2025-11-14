@@ -4,6 +4,7 @@ import {RegisterMapService} from './register-map.service';
 import {RegisterFilterService} from '../../../register/register-table-view/register-filter.service';
 import {BaseMapChangeService} from './custom-map-logic/basemap-change';
 import {FeatureSelectionService} from './custom-map-logic/feature-selection';
+import {WmtsCapabilitiesService} from "./wmts-capabilities.service";
 
 @Component({
   selector: 'asrdb-register-map',
@@ -13,6 +14,7 @@ import {FeatureSelectionService} from './custom-map-logic/feature-selection';
     RegisterMapService,
     BaseMapChangeService,
     FeatureSelectionService,
+    WmtsCapabilitiesService
   ],
   templateUrl: './register-map.component.html',
   styleUrls: ['./register-map.component.css'],

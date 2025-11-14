@@ -56,7 +56,7 @@ export class CommonBuildingService {
       title: 'ASRDB Buildings',
       apiKey: token,
       url: environment.building_url,
-      outFields: ['*'],
+      outFields: ['GlobalID'],
       renderer: new UniqueValueRenderer({
         field: 'BldStatus',
         uniqueValueInfos: this.uniqueValueInfos as UniqueValueInfoProperties[],

@@ -17,6 +17,8 @@ import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
 import {CommonMunicipalityService} from "../../service/common-municipality.service";
 import WMTSLayer from "@arcgis/core/layers/WMTSLayer";
 import LOD from "@arcgis/core/layers/support/LOD";
+import {WmtsCapabilitiesService} from "./wmts-capabilities.service";
+import {whenOnce} from "@arcgis/core/core/reactiveUtils";
 
 export type MapInitOptions = {
   enableFilter: boolean;
@@ -51,6 +53,7 @@ export class RegisterMapService {
     private registerFilterService: RegisterFilterService,
     private baseMapChangeService: BaseMapChangeService,
     private featureSelectionService: FeatureSelectionService,
+    private wmtsCapabilitiesService: WmtsCapabilitiesService,
     private esriAuthService: CommonEsriAuthService
   ) {
     this.bldlayer = this.buildingService.bldLayer.clone();
@@ -93,12 +96,19 @@ export class RegisterMapService {
       }
 
       if (this.view) {
-        const wmts = this.view.map.basemap.baseLayers.getItemAt(0) as WMTSLayer;
-        const lods = await this.getWMTSLODs(wmts.url) as LOD[];
+        const wmts = this.view!.map.basemap.baseLayers.find(
+          l => l instanceof WMTSLayer
+        ) as WMTSLayer;
+
+        if (!wmts) {
+          return;
+        }
+
+        const lods = await this.wmtsCapabilitiesService.getLODs(wmts.url);
+
         if (lods.length > 0) {
-          this.view.constraints = {
-            lods
-          };
+          this.view!.constraints = { lods: lods as LOD[] };
+          console.log('Applied WMTS LODs:', lods);
         }
       }
     });
@@ -252,14 +262,11 @@ export class RegisterMapService {
     if (this.options) {
       this.options.bldWhereCase = whereCondition;
     }
-    try {
-      const layerView = await this.view.whenLayerView(this.bldlayer);
-      layerView['filter'] = new FeatureFilter({
-        where: whereCondition,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+
+    this.bldlayer.definitionExpression = whereCondition;
+    const layerView = await this.view.whenLayerView(this.bldlayer);
+    await whenOnce(() => !layerView.updating); // waits until reload finishes
+
     const query = this.bldlayer.createQuery();
     query.where = whereCondition;
     const extend = await this.bldlayer.queryExtent(query);
@@ -331,25 +338,6 @@ export class RegisterMapService {
     }
     const globalIdValue = splitCondition[globalIdIndex + 2];
     return globalIdValue.split(',').length;
-  }
-
-  async getWMTSLODs(url: string) {
-    const response = await esriRequest(url + "?request=GetCapabilities&service=WMTS", {
-      responseType: "text"
-    });
-
-    const xml = new DOMParser().parseFromString(response.data, "text/xml");
-
-    const scaleDenoms = Array.from(xml.getElementsByTagName("ScaleDenominator"))
-      .map(n => parseFloat(n.textContent || "0"));
-
-    const lods = scaleDenoms.map((sd, index) => ({
-      level: index,
-      scale: sd * 1,      // convert denominator into scale
-      resolution: 0       // optional — MapView does not require it
-    }));
-
-    return lods;
   }
 
 }
