@@ -1,4 +1,5 @@
 import { ElementRef, Injectable, isDevMode } from '@angular/core';
+import esriRequest from "@arcgis/core/request";
 
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
@@ -14,6 +15,8 @@ import { BaseMapChangeService } from './custom-map-logic/basemap-change';
 import Legend from '@arcgis/core/widgets/Legend';
 import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
 import {CommonMunicipalityService} from "../../service/common-municipality.service";
+import WMTSLayer from "@arcgis/core/layers/WMTSLayer";
+import LOD from "@arcgis/core/layers/support/LOD";
 
 export type MapInitOptions = {
   enableFilter: boolean;
@@ -50,9 +53,9 @@ export class RegisterMapService {
     private featureSelectionService: FeatureSelectionService,
     private esriAuthService: CommonEsriAuthService
   ) {
-    this.bldlayer = this.buildingService.bldLayer;
-    this.entlayer = this.entranceService.entLayer;
-    this.municipalityLayer = this.municipalityService.municipalityLayer;
+    this.bldlayer = this.buildingService.bldLayer.clone();
+    this.entlayer = this.entranceService.entLayer.clone();
+    this.municipalityLayer = this.municipalityService.municipalityLayer.clone();
   }
 
   async init(
@@ -80,7 +83,7 @@ export class RegisterMapService {
     const webmap = this.createWebMap(basemap, layers);
     this.view = this.createMapView(webmap);
 
-    void this.view.when(() => {
+    void this.view.when(async () => {
       if (this.view?.popup) {
         this.view.popup.set('dockOptions', {
           breakpoint: false,
@@ -88,8 +91,20 @@ export class RegisterMapService {
           position: 'top-left',
         });
       }
+
+      if (this.view) {
+        const wmts = this.view.map.basemap.baseLayers.getItemAt(0) as WMTSLayer;
+        const lods = await this.getWMTSLODs(wmts.url) as LOD[];
+        if (lods.length > 0) {
+          this.view.constraints = {
+            lods
+          };
+        }
+      }
     });
+
     this.enableFilterPopup();
+
     if (this.options.enableLegend) {
       this.enableLegend();
     }
@@ -125,7 +140,8 @@ export class RegisterMapService {
 
   private enableFilterPopup() {
     if (this.view) {
-      this.view.watch('zoom', (newZoom) => {
+      // Zoom logic
+      const handler = this.view.watch('zoom', (newZoom) => {
         if (!this.view?.map) {
           return;
         }
@@ -140,6 +156,11 @@ export class RegisterMapService {
           this.entlayer.visible = true;
         }
       });
+      this.eventsCleanupCallbacks.push(() => {
+        handler.remove();
+      })
+
+      // Popup logic
       const cleanup = this.view.on('click', () => {
         // event is the event handle returned after the event fires.
         setTimeout(() => {
@@ -311,4 +332,24 @@ export class RegisterMapService {
     const globalIdValue = splitCondition[globalIdIndex + 2];
     return globalIdValue.split(',').length;
   }
+
+  async getWMTSLODs(url: string) {
+    const response = await esriRequest(url + "?request=GetCapabilities&service=WMTS", {
+      responseType: "text"
+    });
+
+    const xml = new DOMParser().parseFromString(response.data, "text/xml");
+
+    const scaleDenoms = Array.from(xml.getElementsByTagName("ScaleDenominator"))
+      .map(n => parseFloat(n.textContent || "0"));
+
+    const lods = scaleDenoms.map((sd, index) => ({
+      level: index,
+      scale: sd * 1,      // convert denominator into scale
+      resolution: 0       // optional — MapView does not require it
+    }));
+
+    return lods;
+  }
+
 }

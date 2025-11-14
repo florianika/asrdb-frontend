@@ -1,17 +1,9 @@
-import {
-  Component,
-  ElementRef,
-  Input, OnChanges,
-  OnDestroy,
-  OnInit, SimpleChanges,
-  ViewChild,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import MapView from '@arcgis/core/views/MapView';
-import { RegisterMapService } from './register-map.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
-import { BaseMapChangeService } from './custom-map-logic/basemap-change';
-import { FeatureSelectionService } from './custom-map-logic/feature-selection';
+import {Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RegisterMapService} from './register-map.service';
+import {RegisterFilterService} from '../../../register/register-table-view/register-filter.service';
+import {BaseMapChangeService} from './custom-map-logic/basemap-change';
+import {FeatureSelectionService} from './custom-map-logic/feature-selection';
 
 @Component({
   selector: 'asrdb-register-map',
@@ -36,7 +28,6 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   @Input() showBuildingLayer = true;
   @Input() showEntranceLayer = true;
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
-  public view!: MapView;
 
   constructor(
     private registerMapService: RegisterMapService,
@@ -85,7 +76,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async initializeMap(): Promise<any> {
-    this.view = await this.registerMapService.init(this.mapViewEl, {
+    await this.registerMapService.init(this.mapViewEl, {
       enableFilter: this.enableFilter,
       enableSelection: this.enableSelection,
       enableLegend: this.enableLegend,
