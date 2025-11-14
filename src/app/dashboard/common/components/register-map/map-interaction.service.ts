@@ -8,19 +8,22 @@ export class MapInteractionService {
     buildingLayer: FeatureLayer,
     entranceLayer: FeatureLayer,
     getTotalResults: () => number | null,
-    onZoomChange?: (zoom: number) => void
+    onZoomChange?: (zoom: number) => void,
+    maxZoomHide?: number
   ) {
     return view.watch('zoom', (zoom) => {
       const totalResults = getTotalResults();
       const lessThan10000 = totalResults && totalResults < 10000;
-      if (zoom < 15 && !lessThan10000) {
+      if (zoom < (maxZoomHide || 15) && !lessThan10000) {
         buildingLayer.visible = false;
         entranceLayer.visible = false;
       } else {
         buildingLayer.visible = true;
         entranceLayer.visible = true;
       }
-      if (onZoomChange) onZoomChange(zoom);
+      if (onZoomChange) {
+        onZoomChange(zoom);
+      }
     });
   }
 

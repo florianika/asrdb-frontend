@@ -41,6 +41,7 @@ export class RegisterMapService {
   private alreadyFocused = false;
   private totalResults: number | null = null;
   private _goToDebounce: any;
+  private maxZoomHide = 15;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -71,10 +72,15 @@ export class RegisterMapService {
     this.view = createMapView(this.nativeElement, webmap, this.options.enableLegend);
 
     // WMTS LODs
+    this.maxZoomHide = 15;
     const wmts = this.view.map.basemap.baseLayers.find(l => l instanceof WMTSLayer) as WMTSLayer;
     if (wmts) {
       const lods = await this.wmtsCapabilitiesService.getLODs(wmts.url);
-      if (lods.length) this.view.constraints = { lods: lods as LOD[] };
+      if (lods.length) {
+        this.view.constraints = { lods: lods as LOD[] };
+        const maxZoom = lods[lods.length - 1].level + 1;
+        this.maxZoomHide = Math.floor(maxZoom / 2);
+      }
     }
 
     // Map interactions
@@ -83,7 +89,8 @@ export class RegisterMapService {
       this.bldlayer!,
       this.entlayer!,
       () => this.totalResults,
-      zoom => this.customZoom = zoom
+      zoom => this.customZoom = zoom,
+      this.maxZoomHide
     );
 
     const popupHandler = MapInteractionService.addPopupHandler(this.view, this.registerFilterService);
@@ -155,7 +162,7 @@ export class RegisterMapService {
     if (!this.bldlayer || !this.entlayer) return;
 
     const lessThan10000 = this.totalResults && this.totalResults < 10000;
-    if ((this.customZoom && this.customZoom < 15 && !lessThan10000)) {
+    if ((this.customZoom && this.customZoom < this.maxZoomHide && !lessThan10000)) {
       this.bldlayer.visible = false;
       this.entlayer.visible = false;
       this.alreadyFocused = false;
@@ -181,6 +188,8 @@ export class RegisterMapService {
         break;
       case 0:
         if (!this.alreadyFocused) {
+          void this.view.goTo(goTo);
+        } else {
           const zoom = this.customZoom ?? goTo.zoom;
           if (zoom) {
             void this.view.goTo({ ...goTo, zoom: this.customZoom ?? goTo.zoom });
@@ -204,6 +213,7 @@ export class RegisterMapService {
   }
 
   private reload(basemap?: any) {
+    this.customZoom = 0;
     void this.init(undefined, undefined, basemap);
   }
   private handleGoToDebounced(goTo: any) {
