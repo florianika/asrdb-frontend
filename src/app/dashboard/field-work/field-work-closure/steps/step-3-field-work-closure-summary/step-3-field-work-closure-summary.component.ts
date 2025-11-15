@@ -10,16 +10,20 @@ import {
   MatCellDef,
   MatColumnDef,
   MatHeaderCell,
+  MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
-  MatRow, MatRowDef, MatTable, MatTableDataSource
+  MatNoDataRow,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
 } from "@angular/material/table";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatOption} from "@angular/material/core";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
 import {NgForOf} from "@angular/common";
 import {MUNICIPALITIES} from "../../../../../common/data/municipalities";
-import {AggregatedStatistic} from "../../field-work-closure-modal.component";
 import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
@@ -44,7 +48,9 @@ import {MatPaginator} from "@angular/material/paginator";
     MatSelect,
     MatTable,
     NgForOf,
-    MatPaginator
+    MatPaginator,
+    MatHeaderCellDef,
+    MatNoDataRow
   ],
   templateUrl: './step-3-field-work-closure-summary.component.html',
   styleUrl: './step-3-field-work-closure-summary.component.css'
