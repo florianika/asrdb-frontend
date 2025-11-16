@@ -1,28 +1,11 @@
-import {AfterViewInit, Component, inject, TemplateRef, ViewChild} from '@angular/core';
+import {Component, inject, TemplateRef, ViewChild} from '@angular/core';
 import {FieldWorkClosureService, FieldWorkClosureStatus} from "../../field-work-closure.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatButton} from "@angular/material/button";
 import {NgxEditorModule} from "ngx-editor";
 import {MatDialog, MatDialogModule, MatDialogRef, MatDialogState} from "@angular/material/dialog";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatNoDataRow,
-  MatRow,
-  MatRowDef,
-  MatTable,
-  MatTableDataSource
-} from "@angular/material/table";
-import {MatFormField, MatLabel} from "@angular/material/form-field";
-import {MatOption} from "@angular/material/core";
-import {MatSelect, MatSelectChange} from "@angular/material/select";
-import {NgForOf} from "@angular/common";
+import {MatTableDataSource} from "@angular/material/table";
 import {MUNICIPALITIES} from "../../../../../common/data/municipalities";
 import {MatPaginator} from "@angular/material/paginator";
 
@@ -33,29 +16,12 @@ import {MatPaginator} from "@angular/material/paginator";
     MatButton,
     NgxEditorModule,
     MatDialogModule,
-    MatProgressSpinner,
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatFormField,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatLabel,
-    MatOption,
-    MatRow,
-    MatRowDef,
-    MatSelect,
-    MatTable,
-    NgForOf,
-    MatPaginator,
-    MatHeaderCellDef,
-    MatNoDataRow
+    MatProgressSpinner
   ],
   templateUrl: './step-3-field-work-closure-summary.component.html',
   styleUrl: './step-3-field-work-closure-summary.component.css'
 })
-export class Step3FieldWorkClosureSummaryComponent implements AfterViewInit {
+export class Step3FieldWorkClosureSummaryComponent {
   private fieldWorkClosureService = inject(FieldWorkClosureService);
   private router = inject(Router);
   private matDialog = inject(MatDialog);
@@ -77,22 +43,6 @@ export class Step3FieldWorkClosureSummaryComponent implements AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
-    this.datasource.paginator = this.paginator;
-    this.datasource.filterPredicate = (data: FieldWorkClosureStatus, filter: string) => {
-      const filterValue = filter.toLowerCase();
-      return data.municipalityName.toLowerCase().includes(filterValue);
-    }
-  }
-
-  applyFilter(event: MatSelectChange) {
-    const filterValue = event.value;
-    this.datasource.filter = filterValue.trim().toLowerCase();
-
-    if (this.datasource.paginator) {
-      this.datasource.paginator.firstPage();
-    }
-  }
 
   close() {
     void this.router.navigate(['dashboard', 'field-work']);

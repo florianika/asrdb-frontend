@@ -49,6 +49,7 @@ export class FiledWorkFormComponent implements OnInit {
   private _formBuilder = inject(FormBuilder);
   private _fieldWorkService = inject(FieldWorkService);
   private _activatedRoute = inject(ActivatedRoute);
+  private id: string | null = null;
 
   public fieldWorkState = this._fieldWorkService.fieldWorkState;
 
@@ -71,8 +72,8 @@ export class FiledWorkFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    const id = this._activatedRoute.snapshot.paramMap.get('id');
-    if (id) {
+    this.id = this._activatedRoute.snapshot.paramMap.get('id');
+    if (this.id) {
       this._fieldWorkService.getActiveFieldWork();
     }
   }
@@ -80,7 +81,7 @@ export class FiledWorkFormComponent implements OnInit {
   private handleFieldWorkState() {
     effect(() => {
       const activeFieldWork = this.fieldWorkState().activeFieldWork;
-      if (activeFieldWork) {
+      if (activeFieldWork && this.id && activeFieldWork.fieldWorkId.toString() === this.id) {
         this.firstFormGroup.patchValue({
           fieldWorkName: activeFieldWork.fieldWorkName,
           description: activeFieldWork.description,

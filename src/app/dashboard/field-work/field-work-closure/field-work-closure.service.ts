@@ -112,7 +112,7 @@ export class FieldWorkClosureService {
             ...prev,
             stats: stats.statsDTO,
             loading: false,
-            status: 'SUCCESS'
+            status: ''
           }));
         },
         error: (error: any) => {
@@ -139,7 +139,7 @@ export class FieldWorkClosureService {
           this.fieldWorkStatistics.update((prev) => ({
             ...prev,
             loading: false,
-            status: 'SUCCESS',
+            status: '',
             step: prev.step ? prev.step + 1 : 1
           }));
         },
