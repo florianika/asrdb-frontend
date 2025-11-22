@@ -107,7 +107,6 @@ export class FieldWorkClosureService {
     this.httpClient.get<{ statsDTO: FieldWorkClosureStatistic[] }>(`/qms/fieldwork/stats`)
       .subscribe({
         next: (stats) => {
-          console.log(stats);
           this.fieldWorkStatistics.update((prev) => ({
             ...prev,
             stats: stats.statsDTO,

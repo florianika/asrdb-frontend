@@ -93,7 +93,11 @@ export class RegisterMapService {
       this.maxZoomHide
     );
 
-    const popupHandler = MapInteractionService.addPopupHandler(this.view, this.registerFilterService);
+    const popupHandler = MapInteractionService.addPopupHandler(
+      this.view,
+      this.registerFilterService,
+      this.buildingService,
+      this.entranceService);
 
     this.eventsCleanupCallbacks.push(() => zoomHandler.remove(), () => popupHandler.remove());
 

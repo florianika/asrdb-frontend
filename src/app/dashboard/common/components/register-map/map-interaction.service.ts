@@ -1,6 +1,10 @@
 import MapView from "@arcgis/core/views/MapView";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import GraphicHit = __esri.GraphicHit;
+import {CommonBuildingService} from "../../service/common-building.service";
+import {CommonEntranceService} from "../../service/common-entrance.service";
+import {catchError, of} from "rxjs";
 
 export class MapInteractionService {
   static addZoomWatcher(
@@ -27,22 +31,63 @@ export class MapInteractionService {
     });
   }
 
-  static addPopupHandler(view: MapView, registerFilterService: RegisterFilterService) {
-    return view.on('click', () => {
-      setTimeout(() => {
-        const popup = view.popup;
-        if (!popup?.selectedFeature) return;
+  static addPopupHandler(
+    view: MapView,
+    registerFilterService: RegisterFilterService,
+    buildingLayerService: CommonBuildingService,
+    entranceLayerService: CommonEntranceService
+    ) {
+    return view.on('click', async (event) => {
+      // Prevent the default popup
+      event.stopPropagation();
+      const response = await view.hitTest(event);
+      const data = response.results[0] as GraphicHit;
+      const layerTitle = data?.layer?.title;
+      const objectId = data?.graphic?.attributes['OBJECTID'];
+      // load data from the feature using the globalId
 
-        const layerTitle = popup.selectedFeature.layer?.title;
-        if (layerTitle === 'ASRDB Buildings') {
-          registerFilterService.setBuildingGlobalIdFilter(popup.selectedFeature.attributes['GlobalID']);
-        }
-        if (layerTitle === 'ASRDB Entrances') {
-          registerFilterService.setBuildingGlobalIdFilter(popup.selectedFeature.attributes['EntBldGlobalID']);
-        }
-
-        if (popup) popup.close();
-      }, 50);
+      if (layerTitle === 'ASRDB Buildings') {
+        buildingLayerService.getBuildingData({
+          where: `OBJECTID=${objectId}`,
+          outFields: ['*'],
+          num: 1
+        })
+          .pipe(catchError((error: any) => {
+            console.error('Error fetching building data:', error);
+            return of(null);
+          }))
+          .subscribe({
+            next: (buildingData: any) => {
+              if (!buildingData) {
+                return;
+              }
+              if (buildingData.data?.features?.length > 0) {
+                registerFilterService.setBuildingGlobalIdFilter(buildingData.data?.features[0].attributes['GlobalID']);
+              }
+            }
+        });
+      }
+      if (layerTitle === 'ASRDB Entrances') {
+        entranceLayerService.getEntranceData({
+          where: `OBJECTID=${objectId}`,
+          outFields: ['*'],
+          num: 1
+        })
+        .pipe(catchError((error: any) => {
+          console.error('Error fetching entrance data:', error);
+          return of(null);
+        }))
+        .subscribe({
+          next: (buildingData: any) => {
+            if (!buildingData) {
+              return;
+            }
+            if (buildingData.data?.features?.length > 0) {
+              registerFilterService.setBuildingGlobalIdFilter(buildingData.data?.features[0].attributes['GlobalID']);
+            }
+          }
+        });
+      }
     });
   }
 }
