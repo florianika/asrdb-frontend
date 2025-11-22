@@ -7,7 +7,7 @@ import { BuildingDetailsFormComponent } from './building-details-form/building-d
 import { EntranceDetailsFormComponent } from './entrance-details-form/entrance-details-form.component';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { CommonEntranceService } from '../../common/service/common-entrance.service';
-import { catchError, map, Subject, takeUntil, zip } from 'rxjs';
+import {catchError, combineLatest, map, Subject, takeUntil, zip} from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BuildingManagementService } from './building-creation.service';
@@ -63,10 +63,13 @@ export class RegisterFormComponent implements OnInit {
   private isSavingBuilding = this.buildingManagementService.isSavingObservable;
   private isSavingEntrance = this.entranceManagementService.isSavingObservable;
 
-  isSaving = zip([this.isSavingBuilding, this.isSavingEntrance]).pipe(
-    map(([isSavingBuilding, isSavingEntrance]) => {
-      return isSavingBuilding || isSavingEntrance;
-    })
+  isSaving = combineLatest([
+    this.isSavingBuilding,
+    this.isSavingEntrance
+  ]).pipe(
+    map(([isSavingBuilding, isSavingEntrance]) =>
+      isSavingBuilding || isSavingEntrance
+    )
   );
 
   isLoadingData = true;
@@ -257,16 +260,7 @@ export class RegisterFormComponent implements OnInit {
         entranceDetails,
         this.buildingId
       );
-      this.buildingService.resetStatus(this.buildingId, () => {
-        this.goToDetails();
-      });
     }
-  }
-
-  private goToDetails() {
-    void this.router.navigateByUrl(
-      '/dashboard/register/details/BUILDING/' + this.buildingId
-    );
   }
 
   private showErrorMessage() {

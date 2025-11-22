@@ -6,6 +6,8 @@ import {Entrance} from '../model/entrance';
 import {EntityManageResponse} from '../model/entity-req-res';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthStateService} from '../../../common/services/auth-state.service';
+import {CommonBuildingService} from "../../common/service/common-building.service";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class EntranceManagementService {
@@ -14,7 +16,7 @@ export class EntranceManagementService {
     return this.isSaving.asObservable();
   }
 
-  private responseHandler = () => ({
+  private responseHandler = (buildingId: string) => ({
     next: (response: EntityManageResponse) => {
       if (
         !response['addResults']?.[0]?.success &&
@@ -26,7 +28,10 @@ export class EntranceManagementService {
         this.isSaving.next(false);
         return;
       }
-      this.isSaving.next(false);
+      this.buildingService.resetStatus(buildingId, () => {
+        this.isSaving.next(false);
+        this.goToDetails(buildingId);
+      });
     },
     error: () => {
       this.isSaving.next(false);
@@ -41,9 +46,11 @@ export class EntranceManagementService {
   });
 
   constructor(
+    private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
     private snackBar: MatSnackBar,
-    private authState: AuthStateService
+    private authState: AuthStateService,
+    private router: Router
   ) {}
 
   public saveEntranceEntity(
@@ -65,6 +72,7 @@ export class EntranceManagementService {
         delete attributes.EntLatitude;
         delete attributes.EntLongitude;
       }
+      this.isSaving.next(true);
       this.updateEntrance([
         {
           geometry: {
@@ -74,8 +82,9 @@ export class EntranceManagementService {
           },
           attributes: attributes,
         },
-      ]);
+      ], buildingGlobalId);
     } else {
+      this.isSaving.next(true);
       attributes.external_creator = `{${this.authState.getNameId()}}` ?? '';
       attributes.external_creator_date = String(Date.now());
       this.createEntrance([
@@ -87,20 +96,20 @@ export class EntranceManagementService {
           },
           attributes: attributes,
         },
-      ]);
+      ], buildingGlobalId);
     }
   }
 
-  private createEntrance(features: { geometry: any; attributes: Entrance }[]) {
+  private createEntrance(features: { geometry: any; attributes: Entrance }[], buildingId: string) {
     this.entranceService
       .createFeature(features)
-      .subscribe(this.responseHandler());
+      .subscribe(this.responseHandler(buildingId));
   }
 
-  private updateEntrance(features: { geometry: any; attributes: Entrance }[]) {
+  private updateEntrance(features: { geometry: any; attributes: Entrance }[], buildingId: string) {
     this.entranceService
       .updateFeature(features)
-      .subscribe(this.responseHandler());
+      .subscribe(this.responseHandler(buildingId));
   }
 
   private cleanAttributes(
@@ -119,5 +128,11 @@ export class EntranceManagementService {
       }
     });
     return cleanedObject as Entrance;
+  }
+
+  private goToDetails(buildingId: string) {
+    void this.router.navigateByUrl(
+      '/dashboard/register/details/BUILDING/' + buildingId
+    );
   }
 }

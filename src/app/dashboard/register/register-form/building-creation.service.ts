@@ -22,11 +22,20 @@ export class BuildingManagementService {
       const isCreate = !!response['addResults']?.[0] ?? false;
       if (responseData?.success) {
         if (isCreate) {
-          this.startAutomaticRuleExecution(response, 'addResults');
+          this.startAutomaticRuleExecution(response, 'addResults', () => {
+            this.isSaving.next(false);
+            this.snackBar.open('Building created successfully', 'Ok', {
+              duration: 5000,
+            });
+          });
         } else {
-          this.startAutomaticRuleExecution(response, 'updateResults');
+          this.startAutomaticRuleExecution(response, 'updateResults', () => {
+            this.isSaving.next(false);
+            this.snackBar.open('Building updated successfully', 'Ok', {
+              duration: 5000,
+            });
+          });
         }
-        this.isSaving.next(false);
       } else {
         this.snackBar.open('Could not save building data', 'Ok', {
           duration: 3000,
@@ -48,7 +57,8 @@ export class BuildingManagementService {
 
   private startAutomaticRuleExecution(
     response: EntityManageResponse,
-    action: 'addResults' | 'updateResults'
+    action: 'addResults' | 'updateResults',
+    callback?: () => void
   ) {
     const createResponseData = response[action];
     if (
@@ -58,6 +68,9 @@ export class BuildingManagementService {
     ) {
       const id = createResponseData[0].globalId;
       this.buildingService.executeAutomaticRules(id, () => {
+        if (callback) {
+          callback();
+        }
         void this.router.navigateByUrl(
           '/dashboard/register/details/BUILDING/' + id
         );
