@@ -54,7 +54,7 @@ export type QualityRule = {
   versionRationale: string;
   expression: string;
   qualityAction: QualityAction;
-  ruleStaus: RuleStatus;
+  ruleStatus: RuleStatus;
   ruleRequirement: string;
   remark: string;
   qualityMessageAl: string;

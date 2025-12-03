@@ -80,7 +80,7 @@ export class QualityManagementFormComponent implements OnInit {
           [Validators.required]
         ),
         ruleStatus: new FormControl<RuleStatus>(
-          this.rule?.ruleStaus ?? 'ACTIVE',
+          this.rule?.ruleStatus ?? 'ACTIVE',
           [Validators.required]
         ),
         ruleRequirement: new FormControl<string>(
@@ -180,7 +180,7 @@ export class QualityManagementFormComponent implements OnInit {
           });
           this.secondFormGroup.setValue({
             qualityAction: this.rule?.qualityAction ?? 'AUT',
-            ruleStatus: this.rule?.ruleStaus ?? 'ACTIVE',
+            ruleStatus: this.rule?.ruleStatus ?? 'ACTIVE',
             ruleRequirement: this.rule?.localId ?? '',
             remark: this.rule?.ruleRequirement ?? '',
             qualityMessageAl: this.rule?.qualityMessageAl ?? '',

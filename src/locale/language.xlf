@@ -778,7 +778,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="3004571612483890365" datatype="html">
-        <source>Role status</source>
+        <source>Rule status</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
           <context context-type="linenumber">55</context>
