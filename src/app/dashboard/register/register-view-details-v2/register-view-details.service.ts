@@ -337,8 +337,6 @@ export class RegisterViewDetailsService {
     sections[1].entries = visibleFields.describing;
     const titleSection = visibleFields.title;
     this.viewStructures.update((data) => {
-      // data.buildingStructure = {sections, titleSection} as ViewSection;
-      // return data;
       return {
         ...data,
         buildingStructure: {sections, titleSection} as ViewSection,

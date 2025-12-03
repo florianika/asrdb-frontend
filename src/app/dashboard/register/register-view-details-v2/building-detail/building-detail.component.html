@@ -2,7 +2,7 @@
   <span class="detail-value-container" style="border: none">{{title}}: </span>
   <span>
     <span class="detail-value-container">
-      {{value}}
+      {{value | buildingDetailFormat}}
     </span>
     <span class="detail-error-icon">
       <ng-container *ngIf="log">
