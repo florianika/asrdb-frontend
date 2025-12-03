@@ -99,6 +99,7 @@ export class EmailTemplateManagementService {
     const editDialog = this.dialog.open(EmailTemplateManagementFormComponent, {
       data: { templateId: id },
       width: '900px',
+      disableClose: true,
     });
     const editDialogSubscription = editDialog
       .afterClosed()
