@@ -118,7 +118,8 @@ export class EntranceDetailsService {
     this.dialogRef = this.matDialog.open(EntranceDetailsComponent, {
       data: {
         logs,
-      }
+      },
+      disableClose: true
     });
     const sub = this.dialogRef.afterClosed().subscribe(() => {
       this.viewData.update((data) => ({...data, selectedDwelling: null}));

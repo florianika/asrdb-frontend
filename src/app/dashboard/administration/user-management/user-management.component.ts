@@ -100,7 +100,8 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   addUser() {
     this.dialogRef = this.matDialog.open(SignupComponent, {
       width: '400px',
-      data: { isAdminCreation: true }
+      data: { isAdminCreation: true },
+      disableClose: true
     });
   }
 }

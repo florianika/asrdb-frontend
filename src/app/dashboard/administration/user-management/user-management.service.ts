@@ -72,12 +72,13 @@ export class UserManagementService {
   }
 
   openViewUserDialog(user: User) {
-    this.dialog.open(UserViewDialogComponent, { data: { userId: user.id } });
+    this.dialog.open(UserViewDialogComponent, { data: { userId: user.id }, disableClose: true });
   }
 
   openEditUserDialog(user: User) {
     const editDialog = this.dialog.open(UserEditDialogComponent, {
       data: user,
+      disableClose: true
     });
     const editDialogSubscription = editDialog.afterClosed().subscribe(data => {
       if (data.role && data.role !== user.accountRole) {

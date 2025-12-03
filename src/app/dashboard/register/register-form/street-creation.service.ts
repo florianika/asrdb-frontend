@@ -138,7 +138,8 @@ export class StreetManagementService {
         message: `A street with the name "${street.StrNameCore}" already exists in the selected municipality. Do you want to merge the streets? This action will:\n\t- Move all entrances associated with this street to the existing street.\n\t- Delete the current street entry.\n\nThis action cannot be undone.`,
         confirmButtonText: 'Merge Streets',
         cancelButtonText: 'Cancel',
-      }
+      },
+      disableClose: true
     }).afterClosed()
       .subscribe((confirm: boolean | undefined) => {
         if (confirm) {

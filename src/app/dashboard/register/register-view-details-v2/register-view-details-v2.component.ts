@@ -125,13 +125,17 @@ export class RegisterViewDetailsV2Component implements OnInit {
 
   openApproveReview() {
     if (this.approveReview) {
-      this.dialog = this.matDialog.open(this.approveReview);
+      this.dialog = this.matDialog.open(this.approveReview, {
+        disableClose: true
+      });
     }
   }
 
   openRejectReview() {
     if (this.rejectReview) {
-      this.dialog = this.matDialog.open(this.rejectReview);
+      this.dialog = this.matDialog.open(this.rejectReview, {
+        disableClose: true
+      });
     }
   }
 

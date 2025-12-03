@@ -140,7 +140,8 @@ export class DwellingDetailsService {
         buildingNumber,
         entranceNumber,
         entranceId,
-      }
+      },
+      disableClose: true
     });
     const sub = dialogRef.afterClosed().subscribe(() => {
       this.viewData.update((data) => ({...data, selectedDwelling: null}));
