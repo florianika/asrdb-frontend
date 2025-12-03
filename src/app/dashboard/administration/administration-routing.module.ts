@@ -15,13 +15,6 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'role-management',
-    loadChildren: () =>
-      import('./role-management/role-management.module').then(
-        m => m.RoleManagementModule
-      ),
-  },
-  {
     path: 'email-template-management',
     loadChildren: () =>
       import(

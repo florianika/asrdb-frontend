@@ -95,12 +95,6 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
         {
-          title: 'Role management',
-          path: '/dashboard/administration/role-management',
-          icon: 'verified_user',
-          selected: false,
-        },
-        {
           title: 'Email templates',
           path: '/dashboard/administration/email-template-management',
           icon: 'mail',

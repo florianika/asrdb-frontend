@@ -10,7 +10,6 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'asrdb-field-work-table',
@@ -96,12 +95,12 @@ export class FieldWorkTableComponent implements AfterViewInit {
 
   // TODO: Remove 'true' condition when the backend is ready
   isNew(row: FieldWork) {
-    return true || row.fieldWorkStatus === 'NEW'
+    return row.fieldWorkStatus === 'NEW'
   }
 
   // TODO: Remove 'true' condition when the backend is ready
   canBeClosed(row: FieldWork): boolean {
-    return true || row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldwork_id
+    return row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldwork_id
       && !!this.fieldWorkCanBeClosed()?.can_be_closed
   }
 
