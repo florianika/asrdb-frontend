@@ -53,7 +53,7 @@ export class FieldWorkClosureService {
       step: 0
     });
 
-    this.httpClient.post<{jobId: string}>(`/qms/fieldwork/${fieldWorkId}/run-test-job`, {})
+    this.httpClient.post<{jobId: string}>(environment.base_url + `/qms/fieldwork/${fieldWorkId}/run-test-job`, {})
       .subscribe({
         next: ({jobId}) => {
           this.loadFieldWorkClosureStatus(fieldWorkId, jobId);
@@ -76,7 +76,7 @@ export class FieldWorkClosureService {
       step: 0
     });
 
-    this.httpClient.get<{status: string}>(`/qms/fieldwork/job/${jobId}/status`)
+    this.httpClient.get<{status: string}>(environment.base_url + `/qms/fieldwork/job/${jobId}/status`)
       .subscribe({
         next: ({status}) => {
           console.log(status);
@@ -104,7 +104,7 @@ export class FieldWorkClosureService {
       step: 0
     });
 
-    this.httpClient.get<{ statsDTO: FieldWorkClosureStatistic[] }>(`/qms/fieldwork/stats`)
+    this.httpClient.get<{ statsDTO: FieldWorkClosureStatistic[] }>(environment.base_url + `/qms/fieldwork/stats`)
       .subscribe({
         next: (stats) => {
           this.fieldWorkStatistics.update((prev) => ({
@@ -132,7 +132,7 @@ export class FieldWorkClosureService {
       status: ''
     }));
 
-    this.httpClient.patch(`/qms/fieldwork/${fieldWorkId}/email/template/close`, {EmailTemplateId: emailId})
+    this.httpClient.patch(environment.base_url + `/qms/fieldwork/${fieldWorkId}/email/template/close`, {EmailTemplateId: emailId})
       .subscribe({
         next: () => {
           this.fieldWorkStatistics.update((prev) => ({
