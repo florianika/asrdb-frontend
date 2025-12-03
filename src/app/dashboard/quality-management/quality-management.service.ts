@@ -135,7 +135,7 @@ export class QualityManagementService {
         },
       })
       .subscribe({
-        next: value => {
+        next: () => {
           this.isSaving.next(false);
           this.qualityRule.next(null);
           this.router.navigateByUrl(
@@ -168,7 +168,7 @@ export class QualityManagementService {
         },
       })
       .subscribe({
-        next: value => {
+        next: () => {
           this.isSaving.next(false);
           this.qualityRule.next(null);
           this.router.navigateByUrl(
@@ -198,11 +198,11 @@ export class QualityManagementService {
     this.httpClient
       .patch(environment.base_url + UPDATE_URL + ruleId, {})
       .subscribe({
-        next: value => {
+        next: () => {
           this.isSaving.next(false);
           this.qualityRule.next(null);
           this.getRules(qualityType);
-          this.router.navigateByUrl(
+          void this.router.navigateByUrl(
             '/dashboard/quality-management/' + qualityType
           );
           this.snack.open('Quality rule was saved', 'Ok', {

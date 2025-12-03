@@ -213,15 +213,15 @@ export class QualityManagementTableComponent
     }
   }
 
-  private loadFilter() {
+  private loadFilter(moveToFirstPage: boolean = true) {
     const filterConfig = localStorage.getItem(
       FILTER_CONFIG_PREFIX + this.qualityType
     );
     if (filterConfig) {
       try {
-        this.handlePopupClose(JSON.parse(filterConfig));
+        this.handlePopupClose(JSON.parse(filterConfig), moveToFirstPage);
       } catch (e) {
-        this.handlePopupClose(this.defaultFilterConfig);
+        this.handlePopupClose(this.defaultFilterConfig, moveToFirstPage);
         localStorage.setItem(
           FILTER_CONFIG_PREFIX + this.qualityType,
           JSON.stringify(this.defaultFilterConfig)
@@ -229,7 +229,7 @@ export class QualityManagementTableComponent
         console.error(e);
       }
     } else {
-      this.handlePopupClose(this.defaultFilterConfig);
+      this.handlePopupClose(this.defaultFilterConfig, moveToFirstPage);
       localStorage.setItem(
         FILTER_CONFIG_PREFIX + this.qualityType,
         JSON.stringify(this.defaultFilterConfig)
@@ -245,7 +245,7 @@ export class QualityManagementTableComponent
           this.datasource.data = value;
           this.datasource.paginator = this.paginator;
           this.datasource.sort = this.sort;
-          this.loadFilter();
+          this.loadFilter(false);
           return this.datasource;
         })
       );
@@ -264,11 +264,11 @@ export class QualityManagementTableComponent
     };
   }
 
-  private handlePopupClose(newFilter: QualityRuleFilter | null) {
+  private handlePopupClose(newFilter: QualityRuleFilter | null, moveToFirstPage: boolean = true) {
     if (newFilter) {
       this.datasource.filter = JSON.stringify(newFilter);
       this.filterConfig = newFilter;
-      if (this.paginator) {
+      if (this.paginator && moveToFirstPage) {
         this.paginator.firstPage();
       }
     }
