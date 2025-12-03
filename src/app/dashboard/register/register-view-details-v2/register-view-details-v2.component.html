@@ -1,4 +1,4 @@
-<div *ngIf="!isLoadingResults; else loader" class="building-details-container">
+<div *ngIf="!isLoading; else loader" class="building-details-container">
   <div class="row">
     <div class="col-12 col-md-4 pe-0">
       <mat-card class="building-details-card">
@@ -16,7 +16,7 @@
             <button
               mat-icon-button
               [matTooltip]="'Edit building'"
-              (click)="editBuilding(building.GlobalID)">
+              (click)="editBuilding()">
               <mat-icon>edit</mat-icon>
             </button>
             @if (isExecutingRules) {
@@ -43,7 +43,7 @@
             </button>
 
             <button mat-icon-button
-                    *ngIf="building?.BldReview == 3"
+                    *ngIf="building?.BldReview == '3'"
                     i18n-matTooltip
                     matTooltip="Approve or Reopen review"
                     [matMenuTriggerFor]="menu">
@@ -65,14 +65,14 @@
           <h2 class="details-header" i18n>
             <span>Details for building</span>
           </h2>
-          @for (titlePart of titleSection; track titlePart.propName) {
+          @for (titlePart of buildingStructure?.titleSection; track titlePart.propName) {
             <span class="details-subheader mb-1 d-block">
               <span i18n class="me-1">{{titlePart.title}}:</span>
               <span style="font-weight: bold;" i18n>{{getValueFromStatus(titlePart.propName)}}</span>
             </span>
           }
           <br/>
-          <section *ngFor="let section of sections">
+          <section *ngFor="let section of buildingStructure?.sections">
             <h3>{{section.title}}</h3>
             <asrdb-building-detail
               *ngFor="let entry of section.entries"
@@ -90,15 +90,19 @@
       <div class="building-last-modified-card">
         <div class="row">
           <div class="col-12 col-md-8 me-0">
-            <asrdb-comment-view [buildingId]="id"></asrdb-comment-view>
+            @if(building && building.GlobalID) {
+              <asrdb-comment-view [buildingId]="building.GlobalID"></asrdb-comment-view>
+            }
           </div>
           <div class="col-12 col-md-4 ms-0 ps-0">
-            <asrdb-history-details
-              [externalCreator]="building.external_creator"
-              [externalCreationDate]="building.external_creator_date"
-              [externalUpdater]="building.external_editor"
-              [externalUpdateDate]="building.external_editor_date"
-            ></asrdb-history-details>
+            @if (building) {
+              <asrdb-history-details
+                [externalCreator]="building.external_creator"
+                [externalCreationDate]="building.external_creator_date"
+                [externalUpdater]="building.external_editor"
+                [externalUpdateDate]="building.external_editor_date"
+              ></asrdb-history-details>
+            }
           </div>
         </div>
         <asrdb-register-map
@@ -107,32 +111,25 @@
           [small]="true"
           [buildingGlobalId]="id"
           [skipOtherFiltersApartFromGlobalId]="true"
-          [entranceGlobalId]="selectedEntrance"
+          [entranceGlobalId]="selectedEntrance?.GlobalID"
         ></asrdb-register-map>
         <div class="mt-3">
-          <asrdb-entrance-list-view
-            [buildingGlobalId]="building.GlobalID"
-            [building]="building"
-            (entrancesLoaded)="setEntrances($event)"
-            (entranceSelected)="setSelectedEntrance($event)"
-            (entranceDeleted)="reloadView()"
-          >
-          </asrdb-entrance-list-view>
+          <asrdb-entrance-list/>
         </div>
         <div class="mt-3">
-          <asrdb-dwelling-list-view
-            [entranceId]="selectedEntrance"
-            [buildingGlobalId]="building.GlobalID"
-            [entrances]="loadedEntrances"
-            [buildingNumber]="building.BldProperty"
-            (dwellingUpdated)="markEntranceAsUntestedData($event)"
-            (dwellingDeleted)="reloadView()"
-          ></asrdb-dwelling-list-view>
+          <asrdb-dwelling-list/>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+@if (isExecutingRules) {
+  <div class="asrbd-loading-shade-full">
+    <mat-spinner diameter="40"></mat-spinner>
+    <div class="loading-text" i18n>Executing rules for building...</div>
+  </div>
+}
 
 <ng-template #approveReview>
   <h2 mat-dialog-title i18n>Approve review</h2>

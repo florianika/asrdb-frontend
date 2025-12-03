@@ -14,8 +14,8 @@ const routes: Routes = [
     path: 'details/:entity/:id',
     pathMatch: 'full',
     loadComponent: () =>
-      import('./register-view-details/register-view-details.component').then(
-        c => c.RegisterViewDetailsComponent
+      import('./register-view-details-v2/register-view-details-v2.component').then(
+        c => c.RegisterViewDetailsV2Component
       ),
   },
   {

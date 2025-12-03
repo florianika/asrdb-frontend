@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, of, zip } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
-import { User } from '../../../../../model/User.model';
+import {User} from "../../../../model/User.model";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable()
 export class HistoryDetailsService {

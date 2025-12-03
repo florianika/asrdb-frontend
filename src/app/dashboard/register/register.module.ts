@@ -11,7 +11,6 @@ import { RegisterTableViewComponent } from './register-table-view/register-table
 import { RegisterTableComponent } from './register-table-view/register-table/register-table.component';
 import { RegisterMapComponent } from '../common/components/register-map/register-map.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
-import { RegisterViewDetailsComponent } from './register-view-details/register-view-details.component';
 import { CommonBuildingService } from '../common/service/common-building.service';
 import { CommonEntranceService } from '../common/service/common-entrance.service';
 import { CommonDwellingService } from '../common/service/common-dwellings.service';
@@ -21,6 +20,10 @@ import { RegisterFilterService } from './register-table-view/register-filter.ser
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RegisterLogService } from './register-log-view/register-log-table/register-log.service';
 import { CommonEntityStructureService } from '../common/service/common-entity-structure.service';
+import {EntranceDetailsService} from "./register-view-details-v2/entrance/entrance-details.service";
+import {DwellingDetailsService} from "./register-view-details-v2/dwelling/dwelling-details.service";
+import {RegisterViewDetailsV2Component} from "./register-view-details-v2/register-view-details-v2.component";
+import {RegisterViewDetailsService} from "./register-view-details-v2/register-view-details.service";
 
 @NgModule({
   declarations: [],
@@ -38,7 +41,7 @@ import { CommonEntityStructureService } from '../common/service/common-entity-st
     RegisterTableComponent,
     RegisterMapComponent,
     RegisterFormComponent,
-    RegisterViewDetailsComponent,
+    RegisterViewDetailsV2Component
   ],
   providers: [
     CommonBuildingService,
@@ -49,6 +52,9 @@ import { CommonEntityStructureService } from '../common/service/common-entity-st
     RegisterFilterService,
     RegisterLogService,
     CommonEntityStructureService,
+    EntranceDetailsService,
+    DwellingDetailsService,
+    RegisterViewDetailsService
   ],
 })
 export class RegisterModule {}

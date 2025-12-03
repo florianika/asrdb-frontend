@@ -42,6 +42,7 @@ export type Building = {
   BldDwellingRecs: number;
   BldEntranceRecs: number;
   BldAddressID: number;
+  BldReview: string;
 };
 
 export type BuildingFilter = {

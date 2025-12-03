@@ -3,7 +3,7 @@ import {Comments, CreateComment} from "./comment.model";
 import {BehaviorSubject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {environment} from "../../../../../../environments/environment";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'

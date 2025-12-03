@@ -4,24 +4,24 @@
 
     <div class="spacer"></div>
 
-    <button mat-icon-button *ngIf="entranceId" [matTooltip]="'Add new dwelling'" (click)="addDwelling()" [disabled]="isLoadingResults">
-      <mat-icon style="cursor: pointer;">add</mat-icon>
-    </button>
-    <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingResults">
+    @if (entranceId) {
+      <button mat-icon-button [matTooltip]="'Add new dwelling'" (click)="addDwelling()" [disabled]="isLoadingDwellings">
+        <mat-icon style="cursor: pointer;">add</mat-icon>
+      </button>
+    }
+    <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingDwellings">
       <mat-icon style="cursor: pointer;">refresh</mat-icon>
     </button>
   </div>
 
-  <div style="padding: 0 10px;">
-    <asrdb-chip (remove)="remove($event)" [chips]="filterChips" [clearable]="!entranceId"></asrdb-chip>
-  </div>
-
-  <div class="asrbd-loading-shade" *ngIf="isLoadingResults">
-    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-  </div>
+  @if (isLoadingDwellings) {
+    <div class="asrbd-loading-shade">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
 
   <div class="asrbd-table-container">
-    <table mat-table [dataSource]="data" class="asrbd-table" matSort>
+    <table mat-table [dataSource]="dwellings" class="asrbd-table" matSort>
       <ng-container matColumnDef="GlobalID">
         <th mat-header-cell *matHeaderCellDef i18n class="d-none">Dwelling</th>
         <td mat-cell *matCellDef="let element" class="d-none"> {{element.GlobalID}} </td>
@@ -36,23 +36,23 @@
       </ng-container>
       <ng-container matColumnDef="DwlFloor">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Floor</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlFloor', element.DwlFloor)}} </td>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlFloor', element)}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlApartNumber">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Apartment number</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlApartNumber', element.DwlApartNumber)}} </td>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlApartNumber', element)}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlStatus">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Dwelling status</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlStatus', element.DwlStatus)}} </td>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlStatus', element)}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlType">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Dwelling type</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlType', element.DwlType)}} </td>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlType', element)}} </td>
       </ng-container>
       <ng-container matColumnDef="DwlQuality">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Dwelling quality</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlQuality', element.DwlQuality)}} </td>
+        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlQuality', element)}} </td>
       </ng-container>
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
@@ -84,6 +84,6 @@
     </table>
   </div>
 
-  <mat-paginator [disabled]="isLoadingResults" [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
-    [showFirstLastButtons]="true"></mat-paginator>
+  <mat-paginator [disabled]="isLoadingDwellings" [length]="totalCount" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
+                 [showFirstLastButtons]="true"></mat-paginator>
 </div>

@@ -8,10 +8,9 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
-import {AuthStateService} from "../../../../../common/services/auth-state.service";
 import {CreateComment} from "./comment.model";
-import {MatTooltip} from "@angular/material/tooltip";
-import {MatDialog, MatDialogClose, MatDialogModule} from "@angular/material/dialog";
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {AuthStateService} from "../../../../common/services/auth-state.service";
 
 @Component({
   selector: 'asrdb-comment-view',

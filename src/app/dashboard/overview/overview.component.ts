@@ -169,7 +169,6 @@ export class OverviewComponent implements OnDestroy {
       console.log('Data', res);
     }
     if (!res) {
-      // this.matSnack.open('Could not load result. Please try again', 'Ok', {duration: 3000});
       return;
     }
     this.registerFilterService.updateGlobalIds(res.globalIds);
