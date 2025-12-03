@@ -13,14 +13,14 @@ export class UserEditDialogComponent {
   role: Role = 'ADMIN';
   newRole: Role = 'ADMIN';
 
-  newMunicipality;
+  newMunicipality: number;
 
   municipalities = MUNICIPALITIES.sort((a, b) => a.name.localeCompare(b.name));
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: User) {
     this.role = data.accountRole;
     this.newRole = data.accountRole;
-    this.newMunicipality = data.municipality;
+    this.newMunicipality = Number(data.municipality);
   }
 
   updateRole(role: Role) {
