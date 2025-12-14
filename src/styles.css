@@ -85,6 +85,25 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   overflow: auto;
 }
 
+.test-stepper,
+.test-stepper > .mat-horizontal-stepper-wrapper,
+.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container,
+.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container > .mat-horizontal-stepper-content {
+  height: 100%;
+  width: 100%;
+}
+
+.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container {
+  position: relative;
+}
+
+.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container > .mat-horizontal-stepper-content {
+  position: absolute;
+  overflow: auto;
+  top: 0;
+  left: 0;
+}
+
 .mat-drawer {
   z-index: 1 !important;
 }

@@ -1,0 +1,35 @@
+<div class="h-100">
+  @if (hasUntestedBuildings === null) {
+    <div class="d-flex align-items-center justify-content-center h-100">
+      <mat-spinner diameter="20"></mat-spinner> <span class="ms-2" i18n>Loading building statuses...</span>
+    </div>
+  }
+  @else if (hasUntestedBuildings === true) {
+    <div>
+      <p i18n>There are some untested buildings found. Please run the test for all untested building to continue.</p>
+      <div class="text-center">
+        <button mat-raised-button color="primary" (click)="testAllBuildings()" [disabled]="isLoadingStatistics">
+          @if (isLoadingStatistics) {
+            <span class="d-flex align-items-center">
+              <mat-spinner diameter="20"></mat-spinner>
+              <span class="ms-2" i18n>Testing buildings...</span>
+            </span>
+          } @else {
+            Test all buildings
+            <mat-icon>play_arrow</mat-icon>
+          }
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="d-flex h-100 flex-column justify-content-between">
+      <p i18n>All buildings have been tested. You can proceed to the next step.</p>
+      <div class="text-end">
+        <button mat-button (click)="moveToNext()" color="primary" [disabled]="isLoadingStatistics">
+          <span i18n>Next</span>
+          <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+</div>

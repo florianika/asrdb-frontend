@@ -295,6 +295,24 @@ export class CommonBuildingService {
       .length;
   }
 
+  hasUntestedBuildings(): Observable<boolean> {
+    const filter = {
+      where: `BldQuality = 9`,
+      outFields: ['GlobalID'],
+    } as Partial<QueryFilter>;
+    return this.getBuildingData(filter).pipe(
+      catchError((err: any) => {
+        return this.handleError(err);
+      }),
+      map((res: EntityDataResponse | null) => {
+        if (!res) {
+          return false;
+        }
+        return res.count > 0;
+      })
+    );
+  }
+
   private async fetchAttributesMetadata() {
     const dataQuery = this.bldLayer.createQuery();
     dataQuery.start = 0;

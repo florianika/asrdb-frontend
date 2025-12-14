@@ -89,6 +89,12 @@ export class SideBarComponent implements AfterViewInit {
           selected: true,
         },
         {
+          title: 'Statistics Export',
+          path: 'dashboard/statistic-export',
+          icon: 'home_work',
+          selected: true,
+        },
+        {
           title: 'User administration',
           path: '/dashboard/administration/user-management',
           icon: 'manage_accounts',

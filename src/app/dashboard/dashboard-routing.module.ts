@@ -46,6 +46,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./field-work/field-work.module').then(m => m.FieldWorkModule),
     canActivate: [GuardAdminService],
+  },
+  {
+    path: 'statistic-export',
+    loadComponent: () =>
+      import('./statistic-export/statistic-export.component').then(m => m.StatisticExportComponent),
+    canActivate: [GuardAdminService],
   }
 ];
 

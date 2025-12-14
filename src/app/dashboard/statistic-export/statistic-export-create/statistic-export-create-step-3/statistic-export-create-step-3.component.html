@@ -1,0 +1,32 @@
+<div class="h-100 d-flex flex-column justify-content-between">
+  <div>
+    <mat-form-field class="d-block" style="width: 300px">
+      <mat-label i18n>Select date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="date" readonly/>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+<!--    Write notes-->
+    <mat-form-field class="w-100">
+      <mat-label i18n>Notes</mat-label>
+      <textarea matInput rows="5" [(ngModel)]="notes"></textarea>
+    </mat-form-field>
+  </div>
+  <div class="text-end">
+    <button mat-button (click)="moveToPrevious()" [disabled]="isCreatingSnapshot">
+      <span i18n>Back</span>
+      <mat-icon>arrow_back_ios</mat-icon>
+    </button>
+    <button mat-button color="primary" (click)="createStatisticExport()" [disabled]="isCreatingSnapshot">
+      @if (isCreatingSnapshot) {
+        <span class="d-flex align-items-center">
+          <mat-spinner diameter="20"></mat-spinner>
+          <span class="ms-2" i18n>Creating export...</span>
+        </span>
+      } @else {
+        <span i18n>Create export</span>
+      }
+    </button>
+  </div>
+</div>
