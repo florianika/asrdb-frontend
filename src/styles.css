@@ -111,3 +111,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 .mat-step-header {
   pointer-events: none;
 }
+
+.hint-with-error {
+  margin-top: -30px;
+  display: inline-block;
+}
+
+.normal-hint {
+  margin-top: -30px;
+  display: inline-block;
+}
+
+.hint-with-error > mat-icon, .normal-hint > mat-icon {
+  vertical-align: bottom;
+}

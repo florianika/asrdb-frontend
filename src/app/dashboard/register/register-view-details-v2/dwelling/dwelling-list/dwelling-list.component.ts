@@ -188,12 +188,15 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
           entrances: this.entranceViewData().entranceList,
           id: id,
           entranceId: this.entranceId,
-          logs: this.buildingViewData().logs.filter((log: Log) => log.dwlId == id),
+          logs: this.dwellingDetailsService.getLogs(id),
         },
       })
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe((data: string) => {
+        if (!data) {
+          return;
+        }
         this.registerViewDetailsService.markAsUntested(
           this.buildingViewData().building?.GlobalID || '',
           this.entranceId

@@ -76,12 +76,15 @@ export class DwellingDetailsComponent implements OnDestroy {
           entrances: this.entranceViewData().entranceList,
           id: this.viewData().selectedDwelling?.GlobalID,
           entranceId: this.entranceViewData().selectedEntrance?.GlobalID,
-          logs: this.buildingViewData().logs.filter((log: Log) => log.dwlId == this.viewData().selectedDwelling?.GlobalID),
+          logs: this.dwellingDetailsService.getLogs(this.viewData().selectedDwelling?.GlobalID || ''),
         },
       })
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe((data: string) => {
+        if (!data) {
+          return;
+        }
         this.registerViewDetailsService.markAsUntested(
           this.buildingViewData().building?.GlobalID || '',
           this.entranceViewData().selectedEntrance?.GlobalID || '',

@@ -133,6 +133,26 @@ export class DwellingDetailsService {
     }
   }
 
+  public getLogs(dwellingId: string): Log[] {
+    const cleanedId = dwellingId.replace('{', '').replace('}', '');
+    const logs: Log[] = [];
+    const fields = this.viewData().dwellingFields;
+    if (!fields) {
+      return logs;
+    }
+    fields.forEach((field) => {
+      const log = this.registerLogService.getLogForVariable(
+        DWELLING_ENTITY,
+        field.name,
+        cleanedId
+      );
+      if (log) {
+        logs.push(log);
+      }
+    });
+    return logs;
+  }
+
   private openDialog(logs: Log[], buildingNumber?: number, entranceNumber?: number, entranceId?: string) {
     const dialogRef = this.matDialog.open(DwellingDetailsComponent, {
       data: {

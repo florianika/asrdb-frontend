@@ -143,7 +143,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.isSaving = this.dwellingCreationService.isSavingObservable;
     this.isSaving.pipe(takeUntil(this.onDestroy)).subscribe(saving => {
       if (!saving && this.initialized) {
-        this.dialogRef.close();
+        this.dialogRef.close("saved");
       } else if (!this.initialized) {
         this.initialized = true;
       }
