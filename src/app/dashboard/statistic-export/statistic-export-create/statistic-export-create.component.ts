@@ -15,6 +15,7 @@ import {
 import {
   StatisticExportCreateStep3Component
 } from "./statistic-export-create-step-3/statistic-export-create-step-3.component";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'asrdb-statistic-export-create',
@@ -26,7 +27,8 @@ import {
     StatisticExportCreateStep1Component,
     StatisticExportCreateStep2Component,
     StatisticExportCreateStep0Component,
-    StatisticExportCreateStep3Component
+    StatisticExportCreateStep3Component,
+    MatIcon
   ],
   templateUrl: './statistic-export-create.component.html',
   styleUrl: './statistic-export-create.component.css'
@@ -57,4 +59,6 @@ export class StatisticExportCreateComponent {
       }
     });
   }
+
+  protected readonly close = close;
 }

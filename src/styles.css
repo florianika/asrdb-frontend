@@ -107,3 +107,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 .mat-drawer {
   z-index: 1 !important;
 }
+
+.mat-step-header {
+  pointer-events: none;
+}

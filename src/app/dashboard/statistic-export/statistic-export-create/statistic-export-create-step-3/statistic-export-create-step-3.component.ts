@@ -7,8 +7,11 @@ import {MatInputModule} from "@angular/material/input";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {FormsModule} from "@angular/forms";
 import {AuthStateService} from "../../../../common/services/auth-state.service";
-import {provideNativeDateAdapter} from "@angular/material/core";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter} from "@angular/material/core";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {MomentDateAdapter} from "@angular/material-moment-adapter";
+import {MY_FORMATS} from "../../../register/model/common-utils";
+import Moment from "moment";
 
 @Component({
   selector: 'asrdb-statistic-export-create-step-3',
@@ -23,7 +26,12 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     MatProgressSpinner
   ],
   providers: [
-    provideNativeDateAdapter()
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
   templateUrl: './statistic-export-create-step-3.component.html',
   styleUrl: './statistic-export-create-step-3.component.css'
@@ -34,7 +42,7 @@ export class StatisticExportCreateStep3Component {
 
   public statisticsGenerationData = this.statisticExportService.statisticsGenerationData;
 
-  public date = new Date();
+  public date = Moment(new Date());
   public notes = '';
 
   get isCreatingSnapshot() {
@@ -50,7 +58,7 @@ export class StatisticExportCreateStep3Component {
 
   public createStatisticExport() {
     this.statisticExportService.startDataSnapshotCreation(
-      this.date?.getFullYear() ?? (new Date()).getFullYear(),
+      this.date?.year() ?? (new Date()).getFullYear(),
       this.notes,
       this.authState.getNameId() ?? ''
     )

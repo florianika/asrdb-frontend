@@ -18,7 +18,7 @@
       <span i18n>Back</span>
       <mat-icon>arrow_back_ios</mat-icon>
     </button>
-    <button mat-button color="primary" (click)="createStatisticExport()" [disabled]="isCreatingSnapshot">
+    <button mat-raised-button class="ms-2" color="primary" (click)="createStatisticExport()" [disabled]="isCreatingSnapshot">
       @if (isCreatingSnapshot) {
         <span class="d-flex align-items-center">
           <mat-spinner diameter="20"></mat-spinner>

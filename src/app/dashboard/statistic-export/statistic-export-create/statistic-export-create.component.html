@@ -1,23 +1,34 @@
 <h2 mat-dialog-title i18n>
   Create new statistic export
+  <button mat-icon-button mat-dialog-close class="position-absolute end-0" aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
 </h2>
 <mat-dialog-content>
   <mat-stepper [selectedIndex]="stepperIndex ?? 0" linear class="test-stepper">
     <mat-step>
       <ng-template matStepLabel i18n>Building readiness</ng-template>
-      <asrdb-statistic-export-create-step-0/>
+      <ng-template matStepContent>
+        <asrdb-statistic-export-create-step-0/>
+      </ng-template>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel i18n>Building quality statistics</ng-template>
-      <asrdb-statistic-export-create-step-1/>
+      <ng-template matStepContent>
+        <asrdb-statistic-export-create-step-1/>
+      </ng-template>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel i18n>Dwelling quality statistics</ng-template>
+      <ng-template matStepContent>
       <asrdb-statistic-export-create-step-2/>
+      </ng-template>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel i18n>Export data</ng-template>
+      <ng-template matStepContent>
       <asrdb-statistic-export-create-step-3/>
+      </ng-template>
     </mat-step>
   </mat-stepper>
 </mat-dialog-content>

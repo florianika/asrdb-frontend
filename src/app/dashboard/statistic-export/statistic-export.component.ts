@@ -81,7 +81,7 @@ export class StatisticExportComponent implements OnInit, AfterViewInit {
       .open(
         StatisticExportCreateComponent,
         {
-          width: '900px',
+          width: '1100px',
           height: '600px',
           disableClose: true,
         }

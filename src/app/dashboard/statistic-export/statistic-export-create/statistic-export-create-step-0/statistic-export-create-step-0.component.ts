@@ -24,7 +24,7 @@ export class StatisticExportCreateStep0Component implements OnInit {
   private fieldWorkService = inject(FieldWorkService);
   private statisticExportService = inject(StatisticExportService);
 
-  public hasUntestedBuildings: boolean | null = null;
+  public hasUntestedBuildings: number | null = null;
   public fieldWorkState = this.fieldWorkService.fieldWorkState;
   public fieldWorkClosureStatistics = this.fieldWorkClosureService.fieldWorkStatistics;
 
@@ -58,7 +58,7 @@ export class StatisticExportCreateStep0Component implements OnInit {
 
   private checkForUntestedBuildings(): void {
     this.commonBuildingService.hasUntestedBuildings().subscribe(hasUntestedBuildings => {
-      this.hasUntestedBuildings = hasUntestedBuildings;
+      this.hasUntestedBuildings = hasUntestedBuildings ? 1 : 0;
     });
   }
 }

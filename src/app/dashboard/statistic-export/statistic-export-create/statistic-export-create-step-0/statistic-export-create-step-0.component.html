@@ -4,10 +4,10 @@
       <mat-spinner diameter="20"></mat-spinner> <span class="ms-2" i18n>Loading building statuses...</span>
     </div>
   }
-  @else if (hasUntestedBuildings === true) {
+  @else if (hasUntestedBuildings === 1) {
     <div>
-      <p i18n>There are some untested buildings found. Please run the test for all untested building to continue.</p>
-      <div class="text-center">
+      <p i18n class="message info-message">There are some untested buildings found. Please run the test for all untested building to continue.</p>
+      <div class="text-center mt-5">
         <button mat-raised-button color="primary" (click)="testAllBuildings()" [disabled]="isLoadingStatistics">
           @if (isLoadingStatistics) {
             <span class="d-flex align-items-center">
@@ -23,9 +23,9 @@
     </div>
   } @else {
     <div class="d-flex h-100 flex-column justify-content-between">
-      <p i18n>All buildings have been tested. You can proceed to the next step.</p>
+      <p i18n class="message success-message">All buildings have been tested. You can proceed to the next step.</p>
       <div class="text-end">
-        <button mat-button (click)="moveToNext()" color="primary" [disabled]="isLoadingStatistics">
+        <button mat-raised-button class="ms-2" (click)="moveToNext()" color="primary" [disabled]="isLoadingStatistics">
           <span i18n>Next</span>
           <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
         </button>
