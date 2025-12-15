@@ -25,10 +25,10 @@
           </span>
         </span>
             <span i18n>From</span>
-            <span class="ms-2">{{ fieldWorkState().activeFieldWork?.startDate | date: 'dd/MM/yyyy, hh:mm':'Europe/Tirane' }}</span>
+            <span class="ms-2">{{ fieldWorkState().activeFieldWork?.startDate | date: 'dd/MM/yyyy, HH:mm':'Europe/Tirane' }}</span>
             <span class="ms-2 me-2">|</span>
             <span i18n>To</span>
-            <span class="ms-2">{{ fieldWorkState().activeFieldWork?.endDate | date: 'dd/MM/yyyy, hh:mm':'Europe/Tirane' }}</span>
+            <span class="ms-2">{{ fieldWorkState().activeFieldWork?.endDate | date: 'dd/MM/yyyy, HH:mm':'Europe/Tirane' }}</span>
           </div>
           <div>
             @if (fieldWorkCanBeClosed()?.can_be_closed) {

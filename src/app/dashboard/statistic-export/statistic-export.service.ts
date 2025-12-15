@@ -2,6 +2,8 @@ import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {environment} from "../../../environments/environment";
+import {catchError, Observable, Observer, of, zip} from "rxjs";
+import {User} from "../../model/User.model";
 
 export interface PivotRow {
   municipality: string;
@@ -11,6 +13,7 @@ export type StatisticTableData = {
   data: StatisticData[];
   isLoading: boolean;
   isDownloading: boolean;
+  downloadRowId: number | null;
 }
 export type StatisticData = {
   "id": number,
@@ -54,6 +57,18 @@ export type StatisticsGenerationStatusResponse = {
     "lastUpdatedBy": string
   }
 }
+export type UserDetailsResponse = {
+  userDTO: User;
+}
+export type UserDetails = {
+  rowId: number;
+  userText: string;
+}
+export type RowUserDetails = {
+  rowId: number;
+  createUserText: string;
+  updateUserText: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +81,7 @@ export class StatisticExportService {
     data: [],
     isLoading: false,
     isDownloading: false,
+    downloadRowId: null as number | null,
   });
   public statisticsForMunicipalityAndBuildingQuality = signal<StatisticsForMunicipalityAndBuildingQuality>({
     data: [],
@@ -85,7 +101,34 @@ export class StatisticExportService {
     this.statisticsTableData.update(state => ({...state, isLoading: true}));
     this.httpClient.get<{ downloadJobsDTO: StatisticData[] }>(environment.base_url + '/qms/buildings/annual-snapshots').subscribe({
       next: (data) => {
-        this.statisticsTableData.set({data: data.downloadJobsDTO, isLoading: false, isDownloading: false});
+        const rows = data.downloadJobsDTO;
+        const requests: Observable<RowUserDetails>[] = [];
+        rows.forEach(row => {
+          const request = this.getUserDetailsRequest(row.createdBy, row.lastUpdatedBy, row.id);
+          requests.push(request);
+        });
+        zip(...requests).subscribe({
+          next: (response: RowUserDetails[]) => {
+            const rowUserDetailsMap = new Map<number, RowUserDetails>();
+            response.forEach(rowDetails => {
+              rowUserDetailsMap.set(rowDetails.rowId, rowDetails);
+            });
+            const enrichedRows = rows.map(row => {
+              const userDetails = rowUserDetailsMap.get(row.id);
+              return {
+                ...row,
+                createdBy: userDetails ? userDetails.createUserText : '',
+                lastUpdatedBy: userDetails ? userDetails.updateUserText : '',
+              };
+            });
+            this.statisticsTableData.set({data: enrichedRows, isLoading: false, isDownloading: false, downloadRowId: null});
+          },
+          error: () => {
+            this.matSnackBar.open('Error fetching user details for statistics', 'Close', { duration: 3000 });
+            this.statisticsTableData.update(state => ({...state, isLoading: false}));
+          }
+        });
+        // this.statisticsTableData.set({data: data.downloadJobsDTO, isLoading: false, isDownloading: false});
       },
       error: () => {
         this.matSnackBar.open('Error fetching statistics', 'Close', { duration: 3000 });
@@ -94,8 +137,8 @@ export class StatisticExportService {
     });
   }
 
-  public downloadFile(fileUrl: string) {
-    this.statisticsTableData.update(state => ({...state, isDownloading: true}));
+  public downloadFile(fileUrl: string, rowId: number) {
+    this.statisticsTableData.update(state => ({...state, isDownloading: true, downloadRowId: rowId}));
     const url = environment.base_url + fileUrl;
     this.httpClient.post(url, {}, { responseType: 'blob' }).subscribe({
       next: (blob) => {
@@ -104,7 +147,7 @@ export class StatisticExportService {
         link.download = fileUrl.split('/').pop() || 'download';
         link.click();
         window.URL.revokeObjectURL(link.href);
-        this.statisticsTableData.update(state => ({...state, isDownloading: false}));
+        this.statisticsTableData.update(state => ({...state, isDownloading: false, downloadRowId: null}));
       },
       error: () => {
         this.matSnackBar.open('Error downloading file', 'Close', { duration: 3000 });
@@ -200,6 +243,57 @@ export class StatisticExportService {
       data: [],
       isLoading: true,
       isDownloading: false,
+      downloadRowId: null,
     })
+  }
+
+  private getUserDetailsRequest(createUser: string, updateUser: string, rowId: number) {
+    const requests: Observable<UserDetails>[] = [];
+    const createUserDetailsRequest = this.fetchUserDetails(createUser, rowId);
+    const updateUserDetailsRequest = this.fetchUserDetails(updateUser, rowId);
+    requests.push(createUserDetailsRequest);
+    requests.push(updateUserDetailsRequest);
+    return new Observable<RowUserDetails>(observer => {
+      zip(...requests).subscribe({
+        next: (response: UserDetails[]) => {
+          const createUserDetail = response[0];
+          const updateUserDetail = response[1];
+          observer.next({
+            rowId: rowId,
+            createUserText: createUserDetail.userText,
+            updateUserText: updateUserDetail.userText,
+          });
+          observer.complete();
+        },
+        error: err => {
+          console.error(err);
+          observer.error(err);
+        },
+      });
+    });
+  }
+
+  private fetchUserDetails(user: string, rowId: number): Observable<UserDetails> {
+    if (!user) {
+      return of({ rowId, userText: '' });
+    }
+    return new Observable<UserDetails>((observer: Observer<any>) => {
+      this.httpClient
+        .get<UserDetailsResponse>(environment.base_url + '/auth/users/' + user)
+        .pipe(catchError(error => {
+          console.error('Error fetching user details:', error);
+          return of(null);
+        })).subscribe({
+          next: (response) => {
+            const userDetail = response?.userDTO;
+            const userText =
+              (userDetail?.name ?? '') +
+              ' ' +
+              (userDetail?.lastName ?? '');
+            observer.next({ rowId, userText: userText.trim() });
+            observer.complete();
+          }
+      });
+    });
   }
 }

@@ -1,8 +1,8 @@
-import {Component, effect, inject, OnInit} from '@angular/core';
+import {AfterViewInit, Component, effect, inject, OnInit, ViewChild} from '@angular/core';
 import {StatisticExportService} from './statistic-export.service';
 import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
-import {MatSortModule} from "@angular/material/sort";
+import {MatSort, MatSortModule} from "@angular/material/sort";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
@@ -31,7 +31,9 @@ import {StatisticExportCreateComponent} from "./statistic-export-create/statisti
   templateUrl: './statistic-export.component.html',
   styleUrl: './statistic-export.component.css'
 })
-export class StatisticExportComponent implements OnInit {
+export class StatisticExportComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+
   private statisticExportService = inject(StatisticExportService);
   private fieldWorkService = inject(FieldWorkService);
   private matSnackBar = inject(MatSnackBar);
@@ -44,6 +46,10 @@ export class StatisticExportComponent implements OnInit {
 
   get hasActiveFieldWork(): boolean {
     return this.fieldWork().activeFieldWork !== null;
+  }
+
+  get downloadRowId() {
+    return this.statisticsTableData().downloadRowId;
   }
 
   constructor() {
@@ -59,8 +65,12 @@ export class StatisticExportComponent implements OnInit {
     this.fieldWorkService.getActiveFieldWork();
   }
 
-  download(url: string) {
-    this.statisticExportService.downloadFile(url);
+  ngAfterViewInit() {
+    this.datasource.sort = this.sort;
+  }
+
+  download(url: string, rowId: number) {
+    this.statisticExportService.downloadFile(url, rowId);
   }
 
   add() {

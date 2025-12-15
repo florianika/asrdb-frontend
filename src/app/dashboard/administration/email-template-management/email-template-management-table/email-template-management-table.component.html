@@ -31,7 +31,7 @@
 
                 <ng-container matColumnDef="createdTimestamp">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef i18n>Created time</th>
-                    <td mat-cell *matCellDef="let row">{{(row.createdTimestamp + "z") | date:'dd/MM/yyyy, hh:mm':'Europe/Tirane'}}</td>
+                    <td mat-cell *matCellDef="let row">{{(row.createdTimestamp + "z") | date:'dd/MM/yyyy, HH:mm':'Europe/Tirane'}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">

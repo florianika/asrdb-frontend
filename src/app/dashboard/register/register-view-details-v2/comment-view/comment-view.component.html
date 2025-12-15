@@ -16,7 +16,7 @@
                 <div>
                   <span class="comment-author fw-bold">{{comment.updatedUser ?? comment.createdUser}}</span>
                   <span class="mx-1">|</span>
-                  <span class="comment-date small">{{(comment.updatedTimestamp ?? comment.createdTimestamp) | date:'dd/MM/yyyy, hh:mm':'Europe/Tirane'}}</span>
+                  <span class="comment-date small">{{(comment.updatedTimestamp ?? comment.createdTimestamp) | date:'dd/MM/yyyy, HH:mm':'Europe/Tirane'}}</span>
                 </div>
                 <span class="flex-grow-1"></span>
                 <div *ngIf="isOwner(comment.userId)" class="comment-actions">

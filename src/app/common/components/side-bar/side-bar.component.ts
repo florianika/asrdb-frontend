@@ -91,7 +91,7 @@ export class SideBarComponent implements AfterViewInit {
         {
           title: 'Statistics Export',
           path: 'dashboard/statistic-export',
-          icon: 'home_work',
+          icon: 'leaderboard',
           selected: true,
         },
         {
