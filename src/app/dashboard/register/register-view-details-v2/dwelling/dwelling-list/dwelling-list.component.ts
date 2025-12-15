@@ -55,7 +55,6 @@ const DWELLINGS_LIST_COLUMNS = [
 })
 export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
 
   private destroy$ = new Subject();
 
@@ -119,32 +118,27 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => (this.paginator.pageIndex = 0));
     if (this.entranceId) {
-      merge(this.sort.sortChange, this.paginator.page)
+      merge(this.paginator.page)
         .pipe(
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
           this.dwellingDetailsService.init(
             this.paginator.pageIndex,
-            this.paginator.pageSize,
-            this.sort
+            this.paginator.pageSize
           )
         });
       return;
     }
-    merge(this.sort.sortChange, this.paginator.page)
+    merge(this.paginator.page)
       .pipe(
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.dwellingDetailsService.init(
           this.paginator.pageIndex,
-          this.paginator.pageSize,
-          this.sort
+          this.paginator.pageSize
         );
       });
   }
@@ -234,8 +228,7 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
   reload() {
     this.dwellingDetailsService.init(
       this.paginator?.pageIndex,
-      this.paginator?.pageSize,
-      this.sort
+      this.paginator?.pageSize
     );
   }
 

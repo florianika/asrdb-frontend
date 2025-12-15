@@ -82,13 +82,13 @@ export class DwellingDetailsService {
     }, { allowSignalWrites: true });
   }
 
-  public init(pageIndex?: number, pageSize?: number, sort?: MatSort) {
+  public init(pageIndex?: number, pageSize?: number) {
     if (!this.viewData().entranceId) {
       this.viewData.update((data) => ({...data, dwellingList: [], totalCount: 0, isLoadingDwellings: false}));
       return;
     }
     this.viewData.update((data) => ({...data, isLoadingDwellings: true}));
-    this.loadDwellings(pageIndex ?? 0, pageSize ?? 5, sort);
+    this.loadDwellings(pageIndex ?? 0, pageSize ?? 5);
   }
 
   public getValueFromStatus(column: keyof Dwelling, dwelling?: Dwelling): string {
@@ -244,16 +244,14 @@ export class DwellingDetailsService {
     this.commonEntityStructureService.getEntityStructure(DWELLING_ENTITY);
   }
 
-  private loadDwellings(pageIndex: number, pageSize: number, sort?: MatSort) {
+  private loadDwellings(pageIndex: number, pageSize: number) {
     this.viewData.update((data) => ({...data, isLoadingDwellings: true}));
     const filter = {
       start: pageIndex * pageSize,
       num: pageSize ?? 5,
       outFields: ['*'],
       where: this.prepareWhereCase(),
-      orderByFields: sort?.active
-        ? [sort.active + ' ' + sort.direction.toUpperCase()]
-        : undefined,
+      orderByFields: ['DwlFloor', 'DwlApartNumber', 'GlobalID'],
     } as Partial<QueryFilter>;
     return this.commonDwellingService
       .getDwellings(filter)

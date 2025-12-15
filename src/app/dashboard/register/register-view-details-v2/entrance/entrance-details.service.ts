@@ -70,8 +70,8 @@ export class EntranceDetailsService {
     }, { allowSignalWrites: true });
   }
 
-  public init(pageIndex?: number, pageSize?: number, sort?: MatSort) {
-    this.loadEntrances(pageIndex ?? 0, pageSize ?? 5, sort);
+  public init(pageIndex?: number, pageSize?: number) {
+    this.loadEntrances(pageIndex ?? 0, pageSize ?? 5);
   }
 
   public getValueFromStatus(column: keyof Entrance, entrance?: Entrance): string {
@@ -198,19 +198,15 @@ export class EntranceDetailsService {
     this.commonEntityStructureService.getEntityStructure(ENTRANCE_ENTITY);
   }
 
-  private loadEntrances(pageIndex: number, pageSize: number, sort?: MatSort) {
+  private loadEntrances(pageIndex: number, pageSize: number) {
     this.viewData.update((data) => ({...data, isLoadingEntrances: true}));
     const filter = {
       start: pageIndex * pageSize,
       num: pageSize,
       outFields: ['*'],
       where: this.prepareWhereCase(this.viewData().buildingId),
+      orderByFields: ['EntStrGlobalID', 'EntBldGlobalID', 'EntEntranceNumber', 'GlobalID']
     } as Partial<QueryFilter>;
-    if (sort?.active) {
-      filter.orderByFields = [
-        sort.active + ' ' + sort.direction.toUpperCase(),
-      ];
-    }
     return this.commonEntranceService.getEntranceData(filter).pipe(
       catchError(err => {
         console.error(err);
