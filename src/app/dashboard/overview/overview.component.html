@@ -6,7 +6,7 @@
           <div class="flex-grow-1">
             <span class="fs-5 mb-2 w-100 d-inline-block">
           @if (fieldWorkCanBeClosed()) {
-            @if (fieldWorkCanBeClosed()?.can_be_closed) {
+            @if (fieldWorkCanBeClosed()?.canBeClosed) {
               <span class="align-text-top" matTooltip="Field work can be closed" i18n-matTooltip>
                 <mat-icon>
                   check_circle
@@ -31,8 +31,8 @@
             <span class="ms-2">{{ fieldWorkState().activeFieldWork?.endDate | date: 'dd/MM/yyyy, HH:mm':'Europe/Tirane' }}</span>
           </div>
           <div>
-            @if (fieldWorkCanBeClosed()?.can_be_closed) {
-              <button mat-raised-button color="warn" (click)="closeFieldWork()" i18n>Close field work</button>
+            @if (fieldWorkCanBeClosed()?.canBeClosed) {
+              <button mat-raised-button color="primary" (click)="closeFieldWork()" i18n>Close field work</button>
             }
           </div>
         </div>

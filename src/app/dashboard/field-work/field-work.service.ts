@@ -41,10 +41,10 @@ export type FieldWorkCreateRequest = {
   createdUser: string,
 }
 export type FieldWorkClosureStatusResponse = {
-  fieldwork_id: number,
-  can_be_closed: boolean,
+  fieldWorkId: number,
+  canBeClosed: boolean,
   reasons: string,
-  last_checked: string,
+  lastChecked: string,
 }
 
 @Injectable({

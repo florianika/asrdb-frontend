@@ -93,15 +93,12 @@ export class FieldWorkTableComponent implements AfterViewInit {
     return this.isNew(row) || this.canBeClosed(row);
   }
 
-  // TODO: Remove 'true' condition when the backend is ready
   isNew(row: FieldWork) {
     return row.fieldWorkStatus === 'NEW'
   }
 
-  // TODO: Remove 'true' condition when the backend is ready
   canBeClosed(row: FieldWork): boolean {
-    return row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldwork_id
-      && !!this.fieldWorkCanBeClosed()?.can_be_closed
+    return row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldWorkId && !!this.fieldWorkCanBeClosed()?.canBeClosed
   }
 
   openDeleteFieldWork(fieldWorkId: number) {
