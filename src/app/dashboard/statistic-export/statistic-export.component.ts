@@ -76,6 +76,7 @@ export class StatisticExportComponent implements OnInit, AfterViewInit {
   add() {
     if (this.hasActiveFieldWork) {
       this.matSnackBar.open("You cannot generate statistics while a field work is active.", "Close", { duration: 4000 });
+      return;
     }
     this.matDialog
       .open(
