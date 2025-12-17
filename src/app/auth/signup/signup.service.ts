@@ -10,8 +10,6 @@ export type SignupForm = FormGroup<{
   email: FormControl<string | null>;
   firstName: FormControl<string | null>;
   lastName: FormControl<string | null>;
-  password: FormControl<string | null>;
-  confirmPassword: FormControl<string | null>;
   municipality: FormControl<string | null>;
 }>;
 
@@ -55,14 +53,6 @@ export class SignupService {
         Validators.pattern(/^[a-z]+$/i),
       ]),
       lastName: new FormControl('', [Validators.pattern(/^[a-z]+$/i)]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
-      confirmPassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
       municipality: new FormControl('', [Validators.required]),
     });
   }
@@ -73,7 +63,6 @@ export class SignupService {
       name: signupForm.firstName,
       lastName: signupForm.lastName ?? '',
       email: signupForm.email,
-      password: signupForm.password,
       municipalityCode: signupForm.municipality?.toString(),
     };
     this.httpClient

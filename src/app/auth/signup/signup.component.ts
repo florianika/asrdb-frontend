@@ -56,8 +56,6 @@ import { MUNICIPALITIES } from '../../common/data/municipalities';
   ],
 })
 export class SignupComponent {
-  hiddenPassword = true;
-  hiddenRetypePassword = true;
   loading = this.signupService.signingUpAsObservable;
   signupFormGroup: SignupForm;
   municipalities = MUNICIPALITIES.sort((a, b) => a.name.localeCompare(b.name));
