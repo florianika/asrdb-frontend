@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { BuildingFilter } from '../../../register/model/building';
 import { MatIconModule } from '@angular/material/icon';
+import {MatCheckbox} from "@angular/material/checkbox";
 
 @Component({
   selector: 'asrdb-building-list-view-filter',
@@ -23,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatCheckbox,
   ],
 })
 export class RegisterFilterComponent {
@@ -46,6 +48,10 @@ export class RegisterFilterComponent {
 
   changeValue(event: MatSelectChange, filterProp: string) {
     (this.filterConfig.filter as any)[filterProp] = event.value;
+  }
+
+  changeCheckbox(event: any, filterProp: string) {
+    (this.filterConfig.filter as any)[filterProp] = event.checked ? '1' : '';
   }
 
   cleanValue(event: any, filterProp: string) {

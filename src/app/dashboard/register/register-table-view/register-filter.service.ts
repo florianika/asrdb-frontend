@@ -36,6 +36,7 @@ export class RegisterFilterService {
       BldCentroidStatus: [],
       BldEnumArea: '',
       GlobalID: '',
+      BldWithQuePendingIds: ''
     },
     options: {
       BldMunicipality: MUNICIPALITIES as never[],
@@ -144,6 +145,24 @@ export class RegisterFilterService {
             .map(globalId => `'${globalId}'`)
             .join(',');
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
+        } else if (filter.column === 'BldWithQuePendingIds') {
+          if (filter.value === 'notFound') {
+            conditions.push(`GlobalID in ('{00000000-0000-0000-0000-000000000000}')`);
+          } else {
+            const pendingIds = filter.value.split(',').map((id: string) => {
+              if (!id.startsWith('{')) {
+                id = '{' + id;
+              }
+              if (!id.endsWith('}')) {
+                id = id + '}';
+              }
+              return id;
+            });
+            const pendingIdsCondition = pendingIds
+              .map((pendingId: string) => `'${pendingId}'`)
+              .join(',');
+            conditions.push('GlobalID in (' + pendingIdsCondition + ')');
+          }
         } else if (
           ['BldStatus', 'BldType', 'BldQuality', 'BldReview'].includes(
             filter.column

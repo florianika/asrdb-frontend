@@ -216,9 +216,24 @@ export class RegisterTableComponent
       })
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((newFilterConfig: BuildingFilter | null) =>
-        this.handlePopupClose(newFilterConfig)
-      );
+      .subscribe((newFilterConfig: BuildingFilter | null) => {
+        if (newFilterConfig?.filter?.BldWithQuePendingIds) {
+          // Load building ids with pending Q&Es and set to filter
+          this.commonBuildingService.getAllBuildingIdsWithPendingQueLogs().subscribe({
+            next: (response) => {
+              console.log(response);
+              if (!response || !response.length) {
+                newFilterConfig.filter.BldWithQuePendingIds = 'notFound';
+              } else {
+                newFilterConfig.filter.BldWithQuePendingIds = response.join(',');
+              }
+              this.handlePopupClose(newFilterConfig);
+            }
+          })
+        } else {
+          this.handlePopupClose(newFilterConfig);
+        }
+      });
   }
 
   reload() {

@@ -313,6 +313,14 @@ export class CommonBuildingService {
     );
   }
 
+  getAllBuildingIdsWithPendingQueLogs(): Observable<any> {
+    return this.httpClient
+      .get(environment.base_url +  '/qms/buildings/que/pending')
+      .pipe(catchError(() => {
+        return of(null);
+      }));
+  }
+
   private async fetchAttributesMetadata() {
     const dataQuery = this.bldLayer.createQuery();
     dataQuery.start = 0;

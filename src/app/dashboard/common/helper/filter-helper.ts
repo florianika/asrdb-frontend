@@ -64,6 +64,15 @@ export class FilterHelper {
         });
       });
       return currentValue;
+    } else if (key === 'BldWithQuePendingIds' && typeof value === 'string') {
+      if (value) {
+        currentValue.push({
+          column: key,
+          value: 'Yes',
+        });
+        return currentValue;
+      }
+      return currentValue;
     } else {
       currentValue.push({
         column: key,
