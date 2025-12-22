@@ -1,0 +1,21 @@
+<form [formGroup]="form" (ngSubmit)="checkToken()" class="username-password-form">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label i18n>2FA Token</mat-label>
+    <input
+      matInput
+      i18n-placeholder
+      placeholder="Enter your 2FA token"
+      formControlName="token"
+      (keyup.enter)="checkToken()"
+    />
+    <mat-icon matPrefix>person</mat-icon>
+  </mat-form-field>
+  <button
+    mat-flat-button
+    color="primary"
+    class="full-width mt-3"
+    type="submit"
+    [disabled]="signinService.verify2FASignal().isVerifying"
+    i18n
+  >Continue</button>
+</form>

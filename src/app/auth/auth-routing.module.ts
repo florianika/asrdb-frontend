@@ -6,14 +6,9 @@ const routes: Routes = [
   { path: '', redirectTo: '/auth/signin', pathMatch: 'full' },
   {
     path: 'signin',
-    loadChildren: () =>
-      import('./signin/signin.module').then(m => m.SigninModule),
+    // loadChildren: () => import('./signin/signin.module').then(m => m.SigninModule),
+    loadComponent: () => import('./signin-v2/signin-v2.component').then(m => m.SigninV2Component),
   },
-  // {
-  //   path: 'signup',
-  //   loadChildren: () =>
-  //     import('./signup/signup.module').then(m => m.SignupModule),
-  // },
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
