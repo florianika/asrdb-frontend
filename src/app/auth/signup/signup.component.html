@@ -1,4 +1,7 @@
 <section class="signup-container">
+  <button mat-icon-button mat-dialog-close class="position-absolute end-0 top-0" style="z-index: 9" aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
   <mat-card class="signup-card">
     <div>
       <img class="signup-card-logo" ngSrc="assets/images/logo_instat.png" alt="logo" height="127" width="400">
@@ -44,7 +47,6 @@
       </form>
       <button mat-flat-button color="primary" class="full-width" style="height: 52px;" [disabled]="loading | async"
         (click)="signup()" i18n>Continue</button>
-      <p class="signup-card-create-account" routerLink="/auth/signin" i18n>Already have an account? Sign in!</p>
     </mat-card-content>
   </mat-card>
 </section>
