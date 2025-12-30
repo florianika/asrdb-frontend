@@ -1,0 +1,44 @@
+<div class="asrbd-container mat-elevation-z2" style="background-color: white;">
+  <div class="header-container">
+    <h1 i18n class="header-title">Test buildings</h1>
+  </div>
+
+  <form class="asrbd-table-container" [formGroup]="formGroup">
+    <section id="run-updates-section">
+      <mat-checkbox
+        class="example-margin"
+        formControlName="runUpdates"
+        i18n>Run updates before testing</mat-checkbox>
+    </section>
+    <section id="building-selection-section">
+      <mat-radio-group aria-label="Select an option" formControlName="buildingSelection">
+        <mat-radio-button value="all" i18n>All buildings</mat-radio-button>
+        <mat-radio-button value="untested" i18n>Untested buildings</mat-radio-button>
+      </mat-radio-group>
+    </section>
+    <section id="start-at-section">
+      <mat-form-field class="ps-2 mt-2" appearance="outline">
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="startAt">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </section>
+  </form>
+  <div class="d-flex justify-content-end p-3">
+    <button mat-raised-button color="primary" (click)="onTestBuildings()" [disabled]="isRunning">
+      @if (isRunning) {
+        <span class="d-flex">
+          <span i18n>Testing buildings...</span>
+          <mat-progress-spinner
+            class="ms-2"
+            color="accent"
+            mode="indeterminate"
+            diameter="20"></mat-progress-spinner>
+        </span>
+      } @else {
+        <span i18n>Test buildings</span>
+      }
+    </button>
+  </div>
+</div>

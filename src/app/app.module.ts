@@ -24,6 +24,8 @@ import {
 } from '@angular/common/http';
 import { AuthInterceptor } from './common/services/auth-interceptor';
 import { CommonEsriAuthService } from './dashboard/common/service/common-esri-auth.service';
+import {DateAdapter, MAT_DATE_LOCALE} from "@angular/material/core";
+import {MomentDateAdapter} from "@angular/material-moment-adapter";
 
 @NgModule({
   declarations: [
@@ -51,6 +53,11 @@ import { CommonEsriAuthService } from './dashboard/common/service/common-esri-au
     AuthStateService,
     CommonEsriAuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE],
+    },
     provideHttpClient(withInterceptorsFromDi()),
   ],
 })

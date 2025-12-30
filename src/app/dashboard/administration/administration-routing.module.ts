@@ -21,6 +21,10 @@ const routes: Routes = [
         './email-template-management/email-template-management.module'
       ).then(m => m.EmailTemplateManagementModule),
   },
+  {
+    path: 'test-buildings',
+    loadComponent: () => import('./test-buildings/test-buildings.component').then(m => m.TestBuildingsComponent),
+  }
 ];
 
 @NgModule({
