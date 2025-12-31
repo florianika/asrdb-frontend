@@ -91,7 +91,7 @@ export class SideBarComponent implements AfterViewInit {
         {
           title: 'Test buildings',
           path: 'dashboard/administration/test-buildings',
-          icon: 'home_work',
+          icon: 'play_circle',
           selected: true,
         },
         {
