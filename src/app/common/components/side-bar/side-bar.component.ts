@@ -21,7 +21,7 @@ export class SideBarComponent implements AfterViewInit {
       sectionTitle: '',
       sectionElements: [
         {
-          title: 'Dashboard',
+          title: $localize`Dashboard`,
           path: 'dashboard/overview',
           icon: 'dashboard',
           selected: true,
@@ -33,7 +33,7 @@ export class SideBarComponent implements AfterViewInit {
       sectionTitle: '',
       sectionElements: [
         {
-          title: 'Building List',
+          title: $localize`Building List`,
           path: '/dashboard/register',
           pathMatch: true,
           icon: 'apartment',
@@ -46,7 +46,7 @@ export class SideBarComponent implements AfterViewInit {
       sectionTitle: '',
       sectionElements: [
         {
-          title: 'Street List',
+          title: $localize`Street List`,
           path: '/dashboard/street-management',
           pathMatch: true,
           icon: 'signpost',
@@ -56,22 +56,22 @@ export class SideBarComponent implements AfterViewInit {
       visible: this.isAdmin || this.isSupervisor,
     },
     {
-      sectionTitle: 'Quality Rule Management',
+      sectionTitle: $localize`Quality Rule Management`,
       sectionElements: [
         {
-          title: 'Building Rules',
+          title: $localize`Building Rules`,
           path: '/dashboard/quality-management/BUILDING',
           icon: 'apartment',
           selected: false,
         },
         {
-          title: 'Entrance Rules',
+          title: $localize`Entrance Rules`,
           path: '/dashboard/quality-management/ENTRANCE',
           icon: 'meeting_room',
           selected: false,
         },
         {
-          title: 'Dwelling Rules',
+          title: $localize`Dwelling Rules`,
           path: '/dashboard/quality-management/DWELLING',
           icon: 'light',
           selected: false,
@@ -80,34 +80,34 @@ export class SideBarComponent implements AfterViewInit {
       visible: this.isAdmin || this.isSupervisor,
     },
     {
-      sectionTitle: 'Administration',
+      sectionTitle: $localize`Administration`,
       sectionElements: [
         {
-          title: 'Field Work',
+          title: $localize`Field Work`,
           path: 'dashboard/field-work',
           icon: 'home_work',
           selected: true,
         },
         {
-          title: 'Test buildings',
+          title: $localize`Test buildings`,
           path: 'dashboard/administration/test-buildings',
           icon: 'play_circle',
           selected: true,
         },
         {
-          title: 'Statistics Export',
+          title: $localize`Statistics Export`,
           path: 'dashboard/statistic-export',
           icon: 'leaderboard',
           selected: true,
         },
         {
-          title: 'User administration',
+          title: $localize`User administration`,
           path: '/dashboard/administration/user-management',
           icon: 'manage_accounts',
           selected: false,
         },
         {
-          title: 'Email templates',
+          title: $localize`Email templates`,
           path: '/dashboard/administration/email-template-management',
           icon: 'mail',
           selected: false,
@@ -145,7 +145,12 @@ export class SideBarComponent implements AfterViewInit {
   }
 
   handleClick(title: string) {
-    if (['Dashboard', 'Building List'].includes(title)) {
+    if (
+      [
+        $localize`Dashboard`,
+        $localize`Building List`,
+      ].includes(title)
+    ) {
       localStorage.removeItem(FILTER_REGISTER);
     }
   }

@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
-import { AuthStateService } from '../../services/auth-state.service';
-import {window} from "rxjs";
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {MatDrawer} from '@angular/material/sidenav';
+import {AuthStateService} from '../../services/auth-state.service';
 
 @Component({
   selector: 'asrdb-toolbar',
@@ -20,9 +19,10 @@ export class ToolbarComponent {
   }
 
   changeLanguage(language: string) {
-    const url = location.href
-    url.replace('/en/', `/${language}/`)
-      .replace('/sq/', `/${language}`);
-    location.href = url;
+    const currentUrl = new URL(location.href);
+    const newUrl = currentUrl.origin + `/${language}/` + currentUrl.hash;
+    console.log('Navigating to URL:', newUrl);
+    history.pushState(newUrl, '', newUrl);
+    location.reload();
   }
 }
