@@ -36,7 +36,7 @@ export class RegisterFilterService {
       BldCentroidStatus: [],
       BldEnumArea: '',
       GlobalID: '',
-      BldWithQuePendingIds: ''
+      BldWithQuePendingIds: '',
     },
     options: {
       BldMunicipality: MUNICIPALITIES as never[],
@@ -147,7 +147,9 @@ export class RegisterFilterService {
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
         } else if (filter.column === 'BldWithQuePendingIds') {
           if (filter.value === 'notFound') {
-            conditions.push(`GlobalID in ('{00000000-0000-0000-0000-000000000000}')`);
+            conditions.push(
+              "GlobalID in ('{00000000-0000-0000-0000-000000000000}')"
+            );
           } else {
             const pendingIds = filter.value.split(',').map((id: string) => {
               if (!id.startsWith('{')) {
@@ -183,10 +185,14 @@ export class RegisterFilterService {
     if (entranceId) {
       return `GlobalID='${entranceId}'`;
     }
-    if (!this.globalIds.getValue()?.length || this.noFilterApplied() || this.globalIds.getValue()?.length > 100) {
+    if (
+      !this.globalIds.getValue()?.length ||
+      this.noFilterApplied() ||
+      this.globalIds.getValue()?.length > 100
+    ) {
       return '1!=1';
     }
-    return `EntBldGlobalID in (${this.globalIds.getValue().map(id => '\'' + id + '\'')}) AND EntQuality <> 0`;
+    return `EntBldGlobalID in (${this.globalIds.getValue().map(id => "'" + id + "'")}) AND EntQuality <> 0`;
   }
 
   getFilter() {

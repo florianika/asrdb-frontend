@@ -45,7 +45,7 @@ export class EntityDeleteConfirmationDialogComponent {
   private deleteDialog?: MatDialogRef<any>;
   private readonly idToDelete?: string;
 
-  type?:EntityType;
+  type?: EntityType;
   disableDialogButtons = false;
   loadingDeleteData;
   toDeleteState;

@@ -23,8 +23,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PieGraphComponent } from './components/pie-graph/pie-graph.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FilterHelper } from '../common/helper/filter-helper';
-import {CommonMunicipalityService} from "../common/service/common-municipality.service";
-import {FieldWorkService} from "../field-work/field-work.service";
+import { CommonMunicipalityService } from '../common/service/common-municipality.service';
+import { FieldWorkService } from '../field-work/field-work.service';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -54,7 +54,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     RegisterFilterService,
     CommonRegisterHelperService,
     FilterHelper,
-    FieldWorkService
+    FieldWorkService,
   ],
 })
 export class OverviewModule {}

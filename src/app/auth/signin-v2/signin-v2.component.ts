@@ -1,13 +1,19 @@
-import {Component, inject, ViewChild} from '@angular/core';
-import {MatStepper, MatStepperModule} from "@angular/material/stepper";
-import {MatButtonModule} from "@angular/material/button";
-import {MatIconModule} from "@angular/material/icon";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {UsernamePasswordFormComponent} from "./username-password-form/username-password-form.component";
-import {TwoFaTokenVerifyComponent} from "./two-fa-token-verify/two-fa-token-verify.component";
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
-import {SigninV2Service} from "./signin-v2.service";
+import { Component, inject, ViewChild } from '@angular/core';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UsernamePasswordFormComponent } from './username-password-form/username-password-form.component';
+import { TwoFaTokenVerifyComponent } from './two-fa-token-verify/two-fa-token-verify.component';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
+import { SigninV2Service } from './signin-v2.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'asrdb-signin-v2',
@@ -23,12 +29,11 @@ import {SigninV2Service} from "./signin-v2.service";
     MatCardContent,
     MatCardTitle,
     ReactiveFormsModule,
+    RouterLink,
   ],
-  providers: [
-    SigninV2Service
-  ],
+  providers: [SigninV2Service],
   templateUrl: './signin-v2.component.html',
-  styleUrl: './signin-v2.component.css'
+  styleUrl: './signin-v2.component.css',
 })
 export class SigninV2Component {
   @ViewChild(MatStepper) stepper!: MatStepper;
@@ -46,13 +51,11 @@ export class SigninV2Component {
     this.signinService.login(
       this.usernamePasswordFormGroup.value.username ?? '',
       this.usernamePasswordFormGroup.value.password ?? '',
-      this.stepper)
+      this.stepper
+    );
   }
 
   public onTokenVerifyProceed() {
-    this.signinService.verify2FA(
-      this.tokenVerifyFormGroup.value.token ?? ''
-    )
+    this.signinService.verify2FA(this.tokenVerifyFormGroup.value.token ?? '');
   }
-
 }

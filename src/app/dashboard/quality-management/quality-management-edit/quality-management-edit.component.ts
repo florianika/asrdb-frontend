@@ -37,6 +37,6 @@ export class QualityManagementEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.qualityManagementService.cancleEdit();
+    this.qualityManagementService.cancelEdit();
   }
 }

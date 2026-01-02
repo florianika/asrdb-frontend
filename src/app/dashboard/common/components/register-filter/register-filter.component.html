@@ -1,118 +1,165 @@
 <h2 mat-dialog-title i18n>Filter data</h2>
-<mat-dialog-content style="padding-top: 10px;">
+<mat-dialog-content style="padding-top: 10px">
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Municipality</mat-label>
-    <mat-select #municipalitySelect [value]="filterConfig.filter.BldMunicipality"
+    <mat-select
+      #municipalitySelect
+      [value]="filterConfig.filter.BldMunicipality"
       (selectionChange)="changeValue($event, 'BldMunicipality')">
       <div class="search-field-container">
         <mat-form-field class="w-100" appearance="outline">
-          <input matInput i18n-placeholder
-                 placeholder="Search..."
-                 [(ngModel)]="filterValue"/>
-          <button mat-icon-button
-                  matSuffix
-                  *ngIf="filterValue"
-                  (click)="filterValue = ''">
+          <input
+            matInput
+            i18n-placeholder
+            placeholder="Search..."
+            [(ngModel)]="filterValue" />
+          <button
+            mat-icon-button
+            matSuffix
+            *ngIf="filterValue"
+            (click)="filterValue = ''">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </div>
-      <mat-option *ngFor="let municipality of municipalities"
-        [value]="municipality.code" (click)="municipalitySelect.close()">{{municipality.name}}</mat-option>
+      <mat-option
+        *ngFor="let municipality of municipalities"
+        [value]="municipality.code"
+        (click)="municipalitySelect.close()"
+        >{{ municipality.name }}</mat-option
+      >
     </mat-select>
-    <button mat-icon-button matSuffix
-            (click)="cleanValue($event, 'BldMunicipality')"
-            *ngIf="filterConfig.filter.BldMunicipality">
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'BldMunicipality')"
+      *ngIf="filterConfig.filter.BldMunicipality">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Enumeration area</mat-label>
-    <input matInput [(ngModel)]="filterConfig.filter.BldEnumArea"/>
+    <input matInput [(ngModel)]="filterConfig.filter.BldEnumArea" />
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Status</mat-label>
-    <mat-select #statusSelect
+    <mat-select
+      #statusSelect
       [value]="filterConfig.filter.BldStatus"
       [multiple]="true"
       (selectionChange)="changeValue($event, 'BldStatus')">
-      <mat-option *ngFor="let status of filterConfig.options.BldStatus"
-        [value]="status.code" (click)="statusSelect.close()">{{status.name}}</mat-option>
+      <mat-option
+        *ngFor="let status of filterConfig.options.BldStatus"
+        [value]="status.code"
+        (click)="statusSelect.close()"
+        >{{ status.name }}</mat-option
+      >
     </mat-select>
-    <button mat-icon-button matSuffix
-            (click)="cleanValue($event, 'BldStatus')"
-            *ngIf="filterConfig.filter.BldStatus?.length">
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'BldStatus')"
+      *ngIf="filterConfig.filter.BldStatus?.length">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Type</mat-label>
-    <mat-select #typeSelect
+    <mat-select
+      #typeSelect
       [value]="filterConfig.filter.BldType"
       [multiple]="true"
       (selectionChange)="changeValue($event, 'BldType')">
       <mat-option
-              *ngFor="let type of filterConfig.options.BldType"
-              [value]="type.code" (click)="typeSelect.close()">{{type.name}}</mat-option>
+        *ngFor="let type of filterConfig.options.BldType"
+        [value]="type.code"
+        (click)="typeSelect.close()"
+        >{{ type.name }}</mat-option
+      >
     </mat-select>
-    <button mat-icon-button matSuffix
-            (click)="cleanValue($event, 'BldType')"
-            *ngIf="filterConfig.filter.BldType?.length">
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'BldType')"
+      *ngIf="filterConfig.filter.BldType?.length">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Quality</mat-label>
-    <mat-select #qualitySelect
+    <mat-select
+      #qualitySelect
       [value]="filterConfig.filter.BldQuality"
       [multiple]="true"
       (selectionChange)="changeValue($event, 'BldQuality')">
-      <mat-option *ngFor="let type of filterConfig.options.BldQuality"
-                  [value]="type.code" (click)="qualitySelect.close()">{{type.name}}</mat-option>
+      <mat-option
+        *ngFor="let type of filterConfig.options.BldQuality"
+        [value]="type.code"
+        (click)="qualitySelect.close()"
+        >{{ type.name }}</mat-option
+      >
     </mat-select>
-    <button mat-icon-button matSuffix
-            (click)="cleanValue($event, 'BldQuality')"
-            *ngIf="filterConfig.filter.BldQuality?.length">
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'BldQuality')"
+      *ngIf="filterConfig.filter.BldQuality?.length">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
-      <mat-label i18n>Building review</mat-label>
-      <mat-select #reviewSelect
-              [value]="filterConfig.filter.BldReview"
-              [multiple]="true"
-              (selectionChange)="changeValue($event, 'BldReview')">
-          <mat-option *ngFor="let type of filterConfig.options.BldReview"
-                      [value]="type.code" (click)="reviewSelect.close()">{{type.name}}</mat-option>
-      </mat-select>
-      <button mat-icon-button matSuffix
-              (click)="cleanValue($event, 'BldReview')"
-              *ngIf="filterConfig.filter.BldReview?.length">
-          <mat-icon>close</mat-icon>
-      </button>
+    <mat-label i18n>Building review</mat-label>
+    <mat-select
+      #reviewSelect
+      [value]="filterConfig.filter.BldReview"
+      [multiple]="true"
+      (selectionChange)="changeValue($event, 'BldReview')">
+      <mat-option
+        *ngFor="let type of filterConfig.options.BldReview"
+        [value]="type.code"
+        (click)="reviewSelect.close()"
+        >{{ type.name }}</mat-option
+      >
+    </mat-select>
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'BldReview')"
+      *ngIf="filterConfig.filter.BldReview?.length">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Lat/Long status</mat-label>
-    <mat-select #centroidStatusSelect
-                [value]="filterConfig.filter.BldCentroidStatus"
-                [multiple]="true"
-                (selectionChange)="changeValue($event, 'BldCentroidStatus')">
-      <mat-option *ngFor="let type of filterConfig.options.BldCentroidStatus"
-                  [value]="type.code" (click)="centroidStatusSelect.close()">{{type.name}}</mat-option>
+    <mat-select
+      #centroidStatusSelect
+      [value]="filterConfig.filter.BldCentroidStatus"
+      [multiple]="true"
+      (selectionChange)="changeValue($event, 'BldCentroidStatus')">
+      <mat-option
+        *ngFor="let type of filterConfig.options.BldCentroidStatus"
+        [value]="type.code"
+        (click)="centroidStatusSelect.close()"
+        >{{ type.name }}</mat-option
+      >
     </mat-select>
-    <button mat-icon-button matSuffix
-            (click)="cleanValue($event, 'BldCentroidStatus')"
-            *ngIf="filterConfig.filter.BldCentroidStatus?.length">
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'BldCentroidStatus')"
+      *ngIf="filterConfig.filter.BldCentroidStatus?.length">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
-<!--  <mat-checkbox [checked]="!!filterConfig.filter.BldWithQuePendingIds"-->
-<!--                (change)="changeCheckbox($event, 'BldWithQuePendingIds')">>-->
-<!--    <span i18n>Show only building with pending QUE logs</span>-->
-<!--  </mat-checkbox>-->
+  <!--  <mat-checkbox [checked]="!!filterConfig.filter.BldWithQuePendingIds"-->
+  <!--                (change)="changeCheckbox($event, 'BldWithQuePendingIds')">>-->
+  <!--    <span i18n>Show only building with pending QUE logs</span>-->
+  <!--  </mat-checkbox>-->
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close i18n>Cancel</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button mat-button color="primary" [mat-dialog-close]="filterConfig" i18n>Filter</button>
+  <button mat-button color="primary" [mat-dialog-close]="filterConfig" i18n>
+    Filter
+  </button>
 </mat-dialog-actions>

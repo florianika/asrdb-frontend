@@ -25,27 +25,27 @@ export class CommonBuildingService {
   uniqueValueInfos = [
     {
       value: 1,
-      label: 'Leja e ndërtimit e lëshuar',
+      label: $localize`Leja e ndërtimit e lëshuar`,
       symbol: this.getSymbol('#89CE00'),
     },
     {
       value: 2,
-      label: 'Në ndërtim',
+      label: $localize`Në ndërtim`,
       symbol: this.getSymbol('#5BA300'),
     },
     {
       value: 4,
-      label: 'Ekzistuese',
+      label: $localize`Ekzistuese`,
       symbol: this.getSymbol('#B51963'),
     },
     {
       value: 5,
-      label: 'E rrënuar',
+      label: $localize`E rrënuar`,
       symbol: this.getSymbol('#F57600'),
     },
     {
       value: 6,
-      label: 'E shkatërruar / nuk ekziston më',
+      label: $localize`E shkatërruar / nuk ekziston më`,
       symbol: this.getSymbol('rgba(145,145,145,0.53)'),
     },
   ] as UniqueValueInfoProperties[];
@@ -53,7 +53,7 @@ export class CommonBuildingService {
   get bldLayer(): FeatureLayer {
     const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
-      title: 'ASRDB Buildings',
+      title: $localize`ASRDB Buildings`,
       apiKey: token,
       url: environment.building_url,
       outFields: ['GlobalID'],
@@ -62,28 +62,23 @@ export class CommonBuildingService {
         uniqueValueInfos: this.uniqueValueInfos as UniqueValueInfoProperties[],
       }),
       legendEnabled: true,
-      // create a new popupTemplate for the layer
       popupTemplate: {
-        // autocasts as new PopupTemplate()
-        title: 'ASRDB Building {GlobalID}',
+        title: $localize`ASRDB Building {GlobalID}`,
         content: [
           {
-            // It is also possible to set the fieldInfos outside of the content
-            // directly in the popupTemplate. If no fieldInfos is specifically set
-            // in the content, it defaults to whatever may be set within the popupTemplate.
             type: 'fields',
             fieldInfos: [
               {
                 fieldName: 'BldStatus',
-                label: 'Status',
+                label: $localize`Status`,
               },
               {
                 fieldName: 'BldEntranceRecs',
-                label: 'Number of recorded entrances',
+                label: $localize`Number of recorded entrances`,
               },
               {
                 fieldName: 'BldDwellingRecs',
-                label: 'Number of recorded dwellings',
+                label: $localize`Number of recorded dwellings`,
               },
             ],
           },
@@ -101,13 +96,9 @@ export class CommonBuildingService {
 
   getSymbol(color: string) {
     return {
-      type: 'simple-fill', // autocasts as new SimpleFillSymbol()
+      type: 'simple-fill',
       color: 'transparent',
-      outline: {
-        // autocasts as new SimpleLineSymbol()
-        color: color,
-        width: 3,
-      },
+      outline: { color: color, width: 3 },
     };
   }
 
@@ -130,37 +121,19 @@ export class CommonBuildingService {
   }
 
   createFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.building_url +
-      '/addFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.building_url}/addFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   updateFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.building_url +
-      '/updateFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.building_url}/updateFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   getBuildingQuality(bldId: string): Observable<string | null> {
@@ -169,21 +142,17 @@ export class CommonBuildingService {
       outFields: ['BldQuality'],
     } as Partial<QueryFilter>;
     return this.getBuildingData(filter).pipe(
-      catchError((err: any) => {
-        return this.handleError(err);
-      }),
+      catchError((err: any) => this.handleError(err)),
       map((res: EntityDataResponse | null) => {
-        if (!res) {
-          return res;
-        }
+        if (!res) return res;
         const [attributes] = res.data.features.map(
           (field: any) => field.attributes
         );
         const codedValues = res.data.fields[0].domain.codedValues;
         return (
           codedValues.find(
-            (codedValue: { name: string; code: number }) =>
-              codedValue.code === attributes.BldQuality
+            (cv: { name: string; code: number }) =>
+              cv.code === attributes.BldQuality
           )?.name ?? '-'
         );
       })
@@ -196,49 +165,36 @@ export class CommonBuildingService {
       outFields: ['GlobalID', 'OBJECTID'],
     } as Partial<QueryFilter>;
     this.getBuildingData(filter)
-      .pipe(
-        catchError((err: any) => {
-          return this.handleError(err);
-        })
-      )
+      .pipe(catchError(err => this.handleError(err)))
       .subscribe({
-        next: (res: any) => {
-          this.handleResponse(res, callback);
-        },
-        error: (err: any) => {
-          return this.handleError(err);
-        },
+        next: res => this.handleResponse(res, callback),
+        error: err => this.handleError(err),
       });
   }
 
   private handleResponse(res: any, callback?: () => void) {
-    const [attributes] = res.data.features.map(
-      (field: any) => field.attributes
-    );
+    const [attributes] = res.data.features.map((f: any) => f.attributes);
     const object = {
       GlobalID: attributes.GlobalID,
       OBJECTID: attributes.OBJECTID,
       BldQuality: 9,
     };
-    this.updateFeature([
-      {
-        attributes: object,
-      },
-    ]).subscribe({
-      next: (response: EntityManageResponse) => {
-        const responseData =
-          response['addResults']?.[0] ?? response['updateResults']?.[0];
-        if (!responseData?.success) {
-          this.snackBar.open('Could not update value', 'Ok', {
-            duration: 3000,
-          });
+    this.updateFeature([{ attributes: object }]).subscribe({
+      next: response => {
+        const success =
+          response['addResults']?.[0]?.success ??
+          response['updateResults']?.[0]?.success;
+        if (!success) {
+          this.snackBar.open(
+            $localize`Could not update value`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           return;
         }
         this.executeAutomaticRules(attributes.GlobalID, callback);
       },
-      error: (err: any) => {
-        return this.handleError(err);
-      },
+      error: err => this.handleError(err),
     });
   }
 
@@ -256,23 +212,15 @@ export class CommonBuildingService {
       .post(
         environment.base_url + '/qms/check/automatic',
         JSON.stringify(body),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        { headers: { 'Content-Type': 'application/json' } }
       )
       .subscribe({
-        next: () => {
-          callback?.();
-        },
+        next: () => callback?.(),
         error: err => {
           this.snackBar.open(
-            'Could not start automatic rules execution',
-            'Ok',
-            {
-              duration: 3000,
-            }
+            $localize`Could not start automatic rules execution`,
+            $localize`Ok`,
+            { duration: 3000 }
           );
           callback?.();
           return this.handleError(err);
@@ -280,8 +228,6 @@ export class CommonBuildingService {
       });
   }
 
-  // This function is called when user completes drawing a rectangle
-  // on the map. Use the rectangle to select features in the layer and table
   async checkIntersectingBuildings(
     view: MapView,
     geometries: Collection<Geometry>
@@ -297,28 +243,19 @@ export class CommonBuildingService {
 
   hasUntestedBuildings(): Observable<boolean> {
     const filter = {
-      where: `BldQuality = 9`,
+      where: 'BldQuality = 9',
       outFields: ['GlobalID'],
     } as Partial<QueryFilter>;
     return this.getBuildingData(filter).pipe(
-      catchError((err: any) => {
-        return this.handleError(err);
-      }),
-      map((res: EntityDataResponse | null) => {
-        if (!res) {
-          return false;
-        }
-        return res.count > 0;
-      })
+      catchError(() => of(null)),
+      map(res => (res ? res.count > 0 : false))
     );
   }
 
   getAllBuildingIdsWithPendingQueLogs(): Observable<any> {
     return this.httpClient
-      .get(environment.base_url +  '/qms/buildings/que/pending')
-      .pipe(catchError(() => {
-        return of(null);
-      }));
+      .get(environment.base_url + '/qms/buildings/que/pending')
+      .pipe(catchError(() => of(null)));
   }
 
   private async fetchAttributesMetadata() {
@@ -360,12 +297,7 @@ export class CommonBuildingService {
       const globalIds = (
         await (await this.bldLayer.queryFeatures(globalIdQuery)).toJSON()
       ).features.map((o: any) => o.attributes['GlobalID']);
-
-      return {
-        count: featureCount,
-        data: features,
-        globalIds,
-      };
+      return { count: featureCount, data: features, globalIds };
     } catch (e) {
       console.log(e);
       return null;
@@ -376,7 +308,7 @@ export class CommonBuildingService {
     const dataQuery = this.bldLayer.createQuery();
     dataQuery.start = 0;
     dataQuery.num = 1;
-    dataQuery.where = 'GlobalID = \'' + buildingId + '\'';
+    dataQuery.where = `GlobalID = '${buildingId}'`;
     dataQuery.outFields = ['BldMunicipality'];
     dataQuery.returnGeometry = false;
 
@@ -384,10 +316,7 @@ export class CommonBuildingService {
       const features = await (
         await this.bldLayer.queryFeatures(dataQuery)
       ).toJSON();
-
-      return {
-        data: features,
-      };
+      return { data: features };
     } catch (e) {
       console.log(e);
       return null;

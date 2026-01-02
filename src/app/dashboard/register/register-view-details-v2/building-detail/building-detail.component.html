@@ -1,15 +1,12 @@
 <div class="detail-container">
-  <span class="detail-value-container" style="border: none">{{title}}: </span>
+  <span class="detail-value-container" style="border: none">{{ title }}: </span>
   <span>
     <span class="detail-value-container">
-      {{value | buildingDetailFormat}}
+      {{ value | buildingDetailFormat }}
     </span>
     <span class="detail-error-icon">
       <ng-container *ngIf="log">
-        <mat-icon
-          [matTooltip]="log"
-          [style.color]="color"
-        >info</mat-icon>
+        <mat-icon [matTooltip]="log" [style.color]="color">info</mat-icon>
       </ng-container>
     </span>
   </span>

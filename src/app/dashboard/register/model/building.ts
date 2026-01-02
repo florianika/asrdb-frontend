@@ -55,7 +55,7 @@ export type BuildingFilter = {
     BldEnumArea: string;
     BldReview: string[];
     BldCentroidStatus: string[];
-    BldWithQuePendingIds: string
+    BldWithQuePendingIds: string;
   };
   options: {
     BldMunicipality: any[];
@@ -63,6 +63,6 @@ export type BuildingFilter = {
     BldType: any[];
     BldQuality: any[];
     BldReview: any[];
-    BldCentroidStatus: any[]
+    BldCentroidStatus: any[];
   };
 };

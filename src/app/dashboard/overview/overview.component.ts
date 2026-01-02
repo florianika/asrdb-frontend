@@ -1,7 +1,8 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, effect,
+  Component,
+  effect,
   isDevMode,
   OnDestroy,
 } from '@angular/core';
@@ -19,8 +20,8 @@ import { RegisterFilterComponent } from '../common/components/register-filter/re
 import { MatDialog } from '@angular/material/dialog';
 import { QueryFilter } from '../register/model/query-filter';
 import { FilterHelper } from '../common/helper/filter-helper';
-import {FieldWorkService} from "../field-work/field-work.service";
-import {Router} from "@angular/router";
+import { FieldWorkService } from '../field-work/field-work.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'asrdb-overview',
@@ -142,7 +143,7 @@ export class OverviewComponent implements OnDestroy {
       queryParams: {
         action: 'close',
         fieldWorkId: this.fieldWorkState().activeFieldWork?.fieldWorkId,
-      }
+      },
     });
   }
 

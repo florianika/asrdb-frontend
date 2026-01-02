@@ -15,16 +15,14 @@ export class CommonStreetService {
   get strLayer(): FeatureLayer {
     const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
-      title: 'ASRDB Streets',
+      title: $localize`ASRDB Streets`,
       apiKey: token,
       url: environment.street_url,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,
-      // create a new popupTemplate for the layer
       popupTemplate: {
-        // autocasts as new PopupTemplate()
-        title: 'ASRDB Street {GlobalID}',
+        title: $localize`ASRDB Street {GlobalID}`,
         content: '',
       },
     });
@@ -49,104 +47,65 @@ export class CommonStreetService {
   }
 
   createFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.street_url +
-      '/addFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.street_url}/addFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   updateFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.street_url +
-      '/updateFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.street_url}/updateFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   deleteFeature(features: any): Observable<EntityManageResponse | null> {
-    const deleteFeatureLayerURL =
-      environment.street_url +
-      '/deleteFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
-    const body = this.createDeleteRequestBody(features.map((f: any) => f.attributes.GlobalID));
-    return this.httpClient.post<EntityManageResponse>(
-      deleteFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
+    const url = `${environment.street_url}/deleteFeatures?token=${this.esriAuthService.getTokenForResource()}`;
+    const body = this.createDeleteRequestBody(
+      features.map((f: any) => f.attributes.GlobalID)
     );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
-  resetStatus(dwlId: string, callback?: () => void) {
+  resetStatus(streetId: string, callback?: () => void) {
     const filter = {
-      where: `GlobalID = '${dwlId}'`,
+      where: `GlobalID = '${streetId}'`,
       outFields: ['GlobalID', 'OBJECTID'],
     } as Partial<QueryFilter>;
     this.getStreets(filter)
-      .pipe(
-        catchError((err: any) => {
-          return this.handleError(err);
-        })
-      )
+      .pipe(catchError(err => this.handleError(err)))
       .subscribe({
-        next: (res: any) => {
-          this.handleResponse(res, callback);
-        },
-        error: (err: any) => {
-          return this.handleError(err);
-        },
+        next: res => this.handleResponse(res, callback),
+        error: err => this.handleError(err),
       });
   }
 
   private handleResponse(res: any, callback?: () => void) {
-    const [attributes] = res.data.features.map(
-      (field: any) => field.attributes
-    );
+    const [attributes] = res.data.features.map((f: any) => f.attributes);
     const object = {
       GlobalID: attributes.GlobalID,
       OBJECTID: attributes.OBJECTID,
     };
-    this.updateFeature([
-      {
-        attributes: object,
-      },
-    ]).subscribe({
-      next: (response: EntityManageResponse) => {
+    this.updateFeature([{ attributes: object }]).subscribe({
+      next: response => {
         const responseData =
           response['addResults']?.[0] ?? response['updateResults']?.[0];
         if (!responseData?.success) {
-          this.snackBar.open('Could not update value', 'Ok', {
-            duration: 3000,
-          });
+          this.snackBar.open(
+            $localize`Could not update value`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           return;
         }
         callback?.();
       },
-      error: (err: any) => {
-        return this.handleError(err);
-      },
+      error: err => this.handleError(err),
     });
   }
 
@@ -185,10 +144,7 @@ export class CommonStreetService {
       const features = await (
         await this.strLayer.queryFeatures(query)
       ).toJSON();
-
-      return {
-        data: features,
-      };
+      return { data: features };
     } catch (e) {
       console.error(e);
       return null;
@@ -212,11 +168,7 @@ export class CommonStreetService {
       const features = await (
         await this.strLayer.queryFeatures(query)
       ).toJSON();
-
-      return {
-        count: featureCount,
-        data: features,
-      };
+      return { count: featureCount, data: features };
     } catch (e) {
       console.error(e);
       return null;
@@ -226,7 +178,11 @@ export class CommonStreetService {
   private createDeleteRequestBody(objectIds: string[]) {
     const data = [];
     data.push(
-      encodeURIComponent('where') + '=' + encodeURIComponent(`GlobalID in (${objectIds.map((id: string) => `'${id}'`).join(',')})`)
+      encodeURIComponent('where') +
+        '=' +
+        encodeURIComponent(
+          `GlobalID in (${objectIds.map(id => `'${id}'`).join(',')})`
+        )
     );
     data.push(encodeURIComponent('f') + '=' + encodeURIComponent('json'));
     return data.join('&');

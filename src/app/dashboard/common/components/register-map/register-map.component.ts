@@ -1,10 +1,19 @@
-import {Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RegisterMapService} from './register-map.service';
-import {RegisterFilterService} from '../../../register/register-table-view/register-filter.service';
-import {BaseMapChangeService} from './custom-map-logic/basemap-change';
-import {FeatureSelectionService} from './custom-map-logic/feature-selection';
-import {WmtsCapabilitiesService} from "./wmts-capabilities.service";
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RegisterMapService } from './register-map.service';
+import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { BaseMapChangeService } from './custom-map-logic/basemap-change';
+import { FeatureSelectionService } from './custom-map-logic/feature-selection';
+import { WmtsCapabilitiesService } from './wmts-capabilities.service';
 
 @Component({
   selector: 'asrdb-register-map',
@@ -14,7 +23,7 @@ import {WmtsCapabilitiesService} from "./wmts-capabilities.service";
     RegisterMapService,
     BaseMapChangeService,
     FeatureSelectionService,
-    WmtsCapabilitiesService
+    WmtsCapabilitiesService,
   ],
   templateUrl: './register-map.component.html',
   styleUrls: ['./register-map.component.css'],
@@ -60,15 +69,22 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
 
     this.registerFilterService.globalIdsObservable.subscribe(async () => {
       await this.registerMapService.filterEntranceData(
-        this.registerFilterService.prepareWhereCaseForEntrance(this.entranceGlobalId)
+        this.registerFilterService.prepareWhereCaseForEntrance(
+          this.entranceGlobalId
+        )
       );
     });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['entranceGlobalId'] && changes['entranceGlobalId'].currentValue) {
+    if (
+      changes['entranceGlobalId'] &&
+      changes['entranceGlobalId'].currentValue
+    ) {
       void this.registerMapService.filterEntranceData(
-        this.registerFilterService.prepareWhereCaseForEntrance(this.entranceGlobalId)
+        this.registerFilterService.prepareWhereCaseForEntrance(
+          this.entranceGlobalId
+        )
       );
     }
   }

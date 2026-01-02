@@ -50,9 +50,11 @@ const routes: Routes = [
   {
     path: 'statistic-export',
     loadComponent: () =>
-      import('./statistic-export/statistic-export.component').then(m => m.StatisticExportComponent),
+      import('./statistic-export/statistic-export.component').then(
+        m => m.StatisticExportComponent
+      ),
     canActivate: [GuardAdminService],
-  }
+  },
 ];
 
 @NgModule({

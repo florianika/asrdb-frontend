@@ -2,36 +2,40 @@
   <div>
     <h1 i18n>Your field work is ready</h1>
     <p i18n>
-      You can now save your field work as a draft or start it.
-      If you want to make changes, you can go back to the previous steps and adjust your configuration.
+      You can now save your field work as a draft or start it. If you want to
+      make changes, you can go back to the previous steps and adjust your
+      configuration.
     </p>
     <p i18n>
-      If your are ready to start your field work, click on the "Open field work" button below.
-      This will mark the file work as "Open".
-      <br/>
+      If your are ready to start your field work, click on the "Open field work"
+      button below. This will mark the file work as "Open".
+      <br />
       All enumerators will be notified using the selected email template.
     </p>
   </div>
 
   <div class="d-flex justify-content-end mt-4 mb-1">
-    <button mat-raised-button
-            color="warn"
-            (click)="handleClose()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="handleClose()"
+      [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
       <span i18n>Save draft & Close</span>
     </button>
     <span class="flex-grow-1"></span>
-    <button mat-raised-button
-            class="me-3"
-            (click)="back()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
+    <button
+      mat-raised-button
+      class="me-3"
+      (click)="back()"
+      [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
       <mat-icon class="me-0">arrow_back_ios</mat-icon>
       <span i18n>Back</span>
     </button>
-    <button mat-raised-button
-            color="primary"
-            (click)="next()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="next()"
+      [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
       <mat-icon iconPositionEnd>check</mat-icon>
       <span i18n>Open field work</span>
     </button>

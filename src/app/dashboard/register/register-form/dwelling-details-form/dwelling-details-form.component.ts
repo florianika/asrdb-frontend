@@ -2,6 +2,7 @@ import {
   Component,
   Inject,
   isDevMode,
+  LOCALE_ID,
   OnDestroy,
   TemplateRef,
   ViewChild,
@@ -63,6 +64,7 @@ import {
   EntityAttribute,
 } from '../../../common/service/common-entity-structure.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
+import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-dwelling-details-form',
@@ -123,7 +125,8 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     private matSnackBar: MatSnackBar,
     private dwellingCreationService: DwellingManagementService,
     private commonStructureService: CommonEntityStructureService,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    @Inject(LOCALE_ID) private locale: string
   ) {
     this.commonStructureService.getEntityStructure(DWELLING_ENTITY);
     this.commonStructureService.structureLoaded.subscribe(response => {
@@ -143,7 +146,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.isSaving = this.dwellingCreationService.isSavingObservable;
     this.isSaving.pipe(takeUntil(this.onDestroy)).subscribe(saving => {
       if (!saving && this.initialized) {
-        this.dialogRef.close("saved");
+        this.dialogRef.close($localize`saved`);
       } else if (!this.initialized) {
         this.initialized = true;
       }
@@ -197,7 +200,10 @@ export class DwellingDetailsFormComponent implements OnDestroy {
               field => field[NAME_PROP] === structureEntry.name
             );
             if (metadataField) {
-              metadataField[ALIAS_PROP] = structureEntry.label.en;
+              metadataField[ALIAS_PROP] = getLocaleProperty(
+                structureEntry.label,
+                this.locale as 'en' | 'sq'
+              );
             }
             return metadataField;
           })
@@ -213,8 +219,9 @@ export class DwellingDetailsFormComponent implements OnDestroy {
               !structureEntry.internal &&
               role &&
               role.toLowerCase() in structureEntry.display &&
-              // @ts-ignore
-              ['write'].includes(structureEntry.display[role.toLowerCase()]) &&
+              ['write'].includes(
+                (structureEntry.display as any)[role.toLowerCase()]
+              ) &&
               !['map', 'none'].includes(structureEntry.section)
             );
           });
@@ -255,7 +262,10 @@ export class DwellingDetailsFormComponent implements OnDestroy {
             console.log('Dwellings: ', res);
           }
           if (!res) {
-            this.matSnackBar.open('Could not load result. Please try again');
+            this.matSnackBar.open(
+              $localize`Could not load result. Please try again`,
+              $localize`Ok`
+            );
             this.isLoadingResults = false;
             return;
           }
@@ -331,11 +341,9 @@ export class DwellingDetailsFormComponent implements OnDestroy {
         if (confirm) {
           setTimeout(() => {
             this.matSnackBar.open(
-              'Dialog was closed and all changes were discarded',
-              'Ok',
-              {
-                duration: 3000,
-              }
+              $localize`Dialog was closed and all changes were discarded`,
+              $localize`Ok`,
+              { duration: 3000 }
             );
             this.dialogRef.close();
           }, 200);
@@ -345,11 +353,9 @@ export class DwellingDetailsFormComponent implements OnDestroy {
 
   private closeDialog() {
     this.matSnackBar.open(
-      'Dialog was closed and all changes were discarded',
-      'Ok',
-      {
-        duration: 3000,
-      }
+      $localize`Dialog was closed and all changes were discarded`,
+      $localize`Ok`,
+      { duration: 3000 }
     );
     this.dialogRef.close();
     return;
@@ -358,11 +364,9 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   save() {
     if (this.formGroup.invalid || (!this.id && !this.entranceId)) {
       this.matSnackBar.open(
-        'Data cannot be saved. Please check the form for invalid data.',
-        'Ok',
-        {
-          duration: 3000,
-        }
+        $localize`Data cannot be saved. Please check the form for invalid data.`,
+        $localize`Ok`,
+        { duration: 3000 }
       );
       this.formGroup.markAllAsTouched();
       return;
@@ -395,10 +399,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
 
   getError(control: AbstractControl) {
     if (control.errors?.['maxlength']) {
-      return (
-        'Value should not be longer than ' +
-        control.errors?.['maxlength'].requiredLength
-      );
+      return $localize`Value should not be longer than ${control.errors?.['maxlength'].requiredLength}`;
     }
     return '';
   }

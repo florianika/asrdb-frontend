@@ -2,11 +2,11 @@ import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine.js';
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import Geometry from '@arcgis/core/geometry/Geometry';
-import {CommonBuildingService} from '../../../service/common-building.service';
-import {CommonEntranceService} from '../../../service/common-entrance.service';
-import {RegisterFilterService} from '../../../../register/register-table-view/register-filter.service';
+import { CommonBuildingService } from '../../../service/common-building.service';
+import { CommonEntranceService } from '../../../service/common-entrance.service';
+import { RegisterFilterService } from '../../../../register/register-table-view/register-filter.service';
 import Map from '@arcgis/core/Map';
 
 @Injectable()
@@ -34,30 +34,22 @@ export class FeatureSelectionService {
     const polygonGraphicsLayer = new GraphicsLayer();
     webmap.add(polygonGraphicsLayer);
 
-    // create a new sketch view model set its layer
     const sketchViewModel = new SketchViewModel({
       view: view,
       layer: polygonGraphicsLayer,
     });
 
-    // Once user is done drawing a rectangle on the map
-    // use the rectangle to select features on the map and table
     const unsubscribe = sketchViewModel.on('create', async event => {
       if (event.state === 'complete') {
-        // this polygon will be used to query features that intersect it
         const geometries = polygonGraphicsLayer.graphics.map(
-          function (graphic) {
-            return graphic.geometry;
-          }
+          graphic => graphic.geometry
         );
         const queryGeometry = await geometryEngine.union(geometries.toArray());
         await this.selectFeatures(view, queryGeometry);
         polygonGraphicsLayer.removeAll();
       }
     });
-    eventsCleanupCallbacks.push(() => {
-      unsubscribe.remove();
-    });
+    eventsCleanupCallbacks.push(() => unsubscribe.remove());
 
     const featureSelectionListener = () => {
       view.closePopup();
@@ -65,25 +57,23 @@ export class FeatureSelectionService {
       sketchViewModel.create('rectangle');
     };
     featureSelection.addEventListener('click', featureSelectionListener);
-    eventsCleanupCallbacks.push(() => {
-      featureSelection.removeEventListener('click', featureSelectionListener);
-    });
+    eventsCleanupCallbacks.push(() =>
+      featureSelection.removeEventListener('click', featureSelectionListener)
+    );
 
     const eraseSelectionListener = () => {
       polygonGraphicsLayer.removeAll();
       this.registerFilterService.setBuildingsGlobalIdFilter([]);
     };
     eraseSelection.addEventListener('click', eraseSelectionListener);
-    eventsCleanupCallbacks.push(() => {
-      eraseSelection.removeEventListener('click', eraseSelectionListener);
-    });
+    eventsCleanupCallbacks.push(() =>
+      eraseSelection.removeEventListener('click', eraseSelectionListener)
+    );
 
     view.ui.add(featureSelection, 'top-left');
     view.ui.add(eraseSelection, 'top-left');
   }
 
-  // This function is called when user completes drawing a rectangle
-  // on the map. Use the rectangle to select features in the layer and table
   private async selectFeatures(view: MapView, geometry: Geometry) {
     if (view) {
       const query = this.bldlayer.createQuery();
@@ -105,7 +95,7 @@ export class FeatureSelectionService {
     selection.id = 'feature-selection';
     selection.className =
       'esri-widget esri-widget--button esri-widget esri-interactive';
-    selection.title = 'Select buildings';
+    selection.title = $localize`Select buildings`;
     span.className = 'esri-icon-checkbox-unchecked';
     selection.appendChild(span);
     return selection;
@@ -114,10 +104,10 @@ export class FeatureSelectionService {
   private createEraseButton() {
     const erase = document.createElement('div');
     const span = document.createElement('span');
-    erase.id = 'feature-selection';
+    erase.id = 'feature-selection-erase';
     erase.className =
       'esri-widget esri-widget--button esri-widget esri-interactive';
-    erase.title = 'Erase selection';
+    erase.title = $localize`Erase selection`;
     span.className = 'esri-icon-erase';
     erase.appendChild(span);
     return erase;

@@ -1,20 +1,22 @@
-import {Component, inject, OnDestroy} from '@angular/core';
-import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
-import {MatCardModule} from "@angular/material/card";
-import {MatButtonModule} from "@angular/material/button";
-import {MatIconModule} from "@angular/material/icon";
-import {BuildingDetailComponent} from "../../building-detail/building-detail.component";
-import {HistoryDetailsComponent} from "../../history-details/history-details.component";
-import {Dwelling} from "../../../model/dwelling";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {DwellingDetailsService} from "../dwelling-details.service";
+import { Component, inject, OnDestroy } from '@angular/core';
 import {
-  DwellingDetailsFormComponent
-} from "../../../register-form/dwelling-details-form/dwelling-details-form.component";
-import {Log} from "../../../register-log-view/model/log";
-import {Subject, takeUntil} from "rxjs";
-import {RegisterViewDetailsService} from "../../register-view-details.service";
-import {EntranceDetailsService} from "../../entrance/entrance-details.service";
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { BuildingDetailComponent } from '../../building-detail/building-detail.component';
+import { HistoryDetailsComponent } from '../../history-details/history-details.component';
+import { Dwelling } from '../../../model/dwelling';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { DwellingDetailsService } from '../dwelling-details.service';
+import { DwellingDetailsFormComponent } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
+import { Log } from '../../../register-log-view/model/log';
+import { Subject, takeUntil } from 'rxjs';
+import { RegisterViewDetailsService } from '../../register-view-details.service';
+import { EntranceDetailsService } from '../../entrance/entrance-details.service';
 
 @Component({
   selector: 'asrdb-dwelling-details',
@@ -26,10 +28,10 @@ import {EntranceDetailsService} from "../../entrance/entrance-details.service";
     MatIconModule,
     BuildingDetailComponent,
     HistoryDetailsComponent,
-    MatProgressSpinner
+    MatProgressSpinner,
   ],
   templateUrl: './dwelling-details.component.html',
-  styleUrl: './dwelling-details.component.css'
+  styleUrl: './dwelling-details.component.css',
 })
 export class DwellingDetailsComponent implements OnDestroy {
   private destroy$ = new Subject<boolean>();
@@ -64,9 +66,7 @@ export class DwellingDetailsComponent implements OnDestroy {
     return this.structures()?.sections ?? [];
   }
 
-  constructor(public dialogRef: MatDialogRef<DwellingDetailsComponent>) {
-
-  }
+  constructor(public dialogRef: MatDialogRef<DwellingDetailsComponent>) {}
 
   editDwellingDetails() {
     this.matDialog
@@ -76,7 +76,9 @@ export class DwellingDetailsComponent implements OnDestroy {
           entrances: this.entranceViewData().entranceList,
           id: this.viewData().selectedDwelling?.GlobalID,
           entranceId: this.entranceViewData().selectedEntrance?.GlobalID,
-          logs: this.dwellingDetailsService.getLogs(this.viewData().selectedDwelling?.GlobalID || ''),
+          logs: this.dwellingDetailsService.getLogs(
+            this.viewData().selectedDwelling?.GlobalID || ''
+          ),
         },
       })
       .afterClosed()
@@ -87,7 +89,7 @@ export class DwellingDetailsComponent implements OnDestroy {
         }
         this.registerViewDetailsService.markAsUntested(
           this.buildingViewData().building?.GlobalID || '',
-          this.entranceViewData().selectedEntrance?.GlobalID || '',
+          this.entranceViewData().selectedEntrance?.GlobalID || ''
         );
         this.entranceDetailsService.dialogRef?.close();
         this.dialogRef.close();
@@ -98,6 +100,8 @@ export class DwellingDetailsComponent implements OnDestroy {
     if (!this.dwelling) {
       return '';
     }
-    return this.dwellingDetailsService.getValueFromStatus(column as keyof Dwelling);
+    return this.dwellingDetailsService.getValueFromStatus(
+      column as keyof Dwelling
+    );
   }
 }

@@ -44,6 +44,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
   public intersectsBuilding = false;
+
   get isBuilding() {
     return this.entityType === BUILDING_ENTITY;
   }
@@ -100,7 +101,7 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
       );
     }
 
-    // Initialize MapView and return an instance of MapView
+    // Initialize MapView
     this.initializeMap().then(() => {
       console.log('The map is ready.');
     });
@@ -109,49 +110,36 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
       this.intersectsBuilding = true;
       if (value.rings && !this.isBuilding) {
         this.matSnackBar.open(
-          'You have changed the building polygon while in "Entrance" mode. ' +
-            'This operation is not allowed and changes will not be saved. ' +
-            'To modify the building polygon, please edit the building.',
-          'Ok',
-          {
-            duration: 5000,
-          }
+          $localize`You have changed the building polygon while in "Entrance" mode. This operation is not allowed and changes will not be saved. To modify the building polygon, please edit the building.`,
+          $localize`Ok`,
+          { duration: 5000 }
         );
         return;
       } else if (value.x && value.y && !this.isEntrance) {
         this.matSnackBar.open(
-          'You have changed the entrance point while in "Building" mode. ' +
-            'This operation is not allowed and changes will not be saved. ' +
-            'To modify the entrance point, please edit the entrance.',
-          'Ok',
-          {
-            duration: 5000,
-          }
+          $localize`You have changed the entrance point while in "Building" mode. This operation is not allowed and changes will not be saved. To modify the entrance point, please edit the entrance.`,
+          $localize`Ok`,
+          { duration: 5000 }
         );
         return;
       } else if (value.x && value.y && this.isEntrance) {
         if (this.entranceId && value.id!.toString() !== this.entranceId) {
           this.matSnackBar.open(
-            'You have changed the position of an entrance which is not the one being edited. ' +
-              'The change will not be saved. Please only work with the entrance colored in white.',
-            'Ok',
-            {
-              duration: 5000,
-            }
+            $localize`You have changed the position of an entrance which is not the one being edited. The change will not be saved. Please only work with the entrance colored in white.`,
+            $localize`Ok`,
+            { duration: 5000 }
           );
           return;
         } else if (!this.entranceId && value.id!.toString().startsWith('{')) {
           this.matSnackBar.open(
-            'You have changed the position of an entrance which is not the one being created. ' +
-              'The change will not be saved. Please only work with the entrance colored in white.',
-            'Ok',
-            {
-              duration: 5000,
-            }
+            $localize`You have changed the position of an entrance which is not the one being created. The change will not be saved. Please only work with the entrance colored in white.`,
+            $localize`Ok`,
+            { duration: 5000 }
           );
           return;
         }
       }
+
       if (value.rings) {
         if (
           await this.buildingService.checkIntersectingBuildings(
@@ -161,16 +149,12 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
         ) {
           this.intersectsBuilding = true;
           this.matSnackBar.open(
-            'The polygon you created/edited intersects with an exiting one. ' +
-              'Changes will not be applied.' +
-              'Please move the polygon so it does not intersect with anything.',
-            'Ok',
-            {
-              duration: 5000,
-            }
+            $localize`The polygon you created/edited intersects with an existing one. Changes will not be applied. Please move the polygon so it does not intersect with anything.`,
+            $localize`Ok`,
+            { duration: 5000 }
           );
           this.formGroup.patchValue({
-            buildingPoly: undefined, // remove value to make form invalid
+            buildingPoly: undefined,
           });
           return;
         }
@@ -194,16 +178,14 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
           id: value.id,
           spatialReference: value.spatialReference,
         });
-        this.formGroup.patchValue({
-          entrancePoints: currentMapPoint,
-        });
-
+        this.formGroup.patchValue({ entrancePoints: currentMapPoint });
         this.centroidUpdated.emit({
           latitude: value.centroid?.latitude,
           longitude: value.centroid?.longitude,
           id: value.id,
         });
       }
+
       if (isDevMode()) {
         console.log(this.formGroup.value);
       }
@@ -211,16 +193,12 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
 
     this.mapService.valueDeleted.subscribe(value => {
       if (value.rings) {
-        this.formGroup.patchValue({
-          buildingPoly: null,
-        });
+        this.formGroup.patchValue({ buildingPoly: null });
       } else if (value.x && value.y) {
         const currentMapPoint = this.formGroup.value.entrancePoints.filter(
           (mp: Point) => mp.id !== value.id
         );
-        this.formGroup.patchValue({
-          entrancePoints: currentMapPoint,
-        });
+        this.formGroup.patchValue({ entrancePoints: currentMapPoint });
       }
       if (isDevMode()) {
         console.log(this.formGroup.value);
@@ -230,7 +208,6 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.view) {
-      // destroy the map view
       this.view.destroy();
     }
   }

@@ -24,8 +24,9 @@ import {
 } from '@angular/common/http';
 import { AuthInterceptor } from './common/services/auth-interceptor';
 import { CommonEsriAuthService } from './dashboard/common/service/common-esri-auth.service';
-import {DateAdapter, MAT_DATE_LOCALE} from "@angular/material/core";
-import {MomentDateAdapter} from "@angular/material-moment-adapter";
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import {NgOptimizedImage} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -36,19 +37,20 @@ import {MomentDateAdapter} from "@angular/material-moment-adapter";
     ToolbarComponent,
   ],
   bootstrap: [AppComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatDividerModule,
-    MatMenuModule,
-    MatSnackBarModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatListModule,
+        MatDividerModule,
+        MatMenuModule,
+        MatSnackBarModule,
+        NgOptimizedImage,
+    ],
   providers: [
     AuthStateService,
     CommonEsriAuthService,

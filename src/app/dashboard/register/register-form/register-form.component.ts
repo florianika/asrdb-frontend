@@ -7,7 +7,7 @@ import { BuildingDetailsFormComponent } from './building-details-form/building-d
 import { EntranceDetailsFormComponent } from './entrance-details-form/entrance-details-form.component';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { CommonEntranceService } from '../../common/service/common-entrance.service';
-import {catchError, combineLatest, map, Subject, takeUntil, zip} from 'rxjs';
+import { catchError, combineLatest, map, Subject, takeUntil, zip } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BuildingManagementService } from './building-creation.service';
@@ -63,12 +63,10 @@ export class RegisterFormComponent implements OnInit {
   private isSavingBuilding = this.buildingManagementService.isSavingObservable;
   private isSavingEntrance = this.entranceManagementService.isSavingObservable;
 
-  isSaving = combineLatest([
-    this.isSavingBuilding,
-    this.isSavingEntrance
-  ]).pipe(
-    map(([isSavingBuilding, isSavingEntrance]) =>
-      isSavingBuilding || isSavingEntrance
+  isSaving = combineLatest([this.isSavingBuilding, this.isSavingEntrance]).pipe(
+    map(
+      ([isSavingBuilding, isSavingEntrance]) =>
+        isSavingBuilding || isSavingEntrance
     )
   );
 
@@ -120,21 +118,22 @@ export class RegisterFormComponent implements OnInit {
       undefined;
     if (!this.entityType) {
       this.router.navigateByUrl('dashboard/register');
-      this.matSnackBar.open('No entity type provided', 'Ok', {
-        duration: 3000,
-      });
+      this.matSnackBar.open(
+        $localize`No entity type provided`,
+        $localize`Ok`,
+        { duration: 3000 }
+      );
       return;
     }
+
     this.buildingId =
       this.activatedRoute.snapshot.paramMap.get('id') ?? undefined;
 
     if (this.entityType === ENTRANCE_ENTITY && !this.buildingId) {
       this.matSnackBar.open(
-        'Creating an entrance before a building is not permitted',
-        'Ok',
-        {
-          duration: 3000,
-        }
+        $localize`Creating an entrance before a building is not permitted`,
+        $localize`Ok`,
+        { duration: 3000 }
       );
       void this.router.navigateByUrl('dashboard/register');
       return;
@@ -154,9 +153,10 @@ export class RegisterFormComponent implements OnInit {
         .getEntranceData({
           returnGeometry: true,
           where: `EntBldGlobalID='${this.buildingId}' AND EntQuality <> 0`,
-          num: 9999
+          num: 9999,
         })
         .pipe(takeUntil(this.subscriber));
+
       this.commonEntityStructureService.structureLoaded
         .pipe(takeUntil(this.subscriber))
         .subscribe(response => {
@@ -169,11 +169,9 @@ export class RegisterFormComponent implements OnInit {
         .pipe(
           catchError(error => {
             this.matSnackBar.open(
-              'Error loading data: ' + error.message,
-              'Ok',
-              {
-                duration: 5000,
-              }
+              $localize`Error loading data: ${error.message}`,
+              $localize`Ok`,
+              { duration: 5000 }
             );
             this.isLoadingData = false;
             return [];
@@ -188,13 +186,13 @@ export class RegisterFormComponent implements OnInit {
           };
 
           this.existingEntrancesDetails = entrances?.data.features.map(
-            (featrue: any) => featrue.attributes
+            (feature: any) => feature.attributes
           );
           this.existingEntrancesGeometry = entrances?.data.features.map(
-            (featrue: any) => ({
-              ...featrue.geometry,
+            (feature: any) => ({
+              ...feature.geometry,
               type: 'point',
-              id: featrue.attributes.GlobalID,
+              id: feature.attributes.GlobalID,
             })
           );
           this.isLoadingData = false;
@@ -208,8 +206,7 @@ export class RegisterFormComponent implements OnInit {
     if (this.buildingId === centroid.id || !centroid.id) {
       this.buildingDetails.patchValue({
         BldLatitude: centroid.latitude,
-        BldLongitude: centroid.longitude
-        // BldCentroidStatus: 1
+        BldLongitude: centroid.longitude,
       });
     } else if (centroid.id) {
       this.entranceCentroids.push(centroid);
@@ -265,11 +262,9 @@ export class RegisterFormComponent implements OnInit {
 
   private showErrorMessage() {
     this.matSnackBar.open(
-      'Data cannot be saved. Please check the form for invalid data.',
-      'Ok',
-      {
-        duration: 3000,
-      }
+      $localize`Data cannot be saved. Please check the form for invalid data.`,
+      $localize`Ok`,
+      { duration: 3000 }
     );
     this.mapDetails.markAllAsTouched();
     this.buildingDetails.markAllAsTouched();
@@ -277,9 +272,11 @@ export class RegisterFormComponent implements OnInit {
   }
 
   private closeDialog() {
-    this.matSnackBar.open('All changes were discarded', 'Ok', {
-      duration: 3000,
-    });
+    this.matSnackBar.open(
+      $localize`All changes were discarded`,
+      $localize`Ok`,
+      { duration: 3000 }
+    );
     if (this.buildingId) {
       this.router.navigateByUrl(
         'dashboard/register/details/BUILDING/' + this.buildingId
@@ -306,7 +303,9 @@ export class RegisterFormComponent implements OnInit {
     const entrance = {} as any;
     const centroid = this.entranceCentroids.find(centroid => {
       if (!centroid.id) {
-        throw new Error('Centroid must have an id for the entrance');
+        throw new Error(
+          $localize`Centroid must have an id for the entrance`
+        );
       }
       if (this.entranceId) {
         return centroid.id === this.entranceId;
@@ -334,7 +333,6 @@ export class RegisterFormComponent implements OnInit {
 
   private prepareBuildingDetails() {
     const buildingDetails = this.buildingDetails.value as Building;
-
     if (this.buildingId) {
       buildingDetails['GlobalID'] = this.buildingId;
       buildingDetails['OBJECTID'] = this.existingBuildingDetails!.OBJECTID;

@@ -13,25 +13,25 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SignupService } from './signup.service';
 import { MatSelectModule } from '@angular/material/select';
-import {MatDialogClose} from "@angular/material/dialog";
+import { MatDialogClose } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [SignupComponent],
-    imports: [
-        CommonModule,
-        SignupRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatSelectModule,
-        NgOptimizedImage,
-        MatDialogClose,
-    ],
+  imports: [
+    CommonModule,
+    SignupRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatSelectModule,
+    NgOptimizedImage,
+    MatDialogClose,
+  ],
   providers: [SignupService],
 })
 export class SignupModule {}

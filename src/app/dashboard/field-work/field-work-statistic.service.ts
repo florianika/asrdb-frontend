@@ -1,28 +1,31 @@
-import {Injectable, signal} from '@angular/core';
-import {environment} from "../../../environments/environment";
-import {AuthStateService} from "../../common/services/auth-state.service";
-import {HttpClient} from "@angular/common/http";
-import {catchError, of} from "rxjs";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { Injectable, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { AuthStateService } from '../../common/services/auth-state.service';
+import { HttpClient } from '@angular/common/http';
+import { catchError, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export type FieldWorkExecuteJobRequest = {
-  id: number,
-  createdUser: string,
-}
+  id: number;
+  createdUser: string;
+};
+
 export type FieldWorkExecuteJobResponse = {
-  jobId: number
-}
+  jobId: number;
+};
+
 export type FieldWorkJobExecutionStatusResponse = {
-  status: string,
-}
+  status: string;
+};
+
 export type FieldWorkStatisticsResult = {
-  statisticsDTO: FieldWorkStatistics[]
-}
+  statisticsDTO: FieldWorkStatistics[];
+};
 
 export type FieldWorkStatistics = {
-  municipality: number,
-  ruleStatistics: number,
-  bldStatistics: number,
+  municipality: number;
+  ruleStatistics: number;
+  bldStatistics: number;
 };
 
 @Injectable()
@@ -30,106 +33,118 @@ export class FieldWorkStatisticService {
   public statistics = signal({
     loading: false,
     statistics: [] as FieldWorkStatistics[],
-  })
+  });
 
   constructor(
     private authStateService: AuthStateService,
     private httpClient: HttpClient,
-    private matSnackBar: MatSnackBar) { }
+    private matSnackBar: MatSnackBar
+  ) {}
 
   public startFieldWorkJobExecution(fieldWorkId: number) {
-    this.statistics.set({
-      loading: true,
-      statistics: []
-    });
-    const url = environment.base_url + `/qms/fieldwork/${fieldWorkId}/execute-job`;
+    this.statistics.set({ loading: true, statistics: [] });
+    const url = `${environment.base_url}/qms/fieldwork/${fieldWorkId}/execute-job`;
     const request: FieldWorkExecuteJobRequest = {
       id: fieldWorkId,
       createdUser: this.authStateService.getNameId() || 'anonymous',
     };
+
     this.httpClient
       .post<FieldWorkExecuteJobResponse>(url, request)
-      .pipe(catchError(error => {
-        console.error(error);
-        this.matSnackBar.open('Failed to start field work job execution', 'Close', {duration: 3000});
-        return of(null);
-      }))
+      .pipe(
+        catchError(error => {
+          console.error(error);
+          this.matSnackBar.open(
+            $localize`Failed to start field work job execution`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
+          return of(null);
+        })
+      )
       .subscribe((res: FieldWorkExecuteJobResponse | null) => {
         if (!res) {
-          this.statistics.set({
-            loading: false,
-            statistics: []
-          });
+          this.statistics.set({ loading: false, statistics: [] });
           return;
         }
-        this.matSnackBar.open(`Job started with ID: ${res.jobId}`, 'Close', {duration: 3000});
+        this.matSnackBar.open(
+          $localize`Job started with ID: ${res.jobId}`,
+          $localize`Close`,
+          { duration: 3000 }
+        );
         this.getFieldWorkJobExecutionStatus(res.jobId);
       });
   }
 
   public getFieldWorkJobExecutionStatus(jobId: number) {
-    this.statistics.set({
-      loading: true,
-      statistics: []
-    });
-    const url = environment.base_url + `/qms/fieldwork/job/${jobId}/status`;
+    this.statistics.set({ loading: true, statistics: [] });
+    const url = `${environment.base_url}/qms/fieldwork/job/${jobId}/status`;
+
     this.httpClient
       .get<FieldWorkJobExecutionStatusResponse>(url)
-      .pipe(catchError(error => {
-        console.error(error);
-        this.matSnackBar.open('Failed to get field work job execution status', 'Close', {duration: 3000});
-        return of(null);
-      }))
+      .pipe(
+        catchError(error => {
+          console.error(error);
+          this.matSnackBar.open(
+            $localize`Failed to get field work job execution status`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
+          return of(null);
+        })
+      )
       .subscribe((res: FieldWorkJobExecutionStatusResponse | null) => {
         if (!res) {
-          this.statistics.set({
-            loading: false,
-            statistics: []
-          });
+          this.statistics.set({ loading: false, statistics: [] });
           return;
         }
+
         if (res.status === 'COMPLETED') {
-          this.matSnackBar.open('Field work job execution completed successfully', 'Close', {duration: 3000});
+          this.matSnackBar.open(
+            $localize`Field work job execution completed successfully`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
           this.getFieldWorkStatistics(jobId);
         } else if (res.status === 'FAILED') {
-          this.matSnackBar.open('Field work job execution failed', 'Close', {duration: 3000});
-          this.statistics.set({
-            loading: false,
-            statistics: []
-          });
+          this.matSnackBar.open(
+            $localize`Field work job execution failed`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
+          this.statistics.set({ loading: false, statistics: [] });
         } else {
-          setTimeout(() => {
-            this.getFieldWorkJobExecutionStatus(jobId);
-          }, 5000);
+          setTimeout(() => this.getFieldWorkJobExecutionStatus(jobId), 5000);
         }
       });
   }
 
   public getFieldWorkStatistics(jobId: number) {
-    this.statistics.set({
-      loading: true,
-      statistics: []
-    });
-    const url = environment.base_url + `/qms/fieldwork/job/${jobId}/results`;
+    this.statistics.set({ loading: true, statistics: [] });
+    const url = `${environment.base_url}/qms/fieldwork/job/${jobId}/results`;
+
     this.httpClient
       .get<FieldWorkStatisticsResult>(url)
-      .pipe(catchError(error => {
-        console.error(error);
-        this.matSnackBar.open('Failed to get field work statistics', 'Close', {duration: 3000});
-        return of(null);
-      }))
-    .subscribe((res: FieldWorkStatisticsResult | null) => {
-      if (!res) {
+      .pipe(
+        catchError(error => {
+          console.error(error);
+          this.matSnackBar.open(
+            $localize`Failed to get field work statistics`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
+          return of(null);
+        })
+      )
+      .subscribe((res: FieldWorkStatisticsResult | null) => {
+        if (!res) {
+          this.statistics.set({ loading: false, statistics: [] });
+          return;
+        }
         this.statistics.set({
           loading: false,
-          statistics: []
+          statistics: res.statisticsDTO ?? [],
         });
-        return;
-      }
-      this.statistics.set({
-        loading: false,
-        statistics: res.statisticsDTO ?? []
       });
-    });
   }
 }

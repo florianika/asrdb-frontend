@@ -1,14 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/light/main.css';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #fafafa;}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: #fafafa;
+}
 
 .full-width {
   width: 100%;
 }
 
-.table-container, .table {
+.table-container,
+.table {
   width: 100%;
 }
 
@@ -64,7 +72,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   margin-top: -10px;
 }
 
-.search-field-container > mat-form-field > .mat-mdc-form-field-subscript-wrapper {
+.search-field-container
+  > mat-form-field
+  > .mat-mdc-form-field-subscript-wrapper {
   height: 0 !important;
   margin-bottom: 10px;
 }
@@ -87,17 +97,27 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 
 .test-stepper,
 .test-stepper > .mat-horizontal-stepper-wrapper,
-.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container,
-.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container > .mat-horizontal-stepper-content {
+.test-stepper
+  > .mat-horizontal-stepper-wrapper
+  > .mat-horizontal-content-container,
+.test-stepper
+  > .mat-horizontal-stepper-wrapper
+  > .mat-horizontal-content-container
+  > .mat-horizontal-stepper-content {
   height: 100%;
   width: 100%;
 }
 
-.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container {
+.test-stepper
+  > .mat-horizontal-stepper-wrapper
+  > .mat-horizontal-content-container {
   position: relative;
 }
 
-.test-stepper > .mat-horizontal-stepper-wrapper > .mat-horizontal-content-container > .mat-horizontal-stepper-content {
+.test-stepper
+  > .mat-horizontal-stepper-wrapper
+  > .mat-horizontal-content-container
+  > .mat-horizontal-stepper-content {
   position: absolute;
   overflow: auto;
   top: 0;
@@ -122,6 +142,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   display: inline-block;
 }
 
-.hint-with-error > mat-icon, .normal-hint > mat-icon {
+.hint-with-error > mat-icon,
+.normal-hint > mat-icon {
   vertical-align: bottom;
 }

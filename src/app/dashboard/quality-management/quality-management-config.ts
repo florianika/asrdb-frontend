@@ -34,12 +34,12 @@ export type QualityRuleResponse = {
 };
 
 export type ShortQualityRule = {
-  id: number,
+  id: number;
   localId: string;
   entityType: EntityType;
   nameAl: string;
   nameEn: string;
-}
+};
 
 export type QualityRule = {
   id: number;

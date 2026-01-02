@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatCardModule} from '@angular/material/card';
-import {getDate} from '../../model/common-utils';
-import {HistoryDetailsService} from './history-details.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { getDate } from '../../model/common-utils';
+import { HistoryDetailsService } from './history-details.service';
 
 @Component({
   selector: 'asrdb-history-details',

@@ -1,27 +1,35 @@
 @if (!isLoadingResults) {
-  <mat-dialog-content class="building-details-container mat-typography" style="color: initial; margin: 10px;">
+  <mat-dialog-content
+    class="building-details-container mat-typography"
+    style="color: initial; margin: 10px">
     <mat-card class="building-details-card">
       <mat-card-content>
         <h2 class="details-header">
           <span i18n>Dwelling details</span>
-          <button mat-icon-button class="float-end" (click)="editDwellingDetails()">
+          <button
+            mat-icon-button
+            class="float-end"
+            (click)="editDwellingDetails()">
             <mat-icon>edit</mat-icon>
           </button>
         </h2>
-        <span class="details-subheader" i18n>Data Quality: <span
-          style="font-weight: bold;">{{getValueFromStatus('DwlQuality')}}</span></span>
+        <span class="details-subheader" i18n
+          >Data Quality:
+          <span style="font-weight: bold">{{
+            getValueFromStatus('DwlQuality')
+          }}</span></span
+        >
         @for (section of sections; track section.title) {
           <section [id]="section.title.toLowerCase().replace(' ', '-')">
-            <h3>{{section.title}}</h3>
+            <h3>{{ section.title }}</h3>
             @for (entry of section.entries; track entry.title) {
               <asrdb-building-detail
                 [title]="entry.title"
                 [value]="entry.value"
                 [log]="entry.log"
-                [logType]="entry.logType"
-              ></asrdb-building-detail>
+                [logType]="entry.logType"></asrdb-building-detail>
             }
-            <hr>
+            <hr />
           </section>
         }
       </mat-card-content>
@@ -32,8 +40,9 @@
           [externalCreator]="dwelling.external_creator"
           [externalCreationDate]="dwelling.external_creator_date"
           [externalUpdater]="dwelling.external_editor"
-          [externalUpdateDate]="dwelling.external_editor_date"
-        ></asrdb-history-details>
+          [externalUpdateDate]="
+            dwelling.external_editor_date
+          "></asrdb-history-details>
       }
     </div>
   </mat-dialog-content>

@@ -33,7 +33,6 @@ export class QualityManagementFormComponent implements OnInit {
 
   @ViewChild('resetDialog') resetDialog!: TemplateRef<any>;
   @ViewChild('cancelDialog') cancelDialog!: TemplateRef<any>;
-
   @ViewChild('stepper') stepper!: MatStepper;
 
   public isSaving = this.qualityManagementService.isSavingAsObservable;
@@ -128,11 +127,9 @@ export class QualityManagementFormComponent implements OnInit {
       this.thirdFormGroup.invalid
     ) {
       this.matSnackBar.open(
-        'Please check the form for invalid fields marked in red',
-        'Ok',
-        {
-          duration: 5000,
-        }
+        $localize`Please check the form for invalid fields marked in red`,
+        $localize`Ok`,
+        { duration: 5000 }
       );
       return;
     }
@@ -156,7 +153,7 @@ export class QualityManagementFormComponent implements OnInit {
       .subscribe(confirm => {
         if (confirm) {
           void this.router.navigate([
-            '/dashboard/quality-management/' + this.qualityType,
+            `/dashboard/quality-management/${this.qualityType}`,
           ]);
         }
       });

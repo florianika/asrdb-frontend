@@ -1,10 +1,20 @@
 <section class="signup-container">
-  <button mat-icon-button mat-dialog-close class="position-absolute end-0 top-0" style="z-index: 9" aria-label="Close">
+  <button
+    mat-icon-button
+    mat-dialog-close
+    class="position-absolute end-0 top-0"
+    style="z-index: 9"
+    aria-label="Close">
     <mat-icon>close</mat-icon>
   </button>
   <mat-card class="signup-card">
     <div>
-      <img class="signup-card-logo" ngSrc="assets/images/logo_instat.png" alt="logo" height="127" width="400">
+      <img
+        class="signup-card-logo"
+        ngSrc="assets/images/logo_instat.png"
+        alt="logo"
+        height="127"
+        width="400" />
     </div>
     <mat-card-title class="signup-card-title">
       Create your new account
@@ -13,40 +23,71 @@
       <form [formGroup]="signupFormGroup">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>First name</mat-label>
-          <input matInput i18n-placeholder placeholder="Enter your first name" formControlName="firstName"
-            (keyup.enter)="signup()">
+          <input
+            matInput
+            i18n-placeholder
+            placeholder="Enter your first name"
+            formControlName="firstName"
+            (keyup.enter)="signup()" />
           <mat-icon matPrefix>account_circle</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls.firstName.invalid" i18n>Please provide your first name</mat-error>
+          <mat-error *ngIf="signupFormGroup.controls.firstName.invalid" i18n
+            >Please provide your first name</mat-error
+          >
         </mat-form-field>
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>Last name</mat-label>
-          <input matInput i18n-placeholder placeholder="Enter your last name" formControlName="lastName"
-            (keyup.enter)="signup()">
+          <input
+            matInput
+            i18n-placeholder
+            placeholder="Enter your last name"
+            formControlName="lastName"
+            (keyup.enter)="signup()" />
           <mat-icon matPrefix>account_circle</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls.lastName.invalid" i18n>Please provide your last name</mat-error>
+          <mat-error *ngIf="signupFormGroup.controls.lastName.invalid" i18n
+            >Please provide your last name</mat-error
+          >
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>Email</mat-label>
-          <input matInput type="email" i18n-placeholder placeholder="Enter your email" formControlName="email"
-            (keyup.enter)="signup()">
+          <input
+            matInput
+            type="email"
+            i18n-placeholder
+            placeholder="Enter your email"
+            formControlName="email"
+            (keyup.enter)="signup()" />
           <mat-icon matPrefix>email</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls.email.invalid" i18n>Please provide a valid email</mat-error>
+          <mat-error *ngIf="signupFormGroup.controls.email.invalid" i18n
+            >Please provide a valid email</mat-error
+          >
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>Municipality</mat-label>
           <mat-icon matPrefix>person_pin_circle</mat-icon>
           <mat-select formControlName="municipality">
-            <mat-option *ngFor="let municipality of municipalities" [value]="municipality.code">
+            <mat-option
+              *ngFor="let municipality of municipalities"
+              [value]="municipality.code">
               {{ municipality.name }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="signupFormGroup.controls.municipality.invalid" i18n>Please select a municipality</mat-error>
+          <mat-error *ngIf="signupFormGroup.controls.municipality.invalid" i18n
+            >Please select a municipality</mat-error
+          >
         </mat-form-field>
       </form>
-      <button mat-flat-button color="primary" class="full-width" style="height: 52px;" [disabled]="loading | async"
-        (click)="signup()" i18n>Continue</button>
+      <button
+        mat-flat-button
+        color="primary"
+        class="full-width"
+        style="height: 52px"
+        [disabled]="loading | async"
+        (click)="signup()"
+        i18n>
+        Continue
+      </button>
     </mat-card-content>
   </mat-card>
 </section>

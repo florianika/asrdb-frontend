@@ -16,6 +16,6 @@
   display: block;
 }
 
-.custom-error-message > mat-icon{
+.custom-error-message > mat-icon {
   vertical-align: top;
 }

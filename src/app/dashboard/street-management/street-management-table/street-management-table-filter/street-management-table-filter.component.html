@@ -1,28 +1,37 @@
 <h2 mat-dialog-title i18n>Filter data</h2>
-<mat-dialog-content style="padding-top: 10px;">
+<mat-dialog-content style="padding-top: 10px">
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Municipality</mat-label>
-    <mat-select [value]="filterConfig.filter.StrMunicipality"
-                (selectionChange)="changeValue($event, 'StrMunicipality')">
+    <mat-select
+      [value]="filterConfig.filter.StrMunicipality"
+      (selectionChange)="changeValue($event, 'StrMunicipality')">
       <div class="search-field-container">
         <mat-form-field class="w-100" appearance="outline">
-          <input matInput i18n-placeholder
-                 placeholder="Search..."
-                 [(ngModel)]="filterValue"/>
-          <button mat-icon-button
-                  matSuffix
-                  *ngIf="filterValue"
-                  (click)="filterValue = ''">
+          <input
+            matInput
+            i18n-placeholder
+            placeholder="Search..."
+            [(ngModel)]="filterValue" />
+          <button
+            mat-icon-button
+            matSuffix
+            *ngIf="filterValue"
+            (click)="filterValue = ''">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </div>
-      <mat-option *ngFor="let municipality of municipalities"
-                  [value]="municipality.code">{{municipality.name}}</mat-option>
+      <mat-option
+        *ngFor="let municipality of municipalities"
+        [value]="municipality.code"
+        >{{ municipality.name }}</mat-option
+      >
     </mat-select>
-    <button mat-icon-button matSuffix
-            (click)="cleanValue($event, 'StrMunicipality')"
-            *ngIf="filterConfig.filter.StrMunicipality">
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'StrMunicipality')"
+      *ngIf="filterConfig.filter.StrMunicipality">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
@@ -32,30 +41,40 @@
       [value]="filterConfig.filter.StrType"
       [multiple]="true"
       (selectionChange)="changeValue($event, 'StrType')">
-      <mat-option *ngFor="let status of filterConfig.options.StrType"
-                  [value]="status.code">{{status.name}}</mat-option>
+      <mat-option
+        *ngFor="let status of filterConfig.options.StrType"
+        [value]="status.code"
+        >{{ status.name }}</mat-option
+      >
     </mat-select>
-    <button mat-icon-button matSuffix
-            (click)="cleanValue($event, 'StrType')"
-            *ngIf="filterConfig.filter.StrType">
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="cleanValue($event, 'StrType')"
+      *ngIf="filterConfig.filter.StrType">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Street name core</mat-label>
-    <input matInput [(ngModel)]="filterConfig.filter.StrNameCore"/>
+    <input matInput [(ngModel)]="filterConfig.filter.StrNameCore" />
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Street name full</mat-label>
-    <input matInput [(ngModel)]="filterConfig.filter.StrNameFull"/>
+    <input matInput [(ngModel)]="filterConfig.filter.StrNameFull" />
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Street address id</mat-label>
-    <input matInput type="number" [(ngModel)]="filterConfig.filter.StrAddressID"/>
+    <input
+      matInput
+      type="number"
+      [(ngModel)]="filterConfig.filter.StrAddressID" />
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close i18n>Cancel</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button mat-button color="primary" [mat-dialog-close]="filterConfig" i18n>Filter</button>
+  <button mat-button color="primary" [mat-dialog-close]="filterConfig" i18n>
+    Filter
+  </button>
 </mat-dialog-actions>

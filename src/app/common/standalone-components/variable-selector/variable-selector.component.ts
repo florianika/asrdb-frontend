@@ -1,18 +1,35 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output,} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {MatFormFieldAppearance, MatFormFieldModule,} from '@angular/material/form-field';
-import {MatSelectChange, MatSelectModule} from '@angular/material/select';
-import {EntityType} from 'src/app/model/RolePermissions.model';
-import {CommonModule} from '@angular/common';
-import {CommonBuildingService} from '../../../dashboard/common/service/common-building.service';
-import {CommonEntranceService} from '../../../dashboard/common/service/common-entrance.service';
-import {CommonDwellingService} from '../../../dashboard/common/service/common-dwellings.service';
-import {Subject, takeUntil} from 'rxjs';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {BUILDING_ENTITY, DWELLING_ENTITY, ENTRANCE_ENTITY,} from '../../constants/common-constants';
-import {CommonEntityStructureService} from "../../../dashboard/common/service/common-entity-structure.service";
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  LOCALE_ID,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  MatFormFieldAppearance,
+  MatFormFieldModule,
+} from '@angular/material/form-field';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { EntityType } from 'src/app/model/RolePermissions.model';
+import { CommonModule } from '@angular/common';
+import { CommonBuildingService } from '../../../dashboard/common/service/common-building.service';
+import { CommonEntranceService } from '../../../dashboard/common/service/common-entrance.service';
+import { CommonDwellingService } from '../../../dashboard/common/service/common-dwellings.service';
+import { Subject, takeUntil } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  BUILDING_ENTITY,
+  DWELLING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../constants/common-constants';
+import { CommonEntityStructureService } from '../../../dashboard/common/service/common-entity-structure.service';
+import { getLocaleProperty } from '../../../dashboard/common/helper/locale-property-helper';
 
 type SelectOption = { text: string; value: string };
 
@@ -67,18 +84,18 @@ export class VariableSelectorComponent implements OnInit, OnDestroy {
 
   constructor(
     private commonEntityStructureService: CommonEntityStructureService,
-  ) {
-  }
+    @Inject(LOCALE_ID) private locale: string
+  ) {}
 
   ngOnInit() {
     this.commonEntityStructureService.structureLoaded
       .pipe(takeUntil(this.destroy$))
-      .subscribe((response) => {
+      .subscribe(response => {
         if (!response.loading && response.structure && response.type) {
           const variables = response.structure
             .filter(el => el.selectable)
             .map(el => ({
-              text: el.label.al,
+              text: getLocaleProperty(el.label, this.locale as 'en' | 'sq'),
               value: el.name,
             }));
           this._variables.set(response.type as EntityType, variables);

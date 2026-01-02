@@ -1,10 +1,10 @@
 @import '../../../style/table.css';
 
 .role-management-table-header {
-    display: flex;
-    flex-flow: row;
+  display: flex;
+  flex-flow: row;
 }
 
 .add-role-button {
-    margin: 10px;
+  margin: 10px;
 }

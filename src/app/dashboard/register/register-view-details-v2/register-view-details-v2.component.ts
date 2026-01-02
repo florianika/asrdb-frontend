@@ -1,30 +1,30 @@
-import {Component, inject, isDevMode, OnInit, ViewChild} from '@angular/core';
-import {RegisterViewDetailsService} from "./register-view-details.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {CommentViewComponent} from "./comment-view/comment-view.component";
-import {HistoryDetailsComponent} from "./history-details/history-details.component";
-import {MatButton, MatIconButton} from "@angular/material/button";
-import {MatCard, MatCardContent} from "@angular/material/card";
+import { Component, inject, isDevMode, OnInit, ViewChild } from '@angular/core';
+import { RegisterViewDetailsService } from './register-view-details.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommentViewComponent } from './comment-view/comment-view.component';
+import { HistoryDetailsComponent } from './history-details/history-details.component';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardContent } from '@angular/material/card';
 import {
   MatDialog,
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
-} from "@angular/material/dialog";
-import {MatDivider} from "@angular/material/divider";
-import {MatIcon} from "@angular/material/icon";
-import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {MatTooltip} from "@angular/material/tooltip";
-import {NgForOf, NgIf} from "@angular/common";
-import {RegisterMapComponent} from "../../common/components/register-map/register-map.component";
-import {Building} from "../model/building";
-import {EntranceDetailsService} from "./entrance/entrance-details.service";
-import {EntranceListComponent} from "./entrance/entrance-list/entrance-list.component";
-import {DwellingListComponent} from "./dwelling/dwelling-list/dwelling-list.component";
-import {BuildingDetailComponent} from "./building-detail/building-detail.component";
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatTooltip } from '@angular/material/tooltip';
+import { NgForOf, NgIf } from '@angular/common';
+import { RegisterMapComponent } from '../../common/components/register-map/register-map.component';
+import { Building } from '../model/building';
+import { EntranceDetailsService } from './entrance/entrance-details.service';
+import { EntranceListComponent } from './entrance/entrance-list/entrance-list.component';
+import { DwellingListComponent } from './dwelling/dwelling-list/dwelling-list.component';
+import { BuildingDetailComponent } from './building-detail/building-detail.component';
 
 @Component({
   selector: 'asrdb-register-view-details-v2',
@@ -51,15 +51,15 @@ import {BuildingDetailComponent} from "./building-detail/building-detail.compone
     MatMenuTrigger,
     EntranceListComponent,
     DwellingListComponent,
-    BuildingDetailComponent
+    BuildingDetailComponent,
   ],
   templateUrl: './register-view-details-v2.component.html',
   standalone: true,
-  styleUrl: './register-view-details-v2.component.css'
+  styleUrl: './register-view-details-v2.component.css',
 })
 export class RegisterViewDetailsV2Component implements OnInit {
-  @ViewChild("approveReview") approveReview?: any;
-  @ViewChild("rejectReview") rejectReview?: any;
+  @ViewChild('approveReview') approveReview?: any;
+  @ViewChild('rejectReview') rejectReview?: any;
 
   id: string = '';
   private activatedRoute = inject(ActivatedRoute);
@@ -112,7 +112,9 @@ export class RegisterViewDetailsV2Component implements OnInit {
   }
 
   editBuilding() {
-    void this.router.navigateByUrl('dashboard/register/form/BUILDING/' + this.id);
+    void this.router.navigateByUrl(
+      'dashboard/register/form/BUILDING/' + this.id
+    );
   }
 
   startExecution() {
@@ -120,13 +122,15 @@ export class RegisterViewDetailsV2Component implements OnInit {
   }
 
   gotToLogs() {
-    void this.router.navigateByUrl('dashboard/register/logs?buildings=' + this.id);
+    void this.router.navigateByUrl(
+      'dashboard/register/logs?buildings=' + this.id
+    );
   }
 
   openApproveReview() {
     if (this.approveReview) {
       this.dialog = this.matDialog.open(this.approveReview, {
-        disableClose: true
+        disableClose: true,
       });
     }
   }
@@ -134,13 +138,15 @@ export class RegisterViewDetailsV2Component implements OnInit {
   openRejectReview() {
     if (this.rejectReview) {
       this.dialog = this.matDialog.open(this.rejectReview, {
-        disableClose: true
+        disableClose: true,
       });
     }
   }
 
   getValueFromStatus(key: string) {
-    return this.registerViewDetailsService.getValueFromStatus(key as keyof Building);
+    return this.registerViewDetailsService.getValueFromStatus(
+      key as keyof Building
+    );
   }
 
   approveReviewForBuilding() {

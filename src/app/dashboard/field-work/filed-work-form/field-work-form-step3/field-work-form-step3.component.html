@@ -3,17 +3,23 @@
     <div class="col-12 col-md-4">
       <mat-form-field class="w-100" appearance="outline">
         <mat-label i18n>Select Quality Rule to add</mat-label>
-        <mat-select [formControl]="selectControl" class="w-100" [disabled]="activeRules().loading"
-                    (selectionChange)="addRule($event.value)">
+        <mat-select
+          [formControl]="selectControl"
+          class="w-100"
+          [disabled]="activeRules().loading"
+          (selectionChange)="addRule($event.value)">
           <div class="search-field-container">
             <mat-form-field class="w-100" appearance="outline">
-              <input matInput i18n-placeholder
-                     placeholder="Search..."
-                     [(ngModel)]="filterValue"/>
-              <button mat-icon-button
-                      matSuffix
-                      *ngIf="filterValue()"
-                      (click)="resetFilterValue()">
+              <input
+                matInput
+                i18n-placeholder
+                placeholder="Search..."
+                [(ngModel)]="filterValue" />
+              <button
+                mat-icon-button
+                matSuffix
+                *ngIf="filterValue()"
+                (click)="resetFilterValue()">
                 <mat-icon>close</mat-icon>
               </button>
             </mat-form-field>
@@ -23,7 +29,7 @@
             <mat-optgroup [label]="group.label" class="mt-2 fw-bold w-100">
               @for (activeRule of group.rules; track activeRule.id) {
                 <mat-option [value]="activeRule.id">
-                  {{ activeRule.nameEn }} | {{activeRule.id}}
+                  {{ activeRule.nameEn }} | {{ activeRule.id }}
                 </mat-option>
               }
             </mat-optgroup>
@@ -37,21 +43,28 @@
       <div class="col-12 col-md-4">
         <div class="border p-3 h-100">
           <p class="fs-5">
-            <span i18n>{{group.label}}</span>
-            <span class="ms-2 text-black-50 small">({{group.rules.length}})</span>
+            <span i18n>{{ group.label }}</span>
+            <span class="ms-2 text-black-50 small"
+              >({{ group.rules.length }})</span
+            >
           </p>
           <div class="rules-list">
             @if (group.rules.length) {
               @for (rule of group.rules; track rule.ruleId) {
                 <div class="d-flex justify-content-between align-items-center">
-                  <span>{{ rule.ruleNameEn }} | {{rule.ruleId}}</span>
-                  <button mat-icon-button color="warn" (click)="removeRule(rule.ruleId)">
+                  <span>{{ rule.ruleNameEn }} | {{ rule.ruleId }}</span>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="removeRule(rule.ruleId)">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </div>
               }
             } @else {
-              <p class="text-center fs-6 fw-bold mt-5" i18n>No rules selected</p>
+              <p class="text-center fs-6 fw-bold mt-5" i18n>
+                No rules selected
+              </p>
             }
           </div>
         </div>
@@ -59,28 +72,39 @@
     }
 
     <div class="col-12 mt-4"></div>
-    <hr/>
-    <asrdb-field-work-form-step3-statistic-table/>
+    <hr />
+    <asrdb-field-work-form-step3-statistic-table />
   </div>
   <div class="d-flex justify-content-end mt-4 mb-1">
-    <button mat-raised-button
-            color="warn"
-            (click)="handleClose()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="handleClose()"
+      [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
       <span i18n>Save draft & Close</span>
     </button>
     <span class="flex-grow-1"></span>
-    <button mat-raised-button
-            class="me-3"
-            (click)="back()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading || statistics().loading">
+    <button
+      mat-raised-button
+      class="me-3"
+      (click)="back()"
+      [disabled]="
+        fieldWorkState().isSaving ||
+        fieldWorkState().isLoading ||
+        statistics().loading
+      ">
       <mat-icon class="me-0">arrow_back_ios</mat-icon>
       <span i18n>Back</span>
     </button>
-    <button mat-raised-button
-            color="primary"
-            (click)="next()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading || statistics().loading">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="next()"
+      [disabled]="
+        fieldWorkState().isSaving ||
+        fieldWorkState().isLoading ||
+        statistics().loading
+      ">
       <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
       <span i18n>Next</span>
     </button>

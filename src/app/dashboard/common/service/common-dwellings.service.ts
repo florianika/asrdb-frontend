@@ -15,18 +15,14 @@ export class CommonDwellingService {
   get dwlLayer(): FeatureLayer {
     const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
-      title: 'ASRDB Dwellings',
+      title: $localize`ASRDB Dwellings`,
       apiKey: token,
       url: environment.dwelling_url,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,
-      // create a new popupTemplate for the layer
       popupTemplate: {
-        // autocasts as new PopupTemplate()
-        title: 'ASRDB Dwelling {GlobalID}',
-        content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor mi nec urna rutrum maximus. Maecenas vulputate rutrum ex, sed vulputate odio finibus quis. Sed sed sapien sed arcu facilisis sollicitudin in eu mi.',
+        title: $localize`ASRDB Dwelling {GlobalID}`,
       },
     });
   }
@@ -46,37 +42,19 @@ export class CommonDwellingService {
   }
 
   createFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.dwelling_url +
-      '/addFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.dwelling_url}/addFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   updateFeature(features: any): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.dwelling_url +
-      '/updateFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.dwelling_url}/updateFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   resetStatus(dwlId: string, callback?: () => void) {
@@ -85,18 +63,10 @@ export class CommonDwellingService {
       outFields: ['GlobalID', 'OBJECTID'],
     } as Partial<QueryFilter>;
     this.getDwellings(filter)
-      .pipe(
-        catchError((err: any) => {
-          return this.handleError(err);
-        })
-      )
+      .pipe(catchError(err => this.handleError(err)))
       .subscribe({
-        next: (res: any) => {
-          this.handleResponse(res, callback);
-        },
-        error: (err: any) => {
-          return this.handleError(err);
-        },
+        next: res => this.handleResponse(res, callback),
+        error: err => this.handleError(err),
       });
   }
 
@@ -109,25 +79,21 @@ export class CommonDwellingService {
       OBJECTID: attributes.OBJECTID,
       DwlQuality: 9,
     };
-    this.updateFeature([
-      {
-        attributes: object,
-      },
-    ]).subscribe({
-      next: (response: EntityManageResponse) => {
+    this.updateFeature([{ attributes: object }]).subscribe({
+      next: response => {
         const responseData =
           response['addResults']?.[0] ?? response['updateResults']?.[0];
         if (!responseData?.success) {
-          this.snackBar.open('Could not update value', 'Ok', {
-            duration: 3000,
-          });
+          this.snackBar.open(
+            $localize`Could not update value`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           return;
         }
         callback?.();
       },
-      error: (err: any) => {
-        return this.handleError(err);
-      },
+      error: err => this.handleError(err),
     });
   }
 
@@ -167,11 +133,7 @@ export class CommonDwellingService {
       const features = await (
         await this.dwlLayer.queryFeatures(query)
       ).toJSON();
-
-      return {
-        count: featureCount,
-        data: features,
-      };
+      return { count: featureCount, data: features };
     } catch (e) {
       console.error(e);
       return null;

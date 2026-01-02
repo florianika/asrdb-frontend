@@ -153,7 +153,9 @@ export class SideBarComponent implements AfterViewInit {
   private setSelected() {
     for (const sideBarElement of this.sideBarElements) {
       for (const sectionElement of sideBarElement.sectionElements) {
-        sectionElement.selected = !!(sectionElement.path && this.isSelected(sectionElement.path));
+        sectionElement.selected = !!(
+          sectionElement.path && this.isSelected(sectionElement.path)
+        );
       }
     }
   }

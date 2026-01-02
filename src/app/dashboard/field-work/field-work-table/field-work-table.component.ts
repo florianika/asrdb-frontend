@@ -1,15 +1,21 @@
-import {AfterViewInit, Component, effect, inject, ViewChild} from '@angular/core';
-import {FieldWork, FieldWorkService} from "../field-work.service";
-import {AsyncPipe, DatePipe, NgIf} from "@angular/common";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {MatTableDataSource, MatTableModule} from "@angular/material/table";
-import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
-import {MatSort, MatSortModule} from "@angular/material/sort";
-import {MatButtonModule} from "@angular/material/button";
-import {MatIconModule} from "@angular/material/icon";
-import {MatMenuModule} from "@angular/material/menu";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {ActivatedRoute, Router} from "@angular/router";
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  inject,
+  ViewChild,
+} from '@angular/core';
+import { FieldWork, FieldWorkService } from '../field-work.service';
+import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'asrdb-field-work-table',
@@ -25,10 +31,10 @@ import {ActivatedRoute, Router} from "@angular/router";
     MatIconModule,
     MatMenuModule,
     DatePipe,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   templateUrl: './field-work-table.component.html',
-  styleUrl: './field-work-table.component.css'
+  styleUrl: './field-work-table.component.css',
 })
 export class FieldWorkTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -47,9 +53,10 @@ export class FieldWorkTableComponent implements AfterViewInit {
     'endDate',
     'fieldWorkStatus',
     'description',
-    'actions'
+    'actions',
   ];
-  public dataSource: MatTableDataSource<FieldWork> = new MatTableDataSource<FieldWork>();
+  public dataSource: MatTableDataSource<FieldWork> =
+    new MatTableDataSource<FieldWork>();
 
   constructor() {
     this.fieldWorkService.loadAllFieldWorks();
@@ -62,7 +69,7 @@ export class FieldWorkTableComponent implements AfterViewInit {
       }
     });
 
-    this.fieldWorks$.subscribe((fieldWorkState) => {
+    this.fieldWorks$.subscribe(fieldWorkState => {
       this.dataSource.data = fieldWorkState.fieldWorks;
     });
   }
@@ -74,11 +81,11 @@ export class FieldWorkTableComponent implements AfterViewInit {
     if (this.sort) {
       this.dataSource.sort = this.sort;
     }
-    this.activatedRoute.queryParams.subscribe((params) => {
+    this.activatedRoute.queryParams.subscribe(params => {
       if (params['action'] === 'close' && params['fieldWorkId']) {
         this.openDeleteFieldWork(params['fieldWorkId']);
       }
-    })
+    });
   }
 
   addNewFieldWork() {
@@ -86,7 +93,9 @@ export class FieldWorkTableComponent implements AfterViewInit {
   }
 
   editFieldWork(row: FieldWork) {
-    void this.router.navigateByUrl('dashboard/field-work/edit/' + row.fieldWorkId);
+    void this.router.navigateByUrl(
+      'dashboard/field-work/edit/' + row.fieldWorkId
+    );
   }
 
   showActions(row: FieldWork) {
@@ -94,11 +103,14 @@ export class FieldWorkTableComponent implements AfterViewInit {
   }
 
   isNew(row: FieldWork) {
-    return row.fieldWorkStatus === 'NEW'
+    return row.fieldWorkStatus === 'NEW';
   }
 
   canBeClosed(row: FieldWork): boolean {
-    return row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldWorkId && !!this.fieldWorkCanBeClosed()?.canBeClosed
+    return (
+      row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldWorkId &&
+      !!this.fieldWorkCanBeClosed()?.canBeClosed
+    );
   }
 
   openDeleteFieldWork(fieldWorkId: number) {

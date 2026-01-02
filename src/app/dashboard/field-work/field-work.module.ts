@@ -3,12 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { FieldWorkRoutingModule } from './field-work-routing.module';
 
-
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    FieldWorkRoutingModule
-  ]
+  imports: [CommonModule, FieldWorkRoutingModule],
 })
-export class FieldWorkModule { }
+export class FieldWorkModule {}

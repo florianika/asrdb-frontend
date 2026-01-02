@@ -22,9 +22,13 @@ export class SigninService {
       console.error(error);
       this.signingIn.next(false);
       this.authStateService.setLoginState(false);
-      this.matSnack.open('Username or password not correct', 'Ok', {
-        duration: 3000,
-      });
+      this.matSnack.open(
+        $localize`Username or password not correct`,
+        $localize`OK`,
+        {
+          duration: 3000,
+        }
+      );
     },
   } as Observer<SigninResponse>;
 
@@ -87,9 +91,13 @@ export class SigninService {
     console.error(error);
     this.signingIn.next(false);
     this.authStateService.setLoginState(false);
-    this.matSnack.open('Could not load credentials. Please try again.', 'Ok', {
-      duration: 3000,
-    });
+    this.matSnack.open(
+      $localize`Could not load credentials. Please try again.`,
+      $localize`OK`,
+      {
+        duration: 3000,
+      }
+    );
   }
 
   get signingInAsObservable() {

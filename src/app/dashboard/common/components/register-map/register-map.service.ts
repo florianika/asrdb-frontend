@@ -1,19 +1,19 @@
-import {ElementRef, Injectable} from '@angular/core';
-import {CommonBuildingService} from '../../service/common-building.service';
-import {CommonEntranceService} from '../../service/common-entrance.service';
-import {CommonMunicipalityService} from "../../service/common-municipality.service";
-import {RegisterFilterService} from '../../../register/register-table-view/register-filter.service';
-import {BaseMapChangeService} from './custom-map-logic/basemap-change';
-import {FeatureSelectionService} from './custom-map-logic/feature-selection';
-import {WmtsCapabilitiesService} from './wmts-capabilities.service';
-import {LayerFilterService} from './layer-filter.service';
-import {MapInteractionService} from './map-interaction.service';
-import {createMapView, createWebMap} from './map-view-factory';
-import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import WMTSLayer from "@arcgis/core/layers/WMTSLayer";
+import { ElementRef, Injectable } from '@angular/core';
+import { CommonBuildingService } from '../../service/common-building.service';
+import { CommonEntranceService } from '../../service/common-entrance.service';
+import { CommonMunicipalityService } from '../../service/common-municipality.service';
+import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { BaseMapChangeService } from './custom-map-logic/basemap-change';
+import { FeatureSelectionService } from './custom-map-logic/feature-selection';
+import { WmtsCapabilitiesService } from './wmts-capabilities.service';
+import { LayerFilterService } from './layer-filter.service';
+import { MapInteractionService } from './map-interaction.service';
+import { createMapView, createWebMap } from './map-view-factory';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
 import MapView from '@arcgis/core/views/MapView';
-import LOD from "@arcgis/core/layers/support/LOD";
+import LOD from '@arcgis/core/layers/support/LOD';
 
 export type MapInitOptions = {
   enableFilter: boolean;
@@ -58,10 +58,15 @@ export class RegisterMapService {
   }
 
   /** Initialize the map */
-  async init(containerEl?: ElementRef, options?: MapInitOptions, basemap?: any) {
+  async init(
+    containerEl?: ElementRef,
+    options?: MapInitOptions,
+    basemap?: any
+  ) {
     if (containerEl) this.nativeElement = containerEl.nativeElement;
     if (options) this.options = options;
-    if (!this.nativeElement || !this.options) throw new Error('Map container or options missing');
+    if (!this.nativeElement || !this.options)
+      throw new Error('Map container or options missing');
 
     this.graphicsLayer = new GraphicsLayer();
     const layers = [this.municipalityLayer, this.graphicsLayer];
@@ -69,11 +74,17 @@ export class RegisterMapService {
     if (this.options.showEntranceLayer) layers.push(this.entlayer);
 
     const webmap = createWebMap(basemap, layers);
-    this.view = createMapView(this.nativeElement, webmap, this.options.enableLegend);
+    this.view = createMapView(
+      this.nativeElement,
+      webmap,
+      this.options.enableLegend
+    );
 
     // WMTS LODs
     this.maxZoomHide = 15;
-    const wmts = this.view.map.basemap.baseLayers.find(l => l instanceof WMTSLayer) as WMTSLayer;
+    const wmts = this.view.map.basemap.baseLayers.find(
+      l => l instanceof WMTSLayer
+    ) as WMTSLayer;
     if (wmts) {
       const lods = await this.wmtsCapabilitiesService.getLODs(wmts.url);
       if (lods.length) {
@@ -89,7 +100,7 @@ export class RegisterMapService {
       this.bldlayer!,
       this.entlayer!,
       () => this.totalResults,
-      zoom => this.customZoom = zoom,
+      zoom => (this.customZoom = zoom),
       this.maxZoomHide
     );
 
@@ -97,9 +108,13 @@ export class RegisterMapService {
       this.view,
       this.registerFilterService,
       this.buildingService,
-      this.entranceService);
+      this.entranceService
+    );
 
-    this.eventsCleanupCallbacks.push(() => zoomHandler.remove(), () => popupHandler.remove());
+    this.eventsCleanupCallbacks.push(
+      () => zoomHandler.remove(),
+      () => popupHandler.remove()
+    );
 
     // Initial filtering
     await this.filterBuildingData(this.options.bldWhereCase);
@@ -107,11 +122,19 @@ export class RegisterMapService {
 
     // Feature selection
     if (this.options.enableSelection) {
-      this.featureSelectionService.createFeatureSelection(this.view, webmap, this.eventsCleanupCallbacks);
+      this.featureSelectionService.createFeatureSelection(
+        this.view,
+        webmap,
+        this.eventsCleanupCallbacks
+      );
     }
 
     // Basemap change
-    await this.baseMapChangeService.createBasemapChangeAction(this.view, this.reload.bind(this), this.eventsCleanupCallbacks);
+    await this.baseMapChangeService.createBasemapChangeAction(
+      this.view,
+      this.reload.bind(this),
+      this.eventsCleanupCallbacks
+    );
 
     return this.view;
   }
@@ -121,13 +144,22 @@ export class RegisterMapService {
     if (!this.view || !this.bldlayer) return;
 
     this.options!.bldWhereCase = whereCondition;
-    await LayerFilterService.filterFeatureLayer(this.bldlayer, this.view, whereCondition);
+    await LayerFilterService.filterFeatureLayer(
+      this.bldlayer,
+      this.view,
+      whereCondition
+    );
 
-    const extent = await LayerFilterService.queryExtent(this.bldlayer, whereCondition);
+    const extent = await LayerFilterService.queryExtent(
+      this.bldlayer,
+      whereCondition
+    );
     this.totalResults = extent.count;
 
     this.updateLayerVisibility();
-    this.handleGoToDebounced(extent.extent ?? { center: [19.818, 41.3285], zoom: 18 });
+    this.handleGoToDebounced(
+      extent.extent ?? { center: [19.818, 41.3285], zoom: 18 }
+    );
   }
 
   /** Filter entrance layer (server-side now) */
@@ -137,11 +169,18 @@ export class RegisterMapService {
     this.options!.entWhereCase = whereCondition;
 
     // Use server-side filtering instead of client-side FeatureFilter
-    await LayerFilterService.filterFeatureLayer(this.entlayer, this.view, whereCondition);
+    await LayerFilterService.filterFeatureLayer(
+      this.entlayer,
+      this.view,
+      whereCondition
+    );
 
     // Optionally, update visibility if needed (same logic as buildings)
     try {
-      const extent = await LayerFilterService.queryExtent(this.entlayer, whereCondition);
+      const extent = await LayerFilterService.queryExtent(
+        this.entlayer,
+        whereCondition
+      );
       if (extent.count === 0) {
         this.entlayer.visible = false;
       } else {
@@ -166,7 +205,11 @@ export class RegisterMapService {
     if (!this.bldlayer || !this.entlayer) return;
 
     const lessThan10000 = this.totalResults && this.totalResults < 10000;
-    if ((this.customZoom && this.customZoom < this.maxZoomHide && !lessThan10000)) {
+    if (
+      this.customZoom &&
+      this.customZoom < this.maxZoomHide &&
+      !lessThan10000
+    ) {
       this.bldlayer.visible = false;
       this.entlayer.visible = false;
       this.alreadyFocused = false;
@@ -196,7 +239,10 @@ export class RegisterMapService {
         } else {
           const zoom = this.customZoom ?? goTo.zoom;
           if (zoom) {
-            void this.view.goTo({ ...goTo, zoom: this.customZoom ?? goTo.zoom });
+            void this.view.goTo({
+              ...goTo,
+              zoom: this.customZoom ?? goTo.zoom,
+            });
           } else {
             void this.view.goTo(goTo);
           }

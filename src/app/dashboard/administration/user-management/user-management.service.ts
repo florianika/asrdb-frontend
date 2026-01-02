@@ -46,39 +46,39 @@ export class UserManagementService {
           this.loading.next(false);
           console.error(error);
           this.showMessage(
-            'Could not load the users. Please reload the page to try again.'
+            $localize`Could not load the users. Please reload the page to try again.`
           );
         },
       });
   }
 
   getUser(userId: string) {
-    // this.loading.next(true);
     this.httpClient
       .get<{ userDTO: User }>(environment.base_url + `/auth/users/${userId}`)
       .subscribe({
         next: result => {
-          // this.loading.next(false);
           this.user.next(result.userDTO);
         },
         error: error => {
-          // this.loading.next(false);
           console.error(error);
           this.showMessage(
-            'Coult not load the user. Please reload the page to try again.'
+            $localize`Could not load the user. Please reload the page to try again.`
           );
         },
       });
   }
 
   openViewUserDialog(user: User) {
-    this.dialog.open(UserViewDialogComponent, { data: { userId: user.id }, disableClose: true });
+    this.dialog.open(UserViewDialogComponent, {
+      data: { userId: user.id },
+      disableClose: true,
+    });
   }
 
   openEditUserDialog(user: User) {
     const editDialog = this.dialog.open(UserEditDialogComponent, {
       data: user,
-      disableClose: true
+      disableClose: true,
     });
     const editDialogSubscription = editDialog.afterClosed().subscribe(data => {
       if (data.role && data.role !== user.accountRole) {
@@ -102,7 +102,9 @@ export class UserManagementService {
         error: error => {
           this.loading.next(false);
           console.error(error);
-          this.showMessage('Coult not update user.');
+          this.showMessage(
+            $localize`Could not update user role.`
+          );
         },
       });
   }
@@ -122,7 +124,9 @@ export class UserManagementService {
         error: error => {
           this.loading.next(false);
           console.error(error);
-          this.showMessage('Could not update users municipality.');
+          this.showMessage(
+            $localize`Could not update user's municipality.`
+          );
         },
       });
   }
@@ -134,12 +138,14 @@ export class UserManagementService {
       .subscribe({
         next: () => {
           this.getUsers();
-          this.showMessage('User was terminated.');
+          this.showMessage($localize`User was terminated.`);
         },
         error: error => {
           this.loading.next(false);
           console.error(error);
-          this.showMessage('Coult not terminate the user.');
+          this.showMessage(
+            $localize`Could not terminate the user.`
+          );
         },
       });
   }
@@ -151,18 +157,20 @@ export class UserManagementService {
       .subscribe({
         next: () => {
           this.getUsers();
-          this.showMessage('User was activated.');
+          this.showMessage($localize`User was activated.`);
         },
         error: error => {
           this.loading.next(false);
           console.error(error);
-          this.showMessage('Coult not activate the user.');
+          this.showMessage(
+            $localize`Could not activate the user.`
+          );
         },
       });
   }
 
   private showMessage(message: string) {
-    this.snackbarService.open(message, 'Ok', {
+    this.snackbarService.open(message, $localize`Ok`, {
       duration: 3000,
     });
   }

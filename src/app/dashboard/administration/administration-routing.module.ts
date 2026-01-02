@@ -17,14 +17,17 @@ const routes: Routes = [
   {
     path: 'email-template-management',
     loadChildren: () =>
-      import(
-        './email-template-management/email-template-management.module'
-      ).then(m => m.EmailTemplateManagementModule),
+      import('./email-template-management/email-template-management.module').then(
+        m => m.EmailTemplateManagementModule
+      ),
   },
   {
     path: 'test-buildings',
-    loadComponent: () => import('./test-buildings/test-buildings.component').then(m => m.TestBuildingsComponent),
-  }
+    loadComponent: () =>
+      import('./test-buildings/test-buildings.component').then(
+        m => m.TestBuildingsComponent
+      ),
+  },
 ];
 
 @NgModule({

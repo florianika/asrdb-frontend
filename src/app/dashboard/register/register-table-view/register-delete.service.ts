@@ -1,10 +1,10 @@
-import {Injectable, isDevMode} from '@angular/core';
-import {CommonBuildingService} from '../../common/service/common-building.service';
-import {CommonEntranceService} from '../../common/service/common-entrance.service';
-import {CommonDwellingService} from '../../common/service/common-dwellings.service';
-import {BehaviorSubject, catchError, of} from 'rxjs';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {AuthStateService} from "../../../common/services/auth-state.service";
+import { Injectable, isDevMode } from '@angular/core';
+import { CommonBuildingService } from '../../common/service/common-building.service';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import { CommonDwellingService } from '../../common/service/common-dwellings.service';
+import { BehaviorSubject, catchError, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthStateService } from '../../../common/services/auth-state.service';
 
 @Injectable()
 export class RegisterDeleteService {
@@ -74,19 +74,21 @@ export class RegisterDeleteService {
         returnGeometry: false,
         outFields: ['GlobalID', 'ObjectID'],
       })
-      .pipe(catchError(err => {
-        console.error(err);
-        return of(null);
-      }))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          return of(null);
+        })
+      )
       .subscribe(building => {
         if (building?.data?.features[0]?.attributes) {
           const attributes = {
             ...building.data.features[0]?.attributes,
             BldQuality: 0,
             external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now())
+            external_editor_date: String(Date.now()),
           };
-          this.buildingsToDelete.push({ attributes: attributes });
+          this.buildingsToDelete.push({ attributes });
           this.state.next({
             buildingsToDelete: this.buildingsToDelete,
             entrancesToDelete: this.entrancesToDelete,
@@ -108,10 +110,12 @@ export class RegisterDeleteService {
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
       })
-      .pipe(catchError(err => {
-        console.error(err);
-        return of(null);
-      }))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          return of(null);
+        })
+      )
       .subscribe(entrances => {
         if (!entrances?.data?.features?.length) {
           this.deleteDataLoading.next(false);
@@ -128,9 +132,9 @@ export class RegisterDeleteService {
             OBJECTID: feature.attributes.OBJECTID,
             EntQuality: 0,
             external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now())
+            external_editor_date: String(Date.now()),
           }))
-          ?.map((attributes: any) => ({ attributes: attributes }));
+          ?.map((attributes: any) => ({ attributes }));
         if (entranceRequests.length > 0) {
           this.entrancesToDelete = entranceRequests;
           this.state.next({
@@ -138,7 +142,7 @@ export class RegisterDeleteService {
             entrancesToDelete: this.entrancesToDelete,
             dwellingsToDelete: this.dwellingsToDelete,
           });
-          // Load the dwellings
+
           const globalIds = entrances?.data?.features
             ?.map((feature: any) => feature.attributes.GlobalID as string)
             ?.filter((feature: string) => !!feature);
@@ -155,10 +159,12 @@ export class RegisterDeleteService {
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
       })
-      .pipe(catchError(err => {
-        console.error(err);
-        return of(null);
-      }))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          return of(null);
+        })
+      )
       .subscribe(entrances => {
         if (!entrances?.data?.features?.length) {
           this.state.next({
@@ -175,13 +181,12 @@ export class RegisterDeleteService {
             OBJECTID: feature.attributes.OBJECTID,
             EntQuality: 0,
             external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now())
+            external_editor_date: String(Date.now()),
           }))
-          ?.map((attributes: any) => ({ attributes: attributes }));
+          ?.map((attributes: any) => ({ attributes }));
         if (entranceRequests.length > 0) {
           this.entrancesToDelete = entranceRequests;
 
-          // Load the dwellings
           const globalIds = entrances?.data?.features
             ?.map((feature: any) => feature.attributes.GlobalID as string)
             ?.filter((feature: string) => !!feature);
@@ -199,10 +204,12 @@ export class RegisterDeleteService {
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
       })
-      .pipe(catchError(err => {
-        console.error(err);
-        return of(null);
-      }))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          return of(null);
+        })
+      )
       .subscribe((dwellings: any) => {
         const dwellingRequests = dwellings?.data?.features
           ?.map((feature: any) => ({
@@ -210,9 +217,9 @@ export class RegisterDeleteService {
             OBJECTID: feature.attributes.OBJECTID,
             DwlQuality: 0,
             external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now())
+            external_editor_date: String(Date.now()),
           }))
-          ?.map((attributes: any) => ({ attributes: attributes }));
+          ?.map((attributes: any) => ({ attributes }));
         this.dwellingsToDelete = dwellingRequests ?? [];
         this.state.next({
           buildingsToDelete: this.buildingsToDelete,
@@ -227,15 +234,17 @@ export class RegisterDeleteService {
     this.deleteDataLoading.next(true);
     this.commonDwellingService
       .getDwellings({
-        where: `DwlEntGlobalID in (${globalIds.map((id: string) => `'${id}'`).join(',')}) AND DwlQuality <> 0`,
+        where: `DwlEntGlobalID in (${globalIds.map(id => `'${id}'`).join(',')}) AND DwlQuality <> 0`,
         returnGeometry: false,
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
       })
-      .pipe(catchError(err => {
-        console.error(err);
-        return of(null);
-      }))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          return of(null);
+        })
+      )
       .subscribe((dwellings: any) => {
         const dwellingRequests = dwellings?.data?.features
           ?.map((feature: any) => ({
@@ -243,9 +252,9 @@ export class RegisterDeleteService {
             OBJECTID: feature.attributes.OBJECTID,
             DwlQuality: 0,
             external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now())
+            external_editor_date: String(Date.now()),
           }))
-          ?.map((attributes: any) => ({ attributes: attributes }));
+          ?.map((attributes: any) => ({ attributes }));
         this.dwellingsToDelete = dwellingRequests ?? [];
         this.state.next({
           buildingsToDelete: this.buildingsToDelete,
@@ -279,16 +288,18 @@ export class RegisterDeleteService {
         .pipe(
           catchError(err => {
             console.error('Error deleting dwellings', err);
-            this.matSnack.open('Error deleting dwellings', 'Close', {
-              duration: 5000,
-            });
+            this.matSnack.open(
+              $localize`Error deleting dwellings`,
+              $localize`Close`,
+              {
+                duration: 5000,
+              }
+            );
             return of(null);
           })
         )
         .subscribe(res => {
-          if (!res) {
-            return;
-          }
+          if (!res) return;
           this.dwellingsToDelete = [];
           this.state.next({
             buildingsToDelete: this.buildingsToDelete,
@@ -298,7 +309,7 @@ export class RegisterDeleteService {
           setTimeout(() => {
             this.reloadSignal();
             this.deleteEntranceData();
-          }, 1000); // Delay to ensure the UI updates properly
+          }, 1000);
         });
     }
   }
@@ -310,16 +321,18 @@ export class RegisterDeleteService {
         .pipe(
           catchError(err => {
             console.error('Error deleting entrances', err);
-            this.matSnack.open('Error deleting entrances', 'Close', {
-              duration: 5000,
-            });
+            this.matSnack.open(
+              $localize`Error deleting entrances`,
+              $localize`Close`,
+              {
+                duration: 5000,
+              }
+            );
             return of(null);
           })
         )
         .subscribe(res => {
-          if (!res) {
-            return;
-          }
+          if (!res) return;
           this.entrancesToDelete = [];
           this.state.next({
             buildingsToDelete: this.buildingsToDelete,
@@ -329,7 +342,7 @@ export class RegisterDeleteService {
           setTimeout(() => {
             this.reloadSignal();
             this.deleteBuildingData();
-          }, 1000); // Delay to ensure the UI updates properly
+          }, 1000);
         });
     }
   }
@@ -341,16 +354,18 @@ export class RegisterDeleteService {
         .pipe(
           catchError(err => {
             console.error('Error deleting buildings', err);
-            this.matSnack.open('Error deleting buildings', 'Close', {
-              duration: 5000,
-            });
+            this.matSnack.open(
+              $localize`Error deleting buildings`,
+              $localize`Close`,
+              {
+                duration: 5000,
+              }
+            );
             return of(null);
           })
         )
         .subscribe(res => {
-          if (!res) {
-            return;
-          }
+          if (!res) return;
           this.buildingsToDelete = [];
           this.state.next({
             buildingsToDelete: this.buildingsToDelete,
@@ -359,7 +374,7 @@ export class RegisterDeleteService {
           });
           setTimeout(() => {
             this.reloadSignal();
-          }, 1000); // Delay to ensure the UI updates properly
+          }, 1000);
         });
     }
   }

@@ -7,19 +7,32 @@
     [disabled]="disabled || !entityType">
     <div class="search-field-container">
       <mat-form-field class="w-100" appearance="outline">
-        <input matInput i18n-placeholder
-               placeholder="Search..."
-               [(ngModel)]="filterValue"/>
-        <button mat-icon-button matSuffix *ngIf="filterValue"
-                (click)="clearFilter($event)">
+        <input
+          matInput
+          i18n-placeholder
+          placeholder="Search..."
+          [(ngModel)]="filterValue" />
+        <button
+          mat-icon-button
+          matSuffix
+          *ngIf="filterValue"
+          (click)="clearFilter($event)">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
     </div>
-    <mat-option *ngFor="let variable of variables" [value]="variable.value" i18n>{{ variable.value }}</mat-option>
+    <mat-option
+      *ngFor="let variable of variables"
+      [value]="variable.value"
+      i18n
+      >{{ variable.value }}</mat-option
+    >
   </mat-select>
-  <mat-icon *ngIf="clearable && variable"
-            style="cursor: pointer; z-index: 10;"
-            matSuffix
-            (click)="clearValue($event)">close</mat-icon>
+  <mat-icon
+    *ngIf="clearable && variable"
+    style="cursor: pointer; z-index: 10"
+    matSuffix
+    (click)="clearValue($event)"
+    >close</mat-icon
+  >
 </mat-form-field>

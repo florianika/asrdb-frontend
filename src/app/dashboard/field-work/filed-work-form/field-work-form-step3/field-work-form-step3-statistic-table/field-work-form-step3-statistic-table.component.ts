@@ -1,5 +1,11 @@
-import {AfterViewInit, Component, effect, inject, ViewChild} from '@angular/core';
-import {MatButton} from "@angular/material/button";
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  inject,
+  ViewChild,
+} from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import {
   MatCell,
   MatCellDef,
@@ -12,14 +18,17 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
-} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {MatSort, MatSortHeader} from "@angular/material/sort";
-import {FieldWorkService} from "../../../field-work.service";
-import {FieldWorkStatistics, FieldWorkStatisticService} from "../../../field-work-statistic.service";
-import {MatIcon} from "@angular/material/icon";
+  MatTableDataSource,
+} from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { FieldWorkService } from '../../../field-work.service';
+import {
+  FieldWorkStatistics,
+  FieldWorkStatisticService,
+} from '../../../field-work-statistic.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'asrdb-field-work-form-step3-statistic-table',
@@ -41,12 +50,11 @@ import {MatIcon} from "@angular/material/icon";
     MatSortHeader,
     MatHeaderCellDef,
     MatNoDataRow,
-    MatIcon
+    MatIcon,
   ],
-  providers: [
-  ],
+  providers: [],
   templateUrl: './field-work-form-step3-statistic-table.component.html',
-  styleUrl: './field-work-form-step3-statistic-table.component.css'
+  styleUrl: './field-work-form-step3-statistic-table.component.css',
 })
 export class FieldWorkFormStep3StatisticTableComponent implements AfterViewInit {
   private _fieldWorkService = inject(FieldWorkService);
@@ -55,12 +63,9 @@ export class FieldWorkFormStep3StatisticTableComponent implements AfterViewInit 
   public fieldWorkState = this._fieldWorkService.fieldWorkState;
   public statistics = this._fieldWorkStatisticService.statistics;
 
-  public columns = [
-    'municipality',
-    'ruleStatistics',
-    'bldStatistics'
-  ];
-  public dataSource: MatTableDataSource<FieldWorkStatistics> = new MatTableDataSource<FieldWorkStatistics>();
+  public columns = ['municipality', 'ruleStatistics', 'bldStatistics'];
+  public dataSource: MatTableDataSource<FieldWorkStatistics> =
+    new MatTableDataSource<FieldWorkStatistics>();
 
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   @ViewChild(MatSort) sort?: MatSort;

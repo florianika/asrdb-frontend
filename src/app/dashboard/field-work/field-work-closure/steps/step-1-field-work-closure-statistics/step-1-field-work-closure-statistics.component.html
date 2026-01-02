@@ -3,58 +3,62 @@
     <mat-form-field>
       <mat-label>Filter</mat-label>
       <mat-select (selectionChange)="applyFilter($event)" #input>
-        <mat-option *ngFor="let municipality of municipalities" [value]="municipality.name">
+        <mat-option
+          *ngFor="let municipality of municipalities"
+          [value]="municipality.name">
           {{ municipality.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <table mat-table [dataSource]="aggregatedStatisticsDatasource">
       <ng-container matColumnDef="municipality">
-        <th mat-header-cell *matHeaderCellDef i18n> Municipality </th>
+        <th mat-header-cell *matHeaderCellDef i18n>Municipality</th>
         <ng-container *matCellDef="let row; let i = index">
           @if (i % 5 === 0) {
-            <td mat-cell rowspan="5" > {{row.municipality}} </td>
+            <td mat-cell rowspan="5">{{ row.municipality }}</td>
           }
         </ng-container>
       </ng-container>
 
       <ng-container matColumnDef="quality">
-        <th mat-header-cell *matHeaderCellDef i18n> Quality </th>
-        <td mat-cell *matCellDef="let row"> {{row.quality}} </td>
+        <th mat-header-cell *matHeaderCellDef i18n>Quality</th>
+        <td mat-cell *matCellDef="let row">{{ row.quality }}</td>
       </ng-container>
 
       <ng-container matColumnDef="kërkohet rishikim">
-        <th mat-header-cell *matHeaderCellDef i18n> Kërkohet rishikim </th>
-        <td mat-cell *matCellDef="let row"> {{row.data[0]}} </td>
+        <th mat-header-cell *matHeaderCellDef i18n>Kërkohet rishikim</th>
+        <td mat-cell *matCellDef="let row">{{ row.data[0] }}</td>
       </ng-container>
 
       <ng-container matColumnDef="nuk ka nevojë për rishikim">
-        <th mat-header-cell *matHeaderCellDef i18n> Nuk ka nevojë për rishikim </th>
-        <td mat-cell *matCellDef="let row"> {{row.data[1]}} </td>
+        <th mat-header-cell *matHeaderCellDef i18n>
+          Nuk ka nevojë për rishikim
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.data[1] }}</td>
       </ng-container>
 
       <ng-container matColumnDef="rishikim i aprovuar">
-        <th mat-header-cell *matHeaderCellDef i18n> Rishikim i aprovuar </th>
-        <td mat-cell *matCellDef="let row"> {{row.data[2]}} </td>
+        <th mat-header-cell *matHeaderCellDef i18n>Rishikim i aprovuar</th>
+        <td mat-cell *matCellDef="let row">{{ row.data[2] }}</td>
       </ng-container>
 
       <ng-container matColumnDef="rishikim i ekzekutuar">
-        <th mat-header-cell *matHeaderCellDef i18n> Rishikim i ekzekutuar </th>
-        <td mat-cell *matCellDef="let row"> {{row.data[3]}} </td>
+        <th mat-header-cell *matHeaderCellDef i18n>Rishikim i ekzekutuar</th>
+        <td mat-cell *matCellDef="let row">{{ row.data[3] }}</td>
       </ng-container>
 
       <ng-container matColumnDef="rishikim i rihapur">
-        <th mat-header-cell *matHeaderCellDef i18n> Rishikim i rihapur </th>
-        <td mat-cell *matCellDef="let row"> {{row.data[4]}} </td>
+        <th mat-header-cell *matHeaderCellDef i18n>Rishikim i rihapur</th>
+        <td mat-cell *matCellDef="let row">{{ row.data[4] }}</td>
       </ng-container>
 
       <ng-container matColumnDef="rishikimi në pritje">
-        <th mat-header-cell *matHeaderCellDef i18n> Rishikimi në pritje </th>
-        <td mat-cell *matCellDef="let row"> {{row.data[5]}} </td>
+        <th mat-header-cell *matHeaderCellDef i18n>Rishikimi në pritje</th>
+        <td mat-cell *matCellDef="let row">{{ row.data[5] }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="columns"></tr>
-      <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
 
       <!-- Row shown when there is no matching data. -->
       <tr class="mat-row" *matNoDataRow>
@@ -65,7 +69,7 @@
               <p>Loading filed fork statistics. Please wait...</p>
             </div>
           } @else {
-            No data matching the filter "{{input.value}}"
+            No data matching the filter "{{ input.value }}"
           }
         </td>
       </tr>
@@ -74,9 +78,19 @@
     <mat-paginator [pageSizeOptions]="[35, 50, 100]"></mat-paginator>
   </div>
   <div class="d-flex mb-1 mt-1">
-    <button mat-button i18n [disabled]="fieldWorkStatistics().loading" (click)="close()">Close</button>
+    <button
+      mat-button
+      i18n
+      [disabled]="fieldWorkStatistics().loading"
+      (click)="close()">
+      Close
+    </button>
     <span class="flex-grow-1"></span>
-    <button mat-raised-button color="primary" [disabled]="fieldWorkStatistics().loading" (click)="next()">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="fieldWorkStatistics().loading"
+      (click)="next()">
       <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
       <span i18n>Next</span>
     </button>

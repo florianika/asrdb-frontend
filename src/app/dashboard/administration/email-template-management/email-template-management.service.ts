@@ -1,13 +1,14 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatDialog} from '@angular/material/dialog';
-import {environment} from '../../../../environments/environment';
-import {EmailTemplate, EmailTemplateForm,} from '../../../model/EmailTemplate.model';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../../../environments/environment';
 import {
-  EmailTemplateManagementFormComponent
-} from './email-template-management-form/email-template-management-form.component';
+  EmailTemplate,
+  EmailTemplateForm,
+} from '../../../model/EmailTemplate.model';
+import { EmailTemplateManagementFormComponent } from './email-template-management-form/email-template-management-form.component';
 
 @Injectable({
   providedIn: 'root',
@@ -55,7 +56,7 @@ export class EmailTemplateManagementService {
           this.loading.next(false);
           console.error(error);
           this.showMessage(
-            'Could not load the emailTemplates. Please reload the page to try again.'
+            $localize`Could not load the email templates. Please reload the page to try again.`
           );
         },
       });
@@ -89,7 +90,7 @@ export class EmailTemplateManagementService {
           this.loading.next(false);
           console.error(error);
           this.showMessage(
-            'Could not load the emailTemplate. Please reload the page to try again.'
+            $localize`Could not load the email template. Please reload the page to try again.`
           );
         },
       });
@@ -127,7 +128,9 @@ export class EmailTemplateManagementService {
         error: error => {
           this.saving.next(false);
           console.error(error);
-          this.showMessage('Could not update emailTemplate.');
+          this.showMessage(
+            $localize`Could not create the email template.`
+          );
         },
       });
   }
@@ -149,13 +152,15 @@ export class EmailTemplateManagementService {
         error: error => {
           this.saving.next(false);
           console.error(error);
-          this.showMessage('Could not update emailTemplate.');
+          this.showMessage(
+            $localize`Could not update the email template.`
+          );
         },
       });
   }
 
   private showMessage(message: string) {
-    this.snackbarService.open(message, 'Ok', {
+    this.snackbarService.open(message, $localize`Ok`, {
       duration: 3000,
     });
   }

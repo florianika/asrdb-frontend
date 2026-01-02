@@ -1,18 +1,27 @@
-import {Component, effect, inject, ViewChild} from '@angular/core';
-import {MatSort, MatSortHeader} from "@angular/material/sort";
-import {PivotRow, StatisticExportService} from "../../statistic-export.service";
+import { Component, effect, inject, ViewChild } from '@angular/core';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import {
+  PivotRow,
+  StatisticExportService,
+} from '../../statistic-export.service';
 import {
   MatCell,
   MatCellDef,
   MatColumnDef,
-  MatHeaderCell, MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatNoDataRow, MatRow, MatRowDef, MatTable,
-  MatTableDataSource
-} from "@angular/material/table";
-import {NgForOf} from "@angular/common";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {MatButton} from "@angular/material/button";
-import {MatIcon} from "@angular/material/icon";
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatNoDataRow,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource,
+} from '@angular/material/table';
+import { NgForOf } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'asrdb-statistic-export-create-step-2',
@@ -34,17 +43,19 @@ import {MatIcon} from "@angular/material/icon";
     MatNoDataRow,
     MatHeaderCellDef,
     MatButton,
-    MatIcon
+    MatIcon,
   ],
   templateUrl: './statistic-export-create-step-2.component.html',
-  styleUrl: './statistic-export-create-step-2.component.css'
+  styleUrl: './statistic-export-create-step-2.component.css',
 })
 export class StatisticExportCreateStep2Component {
   @ViewChild(MatSort) sort!: MatSort;
 
   private statisticExportService = inject(StatisticExportService);
-  public statisticsForMunicipalityAndDwellingQuality = this.statisticExportService.statisticsForMunicipalityAndDwellingQuality;
-  public statisticsGenerationData = this.statisticExportService.statisticsGenerationData;
+  public statisticsForMunicipalityAndDwellingQuality =
+    this.statisticExportService.statisticsForMunicipalityAndDwellingQuality;
+  public statisticsGenerationData =
+    this.statisticExportService.statisticsGenerationData;
 
   constructor() {
     this.statisticExportService.getStatisticsForMunicipalityAndDwellingQuality();
@@ -63,15 +74,24 @@ export class StatisticExportCreateStep2Component {
 
   private buildPivotTable() {
     // Unique municipalities
-    const municipalities = [...new Set(this.statisticsForMunicipalityAndDwellingQualityData.map(d => d.municipality))];
+    const municipalities = [
+      ...new Set(
+        this.statisticsForMunicipalityAndDwellingQualityData.map(
+          d => d.municipality
+        )
+      ),
+    ];
 
     // Unique qualities (sorted numerically)
-    this.qualities = [...new Set(this.statisticsForMunicipalityAndDwellingQualityData.map(d => d.quality))]
-      .sort((a, b) => +a - +b);
+    this.qualities = [
+      ...new Set(
+        this.statisticsForMunicipalityAndDwellingQualityData.map(d => d.quality)
+      ),
+    ].sort((a, b) => +a - +b);
 
     this.displayedColumns = ['municipality', ...this.qualities];
     this.dataSource.data = municipalities.map(municipality => {
-      const row: PivotRow = {municipality};
+      const row: PivotRow = { municipality };
 
       this.qualities.forEach(q => {
         const match = this.statisticsForMunicipalityAndDwellingQualityData.find(

@@ -8,36 +8,54 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatSort, MatSortModule} from '@angular/material/sort';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {Chip, ChipComponent,} from 'src/app/common/standalone-components/chip/chip.component';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {catchError, distinctUntilChanged, merge, of, startWith, Subject, switchMap, takeUntil,} from 'rxjs';
-import {BuildingFilter} from '../../model/building';
-import {QueryFilter} from '../../model/query-filter';
-import {CommonBuildingService} from '../../../common/service/common-building.service';
-import {CommonRegisterHelperService} from '../../../common/service/common-helper.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RegisterFilterComponent} from '../../../common/components/register-filter/register-filter.component';
-import {FILTER_REGISTER, RegisterFilterService,} from '../register-filter.service';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatCheckboxChange, MatCheckboxModule,} from '@angular/material/checkbox';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
-import {FilterHelper} from '../../../common/helper/filter-helper';
-import {RegisterLogService} from '../../register-log-view/register-log-table/register-log.service';
+import { CommonModule } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import {
+  Chip,
+  ChipComponent,
+} from 'src/app/common/standalone-components/chip/chip.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  catchError,
+  distinctUntilChanged,
+  merge,
+  of,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
+import { BuildingFilter } from '../../model/building';
+import { QueryFilter } from '../../model/query-filter';
+import { CommonBuildingService } from '../../../common/service/common-building.service';
+import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RegisterFilterComponent } from '../../../common/components/register-filter/register-filter.component';
+import {
+  FILTER_REGISTER,
+  RegisterFilterService,
+} from '../register-filter.service';
+import { MatDividerModule } from '@angular/material/divider';
+import {
+  MatCheckboxChange,
+  MatCheckboxModule,
+} from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { FilterHelper } from '../../../common/helper/filter-helper';
+import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
 import {
   EntityDeleteConfirmationDialogComponent,
   EntityDeleteDialogData,
 } from '../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
-import {BUILDING_ENTITY} from '../../../../common/constants/common-constants';
-import {AuthStateService} from "../../../../common/services/auth-state.service";
+import { BUILDING_ENTITY } from '../../../../common/constants/common-constants';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 
 @Component({
   selector: 'asrdb-register-table',
@@ -97,9 +115,7 @@ export class RegisterTableComponent
 
   get filterChips(): Chip[] {
     return Object.entries(this.registerFilterService.getFilter().filter)
-      .filter(([, value]) => {
-        return Array.isArray(value) ? value.length : !!value;
-      })
+      .filter(([, value]) => (Array.isArray(value) ? value.length : !!value))
       .reduce(this.filterHelper.getFilterChipStructure, [] as Chip[]);
   }
 
@@ -121,8 +137,8 @@ export class RegisterTableComponent
   }
 
   ngOnInit(): void {
-    // Check the previous url from history to determine if we need to reload the filter.
-    const previousUrlQueryParam = this.activatedRoute.snapshot.queryParamMap.get('from');
+    const previousUrlQueryParam =
+      this.activatedRoute.snapshot.queryParamMap.get('from');
     const currentUrl = this.router.url;
     if (!previousUrlQueryParam || previousUrlQueryParam !== 'details') {
       this.registerFilterService.resetFilter();
@@ -136,7 +152,6 @@ export class RegisterTableComponent
   }
 
   ngAfterViewInit() {
-    // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => (this.paginator.pageIndex = 0));
@@ -193,7 +208,7 @@ export class RegisterTableComponent
   handleSelect(globalId: string) {
     if (this.selectedBuildings.includes(globalId)) {
       this.selectedBuildings = this.selectedBuildings.filter(
-        selectedBuilding => selectedBuilding !== globalId
+        selected => selected !== globalId
       );
     } else {
       this.selectedBuildings.push(globalId);
@@ -218,18 +233,19 @@ export class RegisterTableComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((newFilterConfig: BuildingFilter | null) => {
         if (newFilterConfig?.filter?.BldWithQuePendingIds) {
-          // Load building ids with pending Q&Es and set to filter
-          this.commonBuildingService.getAllBuildingIdsWithPendingQueLogs().subscribe({
-            next: (response) => {
-              console.log(response);
-              if (!response || !response.length) {
-                newFilterConfig.filter.BldWithQuePendingIds = 'notFound';
-              } else {
-                newFilterConfig.filter.BldWithQuePendingIds = response.join(',');
-              }
-              this.handlePopupClose(newFilterConfig);
-            }
-          })
+          this.commonBuildingService
+            .getAllBuildingIdsWithPendingQueLogs()
+            .subscribe({
+              next: response => {
+                if (!response || !response.length) {
+                  newFilterConfig.filter.BldWithQuePendingIds = 'notFound';
+                } else {
+                  newFilterConfig.filter.BldWithQuePendingIds =
+                    response.join(',');
+                }
+                this.handlePopupClose(newFilterConfig);
+              },
+            });
         } else {
           this.handlePopupClose(newFilterConfig);
         }
@@ -237,9 +253,7 @@ export class RegisterTableComponent
   }
 
   reload() {
-    if (this.paginator) {
-      this.paginator.pageIndex = 0;
-    }
+    if (this.paginator) this.paginator.pageIndex = 0;
     this.loadBuildings()
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => this.handleResponse(res));
@@ -360,34 +374,44 @@ export class RegisterTableComponent
     return this.commonBuildingService.getBuildingData(filter).pipe(
       catchError(err => {
         console.log(err);
+        this.matSnack.open(
+          $localize`Could not load result. Please try again`,
+          $localize`Ok`,
+          { duration: 3000 }
+        );
         return of(null);
       })
     );
   }
 
   private handleResponse(res: any) {
-    if (isDevMode()) {
-      console.log('Data', res);
-    }
+    if (isDevMode()) console.log('Data', res);
+
     if (!res) {
-      this.matSnack.open('Could not load result. Please try again', 'Ok', {
-        duration: 3000,
-      });
+      this.matSnack.open(
+        $localize`Could not load result. Please try again`,
+        $localize`Ok`,
+        { duration: 3000 }
+      );
       this.isLoadingResults = false;
       return;
     }
+
     if (res.data.fields.length) {
       this.fields = res.data.fields;
       this.filterHelper.init(this.fields);
     }
+
     this.resultsLength = res.count;
     this.data = res.data.features.map((feature: any) => feature.attributes);
     this.isLoadingResults = false;
     this.registerFilterService.updateGlobalIds(res.globalIds);
+
     if (!this.initialized) {
       this.registerFilterService.prepareFilter(this.fields);
       this.initialized = true;
     }
+
     this.changeDetectionRef.markForCheck();
   }
 }

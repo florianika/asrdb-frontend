@@ -1,12 +1,9 @@
-<div class="asrbd-container mat-elevation-z8" style="background-color: white;">
+<div class="asrbd-container mat-elevation-z8" style="background-color: white">
   <div class="header-container">
     <h1 i18n class="header-title">Statistics export</h1>
     <div class="spacer"></div>
-    <button
-      mat-icon-button
-      [matTooltip]="'Add new export'"
-      (click)="add()">
-      <mat-icon style="cursor: pointer;">add</mat-icon>
+    <button mat-icon-button [matTooltip]="'Add new export'" (click)="add()">
+      <mat-icon style="cursor: pointer">add</mat-icon>
     </button>
   </div>
 
@@ -20,35 +17,51 @@
     <table mat-table [dataSource]="datasource" class="asrbd-table" matSort>
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>ID</th>
-        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
       </ng-container>
       <ng-container matColumnDef="referenceYear">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Reference</th>
-        <td mat-cell *matCellDef="let element"> {{element.referenceYear}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>
+          Reference
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.referenceYear }}</td>
       </ng-container>
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Status</th>
-        <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
       </ng-container>
       <ng-container matColumnDef="createdBy">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Created by</th>
-        <td mat-cell *matCellDef="let element"> {{element.createdBy}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>
+          Created by
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.createdBy }}</td>
       </ng-container>
       <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Created at</th>
-        <td mat-cell *matCellDef="let element"> {{element.createdAt | date: 'dd/MM/yyyy, HH:mm':'Europe/Tirane'}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>
+          Created at
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.createdAt | date: 'dd/MM/yyyy, HH:mm' : 'Europe/Tirane' }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="completedAt">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Completed at</th>
-        <td mat-cell *matCellDef="let element"> {{element.completedAt | date: 'dd/MM/yyyy, HH:mm':'Europe/Tirane'}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>
+          Completed at
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element.completedAt | date: 'dd/MM/yyyy, HH:mm' : 'Europe/Tirane'
+          }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="lastUpdatedBy">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Last updated by</th>
-        <td mat-cell *matCellDef="let element"> {{element.lastUpdatedBy}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>
+          Last updated by
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.lastUpdatedBy }}</td>
       </ng-container>
       <ng-container matColumnDef="remarks">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Remarks</th>
-        <td mat-cell *matCellDef="let element"> {{element.remarks}} </td>
+        <td mat-cell *matCellDef="let element">{{ element.remarks }}</td>
       </ng-container>
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Actions</th>
@@ -58,7 +71,10 @@
             i18n
             [disabled]="statisticsTableData().isDownloading"
             (click)="download(element.fileUrl, element.id)">
-            @if (downloadRowId === element.id && statisticsTableData().isDownloading) {
+            @if (
+              downloadRowId === element.id &&
+              statisticsTableData().isDownloading
+            ) {
               <mat-spinner diameter="24"></mat-spinner>
             } @else {
               <mat-icon>download</mat-icon>
@@ -68,7 +84,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="tableColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell no-data-cell" colspan="8">No data</td>
       </tr>

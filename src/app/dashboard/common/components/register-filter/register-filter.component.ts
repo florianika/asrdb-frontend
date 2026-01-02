@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { BuildingFilter } from '../../../register/model/building';
 import { MatIconModule } from '@angular/material/icon';
-import {MatCheckbox} from "@angular/material/checkbox";
 
 @Component({
   selector: 'asrdb-building-list-view-filter',
@@ -24,7 +23,6 @@ import {MatCheckbox} from "@angular/material/checkbox";
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatCheckbox,
   ],
 })
 export class RegisterFilterComponent {

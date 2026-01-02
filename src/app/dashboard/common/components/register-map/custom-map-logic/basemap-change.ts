@@ -1,8 +1,14 @@
 import MapView from '@arcgis/core/views/MapView';
 import Popup from '@arcgis/core/widgets/Popup';
 import { Injectable } from '@angular/core';
-import {MAP_2025, HYBRID_BASEMAP, OSM_BASEMAP, MAP_2023, MAP_2024} from './BasemapTypes';
-import Basemap from "@arcgis/core/Basemap";
+import {
+  MAP_2025,
+  HYBRID_BASEMAP,
+  OSM_BASEMAP,
+  MAP_2023,
+  MAP_2024,
+} from './BasemapTypes';
+import Basemap from '@arcgis/core/Basemap';
 
 @Injectable()
 export class BaseMapChangeService {
@@ -27,12 +33,10 @@ export class BaseMapChangeService {
     eventsCleanupCallbacks: any[]
   ) {
     const popup = new Popup({
-      title: 'Change base map',
+      title: $localize`Change base map`,
       dockEnabled: true,
       dockOptions: {
-        // Disables the dock button from the popup
         buttonEnabled: false,
-        // Ignore the default sizes that trigger responsive docking
         breakpoint: false,
       },
       visibleElements: {
@@ -115,13 +119,17 @@ export class BaseMapChangeService {
     const osmMap = document.createElement('div');
     osmMap.id = 'basemap-osm-selection';
     osmMap.className = 'esri-widget esri-interactive basemap-item';
+
     const popupContentSpanIcon2 = document.createElement('span');
     popupContentSpanIcon2.className = 'esri-icon-basemap';
+
     const popupContentSpan2 = document.createElement('span');
-    popupContentSpan2.textContent = 'OSM map';
+    popupContentSpan2.textContent = $localize`OSM map`;
     popupContentSpan2.className = 'basemap-type-item';
+
     osmMap.appendChild(popupContentSpanIcon2);
     osmMap.appendChild(popupContentSpan2);
+
     const osmMapEventListener = () => {
       webmapCallback(OSM_BASEMAP as any);
       popup.close();
@@ -141,13 +149,17 @@ export class BaseMapChangeService {
     const hybridMap = document.createElement('div');
     hybridMap.id = 'basemap-hybrid-selection';
     hybridMap.className = 'esri-widget esri-interactive basemap-item';
+
     const popupContentSpanIcon = document.createElement('span');
     popupContentSpanIcon.className = 'esri-icon-basemap';
+
     const popupContentSpan = document.createElement('span');
-    popupContentSpan.textContent = 'Hybrid map';
+    popupContentSpan.textContent = $localize`Hybrid map`;
     popupContentSpan.className = 'basemap-type-item';
+
     hybridMap.appendChild(popupContentSpanIcon);
     hybridMap.appendChild(popupContentSpan);
+
     const hybridMapEventListener = () => {
       webmapCallback(HYBRID_BASEMAP);
       popup.close();
@@ -165,25 +177,29 @@ export class BaseMapChangeService {
     eventsCleanupCallbacks: any[],
     basemap: Basemap
   ) {
-    const hybridMap = document.createElement('div');
-    hybridMap.id = 'basemap-custom-selection-' + basemap.title;
-    hybridMap.className = 'esri-widget esri-interactive basemap-item';
+    const customMap = document.createElement('div');
+    customMap.id = 'basemap-custom-selection-' + basemap.title;
+    customMap.className = 'esri-widget esri-interactive basemap-item';
+
     const popupContentSpanIcon = document.createElement('span');
     popupContentSpanIcon.className = 'esri-icon-basemap';
+
     const popupContentSpan = document.createElement('span');
     popupContentSpan.textContent = basemap.title;
     popupContentSpan.className = 'basemap-type-item';
-    hybridMap.appendChild(popupContentSpanIcon);
-    hybridMap.appendChild(popupContentSpan);
+
+    customMap.appendChild(popupContentSpanIcon);
+    customMap.appendChild(popupContentSpan);
+
     const customMapEventListener = () => {
       webmapCallback(basemap);
       popup.close();
     };
-    hybridMap.addEventListener('click', customMapEventListener);
+    customMap.addEventListener('click', customMapEventListener);
     eventsCleanupCallbacks.push(() => {
-      hybridMap.removeEventListener('click', customMapEventListener);
+      customMap.removeEventListener('click', customMapEventListener);
     });
-    return hybridMap;
+    return customMap;
   }
 
   private createBasemapButton() {
@@ -192,7 +208,7 @@ export class BaseMapChangeService {
     basemap.id = 'basemap-selection';
     basemap.className =
       'esri-widget esri-widget--button esri-widget esri-interactive';
-    basemap.title = 'Change map type';
+    basemap.title = $localize`Change map type`;
     span.className = 'esri-icon-basemap';
     basemap.appendChild(span);
     return basemap;

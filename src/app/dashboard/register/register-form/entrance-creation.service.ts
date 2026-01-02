@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {CommonEntranceService} from '../../common/service/common-entrance.service';
-import {BehaviorSubject} from 'rxjs';
-import {DEFAULR_SPARTIAL_REF, Point} from '../model/map-data';
-import {Entrance} from '../model/entrance';
-import {EntityManageResponse} from '../model/entity-req-res';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {AuthStateService} from '../../../common/services/auth-state.service';
-import {CommonBuildingService} from "../../common/service/common-building.service";
-import {Router} from "@angular/router";
+import { Injectable } from '@angular/core';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import { BehaviorSubject } from 'rxjs';
+import { DEFAULR_SPARTIAL_REF, Point } from '../model/map-data';
+import { Entrance } from '../model/entrance';
+import { EntityManageResponse } from '../model/entity-req-res';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthStateService } from '../../../common/services/auth-state.service';
+import { CommonBuildingService } from '../../common/service/common-building.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class EntranceManagementService {
@@ -22,9 +22,11 @@ export class EntranceManagementService {
         !response['addResults']?.[0]?.success &&
         !response['updateResults']?.[0]?.success
       ) {
-        this.snackBar.open('Could not save entrance data', 'Ok', {
-          duration: 3000,
-        });
+        this.snackBar.open(
+          $localize`Could not save entrance data`,
+          $localize`Ok`,
+          { duration: 3000 }
+        );
         this.isSaving.next(false);
         return;
       }
@@ -36,11 +38,9 @@ export class EntranceManagementService {
     error: () => {
       this.isSaving.next(false);
       this.snackBar.open(
-        'There was an error when trying to save entrance data',
-        'Ok',
-        {
-          duration: 3000,
-        }
+        $localize`There was an error when trying to save entrance data`,
+        $localize`Ok`,
+        { duration: 3000 }
       );
     },
   });
@@ -73,40 +73,54 @@ export class EntranceManagementService {
         delete attributes.EntLongitude;
       }
       this.isSaving.next(true);
-      this.updateEntrance([
-        {
-          geometry: {
-            x: geometry.x,
-            y: geometry.y,
-            spatialReference: geometry.spatialReference ?? DEFAULR_SPARTIAL_REF,
+      this.updateEntrance(
+        [
+          {
+            geometry: {
+              x: geometry.x,
+              y: geometry.y,
+              spatialReference:
+                geometry.spatialReference ?? DEFAULR_SPARTIAL_REF,
+            },
+            attributes: attributes,
           },
-          attributes: attributes,
-        },
-      ], buildingGlobalId);
+        ],
+        buildingGlobalId
+      );
     } else {
       this.isSaving.next(true);
       attributes.external_creator = `{${this.authState.getNameId()}}` ?? '';
       attributes.external_creator_date = String(Date.now());
-      this.createEntrance([
-        {
-          geometry: {
-            x: geometry.x,
-            y: geometry.y,
-            spatialReference: geometry.spatialReference ?? DEFAULR_SPARTIAL_REF,
+      this.createEntrance(
+        [
+          {
+            geometry: {
+              x: geometry.x,
+              y: geometry.y,
+              spatialReference:
+                geometry.spatialReference ?? DEFAULR_SPARTIAL_REF,
+            },
+            attributes: attributes,
           },
-          attributes: attributes,
-        },
-      ], buildingGlobalId);
+        ],
+        buildingGlobalId
+      );
     }
   }
 
-  private createEntrance(features: { geometry: any; attributes: Entrance }[], buildingId: string) {
+  private createEntrance(
+    features: { geometry: any; attributes: Entrance }[],
+    buildingId: string
+  ) {
     this.entranceService
       .createFeature(features)
       .subscribe(this.responseHandler(buildingId));
   }
 
-  private updateEntrance(features: { geometry: any; attributes: Entrance }[], buildingId: string) {
+  private updateEntrance(
+    features: { geometry: any; attributes: Entrance }[],
+    buildingId: string
+  ) {
     this.entranceService
       .updateFeature(features)
       .subscribe(this.responseHandler(buildingId));
@@ -124,7 +138,7 @@ export class EntranceManagementService {
     const cleanedObject = {} as any;
     Object.entries(entrance as any).forEach(([key, value]) => {
       if (key !== 'Point') {
-        cleanedObject[key] = (value || value === 0) ? value : null;
+        cleanedObject[key] = value || value === 0 ? value : null;
       }
     });
     return cleanedObject as Entrance;

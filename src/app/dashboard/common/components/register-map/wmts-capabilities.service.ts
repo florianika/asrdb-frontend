@@ -10,7 +10,6 @@ export interface WMTSLOD {
 
 @Injectable({ providedIn: 'root' })
 export class WmtsCapabilitiesService {
-
   private lodCache = new Map<string, WMTSLOD[]>();
 
   constructor() {}
@@ -28,14 +27,13 @@ export class WmtsCapabilitiesService {
       const capabilitiesUrl = `${url}?request=GetCapabilities&service=WMTS`;
 
       const response = await esriRequest(capabilitiesUrl, {
-        responseType: 'text'
+        responseType: 'text',
       });
 
       const lods = this.extractLODsFromCapabilities(response.data);
 
       this.lodCache.set(url, lods);
       return lods;
-
     } catch (error) {
       console.error('WMTS capabilities fetch failed:', error);
       return [];
@@ -55,7 +53,7 @@ export class WmtsCapabilitiesService {
     return scales.map((scale, index) => ({
       level: index,
       scale: scale,
-      resolution: 0 // optional
+      resolution: 0, // optional
     }));
   }
 }

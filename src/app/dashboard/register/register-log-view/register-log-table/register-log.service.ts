@@ -69,17 +69,15 @@ export class RegisterLogService {
         processOutputLogDto: Log[];
       }>(
         environment.base_url +
-        this.LOGS_URL +
-        buildingId.replace('{', '').replace('}', '')
+          this.LOGS_URL +
+          buildingId.replace('{', '').replace('}', '')
       )
       .subscribe({
         next: data => {
           if (
             data.processOutputLogDto.length !== this.loadedLogs.value.length
           ) {
-            setTimeout(() => {
-              this.loadLogs(buildingId);
-            }, 3000);
+            setTimeout(() => this.loadLogs(buildingId), 3000);
             this.isExecuting.next(EXECUTING);
           } else {
             this.isExecuting.next(NOT_EXECUTING);
@@ -88,7 +86,7 @@ export class RegisterLogService {
           this.isLoading.next(false);
         },
         error: err => {
-          console.log(err);
+          console.error(err);
           this.isLoading.next(false);
           this.isExecuting.next(NOT_EXECUTING);
         },
@@ -113,7 +111,7 @@ export class RegisterLogService {
           this.isExecuting.next(NOT_EXECUTING);
         },
         error: err => {
-          console.log(err);
+          console.error(err);
           this.isLoading.next(false);
           this.isExecuting.next(NOT_EXECUTING);
         },
@@ -123,41 +121,37 @@ export class RegisterLogService {
 
   private loadBuildingQuality(buildingId: string) {
     this.commonBuildingService.getBuildingQuality(buildingId).subscribe({
-      next: quality => {
-        this.buildingQuality.next(quality ?? '');
-      },
-      error: err => {
-        console.error(err);
-      },
+      next: quality => this.buildingQuality.next(quality ?? ''),
+      error: err => console.error(err),
     });
   }
 
   public executeRulesForMultipleBuildings(buildingIds: string[]) {
     this.isExecuting.next(EXECUTING);
     const data = {
-      BuildingIds: buildingIds.map(buildingId =>
-        buildingId.replace('{', '').replace('}', '')
-      ),
+      BuildingIds: buildingIds.map(b => b.replace('{', '').replace('}', '')),
       ExecutionUser: this.authState.getNameId(),
     };
     this.httpClient
       .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       })
       .subscribe({
         next: () => {
           this.isExecuting.next(EXECUTING);
-          this.matSnack.open('Started testing buildings data', 'Ok', {
-            duration: 2000,
-          });
+          this.matSnack.open(
+            $localize`Started testing buildings data`,
+            $localize`Ok`,
+            { duration: 2000 }
+          );
         },
         error: err => {
-          console.log(err);
-          this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000,
-          });
+          console.error(err);
+          this.matSnack.open(
+            $localize`Action could not be performed`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           this.isExecuting.next(NOT_EXECUTING);
         },
       });
@@ -171,27 +165,28 @@ export class RegisterLogService {
     };
     this.httpClient
       .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       })
       .subscribe({
         next: () => {
           this.isExecuting.next(EXECUTING);
           if (loadLogs) {
             this.loadLogsAfterExecution(buildingId);
-          }
-          if (!loadLogs) {
-            this.matSnack.open('Started testing building data', 'Ok', {
-              duration: 2000,
-            });
+          } else {
+            this.matSnack.open(
+              $localize`Started testing building data`,
+              $localize`Ok`,
+              { duration: 2000 }
+            );
           }
         },
         error: err => {
-          console.log(err);
-          this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000,
-          });
+          console.error(err);
+          this.matSnack.open(
+            $localize`Action could not be performed`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           this.isExecuting.next(NOT_EXECUTING);
         },
       });
@@ -208,10 +203,12 @@ export class RegisterLogService {
         },
         error: err => {
           this.isResolving.next(false);
-          this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000,
-          });
-          console.log(err);
+          this.matSnack.open(
+            $localize`Action could not be performed`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
+          console.error(err);
         },
       });
   }
@@ -227,10 +224,12 @@ export class RegisterLogService {
         },
         error: err => {
           this.isResolving.next(false);
-          this.matSnack.open('Action could not be performed', 'Ok', {
-            duration: 3000,
-          });
-          console.log(err);
+          this.matSnack.open(
+            $localize`Action could not be performed`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
+          console.error(err);
         },
       });
   }
@@ -240,9 +239,7 @@ export class RegisterLogService {
     variable: string,
     id?: string
   ): Log | undefined {
-    if (!id) {
-      return undefined;
-    }
+    if (!id) return undefined;
     const cleanedID = id.replace('{', '').replace('}', '').toLowerCase();
     const matchID = (log: Log): boolean => {
       return entityType === BUILDING_ENTITY
@@ -264,9 +261,7 @@ export class RegisterLogService {
 
   public getAllLogs(entityType?: EntityType): Log[] {
     return this.loadedLogs.value.filter(log => {
-      if (entityType) {
-        return log.entityType === entityType;
-      }
+      if (entityType) return log.entityType === entityType;
       return true;
     });
   }

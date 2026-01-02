@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, of, zip } from 'rxjs';
-import {User} from "../../../../model/User.model";
-import {environment} from "../../../../../environments/environment";
+import { User } from '../../../../model/User.model';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable()
 export class HistoryDetailsService {
@@ -56,9 +56,11 @@ export class HistoryDetailsService {
       .get<{
         userDTO: User;
       }>(environment.base_url + this.USER_DETAILS_API + user)
-      .pipe(catchError(error => {
-        console.error('Error fetching user details:', error);
-        return of(null);
-      }));
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching user details:', error);
+          return of(null);
+        })
+      );
   }
 }

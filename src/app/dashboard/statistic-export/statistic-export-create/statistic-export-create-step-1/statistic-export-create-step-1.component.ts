@@ -1,11 +1,14 @@
-import {Component, effect, inject, ViewChild} from '@angular/core';
-import {PivotRow, StatisticExportService} from "../../statistic-export.service";
-import {MatTableDataSource, MatTableModule} from "@angular/material/table";
-import {MatSort, MatSortModule} from "@angular/material/sort";
-import {MatButtonModule} from "@angular/material/button";
-import {NgForOf} from "@angular/common";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {MatIcon} from "@angular/material/icon";
+import { Component, effect, inject, ViewChild } from '@angular/core';
+import {
+  PivotRow,
+  StatisticExportService,
+} from '../../statistic-export.service';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+import { NgForOf } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'asrdb-statistic-export-create-step-1',
@@ -16,16 +19,17 @@ import {MatIcon} from "@angular/material/icon";
     MatButtonModule,
     NgForOf,
     MatProgressSpinner,
-    MatIcon
+    MatIcon,
   ],
   templateUrl: './statistic-export-create-step-1.component.html',
-  styleUrl: './statistic-export-create-step-1.component.css'
+  styleUrl: './statistic-export-create-step-1.component.css',
 })
 export class StatisticExportCreateStep1Component {
   @ViewChild(MatSort) sort!: MatSort;
 
   private statisticExportService = inject(StatisticExportService);
-  public statisticsForMunicipalityAndBuildingQuality = this.statisticExportService.statisticsForMunicipalityAndBuildingQuality;
+  public statisticsForMunicipalityAndBuildingQuality =
+    this.statisticExportService.statisticsForMunicipalityAndBuildingQuality;
 
   constructor() {
     this.statisticExportService.getStatisticsForMunicipalityAndBuildingQuality();
@@ -44,15 +48,24 @@ export class StatisticExportCreateStep1Component {
 
   private buildPivotTable() {
     // Unique municipalities
-    const municipalities = [...new Set(this.statisticsForMunicipalityAndBuildingQualityData.map(d => d.municipality))];
+    const municipalities = [
+      ...new Set(
+        this.statisticsForMunicipalityAndBuildingQualityData.map(
+          d => d.municipality
+        )
+      ),
+    ];
 
     // Unique qualities (sorted numerically)
-    this.qualities = [...new Set(this.statisticsForMunicipalityAndBuildingQualityData.map(d => d.quality))]
-      .sort((a, b) => +a - +b);
+    this.qualities = [
+      ...new Set(
+        this.statisticsForMunicipalityAndBuildingQualityData.map(d => d.quality)
+      ),
+    ].sort((a, b) => +a - +b);
 
     this.displayedColumns = ['municipality', ...this.qualities];
     this.dataSource.data = municipalities.map(municipality => {
-      const row: PivotRow = {municipality};
+      const row: PivotRow = { municipality };
 
       this.qualities.forEach(q => {
         const match = this.statisticsForMunicipalityAndBuildingQualityData.find(

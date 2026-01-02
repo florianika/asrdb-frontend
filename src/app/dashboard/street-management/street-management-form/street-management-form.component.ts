@@ -162,7 +162,11 @@ export class StreetManagementFormComponent implements OnDestroy {
             console.log('Street: ', res);
           }
           if (!res) {
-            this.matSnackBar.open('Could not load result. Please try again');
+            this.matSnackBar.open(
+              $localize`Could not load result. Please try again`,
+              $localize`Ok`,
+              { duration: 3000 }
+            );
             this.isLoadingResults = false;
             return;
           }
@@ -226,11 +230,9 @@ export class StreetManagementFormComponent implements OnDestroy {
         if (confirm) {
           setTimeout(() => {
             this.matSnackBar.open(
-              'Dialog was closed and all changes were discarded',
-              'Ok',
-              {
-                duration: 3000,
-              }
+              $localize`Dialog was closed and all changes were discarded`,
+              $localize`Ok`,
+              { duration: 3000 }
             );
             this.dialogRef.close();
           }, 200);
@@ -240,11 +242,9 @@ export class StreetManagementFormComponent implements OnDestroy {
 
   private closeDialog() {
     this.matSnackBar.open(
-      'Dialog was closed and all changes were discarded',
-      'Ok',
-      {
-        duration: 3000,
-      }
+      $localize`Dialog was closed and all changes were discarded`,
+      $localize`Ok`,
+      { duration: 3000 }
     );
     this.dialogRef.close();
     return;
@@ -253,11 +253,9 @@ export class StreetManagementFormComponent implements OnDestroy {
   save() {
     if (this.formGroup.invalid) {
       this.matSnackBar.open(
-        'Data cannot be saved. Please check the form for invalid data.',
-        'Ok',
-        {
-          duration: 3000,
-        }
+        $localize`Data cannot be saved. Please check the form for invalid data.`,
+        $localize`Ok`,
+        { duration: 3000 }
       );
       this.formGroup.markAllAsTouched();
       return;
@@ -272,10 +270,7 @@ export class StreetManagementFormComponent implements OnDestroy {
 
   getError(control: AbstractControl) {
     if (control.errors?.['maxlength']) {
-      return (
-        'Value should not be longer than ' +
-        control.errors?.['maxlength'].requiredLength
-      );
+      return $localize`Value should not be longer than ` + control.errors?.['maxlength'].requiredLength;
     }
     return '';
   }

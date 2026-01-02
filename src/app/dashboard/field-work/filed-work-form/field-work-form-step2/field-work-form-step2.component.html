@@ -4,9 +4,17 @@
       <form [formGroup]="formGroup">
         <mat-form-field class="w-100" appearance="outline">
           <mat-label i18n>Email template</mat-label>
-          <mat-select formControlName="emailTemplateId" required (selectionChange)="setSelectedEmailTemplate($event.value)">
-            @for (emailTemplate of emailTemplates$ | async; track emailTemplate.emailTemplateId) {
-              <mat-option [value]="emailTemplate.emailTemplateId">{{emailTemplate.subject}}</mat-option>
+          <mat-select
+            formControlName="emailTemplateId"
+            required
+            (selectionChange)="setSelectedEmailTemplate($event.value)">
+            @for (
+              emailTemplate of emailTemplates$ | async;
+              track emailTemplate.emailTemplateId
+            ) {
+              <mat-option [value]="emailTemplate.emailTemplateId">{{
+                emailTemplate.subject
+              }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -15,29 +23,36 @@
     <div class="col-12 col-md-6">
       <mat-label class="mb-2 d-inline-block" i18n>Email body</mat-label>
       <div class="NgxEditor__Wrapper">
-        <ngx-editor [editor]="editor" [ngModel]="selectedEmailTemplate?.body" [disabled]="true"> </ngx-editor>
+        <ngx-editor
+          [editor]="editor"
+          [ngModel]="selectedEmailTemplate?.body"
+          [disabled]="true">
+        </ngx-editor>
       </div>
     </div>
   </div>
   <div class="d-flex justify-content-end mt-4 mb-1">
-    <button mat-raised-button
-            color="warn"
-            (click)="handleClose()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="handleClose()"
+      [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
       <span i18n>Save draft & Close</span>
     </button>
     <span class="flex-grow-1"></span>
-    <button mat-raised-button
-            class="me-3"
-            (click)="back()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
+    <button
+      mat-raised-button
+      class="me-3"
+      (click)="back()"
+      [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
       <mat-icon class="me-0">arrow_back_ios</mat-icon>
       <span i18n>Back</span>
     </button>
-    <button mat-raised-button
-            color="primary"
-            (click)="handleEmailTemplatePage()"
-            [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="handleEmailTemplatePage()"
+      [disabled]="fieldWorkState().isSaving || fieldWorkState().isLoading">
       <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
       <span i18n>Next</span>
     </button>

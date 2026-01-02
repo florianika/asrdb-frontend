@@ -9,25 +9,36 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {catchError, merge, of as observableOf, Subject, switchMap, takeUntil,} from 'rxjs';
-import {Chip} from '../../../common/standalone-components/chip/chip.component';
-import {CommonRegisterHelperService} from '../../common/service/common-helper.service';
-import {MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {QueryFilter} from '../../register/model/query-filter';
-import {StreetFilter} from '../../register/model/street';
-import {CommonStreetService} from '../../common/service/common-street.service';
-import {AuthStateService, DEFAULT_MUNICIPALITY,} from '../../../common/services/auth-state.service';
-import {StreetManagementFormComponent} from '../street-management-form/street-management-form.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import {
-  StreetManagementTableFilterComponent
-} from './street-management-table-filter/street-management-table-filter.component';
-import {MUNICIPALITIES, Municipality} from '../../../common/data/municipalities';
-import {RegisterFilterService} from "../../register/register-table-view/register-filter.service";
-import {CommonEntranceService} from "../../common/service/common-entrance.service";
-import {CommonBuildingService} from "../../common/service/common-building.service";
+  catchError,
+  merge,
+  of as observableOf,
+  Subject,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
+import { Chip } from '../../../common/standalone-components/chip/chip.component';
+import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { QueryFilter } from '../../register/model/query-filter';
+import { StreetFilter } from '../../register/model/street';
+import { CommonStreetService } from '../../common/service/common-street.service';
+import {
+  AuthStateService,
+  DEFAULT_MUNICIPALITY,
+} from '../../../common/services/auth-state.service';
+import { StreetManagementFormComponent } from '../street-management-form/street-management-form.component';
+import { StreetManagementTableFilterComponent } from './street-management-table-filter/street-management-table-filter.component';
+import {
+  MUNICIPALITIES,
+  Municipality,
+} from '../../../common/data/municipalities';
+import { RegisterFilterService } from '../../register/register-table-view/register-filter.service';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import { CommonBuildingService } from '../../common/service/common-building.service';
 
 const FILTER_KEY = 'streetManagementTableFilter';
 
@@ -37,7 +48,8 @@ const FILTER_KEY = 'streetManagementTableFilter';
   styleUrls: ['./street-management-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterViewInit
+export class StreetManagementTableComponent
+  implements OnInit, OnDestroy, AfterViewInit
 {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -105,7 +117,7 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
     private viewContainerRef: ViewContainerRef,
     private matDialog: MatDialog,
     private matSnack: MatSnackBar,
-    private registerFilterService: RegisterFilterService,
+    private registerFilterService: RegisterFilterService
   ) {}
 
   ngOnInit() {
@@ -115,7 +127,10 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
         this.filterConfig = JSON.parse(filter);
       }
     } catch (e) {
-      console.error('Error parsing filter from localStorage', e);
+      console.error(
+        $localize`Error parsing filter from localStorage`,
+        e
+      );
     }
     this.loadStreetsForMunicipality(
       this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY
@@ -132,7 +147,6 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
   }
 
   ngAfterViewInit() {
-    // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => (this.paginator.pageIndex = 0));
@@ -144,7 +158,10 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
       .subscribe(res => this.handleResponse(res));
     this.sort.active = 'StrNameCore';
     this.sort.direction = 'desc';
-    this.sort.sortChange.emit({ active: this.sort.active, direction: this.sort.direction });
+    this.sort.sortChange.emit({
+      active: this.sort.active,
+      direction: this.sort.direction,
+    });
   }
 
   ngOnDestroy(): void {
@@ -297,9 +314,11 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
       console.log('Streets: ', res);
     }
     if (!res) {
-      this.matSnack.open('Could not load result. Please try again', 'Ok', {
-        duration: 3000,
-      });
+      this.matSnack.open(
+        $localize`Could not load result. Please try again`,
+        $localize`Ok`,
+        { duration: 3000 }
+      );
       this.isLoadingResults = false;
       this.data = [];
       this.changeDetectorRef.markForCheck();
@@ -309,25 +328,34 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
       this.fields = res.data.fields;
     }
     this.resultsLength = res.count;
-    this.data = res.data.features.map((feature: {attributes: object}) => feature.attributes);
+    this.data = res.data.features.map(
+      (feature: { attributes: object }) => feature.attributes
+    );
     this.filterMap();
     this.loadEntrancesForStreets();
   }
 
   private loadEntrancesForStreets() {
-    const ids = this.data.map((street) => street['GlobalID']);
+    const ids = this.data.map(street => street['GlobalID']);
     if (!ids.length) {
       return;
     }
     const filter = {
       outFields: ['EntStrGlobalID'],
-      where: 'EntStrGlobalID in (' + ids.map((id: string) => `'${id}'`).join(',') + ') AND EntQuality <> 0',
+      where:
+        'EntStrGlobalID in (' +
+        ids.map((id: string) => `'${id}'`).join(',') +
+        ') AND EntQuality <> 0',
       start: 0,
-      num: 20000
+      num: 20000,
     } as QueryFilter;
-    this.commonEntranceService.getEntranceData(filter)
-      .pipe(takeUntil(this.destroy$), catchError(() => observableOf(null)))
-      .subscribe((data) => {
+    this.commonEntranceService
+      .getEntranceData(filter)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(() => observableOf(null))
+      )
+      .subscribe(data => {
         if (data && data.data && data.data.features) {
           this.streetEntranceMap.clear();
           data.data.features.forEach((feature: any) => {
@@ -350,30 +378,48 @@ export class StreetManagementTableComponent implements OnInit, OnDestroy, AfterV
     }
     const filter = {
       outFields: ['EntBldGlobalID'],
-      where: 'EntStrGlobalID in (' + ids.map((id: string) => `'${id}'`).join(',') + ') AND EntQuality <> 0',
+      where:
+        'EntStrGlobalID in (' +
+        ids.map((id: string) => `'${id}'`).join(',') +
+        ') AND EntQuality <> 0',
       start: 0,
-      num: 20000
+      num: 20000,
     } as QueryFilter;
-    this.commonEntranceService.getEntranceData(filter)
-      .pipe(takeUntil(this.destroy$), catchError(() => observableOf(null)))
-      .subscribe((data) => {
+    this.commonEntranceService
+      .getEntranceData(filter)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(() => observableOf(null))
+      )
+      .subscribe(data => {
         if (data && data.data && data.data.features) {
-          const entIds = data.data.features.map((feature: any) => feature.attributes.EntBldGlobalID);
+          const entIds = data.data.features.map(
+            (feature: any) => feature.attributes.EntBldGlobalID
+          );
           if (!entIds.length) {
             this.handleLoadFinish();
             return;
           }
           const buildingFilter = {
             outFields: ['GlobalID'],
-            where: 'GlobalID in (' + entIds.map((id: string) => `'${id}'`).join(',') + ')',
+            where:
+              'GlobalID in (' +
+              entIds.map((id: string) => `'${id}'`).join(',') +
+              ')',
             start: 0,
-            num: 20000
+            num: 20000,
           } as QueryFilter;
-          this.commonBuildingService.getBuildingData(buildingFilter)
-            .pipe(takeUntil(this.destroy$), catchError(() => observableOf(null)))
-            .subscribe((data) => {
+          this.commonBuildingService
+            .getBuildingData(buildingFilter)
+            .pipe(
+              takeUntil(this.destroy$),
+              catchError(() => observableOf(null))
+            )
+            .subscribe(data => {
               if (data && data.data && data.data.features) {
-                const bldIds = data.data.features.map((feature: any) => feature.attributes.GlobalID);
+                const bldIds = data.data.features.map(
+                  (feature: any) => feature.attributes.GlobalID
+                );
                 this.registerFilterService.setBuildingsGlobalIdFilter(bldIds);
                 this.registerFilterService.updateGlobalIds(bldIds);
               }

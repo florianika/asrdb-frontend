@@ -1,19 +1,19 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
-  MatDialogTitle
-} from "@angular/material/dialog";
-import {MatButton} from "@angular/material/button";
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
 
 export type ConfirmDialogData = {
   title: string;
   message: string;
   confirmButtonText: string;
   cancelButtonText: string;
-}
+};
 
 @Component({
   selector: 'asrdb-confirm-dialog',
@@ -23,12 +23,11 @@ export type ConfirmDialogData = {
     MatDialogContent,
     MatDialogActions,
     MatButton,
-    MatDialogClose
+    MatDialogClose,
   ],
   templateUrl: './confirm-dialog.component.html',
-  styleUrl: './confirm-dialog.component.css'
+  styleUrl: './confirm-dialog.component.css',
 })
 export class ConfirmDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData ) {
-  }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData) {}
 }

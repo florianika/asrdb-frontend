@@ -4,18 +4,18 @@
   (selectionChange)="updateCurrentTab($event.selectedIndex)">
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel i18n>General Details</ng-template>
-    <asrdb-field-work-form-step1 [formGroup]="firstFormGroup"/>
+    <asrdb-field-work-form-step1 [formGroup]="firstFormGroup" />
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
     <ng-template matStepLabel i18n>Email template</ng-template>
-    <asrdb-field-work-form-step2 [formGroup]="secondFormGroup"/>
+    <asrdb-field-work-form-step2 [formGroup]="secondFormGroup" />
   </mat-step>
   <mat-step>
     <ng-template matStepLabel i18n>Quality rules</ng-template>
-    <asrdb-field-work-form-step3/>
+    <asrdb-field-work-form-step3 />
   </mat-step>
   <mat-step>
     <ng-template matStepLabel i18n>Finish</ng-template>
-    <asrdb-field-work-form-step4/>
+    <asrdb-field-work-form-step4 />
   </mat-step>
 </mat-stepper>

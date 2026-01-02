@@ -1,21 +1,36 @@
-import {effect, inject, Injectable, isDevMode, signal} from '@angular/core';
-import {Building} from "../model/building";
-import {Log} from "../register-log-view/model/log";
-import {QueryFilter} from "../model/query-filter";
-import {catchError, of, Subject, takeUntil} from "rxjs";
-import {CommonBuildingService} from "../../common/service/common-building.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {NOT_EXECUTING, RegisterLogService} from "../register-log-view/register-log-table/register-log.service";
-import {CommonEntityStructureService, EntityAttribute} from "../../common/service/common-entity-structure.service";
-import {BUILDING_ENTITY} from "../../../common/constants/common-constants";
-import {CommonEntranceService} from "../../common/service/common-entrance.service";
-import {SectionField} from "../constant/common-constants";
-import {CommonRegisterHelperService} from "../../common/service/common-helper.service";
-import {MatDialogRef} from "@angular/material/dialog";
-import {Section, ViewSection} from "./types";
+import {
+  effect,
+  Inject,
+  inject,
+  Injectable,
+  isDevMode,
+  LOCALE_ID,
+  signal,
+} from '@angular/core';
+import { Building } from '../model/building';
+import { Log } from '../register-log-view/model/log';
+import { QueryFilter } from '../model/query-filter';
+import { catchError, of, Subject, takeUntil } from 'rxjs';
+import { CommonBuildingService } from '../../common/service/common-building.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  NOT_EXECUTING,
+  RegisterLogService,
+} from '../register-log-view/register-log-table/register-log.service';
+import {
+  CommonEntityStructureService,
+  EntityAttribute,
+} from '../../common/service/common-entity-structure.service';
+import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
+import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import { SectionField } from '../constant/common-constants';
+import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Section, ViewSection } from './types';
+import { getLocaleProperty } from '../../common/helper/locale-property-helper';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RegisterViewDetailsService {
   // private variables
@@ -47,17 +62,20 @@ export class RegisterViewDetailsService {
     dwellingStructure: null as ViewSection | null,
   });
 
-  constructor() {
-    effect(() => {
-      const building = this.viewData().building;
-      const logs = this.viewData().logs;
-      const structure = this.viewStructures().buildingStructure;
-      const loading = this.viewData().isLoading;
+  constructor(@Inject(LOCALE_ID) private locale: string) {
+    effect(
+      () => {
+        const building = this.viewData().building;
+        const logs = this.viewData().logs;
+        const structure = this.viewStructures().buildingStructure;
+        const loading = this.viewData().isLoading;
 
-      if (building && logs && structure && loading) {
-        this.fillSections(building.GlobalID);
-      }
-    }, { allowSignalWrites: true });
+        if (building && logs && structure && loading) {
+          this.fillSections(building.GlobalID);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   public cleanup() {
@@ -66,14 +84,12 @@ export class RegisterViewDetailsService {
   }
 
   public init(id: string) {
-    this.viewData.update((data) => {
-      return {
-        ...data,
-        isLoading: true,
-        building: null,
-        buildingFields: [],
-      }
-    });
+    this.viewData.update(data => ({
+      ...data,
+      isLoading: true,
+      building: null,
+      buildingFields: [],
+    }));
     this.loadBuildingStructure();
     this.loadBuildingData(id);
     this.loadLogs(id);
@@ -81,42 +97,48 @@ export class RegisterViewDetailsService {
 
   // mark as untested
   public markAsUntested(id: string, entranceId: string) {
-    this.viewData.update((data) => {
-      return {
-        ...data,
-        isLoading: true,
-        building: null,
-        buildingFields: [],
-      }
-    });
+    this.viewData.update(data => ({
+      ...data,
+      isLoading: true,
+      building: null,
+      buildingFields: [],
+    }));
     this.resetEntranceStatus(entranceId, id);
   }
 
   public startExecution(id: string, callback?: () => void) {
     this.registerLogService.executeRules(id);
-    this.matSnack.open('Started execution of quality rules', 'Ok', {
-      duration: 5000,
-    });
-    this.viewData.update((data) => {
-      return {...data, isExecutingRules: true, buildingFields: []};
-    });
+    this.matSnack.open(
+      $localize`Started execution of quality rules`,
+      $localize`Ok`,
+      { duration: 5000 }
+    );
+    this.viewData.update(data => ({
+      ...data,
+      isExecutingRules: true,
+      buildingFields: [],
+    }));
     const subscription = this.registerLogService.isExecutingRules
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe(value => {
         if (value === NOT_EXECUTING) {
           setTimeout(() => {
-            this.matSnack.open('Execution of quality rules finished. Reloading logs!', 'Ok', {
-              duration: 5000,
-            });
+            this.matSnack.open(
+              $localize`Execution of quality rules finished. Reloading logs!`,
+              $localize`Ok`,
+              { duration: 5000 }
+            );
             if (callback) {
               callback();
-              this.viewData.update((data) => {
-                return {...data, isExecutingRules: false};
-              });
+              this.viewData.update(data => ({
+                ...data,
+                isExecutingRules: false,
+              }));
             } else {
-              this.viewData.update((data) => {
-                return {...data, isExecutingRules: false};
-              });
+              this.viewData.update(data => ({
+                ...data,
+                isExecutingRules: false,
+              }));
               this.init(id);
             }
             subscription.unsubscribe();
@@ -126,126 +148,120 @@ export class RegisterViewDetailsService {
   }
 
   public rejectReviewForBuilding(dialog: MatDialogRef<any>) {
-    this.viewData.update((data) => {
-      return {...data, isUpdatingFeature: false};
-    });
+    this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
     const building = this.viewData().building;
     if (!building) {
-      this.matSnack.open('No building loaded. Cannot reject review.', 'Ok', {
-        duration: 3000,
-      });
-      this.viewData.update((data) => {
-        return {...data, isUpdatingFeature: false};
-      });
+      this.matSnack.open(
+        $localize`No building loaded. Cannot reject review.`,
+        $localize`Ok`,
+        { duration: 3000 }
+      );
       return;
     }
     const feature = {
       attributes: {
         ...building,
         BldReview: 5,
-      }
-    }
+      },
+    };
     this.commonBuildingService
       .updateFeature([feature])
-      .pipe(takeUntil(this.destroy$), catchError(err => {
-        console.error('Error updating feature', err);
-        this.viewData.update((data) => {
-          return {...data, isUpdatingFeature: false};
-        });
-        this.matSnack.open('Could not reject review. Please try again.', 'Ok', {
-          duration: 3000,
-        });
-        return of(null);
-      }))
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(err => {
+          console.error('Error updating feature', err);
+          this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+          this.matSnack.open(
+            $localize`Could not reject review. Please try again.`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
+          return of(null);
+        })
+      )
       .subscribe(feature => {
         if (feature) {
-          if (isDevMode()) {
-            console.log('Feature updated', feature);
-          }
-          this.matSnack.open('Review reopened successfully', 'Ok', {
-            duration: 3000,
-          });
+          if (isDevMode()) console.log('Feature updated', feature);
+          this.matSnack.open(
+            $localize`Review reopened successfully`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           dialog.close();
           this.loadBuildingData(building.GlobalID);
         }
-        this.viewData.update((data) => {
-          return {...data, isUpdatingFeature: false};
-        });
+        this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
       });
   }
 
   approveReviewForBuilding(dialog: MatDialogRef<any>) {
-    this.viewData.update((data) => {
-      return {...data, isUpdatingFeature: true};
-    });
+    this.viewData.update(data => ({ ...data, isUpdatingFeature: true }));
     const building = this.viewData().building;
     if (!building) {
-      this.matSnack.open('No building loaded. Cannot approve review.', 'Ok', {
-        duration: 3000,
-      });
-      this.viewData.update((data) => {
-        return {...data, isUpdatingFeature: false};
-      });
+      this.matSnack.open(
+        $localize`No building loaded. Cannot approve review.`,
+        $localize`Ok`,
+        { duration: 3000 }
+      );
+      this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
       return;
     }
     const feature = {
       attributes: {
         ...building,
         BldReview: 2,
-      }
-    }
+      },
+    };
     this.commonBuildingService
       .updateFeature([feature])
-      .pipe(takeUntil(this.destroy$), catchError(err => {
-        console.error('Error updating feature', err);
-        this.viewData.update((data) => {
-          return {...data, isUpdatingFeature: false};
-        });
-        this.matSnack.open('Could not approve review. Please try again.', 'Ok', {
-          duration: 3000,
-        });
-        return of(null);
-      }))
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(err => {
+          console.error('Error updating feature', err);
+          this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+          this.matSnack.open(
+            $localize`Could not approve review. Please try again.`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
+          return of(null);
+        })
+      )
       .subscribe(feature => {
         if (feature) {
-          if (isDevMode()) {
-            console.log('Feature updated', feature);
-          }
-          this.matSnack.open('Review approved successfully', 'Ok', {
-            duration: 3000,
-          });
+          if (isDevMode()) console.log('Feature updated', feature);
+          this.matSnack.open(
+            $localize`Review approved successfully`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           dialog.close();
           this.loadBuildingData(building.GlobalID);
         }
-        this.viewData.update((data) => {
-          return {...data, isUpdatingFeature: false};
-        });
-      })
+        this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+      });
   }
 
   // load building details data
   private loadBuildingData(id: string) {
-    this.viewData.update((data) => {
-      data.isLoading = true;
-      return data;
-    });
-    const filter = {
-      where: this.prepareWhereCase(id),
-    } as Partial<QueryFilter>;
+    this.viewData.update(data => ({ ...data, isLoading: true }));
+    const filter = { where: this.prepareWhereCase(id) } as Partial<QueryFilter>;
 
     this.commonBuildingService
       .getBuildingData(filter)
       .pipe(
         catchError(err => {
           console.log(err);
-          this.matSnack.open('Could not load building. Please try again.', 'Ok', {
-            duration: 3000,
-          });
+          this.matSnack.open(
+            $localize`Could not load building. Please try again.`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           return of(null);
         }),
         takeUntil(this.destroy$)
-    ).subscribe((res) => this.handleResponse(res));
-
+      )
+      .subscribe(res => this.handleResponse(res));
   }
 
   // load logs for building
@@ -253,12 +269,7 @@ export class RegisterViewDetailsService {
     this.registerLogService.isLoadingResults.subscribe(isLoadingResult => {
       if (!isLoadingResult) {
         const logs = this.registerLogService.logsValue;
-        this.viewData.update((data) => {
-          return {
-            ...data,
-            logs: logs,
-          }
-        });
+        this.viewData.update(data => ({ ...data, logs }));
       }
     });
     this.registerLogService.loadLogs(id);
@@ -266,8 +277,12 @@ export class RegisterViewDetailsService {
 
   // load building structure
   private loadBuildingStructure() {
-    this.commonEntityStructureService.structureLoaded.subscribe((response) => {
-      if (!response.loading && response.structure && response.type === BUILDING_ENTITY) {
+    this.commonEntityStructureService.structureLoaded.subscribe(response => {
+      if (
+        !response.loading &&
+        response.structure &&
+        response.type === BUILDING_ENTITY
+      ) {
         this.prepareStructure(response.structure);
       }
     });
@@ -276,18 +291,16 @@ export class RegisterViewDetailsService {
 
   // reset building status
   private resetBuildingStatus(id: string) {
-    this.commonBuildingService.resetStatus(id, () => {
-      setTimeout(() => {
-        this.init(id);
-      }, 500);
-    });
+    this.commonBuildingService.resetStatus(id, () =>
+      setTimeout(() => this.init(id), 500)
+    );
   }
 
   // reset entrance status
   private resetEntranceStatus(entranceId: string, id: string) {
-    this.commonEntranceService.resetStatus(entranceId, () => {
-      this.resetBuildingStatus(id);
-    })
+    this.commonEntranceService.resetStatus(entranceId, () =>
+      this.resetBuildingStatus(id)
+    );
   }
 
   // prepare structure for display
@@ -295,31 +308,17 @@ export class RegisterViewDetailsService {
     const visibleFields = structure.reduce(
       (acc, attr: EntityAttribute) => {
         if (attr.section !== 'none' && !attr.internal) {
-          if (attr.section === 'identification') {
-            acc.identifying.push({
-              title: attr.label.en,
-              propName: attr.name,
-              value: '',
-              log: '',
-              logType: '',
-            } as SectionField);
-          } else if (attr.section === 'description') {
-            acc.describing.push({
-              title: attr.label.en,
-              propName: attr.name,
-              value: '',
-              log: '',
-              logType: '',
-            } as SectionField);
-          } else if (attr.section === 'title') {
-            acc.title.push({
-              title: attr.label.en,
-              propName: attr.name,
-              value: '',
-              log: '',
-              logType: '',
-            } as SectionField);
-          }
+          const field = {
+            title: getLocaleProperty(attr.label, this.locale as 'en' | 'sq'),
+            propName: attr.name,
+            value: '',
+            log: '',
+            logType: '',
+          } as SectionField;
+
+          if (attr.section === 'identification') acc.identifying.push(field);
+          else if (attr.section === 'description') acc.describing.push(field);
+          else if (attr.section === 'title') acc.title.push(field);
         }
         return acc;
       },
@@ -329,19 +328,24 @@ export class RegisterViewDetailsService {
         title: [] as SectionField[],
       }
     );
+
     const sections: Section[] = [
-      { title: 'Identifying Information', entries: [] as SectionField[] },
-      { title: 'Describing Information', entries: [] as SectionField[] },
+      {
+        title: $localize`Identifying Information`,
+        entries: visibleFields.identifying,
+      },
+      {
+        title: $localize`Describing Information`,
+        entries: visibleFields.describing,
+      },
     ];
-    sections[0].entries = visibleFields.identifying;
-    sections[1].entries = visibleFields.describing;
+
     const titleSection = visibleFields.title;
-    this.viewStructures.update((data) => {
-      return {
-        ...data,
-        buildingStructure: {sections, titleSection} as ViewSection,
-      };
-    });
+
+    this.viewStructures.update(data => ({
+      ...data,
+      buildingStructure: { sections, titleSection } as ViewSection,
+    }));
   }
 
   // fill sections with data
@@ -363,12 +367,7 @@ export class RegisterViewDetailsService {
           )?.qualityAction ?? '';
       });
     });
-    this.viewData.update((data) => {
-      return {
-        ...data,
-        isLoading: false,
-      }
-    });
+    this.viewData.update(data => ({ ...data, isLoading: false }));
   }
 
   // HELPERS
@@ -376,9 +375,7 @@ export class RegisterViewDetailsService {
   getMunicipality(): string | number {
     const fields = this.viewData().buildingFields;
     const building = this.viewData().building;
-    if (!fields || !building) {
-      return '';
-    }
+    if (!fields || !building) return '';
     return this.commonBuildingRegisterHelper.getMunicipality(
       fields,
       'BldMunicipality',
@@ -389,10 +386,7 @@ export class RegisterViewDetailsService {
   getValueFromStatus(column: keyof Building): string {
     const fields = this.viewData().buildingFields;
     const building = this.viewData().building;
-    if (!fields || !building) {
-      return '';
-    }
-
+    if (!fields || !building) return '';
     return (
       this.commonBuildingRegisterHelper.getValueFromStatus(
         fields,
@@ -407,35 +401,26 @@ export class RegisterViewDetailsService {
   }
 
   private handleResponse(res: any) {
-    if (isDevMode()) {
-      console.log('Data', res);
-    }
+    if (isDevMode()) console.log('Data', res);
     if (!res) {
-      this.matSnack.open('Could not load result. Please try again', 'Ok', {
-        duration: 3000,
-      });
-      this.viewData.update((data) => {
-        return {
-          ...data,
-          isLoading: false,
-        }
-      });
+      this.matSnack.open(
+        $localize`Could not load result. Please try again`,
+        $localize`Ok`,
+        { duration: 3000 }
+      );
+      this.viewData.update(data => ({ ...data, isLoading: false }));
       return;
     }
     let fields = [];
-    if (res.data.fields.length) {
-      fields = res.data.fields;
-    }
+    if (res.data.fields.length) fields = res.data.fields;
     const building = res.data.features.map(
       (feature: any) => feature.attributes
     )[0];
-    this.viewData.update((data) => {
-      return {
-        ...data,
-        building: building,
-        buildingFields: fields,
-      }
-    });
+    this.viewData.update(data => ({
+      ...data,
+      building,
+      buildingFields: fields,
+    }));
   }
 
   private getValue(entry: any) {
@@ -443,6 +428,4 @@ export class RegisterViewDetailsService {
       ? this.getMunicipality()
       : this.getValueFromStatus(entry.propName);
   }
-
-  // END HELPERS
 }

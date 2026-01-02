@@ -1,30 +1,57 @@
 <div class="full-height-stepper">
   <div>
     <h2 class="mt-3 mb-4" i18n>Closure summary</h2>
-    @if (fieldWorkStatistics().status === "") {
+    @if (fieldWorkStatistics().status === '') {
       <p i18n>
-        The field work is ready to be closed. By clicking the "Confirm closure" button, you will finalize the field work process.
-        This action will send the closure email to all enumerators and supervisors, and it will also
-        update the status of the field work to "Closed". Please ensure that all necessary steps have been completed before proceeding with the closure.
+        The field work is ready to be closed. By clicking the "Confirm closure"
+        button, you will finalize the field work process. This action will send
+        the closure email to all enumerators and supervisors, and it will also
+        update the status of the field work to "Closed". Please ensure that all
+        necessary steps have been completed before proceeding with the closure.
       </p>
-    } @else if (fieldWorkStatistics().status === "ERROR") {
+    } @else if (fieldWorkStatistics().status === 'ERROR') {
       <p i18n>
-        An error occurred while attempting to close the field work. Please try again later or contact support if the issue persists.
+        An error occurred while attempting to close the field work. Please try
+        again later or contact support if the issue persists.
       </p>
     } @else {
       <p i18n>
-        The field work has been successfully closed. An email notification has been sent to all enumerators and supervisors informing them of the closure.
-        The status of the field work has been updated to "Closed".
+        The field work has been successfully closed. An email notification has
+        been sent to all enumerators and supervisors informing them of the
+        closure. The status of the field work has been updated to "Closed".
       </p>
     }
   </div>
   <div class="d-flex justify-content-end mt-4 mb-1">
-    <button mat-button i18n [disabled]="fieldWorkStatistics().loading" (click)="close()">Close</button>
+    <button
+      mat-button
+      i18n
+      [disabled]="fieldWorkStatistics().loading"
+      (click)="close()">
+      Close
+    </button>
     <span class="flex-grow-1"></span>
-    @if (fieldWorkStatistics().status === "" || fieldWorkStatistics().status === "ERROR") {
-      <button mat-raised-button color="primary" i18n [disabled]="fieldWorkStatistics().loading" (click)="next()">Confirm closure</button>
+    @if (
+      fieldWorkStatistics().status === '' ||
+      fieldWorkStatistics().status === 'ERROR'
+    ) {
+      <button
+        mat-raised-button
+        color="primary"
+        i18n
+        [disabled]="fieldWorkStatistics().loading"
+        (click)="next()">
+        Confirm closure
+      </button>
     } @else {
-      <button mat-raised-button color="primary" i18n [disabled]="fieldWorkStatistics().loading" (click)="next()">Finish</button>
+      <button
+        mat-raised-button
+        color="primary"
+        i18n
+        [disabled]="fieldWorkStatistics().loading"
+        (click)="next()">
+        Finish
+      </button>
     }
   </div>
 </div>
@@ -33,12 +60,23 @@
   <h2 mat-dialog-title i18n>Confirm closure</h2>
   <mat-dialog-content>
     <p i18n>
-      Are you sure you want to close the field work? This action cannot be undone.
+      Are you sure you want to close the field work? This action cannot be
+      undone.
     </p>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button i18n (click)="closeDialog()" [disabled]="fieldWorkStatistics().loading">Cancel</button>
-    <button mat-raised-button color="primary" (click)="closeFieldWork()" [disabled]="fieldWorkStatistics().loading">
+    <button
+      mat-button
+      i18n
+      (click)="closeDialog()"
+      [disabled]="fieldWorkStatistics().loading">
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="closeFieldWork()"
+      [disabled]="fieldWorkStatistics().loading">
       @if (fieldWorkStatistics().loading) {
         <span class="d-flex align-items-center gap-1">
           <span i18n>Closing...</span> <mat-spinner diameter="14"></mat-spinner>

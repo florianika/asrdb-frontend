@@ -24,33 +24,37 @@ export class BuildingManagementService {
         if (isCreate) {
           this.startAutomaticRuleExecution(response, 'addResults', () => {
             this.isSaving.next(false);
-            this.snackBar.open('Building created successfully', 'Ok', {
-              duration: 5000,
-            });
+            this.snackBar.open(
+              $localize`Building created successfully`,
+              $localize`Ok`,
+              { duration: 5000 }
+            );
           });
         } else {
           this.startAutomaticRuleExecution(response, 'updateResults', () => {
             this.isSaving.next(false);
-            this.snackBar.open('Building updated successfully', 'Ok', {
-              duration: 5000,
-            });
+            this.snackBar.open(
+              $localize`Building updated successfully`,
+              $localize`Ok`,
+              { duration: 5000 }
+            );
           });
         }
       } else {
-        this.snackBar.open('Could not save building data', 'Ok', {
-          duration: 3000,
-        });
+        this.snackBar.open(
+          $localize`Could not save building data`,
+          $localize`Ok`,
+          { duration: 3000 }
+        );
         this.isSaving.next(false);
       }
     },
     error: () => {
       this.isSaving.next(false);
       this.snackBar.open(
-        'There was an error when trying to save building data',
-        'Ok',
-        {
-          duration: 3000,
-        }
+        $localize`There was an error when trying to save building data`,
+        $localize`Ok`,
+        { duration: 3000 }
       );
     },
   });
@@ -126,7 +130,7 @@ export class BuildingManagementService {
           (cleanedAttributes as any)[key] = null;
         }
       } else {
-        (cleanedAttributes as any)[key] = (value || value === 0) ? value : null;
+        (cleanedAttributes as any)[key] = value || value === 0 ? value : null;
       }
     });
     return [

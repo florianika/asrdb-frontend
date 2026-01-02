@@ -1,9 +1,13 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {EntityType} from '../../../model/RolePermissions.model';
-import {environment} from '../../../../environments/environment';
-import {BehaviorSubject, catchError, of} from 'rxjs';
-import {BUILDING_ENTITY, DWELLING_ENTITY, ENTRANCE_ENTITY} from "../../../common/constants/common-constants";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { EntityType } from '../../../model/RolePermissions.model';
+import { environment } from '../../../../environments/environment';
+import { BehaviorSubject, catchError, of } from 'rxjs';
+import {
+  BUILDING_ENTITY,
+  DWELLING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../../common/constants/common-constants';
 
 type EntityStructure = {
   attributes: EntityAttribute[];
@@ -38,17 +42,25 @@ export class CommonEntityStructureService {
   }>({
     loading: true,
     structure: null,
-    type: null
+    type: null,
   });
 
   constructor(private httpClient: HttpClient) {}
 
   public getEntityStructure(entityType: EntityType) {
-    this.structureLoaded.next({ loading: true, structure: null, type: entityType });
+    this.structureLoaded.next({
+      loading: true,
+      structure: null,
+      type: entityType,
+    });
     // Check if the structure is already cached
     if (this.structureCache.has(entityType)) {
       const cachedStructure = this.structureCache.get(entityType);
-      this.structureLoaded.next({ loading: false, structure: cachedStructure, type: entityType });
+      this.structureLoaded.next({
+        loading: false,
+        structure: cachedStructure,
+        type: entityType,
+      });
       return;
     }
 
@@ -67,7 +79,11 @@ export class CommonEntityStructureService {
             `Error fetching structure for entity type ${entityType}:`,
             error
           );
-          this.structureLoaded.next({ loading: false, structure: null, type: entityType });
+          this.structureLoaded.next({
+            loading: false,
+            structure: null,
+            type: entityType,
+          });
           return of(null);
         })
       )
@@ -79,7 +95,7 @@ export class CommonEntityStructureService {
           this.structureLoaded.next({
             loading: false,
             structure: response.attributes,
-            type: entityType
+            type: entityType,
           });
         }
       });
@@ -89,7 +105,7 @@ export class CommonEntityStructureService {
     const requests = [
       this.getEntityStructure(BUILDING_ENTITY),
       this.getEntityStructure(ENTRANCE_ENTITY),
-      this.getEntityStructure(DWELLING_ENTITY)
-    ]
+      this.getEntityStructure(DWELLING_ENTITY),
+    ];
   }
 }

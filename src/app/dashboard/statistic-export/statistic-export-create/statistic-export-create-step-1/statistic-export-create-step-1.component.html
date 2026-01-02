@@ -1,10 +1,12 @@
 <div class="d-flex flex-column h-100 overflow-hidden">
-  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0 h-100 overflow-hidden d-block">
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    matSort
+    class="mat-elevation-z0 h-100 overflow-hidden d-block">
     <!-- Municipality Column -->
     <ng-container matColumnDef="municipality">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>
-        Municipality
-      </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Municipality</th>
       <td mat-cell *matCellDef="let row">
         {{ row.municipality }}
       </td>
@@ -24,23 +26,32 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     <tr class="mat-row" *matNoDataRow>
       @if (!isLoadingBuildingQualityStatistics) {
-        <td class="mat-cell no-data-cell" [colSpan]="displayedColumns.length">No data</td>
+        <td class="mat-cell no-data-cell" [colSpan]="displayedColumns.length">
+          No data
+        </td>
       } @else {
         <td class="mat-cell no-data-cell" [colSpan]="displayedColumns.length">
           <mat-progress-spinner
             diameter="30"
-            mode="indeterminate"
-          ></mat-progress-spinner>
+            mode="indeterminate"></mat-progress-spinner>
         </td>
       }
     </tr>
   </table>
   <div class="text-end">
-    <button mat-button (click)="moveToPrevious()" [disabled]="isLoadingBuildingQualityStatistics">
+    <button
+      mat-button
+      (click)="moveToPrevious()"
+      [disabled]="isLoadingBuildingQualityStatistics">
       <span>Back</span>
       <mat-icon>arrow_back_ios</mat-icon>
     </button>
-    <button mat-raised-button class="ms-2" color="primary" (click)="moveToNext()" [disabled]="isLoadingBuildingQualityStatistics">
+    <button
+      mat-raised-button
+      class="ms-2"
+      color="primary"
+      (click)="moveToNext()"
+      [disabled]="isLoadingBuildingQualityStatistics">
       <span>Next</span>
       <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
     </button>

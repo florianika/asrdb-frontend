@@ -15,16 +15,14 @@ export class CommonEntranceService {
   get entLayer(): FeatureLayer {
     const token = this.esriAuthService.getTokenForResource();
     return new FeatureLayer({
-      title: 'ASRDB Entrances',
+      title: $localize`ASRDB Entrances`,
       apiKey: token,
       url: environment.entrance_url,
       outFields: ['*'],
       minScale: 0,
       maxScale: 0,
-      // create a new popupTemplate for the layer
       popupTemplate: {
-        // autocasts as new PopupTemplate()
-        title: 'ASRDB Entrance {GlobalID}',
+        title: $localize`ASRDB Entrance {GlobalID}`,
       },
     });
   }
@@ -44,38 +42,19 @@ export class CommonEntranceService {
   }
 
   createFeature(features: any[]): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.entrance_url +
-      '/addFeatures?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.entrance_url}/addFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   updateFeature(features: any[]): Observable<EntityManageResponse> {
-    const addFeatureLayerURL =
-      environment.entrance_url +
-      '/updateFeatures' +
-      '?token=' +
-      this.esriAuthService.getTokenForResource();
+    const url = `${environment.entrance_url}/updateFeatures?token=${this.esriAuthService.getTokenForResource()}`;
     const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(
-      addFeatureLayerURL,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
+    return this.httpClient.post<EntityManageResponse>(url, body, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   resetStatus(entId: string, callback?: () => void) {
@@ -84,65 +63,65 @@ export class CommonEntranceService {
       outFields: ['GlobalID', 'OBJECTID'],
     } as Partial<QueryFilter>;
     this.getEntranceData(filter)
-      .pipe(
-        catchError((err: any) => {
-          return this.handleError(err);
-        })
-      )
+      .pipe(catchError(err => this.handleError(err)))
       .subscribe({
-        next: (res: any) => {
-          this.handleResponse(res, callback);
-        },
-        error: (err: any) => {
-          return this.handleError(err);
-        },
+        next: res => this.handleResponse(res, callback),
+        error: err => this.handleError(err),
       });
   }
 
-  mergeEntrances(existingStreetId: string, foundStreetIds: string, callback?: (success: boolean) => void) {
+  mergeEntrances(
+    existingStreetId: string,
+    foundStreetIds: string,
+    callback?: (success: boolean) => void
+  ) {
     this.getEntranceData({
       where: `EntStrGlobalID IN ('${existingStreetId}')`,
       start: 0,
       num: 20000,
       outFields: ['*'],
     })
-      .pipe(catchError((err: any) => of(null)))
-      .subscribe((res: any) => {
+      .pipe(catchError(() => of(null)))
+      .subscribe(res => {
         if (!res?.data?.features) {
-          console.log("No features found with that EntStrGlobalID");
+          console.log(
+            $localize`No features found with that EntStrGlobalID`
+          );
           callback?.(false);
           return;
         }
 
         if (!res.data.features.length) {
-          this.snackBar.open("No entrances found for this street. Deleting current street.", "Ok", {
-            duration: 3000,
-          });
+          this.snackBar.open(
+            $localize`No entrances found for this street. Deleting current street.`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           callback?.(true);
           return;
         }
 
-        // Step 2: Modify attributes locally
         const updates = res.data.features.map((f: any) => {
           f.attributes.EntStrGlobalID = foundStreetIds;
           return f;
         });
 
-        // Step 3: Send update request
         this.updateFeature(updates).subscribe({
           next: (response: EntityManageResponse) => {
             const responseData =
               response['addResults']?.[0] ?? response['updateResults']?.[0];
             if (!responseData?.success) {
-              this.snackBar.open('Could not update value', 'Ok', {
-                duration: 3000,
-              });
+              this.snackBar.open(
+                $localize`Could not update value`,
+                $localize`Ok`,
+                { duration: 3000 }
+              );
               callback?.(false);
               return;
             }
             callback?.(true);
           },
-          error: (err: any) => {
+          error: err => {
             this.handleError(err);
             callback?.(false);
           },
@@ -151,33 +130,27 @@ export class CommonEntranceService {
   }
 
   private handleResponse(res: any, callback?: () => void) {
-    const [attributes] = res.data.features.map(
-      (field: any) => field.attributes
-    );
+    const [attributes] = res.data.features.map((f: any) => f.attributes);
     const object = {
       GlobalID: attributes.GlobalID,
       OBJECTID: attributes.OBJECTID,
       EntQuality: 9,
     };
-    this.updateFeature([
-      {
-        attributes: object,
-      },
-    ]).subscribe({
-      next: (response: EntityManageResponse) => {
+    this.updateFeature([{ attributes: object }]).subscribe({
+      next: response => {
         const responseData =
           response['addResults']?.[0] ?? response['updateResults']?.[0];
         if (!responseData?.success) {
-          this.snackBar.open('Could not update value', 'Ok', {
-            duration: 3000,
-          });
+          this.snackBar.open(
+            $localize`Could not update value`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
           return;
         }
         callback?.();
       },
-      error: (err: any) => {
-        return this.handleError(err);
-      },
+      error: err => this.handleError(err),
     });
   }
 
@@ -216,11 +189,7 @@ export class CommonEntranceService {
       const features = await (
         await this.entLayer.queryFeatures(query)
       ).toJSON();
-
-      return {
-        count: featureCount,
-        data: features,
-      };
+      return { count: featureCount, data: features };
     } catch (e) {
       console.error(e);
       return null;

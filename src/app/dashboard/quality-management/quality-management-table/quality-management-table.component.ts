@@ -209,7 +209,7 @@ export class QualityManagementTableComponent
 
   toggleEdit(id: string) {
     if (this.qualityType) {
-      this.qualityManagementService.toogleStatus(id, this.qualityType);
+      this.qualityManagementService.toggleStatus(id, this.qualityType);
     }
   }
 
@@ -264,7 +264,10 @@ export class QualityManagementTableComponent
     };
   }
 
-  private handlePopupClose(newFilter: QualityRuleFilter | null, moveToFirstPage: boolean = true) {
+  private handlePopupClose(
+    newFilter: QualityRuleFilter | null,
+    moveToFirstPage: boolean = true
+  ) {
     if (newFilter) {
       this.datasource.filter = JSON.stringify(newFilter);
       this.filterConfig = newFilter;

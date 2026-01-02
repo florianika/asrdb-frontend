@@ -2,10 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'buildingDetailFormat',
-  standalone: true
+  standalone: true,
 })
 export class BuildingDetailFormatPipe implements PipeTransform {
-
   transform(value: string | number | null | undefined): string {
     if (value === null || value === undefined || value === '') {
       return '';
@@ -18,5 +17,4 @@ export class BuildingDetailFormatPipe implements PipeTransform {
 
     return Math.round(parsedValue).toString();
   }
-
 }

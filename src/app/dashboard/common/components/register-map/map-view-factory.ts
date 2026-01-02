@@ -1,8 +1,8 @@
-import MapView from "@arcgis/core/views/MapView";
-import WebMap from "@arcgis/core/WebMap";
-import Popup from "@arcgis/core/widgets/Popup";
-import Legend from "@arcgis/core/widgets/Legend";
-import {OSM_BASEMAP} from "./custom-map-logic/BasemapTypes";
+import MapView from '@arcgis/core/views/MapView';
+import WebMap from '@arcgis/core/WebMap';
+import Popup from '@arcgis/core/widgets/Popup';
+import Legend from '@arcgis/core/widgets/Legend';
+import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
 
 export function createWebMap(basemap: any, layers: any[]) {
   return new WebMap({
@@ -14,14 +14,22 @@ export function createWebMap(basemap: any, layers: any[]) {
   });
 }
 
-export function createMapView(container: string | HTMLDivElement, webmap: WebMap, enableLegend = false): MapView {
+export function createMapView(
+  container: string | HTMLDivElement,
+  webmap: WebMap,
+  enableLegend = false
+): MapView {
   const view = new MapView({
     container,
     map: webmap,
     zoom: 15,
     popup: new Popup({
       dockEnabled: true,
-      dockOptions: { buttonEnabled: false, breakpoint: false, position: 'top-left' },
+      dockOptions: {
+        buttonEnabled: false,
+        breakpoint: false,
+        position: 'top-left',
+      },
       visibleElements: { closeButton: false },
     }),
   });

@@ -1,18 +1,16 @@
-import {Component, inject} from '@angular/core';
-import {FieldWorkClosureService} from "../../field-work-closure.service";
-import {AsyncPipe} from "@angular/common";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatButton} from "@angular/material/button";
-import {MatFormField, MatLabel} from "@angular/material/form-field";
-import {MatOption} from "@angular/material/core";
-import {MatSelect} from "@angular/material/select";
-import {Editor, NgxEditorModule} from "ngx-editor";
-import {
-  EmailTemplateManagementService
-} from "../../../../administration/email-template-management/email-template-management.service";
-import {EmailTemplate} from "../../../../../model/EmailTemplate.model";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatIcon} from "@angular/material/icon";
+import { Component, inject } from '@angular/core';
+import { FieldWorkClosureService } from '../../field-work-closure.service';
+import { AsyncPipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { Editor, NgxEditorModule } from 'ngx-editor';
+import { EmailTemplateManagementService } from '../../../../administration/email-template-management/email-template-management.service';
+import { EmailTemplate } from '../../../../../model/EmailTemplate.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'asrdb-step-2-field-work-closure-email',
@@ -27,13 +25,12 @@ import {MatIcon} from "@angular/material/icon";
     MatSelect,
     NgxEditorModule,
     ReactiveFormsModule,
-    MatIcon
+    MatIcon,
   ],
   templateUrl: './step-2-field-work-closure-email.component.html',
-  styleUrl: './step-2-field-work-closure-email.component.css'
+  styleUrl: './step-2-field-work-closure-email.component.css',
 })
 export class Step2FieldWorkClosureEmailComponent {
-
   private fieldWorkClosureService = inject(FieldWorkClosureService);
   private _emailTemplateService = inject(EmailTemplateManagementService);
   private router = inject(Router);
@@ -41,7 +38,8 @@ export class Step2FieldWorkClosureEmailComponent {
   private fieldWorkId = this.activatedRoute.snapshot.params['id'];
 
   public fieldWorkStatistics = this.fieldWorkClosureService.fieldWorkStatistics;
-  public emailTemplates$ = this._emailTemplateService.emailTemplatesAsObservable;
+  public emailTemplates$ =
+    this._emailTemplateService.emailTemplatesAsObservable;
   public selectedEmailTemplate: EmailTemplate | undefined = undefined;
 
   public editor: Editor = new Editor();
@@ -51,7 +49,8 @@ export class Step2FieldWorkClosureEmailComponent {
   }
 
   public setSelectedEmailTemplate(emailTemplateId: number) {
-    this.selectedEmailTemplate = this._emailTemplateService.getEmailTemplateFromList(emailTemplateId);
+    this.selectedEmailTemplate =
+      this._emailTemplateService.getEmailTemplateFromList(emailTemplateId);
   }
 
   close() {
@@ -59,9 +58,9 @@ export class Step2FieldWorkClosureEmailComponent {
   }
 
   back() {
-    this.fieldWorkStatistics.update((prev) => ({
+    this.fieldWorkStatistics.update(prev => ({
       ...prev,
-      step: Math.max(0, prev.step - 1)
+      step: Math.max(0, prev.step - 1),
     }));
   }
 
@@ -70,6 +69,9 @@ export class Step2FieldWorkClosureEmailComponent {
     if (!emailTemplateId) {
       return;
     }
-    this.fieldWorkClosureService.assignClosureEmail(emailTemplateId, this.fieldWorkId)
+    this.fieldWorkClosureService.assignClosureEmail(
+      emailTemplateId,
+      this.fieldWorkId
+    );
   }
 }

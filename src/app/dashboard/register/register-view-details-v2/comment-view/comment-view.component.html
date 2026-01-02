@@ -4,7 +4,7 @@
       <h2 i18n>Comments</h2>
     </mat-card-title>
   </mat-card-header>
-  <mat-card-content *ngIf="(commentsObservable$ | async) as comments">
+  <mat-card-content *ngIf="commentsObservable$ | async as comments">
     <div class="comment-list" *ngIf="!comments.loading; else loader">
       @if (!comments.comments?.notesDTO?.length) {
         <p class="w-100 text-center" i18n>No comments found!</p>
@@ -14,23 +14,30 @@
             <div>
               <div class="d-flex">
                 <div>
-                  <span class="comment-author fw-bold">{{comment.updatedUser ?? comment.createdUser}}</span>
+                  <span class="comment-author fw-bold">{{
+                    comment.updatedUser ?? comment.createdUser
+                  }}</span>
                   <span class="mx-1">|</span>
-                  <span class="comment-date small">{{(comment.updatedTimestamp ?? comment.createdTimestamp) | date:'dd/MM/yyyy, HH:mm':'Europe/Tirane'}}</span>
+                  <span class="comment-date small">{{
+                    comment.updatedTimestamp ?? comment.createdTimestamp
+                      | date: 'dd/MM/yyyy, HH:mm' : 'Europe/Tirane'
+                  }}</span>
                 </div>
                 <span class="flex-grow-1"></span>
                 <div *ngIf="isOwner(comment.userId)" class="comment-actions">
-                  <mat-icon color="warn" (click)="deleteComment(comment.noteId)">delete</mat-icon>
+                  <mat-icon color="warn" (click)="deleteComment(comment.noteId)"
+                    >delete</mat-icon
+                  >
                 </div>
               </div>
             </div>
-            <p>{{comment.noteText}}</p>
+            <p>{{ comment.noteText }}</p>
           </div>
         }
       }
     </div>
 
-    <hr/>
+    <hr />
     <div class="d-flex justify-content-between gap-3">
       <div class="me-0 pe-0 flex-grow-1">
         <mat-form-field class="w-100" appearance="outline">
@@ -45,14 +52,14 @@
       <div class="ps-0">
         <button
           class="float-end rounded-1 shadow-none"
-          mat-fab color="primary"
+          mat-fab
+          color="primary"
           (click)="saveComment()"
           [disabled]="savingCommentObservable$ | async">
           <mat-icon>send</mat-icon>
-      </button>
+        </button>
       </div>
     </div>
-
   </mat-card-content>
 </mat-card>
 
@@ -68,7 +75,9 @@
     <p i18n>Are you sure you want to delete this comment?</p>
     <div class="d-flex justify-content-end">
       <button class="me-2" mat-button mat-dialog-close i18n>Cancel</button>
-      <button mat-button color="warn" [mat-dialog-close]="true" i18n>Delete</button>
+      <button mat-button color="warn" [mat-dialog-close]="true" i18n>
+        Delete
+      </button>
     </div>
   </mat-dialog-content>
 </ng-template>

@@ -91,9 +91,8 @@ export class EmailTemplateManagementFormComponent implements OnDestroy {
           if (isDevMode()) {
             console.log('Email template: ', res);
           }
-          if (!res) {
-            return;
-          }
+          if (!res) return;
+
           this.template = {
             emailTemplateId: res.emailTemplateId,
             subject: res.subject,
@@ -121,11 +120,9 @@ export class EmailTemplateManagementFormComponent implements OnDestroy {
         if (confirm) {
           setTimeout(() => {
             this.matSnackBar.open(
-              'Dialog was closed and all changes were discarded',
-              'Ok',
-              {
-                duration: 3000,
-              }
+              $localize`Dialog was closed and all changes were discarded`,
+              $localize`OK`,
+              { duration: 3000 }
             );
             this.dialogRef.close();
           }, 200);
@@ -135,21 +132,20 @@ export class EmailTemplateManagementFormComponent implements OnDestroy {
 
   private closeDialog() {
     this.matSnackBar.open(
-      'Dialog was closed and all changes were discarded',
-      'Ok',
-      {
-        duration: 3000,
-      }
+      $localize`Dialog was closed and all changes were discarded`,
+      $localize`OK`,
+      { duration: 3000 }
     );
     this.dialogRef.close();
-    return;
   }
 
   save() {
     if (!this.template?.subject || !this.template?.body) {
-      this.matSnackBar.open('Please fill in all required fields', 'Ok', {
-        duration: 3000,
-      });
+      this.matSnackBar.open(
+        $localize`Please fill in all required fields`,
+        $localize`OK`,
+        { duration: 3000 }
+      );
       return;
     }
     if (this.id) {

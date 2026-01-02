@@ -1,26 +1,37 @@
-import {effect, inject, Injectable, signal} from '@angular/core';
-import {Dwelling} from "../../model/dwelling";
-import {QueryFilter} from "../../model/query-filter";
-import {catchError, of as observableOf} from "rxjs";
-import {Chip} from "../../../../common/standalone-components/chip/chip.component";
-import {MatSort} from "@angular/material/sort";
-import {CommonDwellingService} from "../../../common/service/common-dwellings.service";
-import {CommonEntityStructureService, EntityAttribute} from "../../../common/service/common-entity-structure.service";
-import {CommonRegisterHelperService} from "../../../common/service/common-helper.service";
-import {Section} from "../types";
-import {MatDialog} from "@angular/material/dialog";
-import {Log} from "../../register-log-view/model/log";
-import {DWELLING_ENTITY} from "../../../../common/constants/common-constants";
-import {SectionField} from "../../constant/common-constants";
-import {RegisterLogService} from "../../register-log-view/register-log-table/register-log.service";
-import {DwellingDetailsComponent} from "./dwelling-details/dwelling-details.component";
+import {
+  effect,
+  Inject,
+  inject,
+  Injectable,
+  LOCALE_ID,
+  signal,
+} from '@angular/core';
+import { Dwelling } from '../../model/dwelling';
+import { QueryFilter } from '../../model/query-filter';
+import { catchError, of as observableOf } from 'rxjs';
+import { Chip } from '../../../../common/standalone-components/chip/chip.component';
+import { MatSort } from '@angular/material/sort';
+import { CommonDwellingService } from '../../../common/service/common-dwellings.service';
+import {
+  CommonEntityStructureService,
+  EntityAttribute,
+} from '../../../common/service/common-entity-structure.service';
+import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
+import { Section } from '../types';
+import { MatDialog } from '@angular/material/dialog';
+import { Log } from '../../register-log-view/model/log';
+import { DWELLING_ENTITY } from '../../../../common/constants/common-constants';
+import { SectionField } from '../../constant/common-constants';
+import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
+import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
+import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
 
 const STREET_NAME = 'Street name';
 const BUILDING_NUMBER = 'Building number';
 const ENTRANCE_NUMBER = 'Entrance number';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DwellingDetailsService {
   private previousEntranceId = '';
@@ -61,37 +72,56 @@ export class DwellingDetailsService {
   private commonEntityStructureService = inject(CommonEntityStructureService);
   private registerLogService = inject(RegisterLogService);
 
-  constructor() {
-    effect(() => {
-      const entranceId = this.viewData().entranceId;
-      if (entranceId && this.previousEntranceId !== entranceId) {
-        this.loadDwellingsForEntrances(entranceId);
-        this.init();
-        this.previousEntranceId = entranceId;
-      }
-    }, { allowSignalWrites: true });
+  constructor(@Inject(LOCALE_ID) private locale: string) {
+    effect(
+      () => {
+        const entranceId = this.viewData().entranceId;
+        if (entranceId && this.previousEntranceId !== entranceId) {
+          this.loadDwellingsForEntrances(entranceId);
+          this.init();
+          this.previousEntranceId = entranceId;
+        }
+      },
+      { allowSignalWrites: true }
+    );
 
-    effect(() => {
-      const dwelling = this.viewData().selectedDwelling;
-      const structure = this.dwellingStructure();
-      const structureLoading = this.dwellingStructure().isLoadingStructure;
-      if (dwelling && structure.sections.length && !structureLoading && this.previousDwellingId !== dwelling.GlobalID) {
-        this.previousDwellingId = dwelling.GlobalID;
-        this.fillSections(dwelling.GlobalID);
-      }
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        const dwelling = this.viewData().selectedDwelling;
+        const structure = this.dwellingStructure();
+        const structureLoading = this.dwellingStructure().isLoadingStructure;
+        if (
+          dwelling &&
+          structure.sections.length &&
+          !structureLoading &&
+          this.previousDwellingId !== dwelling.GlobalID
+        ) {
+          this.previousDwellingId = dwelling.GlobalID;
+          this.fillSections(dwelling.GlobalID);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   public init(pageIndex?: number, pageSize?: number) {
     if (!this.viewData().entranceId) {
-      this.viewData.update((data) => ({...data, dwellingList: [], totalCount: 0, isLoadingDwellings: false}));
+      this.viewData.update(data => ({
+        ...data,
+        dwellingList: [],
+        totalCount: 0,
+        isLoadingDwellings: false,
+      }));
       return;
     }
-    this.viewData.update((data) => ({...data, isLoadingDwellings: true}));
+    this.viewData.update(data => ({ ...data, isLoadingDwellings: true }));
     this.loadDwellings(pageIndex ?? 0, pageSize ?? 5);
   }
 
-  public getValueFromStatus(column: keyof Dwelling, dwelling?: Dwelling): string {
+  public getValueFromStatus(
+    column: keyof Dwelling,
+    dwelling?: Dwelling
+  ): string {
     const fields = this.viewData().dwellingFields;
     if (!dwelling) {
       dwelling = this.viewData().selectedDwelling ?? undefined;
@@ -108,15 +138,23 @@ export class DwellingDetailsService {
     );
   }
 
-  public viewDwellingDetails(id: string, logs: Log[], buildingNumber?: number, entranceNumber?: number, entranceId?: string, streetName?: string) {
-    const dwelling = this.viewData().dwellingList.find(dwl => dwl.GlobalID === id) || null;
-    this.viewData.update((data) => ({...data, selectedDwelling: dwelling}));
+  public viewDwellingDetails(
+    id: string,
+    logs: Log[],
+    buildingNumber?: number,
+    entranceNumber?: number,
+    entranceId?: string,
+    streetName?: string
+  ) {
+    const dwelling =
+      this.viewData().dwellingList.find(dwl => dwl.GlobalID === id) || null;
+    this.viewData.update(data => ({ ...data, selectedDwelling: dwelling }));
 
     const structure = this.dwellingStructure().sections.length;
     if (structure === 0) {
       // load structure first
-      this.dwellingStructure.update((data) => {
-        return {...data, isLoadingStructure: true};
+      this.dwellingStructure.update(data => {
+        return { ...data, isLoadingStructure: true };
       });
       this.loadDwellingStructure(
         streetName || '',
@@ -140,7 +178,7 @@ export class DwellingDetailsService {
     if (!fields) {
       return logs;
     }
-    fields.forEach((field) => {
+    fields.forEach(field => {
       const log = this.registerLogService.getLogForVariable(
         DWELLING_ENTITY,
         field.name,
@@ -153,7 +191,12 @@ export class DwellingDetailsService {
     return logs;
   }
 
-  private openDialog(logs: Log[], buildingNumber?: number, entranceNumber?: number, entranceId?: string) {
+  private openDialog(
+    logs: Log[],
+    buildingNumber?: number,
+    entranceNumber?: number,
+    entranceId?: string
+  ) {
     const dialogRef = this.matDialog.open(DwellingDetailsComponent, {
       data: {
         logs,
@@ -161,22 +204,28 @@ export class DwellingDetailsService {
         entranceNumber,
         entranceId,
       },
-      disableClose: true
+      disableClose: true,
     });
     const sub = dialogRef.afterClosed().subscribe(() => {
-      this.viewData.update((data) => ({...data, selectedDwelling: null}));
+      this.viewData.update(data => ({ ...data, selectedDwelling: null }));
       this.previousDwellingId = '';
       sub.unsubscribe();
     });
   }
 
-  private prepareStructure(structure: EntityAttribute[], streetName: string, buildingNumber: number, entranceNumber: number, callback?: () => void) {
+  private prepareStructure(
+    structure: EntityAttribute[],
+    streetName: string,
+    buildingNumber: number,
+    entranceNumber: number,
+    callback?: () => void
+  ) {
     const visibleFields = structure.reduce(
       (acc, attr: EntityAttribute) => {
         if (attr.section !== 'none' && !attr.internal) {
           if (attr.section === 'identification') {
             acc.identifying.push({
-              title: attr.label.en,
+              title: getLocaleProperty(attr.label, this.locale as 'en' | 'sq'),
               propName: attr.name,
               value: '',
               log: '',
@@ -184,7 +233,7 @@ export class DwellingDetailsService {
             } as SectionField);
           } else if (attr.section === 'description') {
             acc.describing.push({
-              title: attr.label.en,
+              title: getLocaleProperty(attr.label, this.locale as 'en' | 'sq'),
               propName: attr.name,
               value: '',
               log: '',
@@ -192,7 +241,7 @@ export class DwellingDetailsService {
             } as SectionField);
           } else if (attr.section === 'title') {
             acc.title.push({
-              title: attr.label.en,
+              title: getLocaleProperty(attr.label, this.locale as 'en' | 'sq'),
               propName: attr.name,
               value: '',
               log: '',
@@ -254,18 +303,35 @@ export class DwellingDetailsService {
   }
 
   // load building structure
-  private loadDwellingStructure(streetName: string, buildingNumber: number, entranceNumber: number, callback?: () => void) {
-    const structs = this.commonEntityStructureService.structureLoaded.subscribe((response) => {
-      if (!response.loading && response.structure && response.type === DWELLING_ENTITY) {
-        this.prepareStructure(response.structure, streetName, buildingNumber, entranceNumber, callback);
-        structs.unsubscribe();
+  private loadDwellingStructure(
+    streetName: string,
+    buildingNumber: number,
+    entranceNumber: number,
+    callback?: () => void
+  ) {
+    const structs = this.commonEntityStructureService.structureLoaded.subscribe(
+      response => {
+        if (
+          !response.loading &&
+          response.structure &&
+          response.type === DWELLING_ENTITY
+        ) {
+          this.prepareStructure(
+            response.structure,
+            streetName,
+            buildingNumber,
+            entranceNumber,
+            callback
+          );
+          structs.unsubscribe();
+        }
       }
-    });
+    );
     this.commonEntityStructureService.getEntityStructure(DWELLING_ENTITY);
   }
 
   private loadDwellings(pageIndex: number, pageSize: number) {
-    this.viewData.update((data) => ({...data, isLoadingDwellings: true}));
+    this.viewData.update(data => ({ ...data, isLoadingDwellings: true }));
     const filter = {
       start: pageIndex * pageSize,
       num: pageSize ?? 5,
@@ -280,13 +346,15 @@ export class DwellingDetailsService {
           console.log(err);
           return observableOf(null);
         })
-      ).subscribe((res) => {
-        this.viewData.update((viewData) => ({
+      )
+      .subscribe(res => {
+        this.viewData.update(viewData => ({
           ...viewData,
-          dwellingList: res?.data.features.map((feature: any) => feature.attributes) || [],
+          dwellingList:
+            res?.data.features.map((feature: any) => feature.attributes) || [],
           isLoadingDwellings: false,
           dwellingFields: res?.data.fields,
-          totalCount: res.count
+          totalCount: res.count,
         }));
       });
   }
@@ -295,7 +363,9 @@ export class DwellingDetailsService {
   private fillSections(id: string) {
     this.dwellingStructure()?.sections.forEach(section => {
       section.entries.forEach(entry => {
-        entry.value = this.getValueFromStatus(entry.propName as keyof Dwelling)?.toString();
+        entry.value = this.getValueFromStatus(
+          entry.propName as keyof Dwelling
+        )?.toString();
         entry.log =
           this.registerLogService.getLogForVariable(
             DWELLING_ENTITY,
@@ -310,11 +380,11 @@ export class DwellingDetailsService {
           )?.qualityAction ?? '';
       });
     });
-    this.dwellingStructure.update((data) => {
+    this.dwellingStructure.update(data => {
       return {
         ...data,
         isLoadingStructure: false,
-      }
+      };
     });
   }
 

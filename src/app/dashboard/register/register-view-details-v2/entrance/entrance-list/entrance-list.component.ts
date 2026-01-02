@@ -1,25 +1,32 @@
-import {AfterViewInit, Component, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatTableModule} from "@angular/material/table";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {MatMenuModule} from "@angular/material/menu";
-import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {MatSort, MatSortModule} from "@angular/material/sort";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatDividerModule} from "@angular/material/divider";
-import {EntranceDetailsService} from "../entrance-details.service";
-import {Entrance} from "../../../model/entrance";
-import {AuthStateService} from "../../../../../common/services/auth-state.service";
-import {RegisterViewDetailsService} from "../../register-view-details.service";
-import {merge, startWith, Subject, takeUntil} from "rxjs";
-import {Router} from "@angular/router";
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+import { EntranceDetailsService } from '../entrance-details.service';
+import { Entrance } from '../../../model/entrance';
+import { AuthStateService } from '../../../../../common/services/auth-state.service';
+import { RegisterViewDetailsService } from '../../register-view-details.service';
+import { merge, startWith, Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
 import {
   EntityDeleteConfirmationDialogComponent,
-  EntityDeleteDialogData
-} from "../../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component";
-import {ENTRANCE_ENTITY} from "../../../../../common/constants/common-constants";
-import {MatDialog} from "@angular/material/dialog";
+  EntityDeleteDialogData,
+} from '../../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
+import { ENTRANCE_ENTITY } from '../../../../../common/constants/common-constants';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'asrdb-entrance-list',
@@ -33,10 +40,10 @@ import {MatDialog} from "@angular/material/dialog";
     MatMenuModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatDividerModule
+    MatDividerModule,
   ],
   templateUrl: './entrance-list.component.html',
-  styleUrl: './entrance-list.component.css'
+  styleUrl: './entrance-list.component.css',
 })
 export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -71,21 +78,20 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
     const buildingId = this.buildingViewData().building?.GlobalID;
     this.entranceDetailsService.viewData.update(data => ({
       ...data,
-      buildingId: buildingId ?? ''
+      buildingId: buildingId ?? '',
     }));
-    this.entranceDetailsService.init()
+    this.entranceDetailsService.init();
   }
 
   ngAfterViewInit() {
     merge(this.paginator.page)
-      .pipe(
-        takeUntil(this.destroy$),
-        startWith({})
-      )
-      .subscribe(() => this.entranceDetailsService.init(
-        this.paginator.pageIndex,
-        this.paginator.pageSize
-      ));
+      .pipe(takeUntil(this.destroy$), startWith({}))
+      .subscribe(() =>
+        this.entranceDetailsService.init(
+          this.paginator.pageIndex,
+          this.paginator.pageSize
+        )
+      );
   }
 
   ngOnDestroy(): void {
@@ -115,14 +121,21 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createEntrance() {
     const buildingId = this.viewData().buildingId;
-    void this.router.navigateByUrl('dashboard/register/form/ENTRANCE/' + buildingId);
+    void this.router.navigateByUrl(
+      'dashboard/register/form/ENTRANCE/' + buildingId
+    );
   }
 
   getValueFromStatus(key: string, entrance?: Entrance) {
     if (entrance) {
-      return this.entranceDetailsService.getValueFromStatus(key as keyof Entrance, entrance);
+      return this.entranceDetailsService.getValueFromStatus(
+        key as keyof Entrance,
+        entrance
+      );
     }
-    return this.entranceDetailsService.getValueFromStatus(key as keyof Entrance);
+    return this.entranceDetailsService.getValueFromStatus(
+      key as keyof Entrance
+    );
   }
 
   reload() {
@@ -140,10 +153,7 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
   editEntrance(id: string) {
     const buildingId = this.viewData().buildingId;
     void this.router.navigateByUrl(
-      'dashboard/register/form/ENTRANCE/' +
-      buildingId +
-      '?entranceId=' +
-      id
+      'dashboard/register/form/ENTRANCE/' + buildingId + '?entranceId=' + id
     );
   }
 
@@ -157,9 +167,13 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
           type: ENTRANCE_ENTITY,
           idToDelete: id,
           reload: () => {
-            const buildingGlobalId = this.buildingViewData().building?.GlobalID || '';
+            const buildingGlobalId =
+              this.buildingViewData().building?.GlobalID || '';
             if (buildingGlobalId) {
-              this.registerViewDetailsService.markAsUntested(buildingGlobalId, id);
+              this.registerViewDetailsService.markAsUntested(
+                buildingGlobalId,
+                id
+              );
               dialog.close();
             }
           },
@@ -171,7 +185,7 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
   selectEntrance(entrance: Entrance) {
     this.entranceDetailsService.viewData.update(data => ({
       ...data,
-      selectedEntrance: entrance
+      selectedEntrance: entrance,
     }));
   }
 }

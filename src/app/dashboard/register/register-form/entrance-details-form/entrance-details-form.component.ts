@@ -1,7 +1,20 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {Subject} from 'rxjs';
+import {
+  Component,
+  Inject,
+  Input,
+  LOCALE_ID,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Subject } from 'rxjs';
 import {
   FormObject,
   FormObjectSelectOption,
@@ -9,12 +22,12 @@ import {
   getFormObjectType,
   getValue,
 } from '../../model/form-object';
-import {CommonEntranceService} from '../../../common/service/common-entrance.service';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {Entrance} from '../../model/entrance';
+import { CommonEntranceService } from '../../../common/service/common-entrance.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { Entrance } from '../../model/entrance';
 import {
   ALIAS_PROP,
   DEFAULT_VALUE_PROP,
@@ -24,21 +37,30 @@ import {
   NULLABLE_PROP,
   TYPE_PROP,
 } from '../../constant/common-constants';
-import {ActivatedRoute} from '@angular/router';
-import {MatIconModule} from '@angular/material/icon';
-import {RegisterLogService} from '../../register-log-view/register-log-table/register-log.service';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule,} from '@angular/material/core';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {getColor, MY_FORMATS} from '../../model/common-utils';
-import {Log} from '../../register-log-view/model/log';
-import {MatButtonModule} from '@angular/material/button';
-import {CommonBuildingService} from '../../../common/service/common-building.service';
-import {CommonStreetService} from '../../../common/service/common-street.service';
-import {QueryFilter} from '../../model/query-filter';
-import {AuthStateService, DEFAULT_MUNICIPALITY,} from '../../../../common/services/auth-state.service';
-import {ENTRANCE_ENTITY} from '../../../../common/constants/common-constants';
-import {EntityAttribute} from '../../../common/service/common-entity-structure.service';
+import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MatNativeDateModule,
+} from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { getColor, MY_FORMATS } from '../../model/common-utils';
+import { Log } from '../../register-log-view/model/log';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonBuildingService } from '../../../common/service/common-building.service';
+import { CommonStreetService } from '../../../common/service/common-street.service';
+import { QueryFilter } from '../../model/query-filter';
+import {
+  AuthStateService,
+  DEFAULT_MUNICIPALITY,
+} from '../../../../common/services/auth-state.service';
+import { ENTRANCE_ENTITY } from '../../../../common/constants/common-constants';
+import { EntityAttribute } from '../../../common/service/common-entity-structure.service';
+import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -88,7 +110,8 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     private streetService: CommonStreetService,
     private activatedRoute: ActivatedRoute,
     private authStateService: AuthStateService,
-    private registerLogService: RegisterLogService
+    private registerLogService: RegisterLogService,
+    @Inject(LOCALE_ID) private locale: string
   ) {
     this.entranceId =
       this.activatedRoute.snapshot.queryParamMap.get('entranceId');
@@ -105,7 +128,10 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
               field => field[NAME_PROP] === structureEntry.name
             );
             if (metadataField) {
-              metadataField[ALIAS_PROP] = structureEntry.label.en;
+              metadataField[ALIAS_PROP] = getLocaleProperty(
+                structureEntry.label,
+                this.locale as 'en' | 'sq'
+              );
             }
             return metadataField;
           })
@@ -121,8 +147,9 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
               !structureEntry.internal &&
               role &&
               role.toLowerCase() in structureEntry.display &&
-              // @ts-ignore
-              ['write'].includes(structureEntry.display[role.toLowerCase()]) &&
+              ['write'].includes(
+                (structureEntry.display as any)[role.toLowerCase()]
+              ) &&
               !['map', 'none'].includes(structureEntry.section)
             );
           });
@@ -156,9 +183,9 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
           };
         });
         this.streets.unshift({
-          text: "None",
+          text: $localize`None`,
           value: '',
-        })
+        });
 
         this.fields.forEach(field => {
           this.createFormControlForField(field);
@@ -216,7 +243,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
         name: (this.entranceId ?? '') + '_' + field[NAME_PROP],
         alias: field[ALIAS_PROP],
         type: 'select',
-        selectOptions: this.streets ,
+        selectOptions: this.streets,
         originalOptions: this.streets,
         maxLength: field[LENGTH_PROP],
       });
@@ -274,10 +301,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   getError(control: AbstractControl) {
     if (control.errors?.['maxlength']) {
-      return (
-        'Value should not be longer than ' +
-        control.errors?.['maxlength'].requiredLength
-      );
+      return $localize`Value should not be longer than ${control.errors?.['maxlength'].requiredLength}`;
     }
     return '';
   }

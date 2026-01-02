@@ -1,6 +1,6 @@
 import Basemap from '@arcgis/core/Basemap';
 import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
-import WMSLayer from "@arcgis/core/layers/WMSLayer";
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
 
 export const OSM_BASEMAP = 'osm';
 

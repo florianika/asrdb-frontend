@@ -1,7 +1,7 @@
 export type Municipality = {
   name: string;
   code: number;
-}
+};
 export const MUNICIPALITIES = [
   {
     name: 'BERAT',

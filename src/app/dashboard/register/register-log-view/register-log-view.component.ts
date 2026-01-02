@@ -29,8 +29,8 @@ export class RegisterLogViewComponent implements OnInit {
       this.buildings = buildings.split(',');
     } else {
       this.matSnackBar.open(
-        'No building ids found. Please reload the page',
-        'Ok',
+        $localize`No building ids found. Please reload the page`,
+        $localize`Ok`,
         {
           duration: 3000,
         }

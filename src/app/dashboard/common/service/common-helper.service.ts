@@ -56,7 +56,7 @@ export class CommonRegisterHelperService {
   }
 
   private isUnknownValue(code: string | number) {
-    return (!code && code !== 0);
+    return !code && code !== 0;
   }
 
   private isNotApplicable(code: string | number) {
@@ -70,6 +70,10 @@ export class CommonRegisterHelperService {
 
   private isNumberField(fields: any[], column: string) {
     const field = this.getField(fields, column);
-    return field?.type === 'esriFieldTypeDouble' || field?.type === 'esriFieldTypeInteger' || field?.type === 'esriFieldTypeSmallInteger';
+    return (
+      field?.type === 'esriFieldTypeDouble' ||
+      field?.type === 'esriFieldTypeInteger' ||
+      field?.type === 'esriFieldTypeSmallInteger'
+    );
   }
 }

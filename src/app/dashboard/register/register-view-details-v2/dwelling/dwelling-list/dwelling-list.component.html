@@ -1,16 +1,26 @@
-<div class="asrbd-container mat-elevation-z2 rounded-1" style="background-color: white;">
+<div
+  class="asrbd-container mat-elevation-z2 rounded-1"
+  style="background-color: white">
   <div class="header-container">
     <h1 i18n class="header-title">Dwellings List</h1>
 
     <div class="spacer"></div>
 
     @if (entranceId) {
-      <button mat-icon-button [matTooltip]="'Add new dwelling'" (click)="addDwelling()" [disabled]="isLoadingDwellings">
-        <mat-icon style="cursor: pointer;">add</mat-icon>
+      <button
+        mat-icon-button
+        [matTooltip]="'Add new dwelling'"
+        (click)="addDwelling()"
+        [disabled]="isLoadingDwellings">
+        <mat-icon style="cursor: pointer">add</mat-icon>
       </button>
     }
-    <button mat-icon-button [matTooltip]="'Reload table data'" (click)="reload()" [disabled]="isLoadingDwellings">
-      <mat-icon style="cursor: pointer;">refresh</mat-icon>
+    <button
+      mat-icon-button
+      [matTooltip]="'Reload table data'"
+      (click)="reload()"
+      [disabled]="isLoadingDwellings">
+      <mat-icon style="cursor: pointer">refresh</mat-icon>
     </button>
   </div>
 
@@ -24,35 +34,47 @@
     <table mat-table [dataSource]="dwellings" class="asrbd-table">
       <ng-container matColumnDef="GlobalID">
         <th mat-header-cell *matHeaderCellDef i18n class="d-none">Dwelling</th>
-        <td mat-cell *matCellDef="let element" class="d-none"> {{element.GlobalID}} </td>
+        <td mat-cell *matCellDef="let element" class="d-none">
+          {{ element.GlobalID }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="BldNumber">
         <th mat-header-cell *matHeaderCellDef i18n>Building number</th>
-        <td mat-cell *matCellDef="let element"> {{buildingNumber ?? ''}} </td>
+        <td mat-cell *matCellDef="let element">{{ buildingNumber ?? '' }}</td>
       </ng-container>
       <ng-container matColumnDef="EntNumber">
         <th mat-header-cell *matHeaderCellDef i18n>Entrance number</th>
-        <td mat-cell *matCellDef="let element"> {{entranceNumber}} </td>
+        <td mat-cell *matCellDef="let element">{{ entranceNumber }}</td>
       </ng-container>
       <ng-container matColumnDef="DwlFloor">
         <th mat-header-cell *matHeaderCellDef i18n>Floor</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlFloor', element)}} </td>
+        <td mat-cell *matCellDef="let element">
+          {{ getValueFromStatus('DwlFloor', element) }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="DwlApartNumber">
         <th mat-header-cell *matHeaderCellDef i18n>Apartment number</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlApartNumber', element)}} </td>
+        <td mat-cell *matCellDef="let element">
+          {{ getValueFromStatus('DwlApartNumber', element) }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="DwlStatus">
         <th mat-header-cell *matHeaderCellDef i18n>Dwelling status</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlStatus', element)}} </td>
+        <td mat-cell *matCellDef="let element">
+          {{ getValueFromStatus('DwlStatus', element) }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="DwlType">
         <th mat-header-cell *matHeaderCellDef i18n>Dwelling type</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlType', element)}} </td>
+        <td mat-cell *matCellDef="let element">
+          {{ getValueFromStatus('DwlType', element) }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="DwlQuality">
         <th mat-header-cell *matHeaderCellDef i18n>Dwelling quality</th>
-        <td mat-cell *matCellDef="let element"> {{getValueFromStatus('DwlQuality', element)}} </td>
+        <td mat-cell *matCellDef="let element">
+          {{ getValueFromStatus('DwlQuality', element) }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
@@ -61,13 +83,24 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item i18n (click)="viewDwellingDetails(element.GlobalID)">
-              <mat-icon>light</mat-icon> View dwelling details</button>
-            <button mat-menu-item i18n (click)="editDwellingDetails(element.GlobalID)">
-              <mat-icon>edit</mat-icon> Edit dwelling details</button>
+            <button
+              mat-menu-item
+              i18n
+              (click)="viewDwellingDetails(element.GlobalID)">
+              <mat-icon>light</mat-icon> View dwelling details
+            </button>
+            <button
+              mat-menu-item
+              i18n
+              (click)="editDwellingDetails(element.GlobalID)">
+              <mat-icon>edit</mat-icon> Edit dwelling details
+            </button>
             @if (isAdmin) {
-              <mat-divider/>
-              <button mat-menu-item i18n (click)="openDeleteDialog(element.GlobalID)">
+              <mat-divider />
+              <button
+                mat-menu-item
+                i18n
+                (click)="openDeleteDialog(element.GlobalID)">
                 <mat-icon color="warn">delete</mat-icon>
                 Delete dwelling
               </button>
@@ -77,13 +110,17 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell no-data-cell" colspan="9">No data</td>
       </tr>
     </table>
   </div>
 
-  <mat-paginator [disabled]="isLoadingDwellings" [length]="totalCount" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
-                 [showFirstLastButtons]="true"></mat-paginator>
+  <mat-paginator
+    [disabled]="isLoadingDwellings"
+    [length]="totalCount"
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 20, 50]"
+    [showFirstLastButtons]="true"></mat-paginator>
 </div>

@@ -29,7 +29,7 @@ import {
   ENTRANCE_ENTITY,
 } from '../../../common/constants/common-constants';
 import SketchProperties = __esri.SketchProperties;
-import {CommonMunicipalityService} from "../../common/service/common-municipality.service";
+import { CommonMunicipalityService } from '../../common/service/common-municipality.service';
 
 @Injectable({ providedIn: 'root' })
 export class EntityCreationMapService {
@@ -176,12 +176,13 @@ export class EntityCreationMapService {
         this.view!.goTo(mainGraphic);
       }
     });
-    this.view.watch('zoom', (newZoom) => {
+    this.view.watch('zoom', newZoom => {
       setTimeout(() => {
         if (!this.view?.map) {
           return;
         }
-        this.bldLayer.visible = newZoom >= 15 || !!(this.totalResults && this.totalResults < 1000);
+        this.bldLayer.visible =
+          newZoom >= 15 || !!(this.totalResults && this.totalResults < 1000);
       }, 500);
     });
 
