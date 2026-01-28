@@ -79,7 +79,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   sendResetPasswordEmail() {
-    if (this.forgotPassword.valid) {
+    if (this.forgotPassword.controls.email.valid) {
       const email = this.forgotPassword.get('email')?.value;
       if (email) {
         this.forgotPasswordService.sendResetPasswordEmail(email);
@@ -94,7 +94,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   resetPassword() {
-    if (this.forgotPassword.valid && this.token) {
+    if (this.forgotPassword.controls.password.valid && this.token) {
       const password = this.forgotPassword.get('password')?.value;
       if (password) {
         this.forgotPasswordService.resetPassword(this.token, password);

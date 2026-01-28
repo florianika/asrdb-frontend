@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,8 @@ export class ForgotPasswordService {
   isLoading$ = this.loading.asObservable();
   constructor(
     private httpClient: HttpClient,
-    private matSnack: MatSnackBar
+    private matSnack: MatSnackBar,
+    private router: Router
   ) {}
 
   sendResetPasswordEmail(email: string) {
@@ -54,6 +56,7 @@ export class ForgotPasswordService {
             $localize`OK`,
             { duration: 5000 }
           );
+          void this.router.navigateByUrl('/auth/signin')
         },
         error: () => {
           this.loading.next(false);
