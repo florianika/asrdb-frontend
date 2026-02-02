@@ -1,25 +1,20 @@
-import { Injectable, isDevMode, OnDestroy, OnInit } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  Subject,
-  Subscriber,
-  takeUntil,
-} from 'rxjs';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { JWT, SigninResponse } from 'src/app/model/JWT.model';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { Role } from 'src/app/model/RolePermissions.model';
-import { Credentials } from '../../auth/signin/signin.service';
-import { ESRI_AUTH_KEY } from '../../dashboard/common/service/common-esri-auth.service';
+import {Injectable, isDevMode} from '@angular/core';
+import {BehaviorSubject, Observable, Subject, Subscriber, takeUntil,} from 'rxjs';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {JWT, SigninResponse} from 'src/app/model/JWT.model';
+import {Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import {Role} from 'src/app/model/RolePermissions.model';
+import {Credentials} from '../../auth/signin/signin.service';
+import {ESRI_AUTH_KEY} from '../../dashboard/common/service/common-esri-auth.service';
+
 export const DEFAULT_MUNICIPALITY = 53;
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthStateService implements OnInit, OnDestroy {
+export class AuthStateService {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
   private readonly SIGNIN_URL = '/auth/signin';
   private readonly SIGNOUT_URL = '/auth/signout';
@@ -31,6 +26,7 @@ export class AuthStateService implements OnInit, OnDestroy {
 
   private subscription = new Subject<boolean>();
   private webWorker!: Worker;
+  private isRefreshing = false;
 
   constructor(
     private router: Router,
@@ -40,16 +36,6 @@ export class AuthStateService implements OnInit, OnDestroy {
     this.tokens = item ? JSON.parse(item) : null;
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
     this.createWebWorker();
-  }
-
-  ngOnInit() {
-    this.checkTokenValidity();
-  }
-
-  ngOnDestroy() {
-    this.subscription.next(true);
-    this.subscription.complete();
-    this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE);
   }
 
   logout() {
@@ -69,6 +55,11 @@ export class AuthStateService implements OnInit, OnDestroy {
   }
 
   refreshToken() {
+    if (this.isRefreshing) {
+      return new Observable(observer => observer.next(false));
+    }
+
+    this.isRefreshing = true;
     this.webWorker.postMessage(this.STOP_INTERVAL_MESSAGE);
     return new Observable(observer => {
       this.httpClient
@@ -97,19 +88,24 @@ export class AuthStateService implements OnInit, OnDestroy {
                 next: async credentials => {
                   try {
                     this.initEsriConfig(credentials);
+                    this.isRefreshing = false;
                     observer.next(true);
                   } catch (error) {
+                    this.isRefreshing = false;
                     this.handleError(error);
                     observer.error(error);
                   }
                 },
                 error: error => {
+                  this.isRefreshing = false;
                   this.handleError(error);
                   observer.error(error);
                 },
               });
           },
-          error: () => {
+          error: (err) => {
+            this.isRefreshing = false;
+            console.log(err);
             this.logout();
             observer.error('Error refreshing token');
           },
@@ -282,7 +278,7 @@ export class AuthStateService implements OnInit, OnDestroy {
       if (isDevMode()) {
         console.log(`Seconds left for auth token: ${seconds}`);
       }
-      isTokenNearlyExpired = seconds <= 10;
+      isTokenNearlyExpired = seconds <= 1200000; // 20 minutes
     } catch (e) {
       if (!this.router.url.includes('/auth/')) {
         console.error(e);
@@ -303,7 +299,7 @@ export class AuthStateService implements OnInit, OnDestroy {
 
     const shouldRefreshToken =
       isAuthTokenNearlyExpired || isEsriTokenNearlyExpired;
-    if (shouldRefreshToken && !this.router.url.includes('/auth/')) {
+    if (shouldRefreshToken && !this.isRefreshing && !this.router.url.includes('/auth/')) {
       if (isDevMode()) {
         console.log('Reloaded token');
       }
@@ -322,7 +318,7 @@ export class AuthStateService implements OnInit, OnDestroy {
       if (isDevMode()) {
         console.log('Time left for esri token: ', secondsLeft);
       }
-      return secondsLeft < 300; // 5 minutes
+      return secondsLeft < 1200000; // 20 minutes
     }
     return false;
   }

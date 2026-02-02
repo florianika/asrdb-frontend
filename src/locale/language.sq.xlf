@@ -429,21 +429,21 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2451500941945018325" datatype="html">
-        <source>Statistics Export</source>
+        <source>Eksporti i Statistikave</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/components/side-bar/side-bar.component.ts</context>
           <context context-type="linenumber">98</context>
         </context-group>
       </trans-unit>
       <trans-unit id="379466368572224599" datatype="html">
-        <source>Eksporti i Statistikave</source>
+        <source>Administrimi i perdoruesve</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/components/side-bar/side-bar.component.ts</context>
           <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5376967655946109687" datatype="html">
-        <source>Email templates</source>
+        <source>Modelet e postës elektronike</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/components/side-bar/side-bar.component.ts</context>
           <context context-type="linenumber">110</context>
@@ -454,7 +454,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="3742728431516357098" datatype="html">
-        <source>Modelet e postës elektronike</source>
+        <source>Tipet e entiteteve</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/standalone-components/entity-type-selector/entity-type-selector.component.html</context>
           <context context-type="linenumber">2</context>

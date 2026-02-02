@@ -8,6 +8,6 @@ addEventListener('message', ({ data }) => {
   } else if (!interval) {
     interval = setInterval(() => {
       postMessage('NOW RELOAD');
-    }, 3000);
+    }, 600000); // 10 minutes
   }
 });

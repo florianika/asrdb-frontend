@@ -3,12 +3,12 @@ import {
   HttpRequest,
   HttpHandler,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { AuthStateService } from './auth-state.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private auth: AuthStateService) {}
+  constructor(private injector: Injector) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     if (
@@ -19,8 +19,10 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
+    // Lazily inject AuthStateService to avoid circular dependency
+    const auth = this.injector.get(AuthStateService);
     // Get the auth token from the service.
-    const authToken = this.auth.getAuthorizationToken();
+    const authToken = auth.getAuthorizationToken();
     // Clone the request and replace the original headers with
     // cloned headers, updated with the authorization.
     const authReq = req.clone({
