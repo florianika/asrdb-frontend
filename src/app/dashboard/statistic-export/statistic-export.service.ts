@@ -114,6 +114,15 @@ export class StatisticExportService {
       .subscribe({
         next: data => {
           const rows = data.downloadJobsDTO;
+          if (rows.length === 0) {
+            this.statisticsTableData.set({
+              data: [],
+              isLoading: false,
+              isDownloading: false,
+              downloadRowId: null,
+            });
+            return;
+          }
           const requests: Observable<RowUserDetails>[] = [];
           rows.forEach(row => {
             const request = this.getUserDetailsRequest(
