@@ -96,14 +96,14 @@ export class RegisterViewDetailsService {
   }
 
   // mark as untested
-  public markAsUntested(id: string, entranceId: string) {
+  public markAsUntested(id: string, entranceId?: string) {
     this.viewData.update(data => ({
       ...data,
       isLoading: true,
       building: null,
       buildingFields: [],
     }));
-    this.resetEntranceStatus(entranceId, id);
+    this.resetEntranceStatus(id, entranceId);
   }
 
   public startExecution(id: string, callback?: () => void) {
@@ -297,10 +297,14 @@ export class RegisterViewDetailsService {
   }
 
   // reset entrance status
-  private resetEntranceStatus(entranceId: string, id: string) {
-    this.commonEntranceService.resetStatus(entranceId, () =>
-      this.resetBuildingStatus(id)
-    );
+  private resetEntranceStatus(id: string, entranceId?: string, ) {
+    if (entranceId) {
+      this.commonEntranceService.resetStatus(entranceId, () =>
+        this.resetBuildingStatus(id)
+      );
+    } else {
+      this.resetBuildingStatus(id);
+    }
   }
 
   // prepare structure for display

@@ -172,7 +172,7 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
             if (buildingGlobalId) {
               this.registerViewDetailsService.markAsUntested(
                 buildingGlobalId,
-                id
+                undefined
               );
               dialog.close();
             }
