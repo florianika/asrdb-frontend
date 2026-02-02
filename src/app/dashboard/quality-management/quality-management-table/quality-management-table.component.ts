@@ -178,12 +178,7 @@ export class QualityManagementTableComponent
       })
       .map((item: any) => {
         return {
-          localId: item.localId,
-          variable: item.variable,
-          ruleRequirement: item.ruleRequirement,
-          version: item.version,
-          ruleStatus: item.ruleStatus,
-          qualityAction: item.qualityAction,
+          ...item
         };
       });
     const csv: CsvOutput = generateCsv(this.csvConfig as any)(data);
