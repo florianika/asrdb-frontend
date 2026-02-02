@@ -1,31 +1,20 @@
-import {
-  effect,
-  Inject,
-  inject,
-  Injectable,
-  LOCALE_ID,
-  signal,
-} from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import {
-  CommonEntityStructureService,
-  EntityAttribute,
-} from '../../../common/service/common-entity-structure.service';
-import { Section } from '../types';
-import { SectionField } from '../../constant/common-constants';
-import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
-import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
-import { MatSort } from '@angular/material/sort';
-import { Log } from '../../register-log-view/model/log';
-import { ENTRANCE_ENTITY } from '../../../../common/constants/common-constants';
-import { Entrance } from '../../model/entrance';
-import { QueryFilter } from '../../model/query-filter';
-import { catchError, of as observableOf, Subject, takeUntil } from 'rxjs';
-import { CommonEntranceService } from '../../../common/service/common-entrance.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonStreetService } from '../../../common/service/common-street.service';
-import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
-import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
+import {effect, Inject, inject, Injectable, LOCALE_ID, signal,} from '@angular/core';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {CommonEntityStructureService, EntityAttribute,} from '../../../common/service/common-entity-structure.service';
+import {Section} from '../types';
+import {SectionField} from '../../constant/common-constants';
+import {CommonRegisterHelperService} from '../../../common/service/common-helper.service';
+import {RegisterLogService} from '../../register-log-view/register-log-table/register-log.service';
+import {Log} from '../../register-log-view/model/log';
+import {ENTRANCE_ENTITY} from '../../../../common/constants/common-constants';
+import {Entrance} from '../../model/entrance';
+import {QueryFilter} from '../../model/query-filter';
+import {catchError, of as observableOf, Subject, takeUntil} from 'rxjs';
+import {CommonEntranceService} from '../../../common/service/common-entrance.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {CommonStreetService} from '../../../common/service/common-street.service';
+import {EntranceDetailsComponent} from './entrance-details/entrance-details.component';
+import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
 
 @Injectable({
   providedIn: 'root',
@@ -356,21 +345,16 @@ export class EntranceDetailsService {
   private fillSections(id: string) {
     this.entranceStructure()?.sections.forEach(section => {
       section.entries.forEach(entry => {
+        const log = this.registerLogService.getLogForVariable(
+          ENTRANCE_ENTITY,
+          entry.propName,
+          id
+        );
         entry.value = this.getValueFromStatus(
           entry.propName as keyof Entrance
         )?.toString();
-        entry.log =
-          this.registerLogService.getLogForVariable(
-            ENTRANCE_ENTITY,
-            entry.propName,
-            id
-          )?.qualityMessageEn ?? '';
-        entry.logType =
-          this.registerLogService.getLogForVariable(
-            ENTRANCE_ENTITY,
-            entry.propName,
-            id
-          )?.qualityAction ?? '';
+        entry.log = getLogMessage(log, this.locale as 'en' | 'sq');
+        entry.logType = log?.qualityAction ?? '';
       });
     });
 

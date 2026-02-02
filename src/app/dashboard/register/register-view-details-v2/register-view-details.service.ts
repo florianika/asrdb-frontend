@@ -27,7 +27,7 @@ import { SectionField } from '../constant/common-constants';
 import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Section, ViewSection } from './types';
-import { getLocaleProperty } from '../../common/helper/locale-property-helper';
+import {getLocaleProperty, getLogMessage} from '../../common/helper/locale-property-helper';
 
 @Injectable({
   providedIn: 'root',
@@ -356,19 +356,14 @@ export class RegisterViewDetailsService {
   private fillSections(id: string) {
     this.viewStructures().buildingStructure?.sections.forEach(section => {
       section.entries.forEach(entry => {
+        const log = this.registerLogService.getLogForVariable(
+          BUILDING_ENTITY,
+          entry.propName,
+          id
+        );
         entry.value = this.getValue(entry)?.toString();
-        entry.log =
-          this.registerLogService.getLogForVariable(
-            BUILDING_ENTITY,
-            entry.propName,
-            id
-          )?.qualityMessageEn ?? '';
-        entry.logType =
-          this.registerLogService.getLogForVariable(
-            BUILDING_ENTITY,
-            entry.propName,
-            id
-          )?.qualityAction ?? '';
+        entry.log = getLogMessage(log, this.locale as 'en' | 'sq');
+        entry.logType = log?.qualityAction ?? '';
       });
     });
     this.viewData.update(data => ({ ...data, isLoading: false }));

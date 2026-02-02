@@ -2,8 +2,8 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  Input,
+  Component, Inject,
+  Input, LOCALE_ID,
   OnInit,
   TemplateRef,
   ViewChild,
@@ -115,7 +115,8 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     private logService: RegisterLogService,
     private router: Router,
     private changeDetectionRef: ChangeDetectorRef,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    @Inject(LOCALE_ID) private locale: string
   ) {}
 
   ngOnInit(): void {
@@ -177,6 +178,10 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     this.router.navigateByUrl(
       'dashboard/register/details/BUILDING/' + this.building
     );
+  }
+
+  getMessage(row: { qualityMessageAl: string; qualityMessageEn: string }): string {
+    return this.locale === 'sq' ? row.qualityMessageAl : row.qualityMessageEn;
   }
 
   private filterLogs() {

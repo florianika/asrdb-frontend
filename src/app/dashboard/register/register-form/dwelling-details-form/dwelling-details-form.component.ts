@@ -64,7 +64,7 @@ import {
   EntityAttribute,
 } from '../../../common/service/common-entity-structure.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
-import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
+import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-dwelling-details-form',
@@ -126,7 +126,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     private dwellingCreationService: DwellingManagementService,
     private commonStructureService: CommonEntityStructureService,
     private authStateService: AuthStateService,
-    @Inject(LOCALE_ID) private locale: string
+    @Inject(LOCALE_ID) public locale: 'sq' | 'en'
   ) {
     this.commonStructureService.getEntityStructure(DWELLING_ENTITY);
     this.commonStructureService.structureLoaded.subscribe(response => {
@@ -405,4 +405,5 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   }
 
   protected readonly getColor = getColor;
+  protected readonly getLogMessage = getLogMessage;
 }

@@ -57,7 +57,7 @@ import {
   EntityAttribute,
 } from '../../../common/service/common-entity-structure.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
-import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
+import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-building-details-form',
@@ -104,7 +104,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     private filterService: RegisterFilterService,
     private authStateService: AuthStateService,
     private commonStructureService: CommonEntityStructureService,
-    @Inject(LOCALE_ID) private locale: string
+    @Inject(LOCALE_ID) public locale: 'sq' | 'en'
   ) {
     this.commonStructureService.structureLoaded
       .pipe(takeUntil(this.onDestroy))
@@ -291,4 +291,6 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     }
     return '';
   }
+
+  protected readonly getLogMessage = getLogMessage;
 }

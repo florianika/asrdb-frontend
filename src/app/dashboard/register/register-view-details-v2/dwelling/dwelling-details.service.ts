@@ -24,7 +24,7 @@ import { DWELLING_ENTITY } from '../../../../common/constants/common-constants';
 import { SectionField } from '../../constant/common-constants';
 import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
 import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
-import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
+import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
 
 const STREET_NAME = 'Street name';
 const BUILDING_NUMBER = 'Building number';
@@ -363,21 +363,16 @@ export class DwellingDetailsService {
   private fillSections(id: string) {
     this.dwellingStructure()?.sections.forEach(section => {
       section.entries.forEach(entry => {
+        const log = this.registerLogService.getLogForVariable(
+          DWELLING_ENTITY,
+          entry.propName,
+          id
+        );
         entry.value = this.getValueFromStatus(
           entry.propName as keyof Dwelling
         )?.toString();
-        entry.log =
-          this.registerLogService.getLogForVariable(
-            DWELLING_ENTITY,
-            entry.propName,
-            id
-          )?.qualityMessageEn ?? '';
-        entry.logType =
-          this.registerLogService.getLogForVariable(
-            DWELLING_ENTITY,
-            entry.propName,
-            id
-          )?.qualityAction ?? '';
+        entry.log = getLogMessage(log, this.locale as 'en' | 'sq');
+        entry.logType = log?.qualityAction ?? '';
       });
     });
     this.dwellingStructure.update(data => {

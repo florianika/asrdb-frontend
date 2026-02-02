@@ -86,8 +86,8 @@
       </ng-container>
       <ng-container matColumnDef="qualityMessageAl">
         <th mat-header-cell *matHeaderCellDef>Message</th>
-        <td mat-cell *matCellDef="let row" [matTooltip]="row.qualityMessageEn">
-          {{ row.qualityMessageEn | concatenateMessage: 100 }}
+        <td mat-cell *matCellDef="let row" [matTooltip]="getMessage(row)">
+          {{ getMessage(row) | concatenateMessage: 100 }}
         </td>
       </ng-container>
       <ng-container matColumnDef="qualityStatus">

@@ -60,7 +60,7 @@ import {
 } from '../../../../common/services/auth-state.service';
 import { ENTRANCE_ENTITY } from '../../../../common/constants/common-constants';
 import { EntityAttribute } from '../../../common/service/common-entity-structure.service';
-import { getLocaleProperty } from '../../../common/helper/locale-property-helper';
+import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -111,7 +111,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private authStateService: AuthStateService,
     private registerLogService: RegisterLogService,
-    @Inject(LOCALE_ID) private locale: string
+    @Inject(LOCALE_ID) public locale: "sq" | "en"
   ) {
     this.entranceId =
       this.activatedRoute.snapshot.queryParamMap.get('entranceId');
@@ -307,4 +307,5 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   protected readonly getColor = getColor;
+  protected readonly getLogMessage = getLogMessage;
 }
