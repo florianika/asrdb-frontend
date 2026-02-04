@@ -278,7 +278,7 @@ export class AuthStateService {
       if (isDevMode()) {
         console.log(`Seconds left for auth token: ${seconds}`);
       }
-      isTokenNearlyExpired = seconds <= 1200000; // 20 minutes
+      isTokenNearlyExpired = seconds <= 1200; // 20 minutes
     } catch (e) {
       if (!this.router.url.includes('/auth/')) {
         console.error(e);
@@ -318,7 +318,7 @@ export class AuthStateService {
       if (isDevMode()) {
         console.log('Time left for esri token: ', secondsLeft);
       }
-      return secondsLeft < 1200000; // 20 minutes
+      return secondsLeft < 1200; // 20 minutes
     }
     return false;
   }
