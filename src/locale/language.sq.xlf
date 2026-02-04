@@ -133,19 +133,19 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">29</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">37</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">56</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">62</context>
+          <context context-type="linenumber">65</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.service.ts</context>
@@ -182,25 +182,25 @@
         <source>Ju lutemi kontrolloni email-in për udhëzimet se si të rivendosni fjalëkalimin.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4370022449704914454" datatype="html">
         <source>Ndodhi një gabim gjatë përpjekjes për të rivendosur fjalëkalimin. Ju lutemi provoni përsëri më vonë.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">36</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4200139793527060712" datatype="html">
         <source>Fjalëkalimi juaj është rivendosur me sukses.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8423834149145615628" datatype="html">
@@ -702,7 +702,7 @@
         <source> Ruaj </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">43,45</context>
+          <context context-type="linenumber">45,47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
@@ -713,21 +713,21 @@
         <source>Të anulohet krijimi i shabllonit të email-it?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4376311750930749091" datatype="html">
         <source>Të anulohet redaktimi i shabllonit të email-it?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5303812453545876745" datatype="html">
         <source> Je i sigurt që dëshiron ta mbyllësh dialogun? Të gjitha ndryshimet do të humbasin. Ky veprim nuk mund të zhbëhet! <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> Do you want to continue </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">50,55</context>
+          <context context-type="linenumber">52,57</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
@@ -742,7 +742,7 @@
         <source> Mbyll dialogun </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">65,67</context>
+          <context context-type="linenumber">67,69</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
@@ -1152,7 +1152,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">262</context>
+          <context context-type="linenumber">251</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
@@ -1192,27 +1192,27 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
-          <context context-type="linenumber">408</context>
+          <context context-type="linenumber">407</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">199</context>
+          <context context-type="linenumber">208</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">226</context>
+          <context context-type="linenumber">235</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">257</context>
+          <context context-type="linenumber">266</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">285</context>
+          <context context-type="linenumber">294</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">292</context>
+          <context context-type="linenumber">301</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/street-management/street-management-form/street-management-form.component.ts</context>
@@ -1406,19 +1406,19 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">150</context>
+          <context context-type="linenumber">159</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">163</context>
+          <context context-type="linenumber">172</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">303</context>
+          <context context-type="linenumber">312</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">328</context>
+          <context context-type="linenumber">337</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5015981603768299711" datatype="html">
@@ -1442,12 +1442,16 @@
       <trans-unit id="3201020630647736003" datatype="html">
         <source>Testimi i ndërtesave</source>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/common/components/side-bar/side-bar.component.ts</context>
+          <context context-type="linenumber">92</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6674032448525346563" datatype="html">
@@ -3395,7 +3399,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
-          <context context-type="linenumber">407</context>
+          <context context-type="linenumber">406</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/street-management/street-management-form/street-management-form.component.ts</context>
@@ -4096,29 +4100,29 @@ Ky veprim nuk mund të anulohet.</source>
         <source>Informacion identifikues</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">197</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
-          <context context-type="linenumber">334</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8315844241316862748" datatype="html">
-        <source>Duke përshkruar informacionin</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">201</context>
+          <context context-type="linenumber">186</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
           <context context-type="linenumber">338</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8315844241316862748" datatype="html">
+        <source>Duke përshkruar informacionin</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
+          <context context-type="linenumber">190</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
+          <context context-type="linenumber">342</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="8757426867757568261" datatype="html">
         <source>Nuk mund të ngarkohej lista e hyrjeve. Ju lutemi provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">261</context>
+          <context context-type="linenumber">250</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2956864723250708020" datatype="html">
@@ -4526,70 +4530,70 @@ Ky veprim nuk mund të anulohet.</source>
         <source>Gabim gjatë marrjes së të dhënave të përdoruesit për statistikat</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">149</context>
+          <context context-type="linenumber">158</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4494890791611790186" datatype="html">
         <source>Gabim gjatë marrjes së statistikave</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">162</context>
+          <context context-type="linenumber">171</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6631147598757213823" datatype="html">
         <source>shkarkojnë</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">187</context>
+          <context context-type="linenumber">196</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5770322256480258184" datatype="html">
         <source>Gabim gjatë shkarkimit të skedarit</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">198</context>
+          <context context-type="linenumber">207</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1392756993850077467" datatype="html">
         <source>Gabim gjatë marrjes së statistikave të cilësisë së komunës dhe ndërtesës</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">225</context>
+          <context context-type="linenumber">234</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4404291511698535973" datatype="html">
         <source>Gabim gjatë marrjes së statistikave të cilësisë së bashkisë dhe banesave</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">256</context>
+          <context context-type="linenumber">265</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1306875968935499917" datatype="html">
         <source>Filloi gjenerimi i fotografive të të dhënave</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">284</context>
+          <context context-type="linenumber">293</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5596519800176456722" datatype="html">
         <source>Gabim gjatë fillimit të gjenerimit të pamjes së të dhënave ...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">291</context>
+          <context context-type="linenumber">300</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4945350845706446133" datatype="html">
         <source>Nuk ka punë gjenerimi të pamjeve të çastit në vazhdim</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">302</context>
+          <context context-type="linenumber">311</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5831053953515949956" datatype="html">
         <source>Gabim gjatë kontrollit të statusit të gjenerimit të pamjes së çastit ....</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">327</context>
+          <context context-type="linenumber">336</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7953760163944472831" datatype="html">

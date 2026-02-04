@@ -133,19 +133,19 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">29</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">37</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">56</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">62</context>
+          <context context-type="linenumber">65</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.service.ts</context>
@@ -182,25 +182,25 @@
         <source>Please check the email for instructions on how to reset the password.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4370022449704914454" datatype="html">
         <source>An error occurred while trying to reset the password. Please try again later.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">36</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4200139793527060712" datatype="html">
         <source>Your password has been successfully reset.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8423834149145615628" datatype="html">
@@ -440,7 +440,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2451500941945018325" datatype="html">
@@ -682,15 +682,29 @@
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="276847847864963738" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Surround the message you want to send to municipalities which completed all tasks </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5187178491622993291" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Surround the message you want to send to municipalities that have not completed all tasks </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="2330577642930707695" datatype="html">
         <source> Cancel </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">35,37</context>
+          <context context-type="linenumber">37,39</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">57,59</context>
+          <context context-type="linenumber">59,61</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-3-field-work-closure-summary/step-3-field-work-closure-summary.component.html</context>
@@ -717,7 +731,7 @@
         <source> Save </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">43,45</context>
+          <context context-type="linenumber">45,47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
@@ -728,21 +742,21 @@
         <source>Cancel creating email template?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4376311750930749091" datatype="html">
         <source>Cancel editing email template?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5303812453545876745" datatype="html">
         <source> Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone! <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> Do you want to continue </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">50,55</context>
+          <context context-type="linenumber">52,57</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
@@ -757,7 +771,7 @@
         <source> Close dialog </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
-          <context context-type="linenumber">65,67</context>
+          <context context-type="linenumber">67,69</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.html</context>
@@ -1167,7 +1181,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">262</context>
+          <context context-type="linenumber">251</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
@@ -1207,27 +1221,27 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
-          <context context-type="linenumber">408</context>
+          <context context-type="linenumber">407</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">199</context>
+          <context context-type="linenumber">208</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">226</context>
+          <context context-type="linenumber">235</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">257</context>
+          <context context-type="linenumber">266</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">285</context>
+          <context context-type="linenumber">294</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">292</context>
+          <context context-type="linenumber">301</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/street-management/street-management-form/street-management-form.component.ts</context>
@@ -1421,19 +1435,19 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">150</context>
+          <context context-type="linenumber">159</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">163</context>
+          <context context-type="linenumber">172</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">303</context>
+          <context context-type="linenumber">312</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">328</context>
+          <context context-type="linenumber">337</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5015981603768299711" datatype="html">
@@ -1475,11 +1489,32 @@
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="3212630520924615567" datatype="html">
+        <source>Execute immediately</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5988402427999567520" datatype="html">
+        <source>Schedule for later</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6524262610032366385" datatype="html">
+        <source>Choose a date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1513917966678254804" datatype="html">
         <source>Testing buildings...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">51</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export-create/statistic-export-create-step-0/statistic-export-create-step-0.component.html</context>
@@ -3399,7 +3434,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
-          <context context-type="linenumber">407</context>
+          <context context-type="linenumber">406</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/street-management/street-management-form/street-management-form.component.ts</context>
@@ -4100,29 +4135,29 @@ This action cannot be undone.</source>
         <source>Identifying Information</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">197</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
-          <context context-type="linenumber">334</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8315844241316862748" datatype="html">
-        <source>Describing Information</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">201</context>
+          <context context-type="linenumber">186</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
           <context context-type="linenumber">338</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8315844241316862748" datatype="html">
+        <source>Describing Information</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
+          <context context-type="linenumber">190</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
+          <context context-type="linenumber">342</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="8757426867757568261" datatype="html">
         <source>Could not load entrance list. Please try again</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
-          <context context-type="linenumber">261</context>
+          <context context-type="linenumber">250</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2956864723250708020" datatype="html">
@@ -4530,70 +4565,70 @@ This action cannot be undone.</source>
         <source>Error fetching user details for statistics</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">149</context>
+          <context context-type="linenumber">158</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4494890791611790186" datatype="html">
         <source>Error fetching statistics</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">162</context>
+          <context context-type="linenumber">171</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6631147598757213823" datatype="html">
         <source>download</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">187</context>
+          <context context-type="linenumber">196</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5770322256480258184" datatype="html">
         <source>Error downloading file</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">198</context>
+          <context context-type="linenumber">207</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1392756993850077467" datatype="html">
         <source>Error fetching municipality and building quality statistics</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">225</context>
+          <context context-type="linenumber">234</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4404291511698535973" datatype="html">
         <source>Error fetching municipality and dwelling quality statistics</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">256</context>
+          <context context-type="linenumber">265</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1306875968935499917" datatype="html">
         <source>Data snapshot generation started</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">284</context>
+          <context context-type="linenumber">293</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5596519800176456722" datatype="html">
         <source>Error starting data snapshot generation</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">291</context>
+          <context context-type="linenumber">300</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4945350845706446133" datatype="html">
         <source>No snapshot generation job in progress</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">302</context>
+          <context context-type="linenumber">311</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5831053953515949956" datatype="html">
         <source>Error checking snapshot generation status</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.service.ts</context>
-          <context context-type="linenumber">327</context>
+          <context context-type="linenumber">336</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7953760163944472831" datatype="html">
