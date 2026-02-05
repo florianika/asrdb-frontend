@@ -111,6 +111,10 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.authStateService.isAdmin();
   }
 
+  get isSupervisor() {
+    return this.authStateService.isSupervisor();
+  }
+
   get selectedEntrance() {
     return this.viewData().selectedEntrance;
   }

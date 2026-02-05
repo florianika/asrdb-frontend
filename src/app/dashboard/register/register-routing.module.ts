@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import {GuardAdminService} from "../../common/services/guard-admin.service";
 
 const routes: Routes = [
   {
@@ -28,6 +29,7 @@ const routes: Routes = [
   },
   {
     path: 'form/:entity',
+    canActivate: [GuardAdminService],
     loadComponent: () =>
       import('./register-form/register-form.component').then(
         c => c.RegisterFormComponent
@@ -35,6 +37,7 @@ const routes: Routes = [
   },
   {
     path: 'form/:entity/:id',
+    canActivate: [GuardAdminService],
     loadComponent: () =>
       import('./register-form/register-form.component').then(
         c => c.RegisterFormComponent

@@ -15,6 +15,7 @@
 
             <button
               mat-icon-button
+              *ngIf="isAdmin || isSupervisor"
               [matTooltip]="'Edit building'"
               (click)="editBuilding()">
               <mat-icon>edit</mat-icon>

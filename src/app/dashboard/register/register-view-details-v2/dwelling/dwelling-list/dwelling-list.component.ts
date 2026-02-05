@@ -107,6 +107,10 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.authStateService.isAdmin();
   }
 
+  get isSupervisor() {
+    return this.authStateService.isSupervisor();
+  }
+
   constructor() {
     effect(
       () => {

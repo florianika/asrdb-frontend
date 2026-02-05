@@ -6,7 +6,7 @@
 
     <div class="spacer"></div>
 
-    @if (entranceId) {
+    @if (entranceId && (isAdmin || isSupervisor)) {
       <button
         mat-icon-button
         [matTooltip]="'Add new dwelling'"
@@ -89,12 +89,14 @@
               (click)="viewDwellingDetails(element.GlobalID)">
               <mat-icon>light</mat-icon> View dwelling details
             </button>
-            <button
-              mat-menu-item
-              i18n
-              (click)="editDwellingDetails(element.GlobalID)">
-              <mat-icon>edit</mat-icon> Edit dwelling details
-            </button>
+            @if (isAdmin || isSupervisor) {
+              <button
+                mat-menu-item
+                i18n
+                (click)="editDwellingDetails(element.GlobalID)">
+                <mat-icon>edit</mat-icon> Edit dwelling details
+              </button>
+            }
             @if (isAdmin) {
               <mat-divider />
               <button

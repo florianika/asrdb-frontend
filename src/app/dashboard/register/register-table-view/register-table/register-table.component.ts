@@ -175,6 +175,10 @@ export class RegisterTableComponent
     return this.authStateService.isAdmin();
   }
 
+  get isSupervisor() {
+    return this.authStateService.isSupervisor();
+  }
+
   getMunicipality(column: string, code: number | string) {
     return this.commonBuildingRegisterHelper.getMunicipality(
       this.fields,

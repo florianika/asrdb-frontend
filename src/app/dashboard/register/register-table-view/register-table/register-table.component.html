@@ -6,6 +6,7 @@
     <button
       mat-icon-button
       i18n-matTooltip
+      *ngIf="isAdmin || isSupervisor"
       [matTooltip]="'Create a new building'"
       (click)="addNewBuilding()"
       [disabled]="isLoadingResults">
@@ -204,6 +205,7 @@
             <button
               mat-menu-item
               i18n
+              *ngIf="isAdmin || isSupervisor"
               (click)="editBuildingDetails(element.GlobalID)">
               <mat-icon>edit</mat-icon> Edit building details
             </button>
