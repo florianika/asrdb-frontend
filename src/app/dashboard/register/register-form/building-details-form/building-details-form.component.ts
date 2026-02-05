@@ -116,6 +116,10 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       });
   }
 
+  get isNormalUser() {
+    return !this.authStateService.isAdmin() && !this.authStateService.isSupervisor();
+  }
+
   ngOnInit() {
     this.commonStructureService.getEntityStructure(BUILDING_ENTITY);
   }
@@ -250,6 +254,9 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       const municipalityValue = value ?? this.filterService.municipality;
       if (municipalityValue) {
         control.setValue(municipalityValue);
+      }
+      if (this.isNormalUser) {
+        control.disable();
       }
       this.mapService.setMunicipality(municipalityValue);
     }

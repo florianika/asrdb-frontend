@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { BuildingFilter } from '../../../register/model/building';
 import { MatIconModule } from '@angular/material/icon';
+import {AuthStateService} from "../../../../common/services/auth-state.service";
 
 @Component({
   selector: 'asrdb-building-list-view-filter',
@@ -29,8 +30,12 @@ export class RegisterFilterComponent {
   filterConfig: BuildingFilter;
   filterValue = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: BuildingFilter) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: BuildingFilter, private authState: AuthStateService) {
     this.filterConfig = data;
+  }
+
+  get isNormalUser() {
+    return !this.authState.isAdmin() && !this.authState.isSupervisor();
   }
 
   get municipalities() {

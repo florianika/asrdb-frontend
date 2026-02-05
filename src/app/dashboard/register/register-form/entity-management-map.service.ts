@@ -81,10 +81,10 @@ export class EntityCreationMapService {
     (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];
     (this.bldLayer.renderer as UniqueValueRenderer).defaultSymbol = {
       type: 'simple-fill', // autocasts as new SimpleFillSymbol()
-      color: 'rgb(119,119,119)',
+      color: 'rgba(119,119,119,0.25)',
       outline: {
         // autocasts as new SimpleLineSymbol()
-        color: 'rgb(119,119,119)',
+        color: 'rgba(119,119,119,0.25)',
         width: 3,
       } as any,
     } as any;

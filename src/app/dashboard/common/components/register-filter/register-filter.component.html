@@ -3,6 +3,7 @@
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Municipality</mat-label>
     <mat-select
+      *ngIf="!isNormalUser"
       #municipalitySelect
       [value]="filterConfig.filter.BldMunicipality"
       (selectionChange)="changeValue($event, 'BldMunicipality')">

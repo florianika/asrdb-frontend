@@ -37,7 +37,7 @@ export class SigninV2Service {
       password: password,
     };
     const url = environment.base_url + '/Auth/2fa/login';
-    this.httpClient
+    const subscription = this.httpClient
       .post(url, data)
       .pipe(
         catchError(error => {
@@ -64,6 +64,9 @@ export class SigninV2Service {
             });
           }
         },
+        complete: () => {
+          subscription.unsubscribe();
+        }
       });
   }
 
@@ -76,7 +79,7 @@ export class SigninV2Service {
       code: token,
     };
     const url = environment.base_url + '/Auth/2fa/verify';
-    this.httpClient
+    const subscription = this.httpClient
       .post(url, data)
       .pipe(
         catchError(error => {
@@ -102,6 +105,9 @@ export class SigninV2Service {
             });
           }
         },
+        complete: () => {
+          subscription.unsubscribe();
+        }
       });
   }
 

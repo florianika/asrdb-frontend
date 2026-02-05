@@ -59,6 +59,7 @@ export class TestBuildingsComponent {
   public formGroup = new FormGroup({
     runUpdates: new FormControl(false),
     buildingSelection: new FormControl('all'),
+    executionType: new FormControl('immediate'),
     startAt: new FormControl(Moment(new Date())),
   });
 
@@ -83,7 +84,9 @@ export class TestBuildingsComponent {
     const formValue = this.formGroup.value;
     const input = {
       runUpdates: formValue.runUpdates || false,
-      startAt: formValue.startAt?.add(2, 'hour')?.toISOString() || '',
+      startAt: formValue.executionType === 'scheduled'
+        ? formValue.startAt?.utc()?.toISOString() || ''
+        : '',
     } as TestBuildingInput;
     if (formValue.buildingSelection === 'all') {
       this.testBuildingService.testAllBuildings(input);

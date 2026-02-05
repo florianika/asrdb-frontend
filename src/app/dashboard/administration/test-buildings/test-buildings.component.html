@@ -19,16 +19,26 @@
         >
       </mat-radio-group>
     </section>
-    <section id="start-at-section">
-      <mat-form-field class="ps-2 mt-2" appearance="outline">
-        <mat-label>Choose a date</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="startAt" />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
+    <section id="execution-type-section">
+      <mat-radio-group
+        aria-label="Select execution type"
+        formControlName="executionType">
+        <mat-radio-button value="immediate" i18n>Execute immediately</mat-radio-button>
+        <mat-radio-button value="scheduled" i18n>Schedule for later</mat-radio-button>
+      </mat-radio-group>
     </section>
+    @if (formGroup.get('executionType')?.value === 'scheduled') {
+      <section id="start-at-section">
+        <mat-form-field class="ps-2 mt-2" appearance="outline">
+          <mat-label i18n>Choose a date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="startAt" />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </section>
+    }
   </form>
   <div class="d-flex justify-content-end p-3">
     <button
