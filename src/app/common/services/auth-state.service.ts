@@ -148,7 +148,7 @@ export class AuthStateService {
 
   private handleSuccess(admin: boolean, observer: Subscriber<boolean>) {
     if (admin) {
-      const isAdmin = this.isAdmin();
+      const isAdmin = this.isAdmin() || this.isSupervisor();
       if (!isAdmin) {
         this.logout();
         observer.next(false);
