@@ -36,7 +36,7 @@ export class UserManagementService {
   getUsers() {
     this.loading.next(true);
     this.httpClient
-      .get<{ usersDTO: User[] }>(environment.base_url + '/auth/users')
+      .get<{ usersDTO: User[] }>(environment.base_url + '/admin/users')
       .subscribe({
         next: result => {
           this.loading.next(false);
@@ -54,7 +54,7 @@ export class UserManagementService {
 
   getUser(userId: string) {
     this.httpClient
-      .get<{ userDTO: User }>(environment.base_url + `/auth/users/${userId}`)
+      .get<{ userDTO: User }>(environment.base_url + `/admin/users/${userId}`)
       .subscribe({
         next: result => {
           this.user.next(result.userDTO);
@@ -94,7 +94,7 @@ export class UserManagementService {
   editUserRole(userId: string, role: Role) {
     this.loading.next(true);
     this.httpClient
-      .patch(environment.base_url + `/auth/users/${userId}/set/${role}`, {})
+      .patch(environment.base_url + `/admin/users/${userId}/set/${role}`, {})
       .subscribe({
         next: () => {
           this.getUsers();
@@ -114,7 +114,7 @@ export class UserManagementService {
     this.httpClient
       .patch(
         environment.base_url +
-          `/auth/users/${userId}/set/municipality/${municipality}`,
+          `/admin/users/${userId}/set/municipality/${municipality}`,
         {}
       )
       .subscribe({
@@ -134,7 +134,7 @@ export class UserManagementService {
   terminateUser(userId: string) {
     this.loading.next(true);
     this.httpClient
-      .patch(environment.base_url + `/auth/users/${userId}/terminate`, {})
+      .patch(environment.base_url + `/admin/users/${userId}/terminate`, {})
       .subscribe({
         next: () => {
           this.getUsers();
@@ -153,7 +153,7 @@ export class UserManagementService {
   activateUser(userId: string) {
     this.loading.next(true);
     this.httpClient
-      .patch(environment.base_url + `/auth/users/${userId}/activate`, {})
+      .patch(environment.base_url + `/admin/users/${userId}/activate`, {})
       .subscribe({
         next: () => {
           this.getUsers();

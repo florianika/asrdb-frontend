@@ -6,7 +6,7 @@ import { environment } from '../../../../../environments/environment';
 
 @Injectable()
 export class HistoryDetailsService {
-  private readonly USER_DETAILS_API = '/auth/users/';
+  private readonly USER_DETAILS_API = '/admin/users/';
   private createUser = new BehaviorSubject('');
   private updateUser = new BehaviorSubject('');
 

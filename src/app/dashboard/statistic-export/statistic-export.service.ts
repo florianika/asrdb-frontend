@@ -404,7 +404,7 @@ export class StatisticExportService {
     if (!user) return of({ rowId, userText: '' });
     return new Observable<UserDetails>((observer: Observer<any>) => {
       this.httpClient
-        .get<UserDetailsResponse>(`${environment.base_url}/auth/users/${user}`)
+        .get<UserDetailsResponse>(`${environment.base_url}/admin/users/${user}`)
         .pipe(
           catchError(error => {
             console.error('Error fetching user details:', error);
