@@ -5,7 +5,9 @@
     (selectionChange)="changeRole($event)"
     [required]="required"
     [disabled]="disabled">
-    <mat-option value="ADMIN" i18n>ADMIN</mat-option>
+    @if (isAdmin) {
+      <mat-option value="ADMIN" i18n>ADMIN</mat-option>
+    }
     <mat-option value="SUPERVISOR" i18n>SUPERVISOR</mat-option>
     <mat-option value="ENUMERATOR" i18n>ENUMERATOR</mat-option>
     <mat-option value="CLIENT" i18n>CLIENT</mat-option>
