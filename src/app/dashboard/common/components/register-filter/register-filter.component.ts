@@ -53,6 +53,13 @@ export class RegisterFilterComponent {
     (this.filterConfig.filter as any)[filterProp] = event.value;
   }
 
+  clearFilter() {
+    if (this.isNormalUser) {
+      return;
+    }
+    this.filterValue = '';
+  }
+
   changeCheckbox(event: any, filterProp: string) {
     (this.filterConfig.filter as any)[filterProp] = event.checked ? '1' : '';
   }

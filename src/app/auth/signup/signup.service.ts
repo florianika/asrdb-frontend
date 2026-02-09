@@ -67,7 +67,7 @@ export class SignupService {
       municipalityCode: signupForm.municipality?.toString(),
     };
     this.httpClient
-      .post<any>(environment.base_url + '/auth/signup', JSON.stringify(data), {
+      .post<any>(environment.base_url + '/admin/users/add', JSON.stringify(data), {
         headers: {
           'Content-Type': 'application/json',
         },

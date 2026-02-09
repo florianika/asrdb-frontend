@@ -3,22 +3,24 @@
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Municipality</mat-label>
     <mat-select
-      *ngIf="!isNormalUser"
+      [disabled]="isNormalUser"
       #municipalitySelect
       [value]="filterConfig.filter.BldMunicipality"
       (selectionChange)="changeValue($event, 'BldMunicipality')">
       <div class="search-field-container">
         <mat-form-field class="w-100" appearance="outline">
           <input
+            [disabled]="isNormalUser"
             matInput
             i18n-placeholder
             placeholder="Search..."
             [(ngModel)]="filterValue" />
           <button
+            [disabled]="isNormalUser"
             mat-icon-button
             matSuffix
             *ngIf="filterValue"
-            (click)="filterValue = ''">
+            (click)="clearFilter()">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
@@ -31,6 +33,7 @@
       >
     </mat-select>
     <button
+      [disabled]="isNormalUser"
       mat-icon-button
       matSuffix
       (click)="cleanValue($event, 'BldMunicipality')"
