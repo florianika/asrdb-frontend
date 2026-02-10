@@ -2,13 +2,15 @@ import { Chip } from '../../../common/standalone-components/chip/chip.component'
 import { BuildingFilter } from '../../register/model/building';
 import { Injectable } from '@angular/core';
 import { CommonRegisterHelperService } from '../service/common-helper.service';
+import {AuthStateService} from "../../../common/services/auth-state.service";
 
 @Injectable()
 export class FilterHelper {
   private fields: never[] = [];
 
   constructor(
-    private commonBuildingRegisterHelper: CommonRegisterHelperService
+    private commonBuildingRegisterHelper: CommonRegisterHelperService,
+    private authState: AuthStateService
   ) {}
 
   init(fields: never[]) {
@@ -74,6 +76,9 @@ export class FilterHelper {
       }
       return currentValue;
     } else {
+      if (key === 'BldMunicipality' && !this.authState.isAdmin() && !this.authState.isSupervisor()) {
+        return currentValue;
+      }
       currentValue.push({
         column: key,
         value: this.commonBuildingRegisterHelper.getValueFromStatus(
