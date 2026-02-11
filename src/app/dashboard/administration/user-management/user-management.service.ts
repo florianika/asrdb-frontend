@@ -94,7 +94,7 @@ export class UserManagementService {
   editUserRole(userId: string, role: Role) {
     this.loading.next(true);
     this.httpClient
-      .patch(environment.base_url + `/admin/users/${userId}/set/${role}`, {})
+      .patch(environment.base_url + `/admin/users/${userId}/set/role/${role}`, {})
       .subscribe({
         next: () => {
           this.getUsers();
