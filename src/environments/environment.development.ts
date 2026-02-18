@@ -13,4 +13,5 @@ export const environment = {
     'https://services7.arcgis.com/E9FE1JuiACmTPbPv/ArcGIS/rest/services/Municipality/FeatureServer/7',
   token_url:
     'https://salstatstaging.tddev.it/portal/sharing/rest/generateToken',
+  hangfire_url: 'http://51.107.11.117:9090/hangfire/jobs/'
 };

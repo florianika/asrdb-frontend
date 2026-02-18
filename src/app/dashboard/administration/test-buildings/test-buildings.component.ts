@@ -26,6 +26,7 @@ import {
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import Moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'asrdb-test-buildings',
@@ -80,13 +81,23 @@ export class TestBuildingsComponent {
     return this.testBuildingSignal().status;
   }
 
+  openHangfireDashboard() {
+    const hangfireJobId = this.testBuildingSignal().hangfireJobId;
+    if (hangfireJobId) {
+      const url = environment.hangfire_url + "details/" + hangfireJobId;
+      window.open(url, '_blank');
+    } else {
+      window.open(environment.hangfire_url + "enqueued", '_blank');
+    }
+  }
+
   onTestBuildings() {
     const formValue = this.formGroup.value;
     const input = {
       runUpdates: formValue.runUpdates || false,
       startAt: formValue.executionType === 'scheduled'
-        ? formValue.startAt?.utc()?.toISOString() || ''
-        : '',
+        ? formValue.startAt?.toISOString() || ''
+        : new Date().toISOString(),
     } as TestBuildingInput;
     if (formValue.buildingSelection === 'all') {
       this.testBuildingService.testAllBuildings(input);

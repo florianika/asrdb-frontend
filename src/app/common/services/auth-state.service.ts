@@ -320,7 +320,7 @@ export class AuthStateService {
       }
       return secondsLeft < 1200; // 20 minutes
     }
-    return false;
+    return true;
   }
 
   public initEsriConfig(credentials: Credentials) {

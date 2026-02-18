@@ -1,6 +1,8 @@
 <div class="asrbd-container mat-elevation-z2" style="background-color: white">
-  <div class="header-container">
+  <div class="header-container d-flex">
     <h1 i18n class="header-title">Test buildings</h1>
+    <span class="flex-grow-1"></span>
+    <button mat-raised-button i18n (click)="openHangfireDashboard()">View hangfire jobs</button>
   </div>
 
   <form class="asrbd-table-container" [formGroup]="formGroup">

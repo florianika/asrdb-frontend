@@ -19,16 +19,18 @@ export class TestBuildingService {
 
   public testBuildingSignal = signal({
     jobId: '',
+    hangfireJobId: '',
     status: '',
     isRunning: false,
   });
 
   public testAllBuildings(input: TestBuildingInput) {
     const url = environment.base_url + '/qms/buildings/run-test-job/all';
-    this.httpClient.post<{ jobId: string }>(url, input).subscribe({
+    this.httpClient.post<{ jobId: string, hangfireJobId: string }>(url, input).subscribe({
       next: response => {
         this.testBuildingSignal.set({
           jobId: response.jobId,
+          hangfireJobId: response.hangfireJobId,
           status: 'STARTED',
           isRunning: true,
         });
@@ -56,10 +58,11 @@ export class TestBuildingService {
 
   public testUntestedBuildings(input: TestBuildingInput) {
     const url = environment.base_url + '/qms/buildings/run-test-job/untested';
-    this.httpClient.post<{ jobId: string }>(url, input).subscribe({
+    this.httpClient.post<{ jobId: string, hangfireJobId: string }>(url, input).subscribe({
       next: response => {
         this.testBuildingSignal.set({
           jobId: response.jobId,
+          hangfireJobId: response.hangfireJobId,
           status: 'STARTED',
           isRunning: true,
         });
@@ -90,11 +93,12 @@ export class TestBuildingService {
     if (!id) return;
 
     const url = environment.base_url + `/qms/buildings/status-test-job/${id}`;
-    this.httpClient.get<{ status: string }>(url).subscribe({
+    this.httpClient.get<{ status: string, hangfireJobId: string }>(url).subscribe({
       next: response => {
         const isRunning = response.status === 'RUNNING';
         this.testBuildingSignal.set({
           jobId: id,
+          hangfireJobId: response.hangfireJobId,
           status: response.status,
           isRunning,
         });
@@ -114,6 +118,7 @@ export class TestBuildingService {
 
         this.testBuildingSignal.set({
           jobId: id,
+          hangfireJobId: '',
           status: 'FAILED',
           isRunning: false,
         });
