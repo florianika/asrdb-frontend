@@ -80,9 +80,9 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
     'quality',
     'kërkohet rishikim',
     'nuk ka nevojë për rishikim',
-    'rishikim i aprovuar',
-    'rishikim i ekzekutuar',
-    'rishikim i rihapur',
+    'rishikimi i aprovuar',
+    'rishikimi i ekzekutuar',
+    'rishikimi i rihapur',
     'rishikimi në pritje',
   ];
 
