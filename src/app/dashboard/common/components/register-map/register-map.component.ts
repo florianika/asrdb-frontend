@@ -145,7 +145,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
         return;
       }
 
-      await this.registerMapService.init(this.mapViewEl, {
+      const mapInitPromise = this.registerMapService.init(this.mapViewEl, {
         enableFilter: this.enableFilter,
         enableSelection: this.enableSelection,
         enableLegend: this.enableLegend,
@@ -156,6 +156,14 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
           this.entranceGlobalId
         ),
       });
+
+      // The view is created synchronously at init start; clear the overlay as
+      // soon as the map is usable, even if background map setup is still running.
+      if (this.registerMapService.hasActiveView()) {
+        this.isMapReady = true;
+      }
+
+      await mapInitPromise;
       this.mapAuthError = null;
       this.isMapReady = true;
     } catch (error) {

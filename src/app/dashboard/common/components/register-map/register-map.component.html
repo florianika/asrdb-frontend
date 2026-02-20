@@ -4,7 +4,7 @@
   <div
     class="map-status-overlay"
     *ngIf="
-      (isMapInitializing || (!isMapReady && (isRefreshing$ | async))) &&
+      (!isMapReady && (isMapInitializing || (isRefreshing$ | async))) &&
       !mapAuthError
     ">
     <div i18n>Refreshing authentication and loading map...</div>

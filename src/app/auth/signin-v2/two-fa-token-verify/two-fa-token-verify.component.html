@@ -8,8 +8,7 @@
       matInput
       i18n-placeholder
       placeholder="Enter your 2FA token"
-      formControlName="token"
-      (keyup.enter)="checkToken()" />
+      formControlName="token" />
     <mat-icon matPrefix>person</mat-icon>
   </mat-form-field>
   <button
@@ -17,7 +16,7 @@
     color="primary"
     class="full-width mt-3"
     type="submit"
-    [disabled]="signinService.verify2FASignal().isVerifying"
+    [disabled]="form.invalid || signinService.verify2FASignal().isVerifying"
     i18n>
     Continue
   </button>

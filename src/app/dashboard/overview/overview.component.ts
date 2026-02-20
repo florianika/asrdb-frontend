@@ -31,6 +31,7 @@ import { Router } from '@angular/router';
 })
 export class OverviewComponent implements OnDestroy {
   private destroy = new Subject();
+  private lastCanBeClosedCheckFieldWorkId: number | null = null;
   public fields = [];
   public filterObservable = this.registerFilterService.filterObservable;
   public fieldWorkState = this.fieldWorkService.fieldWorkState;
@@ -64,10 +65,17 @@ export class OverviewComponent implements OnDestroy {
     this.fieldWorkService.getActiveFieldWork();
 
     effect(() => {
-      const fieldWorkId = this.fieldWorkState().activeFieldWork?.fieldWorkId;
-      if (fieldWorkId) {
-        this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId);
+      const fieldWorkId =
+        this.fieldWorkState().activeFieldWork?.fieldWorkId ?? null;
+      if (!fieldWorkId) {
+        this.lastCanBeClosedCheckFieldWorkId = null;
+        return;
       }
+      if (this.lastCanBeClosedCheckFieldWorkId === fieldWorkId) {
+        return;
+      }
+      this.lastCanBeClosedCheckFieldWorkId = fieldWorkId;
+      this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId);
     });
   }
 

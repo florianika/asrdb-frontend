@@ -48,6 +48,13 @@ export class SigninV2Component {
   });
 
   public onUsernamePasswordProceed() {
+    if (
+      this.usernamePasswordFormGroup.invalid ||
+      this.signinService.loginSignal().isLoggingIn
+    ) {
+      return;
+    }
+
     this.signinService
       .login(
         this.usernamePasswordFormGroup.value.username ?? '',
@@ -61,6 +68,13 @@ export class SigninV2Component {
   }
 
   public onTokenVerifyProceed() {
+    if (
+      this.tokenVerifyFormGroup.invalid ||
+      this.signinService.verify2FASignal().isVerifying
+    ) {
+      return;
+    }
+
     this.signinService
       .verify2FA(this.tokenVerifyFormGroup.value.token ?? '')
       .subscribe();

@@ -47,6 +47,7 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private destroyed$ = new Subject<void>();
+  private lastCanBeClosedCheckFieldWorkId: number | null = null;
 
   public fieldWorksState = this.fieldWorkService.fieldWorksState;
   public fieldWorkState = this.fieldWorkService.fieldWorkState;
@@ -67,10 +68,17 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
     this.fieldWorkService.getActiveFieldWork();
 
     effect(() => {
-      const fieldWorkId = this.fieldWorkState().activeFieldWork?.fieldWorkId;
-      if (fieldWorkId) {
-        this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId);
+      const fieldWorkId =
+        this.fieldWorkState().activeFieldWork?.fieldWorkId ?? null;
+      if (!fieldWorkId) {
+        this.lastCanBeClosedCheckFieldWorkId = null;
+        return;
       }
+      if (this.lastCanBeClosedCheckFieldWorkId === fieldWorkId) {
+        return;
+      }
+      this.lastCanBeClosedCheckFieldWorkId = fieldWorkId;
+      this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId);
     });
 
     effect(() => {

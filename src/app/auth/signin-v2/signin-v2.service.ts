@@ -48,6 +48,10 @@ export class SigninV2Service {
   constructor(private httpClient: HttpClient) {}
 
   public login(username: string, password: string): Observable<boolean> {
+    if (this.loginSignal().isLoggingIn) {
+      return of(false);
+    }
+
     this.loginSignal.set({
       userId: '',
       isLoggingIn: true,
@@ -87,6 +91,10 @@ export class SigninV2Service {
   }
 
   public verify2FA(token: string): Observable<boolean> {
+    if (this.verify2FASignal().isVerifying) {
+      return of(false);
+    }
+
     this.verify2FASignal.set({
       isVerifying: true,
     });

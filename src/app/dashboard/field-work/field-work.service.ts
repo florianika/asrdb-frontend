@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
-import { Subject, catchError, of } from 'rxjs';
+import { Subject, catchError, finalize, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -65,6 +65,7 @@ type FieldWorkStoreState = {
 export class FieldWorkService implements OnDestroy {
   private destroy$ = new Subject<void>();
   private activeFieldWorkStatusPollingStop$ = new Subject<void>();
+  private canBeClosedRequestInFlightFor: number | null = null;
   private matSnackBar = inject(MatSnackBar);
   private httpClient = inject(HttpClient);
   private router = inject(Router);
@@ -183,11 +184,18 @@ export class FieldWorkService implements OnDestroy {
         })
       )
       .subscribe(res => {
+        const activeFieldWork = res?.fieldWorkDTO || null;
+        const previousCanBeClosed = this.state().canBeClosed;
         this.patchState({
           isLoading: false,
           isSaving: false,
-          activeFieldWork: res?.fieldWorkDTO || null,
+          activeFieldWork,
           currentStep: step,
+          canBeClosed:
+            activeFieldWork &&
+            previousCanBeClosed?.fieldWorkId === activeFieldWork.fieldWorkId
+              ? previousCanBeClosed
+              : null,
         });
       });
   }
@@ -393,11 +401,24 @@ export class FieldWorkService implements OnDestroy {
   }
 
   public canFieldWorkBeClosed(fieldWorkId: number) {
+    if (this.state().canBeClosed?.fieldWorkId === fieldWorkId) {
+      return;
+    }
+    if (this.canBeClosedRequestInFlightFor === fieldWorkId) {
+      return;
+    }
+    this.canBeClosedRequestInFlightFor = fieldWorkId;
+
     this.httpClient
       .get<FieldWorkClosureStatusResponse>(
         `${environment.base_url}/qms/fieldwork/${fieldWorkId}/can-be-closed`
       )
       .pipe(
+        finalize(() => {
+          if (this.canBeClosedRequestInFlightFor === fieldWorkId) {
+            this.canBeClosedRequestInFlightFor = null;
+          }
+        }),
         catchError(error => {
           console.error(error);
           this.matSnackBar.open(
