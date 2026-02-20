@@ -1,7 +1,9 @@
 import { ElementRef, Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonMunicipalityService } from '../../service/common-municipality.service';
+import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
 import { BaseMapChangeService } from './custom-map-logic/basemap-change';
 import { FeatureSelectionService } from './custom-map-logic/feature-selection';
@@ -46,12 +48,17 @@ export class RegisterMapService {
   constructor(
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
+    private esriAuthService: CommonEsriAuthService,
     private municipalityService: CommonMunicipalityService,
     private registerFilterService: RegisterFilterService,
     private baseMapChangeService: BaseMapChangeService,
     private featureSelectionService: FeatureSelectionService,
     private wmtsCapabilitiesService: WmtsCapabilitiesService
   ) {
+    this.createLayerInstances();
+  }
+
+  private createLayerInstances() {
     this.bldlayer = this.buildingService.bldLayer.clone();
     this.entlayer = this.entranceService.entLayer.clone();
     this.municipalityLayer = this.municipalityService.municipalityLayer.clone();
@@ -67,6 +74,9 @@ export class RegisterMapService {
     if (options) this.options = options;
     if (!this.nativeElement || !this.options)
       throw new Error('Map container or options missing');
+
+    this.cleanup();
+    this.createLayerInstances();
 
     this.graphicsLayer = new GraphicsLayer();
     const layers = [this.municipalityLayer, this.graphicsLayer];
@@ -142,41 +152,46 @@ export class RegisterMapService {
   /** Filter building layer (server-side) */
   async filterBuildingData(whereCondition: string) {
     if (!this.view || !this.bldlayer) return;
+    try {
+      this.options!.bldWhereCase = whereCondition;
+      await LayerFilterService.filterFeatureLayer(
+        this.bldlayer,
+        this.view,
+        whereCondition
+      );
 
-    this.options!.bldWhereCase = whereCondition;
-    await LayerFilterService.filterFeatureLayer(
-      this.bldlayer,
-      this.view,
-      whereCondition
-    );
+      const extent = await LayerFilterService.queryExtent(
+        this.bldlayer,
+        whereCondition
+      );
+      this.totalResults = extent.count;
 
-    const extent = await LayerFilterService.queryExtent(
-      this.bldlayer,
-      whereCondition
-    );
-    this.totalResults = extent.count;
-
-    this.updateLayerVisibility();
-    this.handleGoToDebounced(
-      extent.extent ?? { center: [19.818, 41.3285], zoom: 18 }
-    );
+      this.updateLayerVisibility();
+      this.handleGoToDebounced(
+        extent.extent ?? { center: [19.818, 41.3285], zoom: 18 }
+      );
+    } catch (error) {
+      const handled = await this.handleEsriAuthFailure(error);
+      if (!handled) {
+        throw error;
+      }
+    }
   }
 
   /** Filter entrance layer (server-side now) */
   async filterEntranceData(whereCondition: string) {
     if (!this.view || !this.entlayer) return;
 
-    this.options!.entWhereCase = whereCondition;
-
-    // Use server-side filtering instead of client-side FeatureFilter
-    await LayerFilterService.filterFeatureLayer(
-      this.entlayer,
-      this.view,
-      whereCondition
-    );
-
-    // Optionally, update visibility if needed (same logic as buildings)
     try {
+      this.options!.entWhereCase = whereCondition;
+      // Use server-side filtering instead of client-side FeatureFilter
+      await LayerFilterService.filterFeatureLayer(
+        this.entlayer,
+        this.view,
+        whereCondition
+      );
+
+      // Optionally, update visibility if needed (same logic as buildings)
       const extent = await LayerFilterService.queryExtent(
         this.entlayer,
         whereCondition
@@ -187,7 +202,10 @@ export class RegisterMapService {
         this.entlayer.visible = true;
       }
     } catch (error) {
-      console.error(error);
+      const handled = await this.handleEsriAuthFailure(error);
+      if (!handled) {
+        throw error;
+      }
     }
   }
 
@@ -266,6 +284,23 @@ export class RegisterMapService {
     this.customZoom = 0;
     void this.init(undefined, undefined, basemap);
   }
+
+  private async handleEsriAuthFailure(error: unknown): Promise<boolean> {
+    if (!this.esriAuthService.isEsriAuthError(error)) {
+      return false;
+    }
+
+    const isReady = await firstValueFrom(
+      this.esriAuthService.ensureEsriReady(1, 'esri-auth-retry')
+    );
+
+    if (isReady) {
+      this.reload(this.view?.map.basemap);
+      return true;
+    }
+    return false;
+  }
+
   private handleGoToDebounced(goTo: any) {
     clearTimeout(this._goToDebounce);
     this._goToDebounce = setTimeout(() => this.handleGoTo(goTo), 500); // 100ms debounce

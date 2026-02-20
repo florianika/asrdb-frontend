@@ -160,36 +160,38 @@ export class CommonEntranceService {
   }
 
   private async fetchAttributesMetadata() {
-    const dataQuery = this.entLayer.createQuery();
-    dataQuery.start = 0;
-    dataQuery.num = 1;
-    dataQuery.outFields = ['*'];
-    dataQuery.outStatistics = [];
-    dataQuery.returnGeometry = false;
-    const features = await (
-      await this.entLayer.queryFeatures(dataQuery)
-    ).toJSON();
-    return features.fields;
+    return this.esriAuthService.withEsriRetry(async () => {
+      const layer = this.entLayer;
+      const dataQuery = layer.createQuery();
+      dataQuery.start = 0;
+      dataQuery.num = 1;
+      dataQuery.outFields = ['*'];
+      dataQuery.outStatistics = [];
+      dataQuery.returnGeometry = false;
+      const features = await (await layer.queryFeatures(dataQuery)).toJSON();
+      return features.fields;
+    });
   }
 
   private async fetchEntranceData(
     filter?: Partial<QueryFilter>
   ): Promise<{ count: number; data: any } | null> {
-    const query = this.entLayer.createQuery();
-    query.start = filter?.start ?? 0;
-    query.num = filter?.num ?? 5;
-    query.where = filter?.where ?? '1=1';
-    query.outFields = filter?.outFields ?? ['*'];
-    query.returnGeometry = filter?.returnGeometry ?? false;
-    query.orderByFields = filter?.orderByFields ?? ['EntBuildingNumber'];
-    query.outStatistics = [];
-
     try {
-      const featureCount = await this.entLayer.queryFeatureCount(query);
-      const features = await (
-        await this.entLayer.queryFeatures(query)
-      ).toJSON();
-      return { count: featureCount, data: features };
+      return await this.esriAuthService.withEsriRetry(async () => {
+        const layer = this.entLayer;
+        const query = layer.createQuery();
+        query.start = filter?.start ?? 0;
+        query.num = filter?.num ?? 5;
+        query.where = filter?.where ?? '1=1';
+        query.outFields = filter?.outFields ?? ['*'];
+        query.returnGeometry = filter?.returnGeometry ?? false;
+        query.orderByFields = filter?.orderByFields ?? ['EntBuildingNumber'];
+        query.outStatistics = [];
+
+        const featureCount = await layer.queryFeatureCount(query);
+        const features = await (await layer.queryFeatures(query)).toJSON();
+        return { count: featureCount, data: features };
+      });
     } catch (e) {
       console.error(e);
       return null;

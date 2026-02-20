@@ -8,20 +8,16 @@ import { CommonBuildingService } from '../../../service/common-building.service'
 import { CommonEntranceService } from '../../../service/common-entrance.service';
 import { RegisterFilterService } from '../../../../register/register-table-view/register-filter.service';
 import Map from '@arcgis/core/Map';
+import { CommonEsriAuthService } from '../../../service/common-esri-auth.service';
 
 @Injectable()
 export class FeatureSelectionService {
-  private bldlayer;
-  private entlayer;
-
   constructor(
     private buildingService: CommonBuildingService,
     private entranceService: CommonEntranceService,
-    private registerFilterService: RegisterFilterService
-  ) {
-    this.bldlayer = this.buildingService.bldLayer;
-    this.entlayer = this.entranceService.entLayer;
-  }
+    private registerFilterService: RegisterFilterService,
+    private esriAuthService: CommonEsriAuthService
+  ) {}
 
   createFeatureSelection(
     view: MapView,
@@ -76,13 +72,16 @@ export class FeatureSelectionService {
 
   private async selectFeatures(view: MapView, geometry: Geometry) {
     if (view) {
-      const query = this.bldlayer.createQuery();
-      query.geometry = geometry;
-      query.outFields = ['GlobalID'];
-      query.where = this.registerFilterService.prepareWhereCase();
-      const globalIds = (
-        await (await this.bldlayer.queryFeatures(query)).toJSON()
-      ).features.map((o: any) => o.attributes['GlobalID']);
+      const globalIds = await this.esriAuthService.withEsriRetry(async () => {
+        const bldLayer = this.buildingService.bldLayer;
+        const query = bldLayer.createQuery();
+        query.geometry = geometry;
+        query.outFields = ['GlobalID'];
+        query.where = this.registerFilterService.prepareWhereCase();
+        return (
+          await (await bldLayer.queryFeatures(query)).toJSON()
+        ).features.map((o: any) => o.attributes['GlobalID']);
+      });
       if (globalIds.length) {
         this.registerFilterService.setBuildingsGlobalIdFilter(globalIds);
       }

@@ -1,1 +1,14 @@
-<div [class]="small ? 'small-map' : ''" #mapViewNode></div>
+<div class="map-wrapper">
+  <div [class]="small ? 'small-map' : ''" #mapViewNode></div>
+
+  <div class="map-status-overlay" *ngIf="isMapInitializing || (isRefreshing$ | async)">
+    <div i18n>Refreshing authentication and loading map...</div>
+  </div>
+
+  <div class="map-error-banner" *ngIf="mapAuthError">
+    <span>{{ mapAuthError }}</span>
+    <button type="button" class="retry-button" (click)="retryMapAuth()" i18n>
+      Retry
+    </button>
+  </div>
+</div>

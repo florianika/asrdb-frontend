@@ -4,7 +4,7 @@ import WebMap from '@arcgis/core/WebMap';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom } from 'rxjs';
 import { MapData } from '../model/map-data';
 import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
@@ -106,6 +106,13 @@ export class EntityCreationMapService {
     entityType?: EntityType,
     editingGeometry?: any[]
   ) {
+    const isReady = await firstValueFrom(
+      this.esriAuthService.ensureEsriReady(1200, 'esri-auth-retry')
+    );
+    if (!isReady) {
+      throw new Error('Map authentication failed');
+    }
+
     const availableCreateTools = [];
     if (entityType === BUILDING_ENTITY && !editingGeometry?.length) {
       availableCreateTools.push('polygon');

@@ -103,37 +103,38 @@ export class CommonDwellingService {
   }
 
   private async fetchAttributesMetadata() {
-    const dataQuery = this.dwlLayer.createQuery();
-    dataQuery.start = 0;
-    dataQuery.num = 1;
-    dataQuery.outFields = ['*'];
-    dataQuery.where = '1=1';
-    dataQuery.returnGeometry = false;
-    dataQuery.outStatistics = [];
-    const features = await (
-      await this.dwlLayer.queryFeatures(dataQuery)
-    ).toJSON();
-    return features.fields;
+    return this.esriAuthService.withEsriRetry(async () => {
+      const layer = this.dwlLayer;
+      const dataQuery = layer.createQuery();
+      dataQuery.start = 0;
+      dataQuery.num = 1;
+      dataQuery.outFields = ['*'];
+      dataQuery.where = '1=1';
+      dataQuery.returnGeometry = false;
+      dataQuery.outStatistics = [];
+      const features = await (await layer.queryFeatures(dataQuery)).toJSON();
+      return features.fields;
+    });
   }
 
   private async fetchDwellingsData(
     filter?: Partial<QueryFilter>
   ): Promise<{ count: number; data: any } | null> {
-    const query = this.dwlLayer.createQuery();
-    query.start = filter?.start ?? 0;
-    query.num = filter?.num ?? 5;
-    query.where = filter?.where ?? '1=1';
-    query.outFields = filter?.outFields ?? ['*'];
-    query.returnGeometry = false;
-    query.orderByFields = filter?.orderByFields ?? ['DwlFloor'];
-    query.outStatistics = [];
-
     try {
-      const featureCount = await this.dwlLayer.queryFeatureCount(query);
-      const features = await (
-        await this.dwlLayer.queryFeatures(query)
-      ).toJSON();
-      return { count: featureCount, data: features };
+      return await this.esriAuthService.withEsriRetry(async () => {
+        const layer = this.dwlLayer;
+        const query = layer.createQuery();
+        query.start = filter?.start ?? 0;
+        query.num = filter?.num ?? 5;
+        query.where = filter?.where ?? '1=1';
+        query.outFields = filter?.outFields ?? ['*'];
+        query.returnGeometry = false;
+        query.orderByFields = filter?.orderByFields ?? ['DwlFloor'];
+        query.outStatistics = [];
+        const featureCount = await layer.queryFeatureCount(query);
+        const features = await (await layer.queryFeatures(query)).toJSON();
+        return { count: featureCount, data: features };
+      });
     } catch (e) {
       console.error(e);
       return null;

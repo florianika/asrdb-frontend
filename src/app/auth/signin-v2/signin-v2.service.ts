@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { catchError, of } from 'rxjs';
 import { MatStepper } from '@angular/material/stepper';
 import { AuthStateService } from '../../common/services/auth-state.service';
-import { Credentials } from '../signin/signin.service';
+import { EsriCredentials } from '../../model/EsriCredentials.model';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -115,7 +115,7 @@ export class SigninV2Service {
 
   private getEsriCredentials() {
     this.httpClient
-      .get<Credentials>(environment.base_url + '/auth/gis/login')
+      .get<EsriCredentials>(environment.base_url + '/auth/gis/login')
       .subscribe({
         next: async credentials => {
           try {

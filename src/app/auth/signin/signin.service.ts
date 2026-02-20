@@ -5,10 +5,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observer } from 'rxjs';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
+import { EsriCredentials } from 'src/app/model/EsriCredentials.model';
 import { SigninResponse } from 'src/app/model/JWT.model';
 import { environment } from 'src/environments/environment';
-
-export type Credentials = { username: string; password: string };
 
 @Injectable()
 export class SigninService {
@@ -69,7 +68,7 @@ export class SigninService {
 
   getEsriCredentials() {
     this.httpClient
-      .get<Credentials>(environment.base_url + '/auth/gis/login')
+      .get<EsriCredentials>(environment.base_url + '/auth/gis/login')
       .subscribe({
         next: async credentials => {
           try {

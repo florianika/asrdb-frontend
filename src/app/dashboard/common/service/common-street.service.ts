@@ -115,36 +115,37 @@ export class CommonStreetService {
   }
 
   private async fetchAttributesMetadata() {
-    const dataQuery = this.strLayer.createQuery();
-    dataQuery.start = 0;
-    dataQuery.num = 1;
-    dataQuery.outFields = ['*'];
-    dataQuery.where = '1=1';
-    dataQuery.returnGeometry = false;
-    dataQuery.outStatistics = [];
-    const features = await (
-      await this.strLayer.queryFeatures(dataQuery)
-    ).toJSON();
-    return features.fields;
+    return this.esriAuthService.withEsriRetry(async () => {
+      const layer = this.strLayer;
+      const dataQuery = layer.createQuery();
+      dataQuery.start = 0;
+      dataQuery.num = 1;
+      dataQuery.outFields = ['*'];
+      dataQuery.where = '1=1';
+      dataQuery.returnGeometry = false;
+      dataQuery.outStatistics = [];
+      const features = await (await layer.queryFeatures(dataQuery)).toJSON();
+      return features.fields;
+    });
   }
 
   private async fetchAllStreetsForMunicipality(
     filter?: Partial<QueryFilter>
   ): Promise<{ data: any } | null> {
-    const query = this.strLayer.createQuery();
-    query.start = 0;
-    query.num = 999;
-    query.where = filter?.where ?? '1=1';
-    query.outFields = ['GlobalID', 'StrNameCore', 'StrMunicipality'];
-    query.returnGeometry = false;
-    query.orderByFields = ['OBJECTID'];
-    query.outStatistics = [];
-
     try {
-      const features = await (
-        await this.strLayer.queryFeatures(query)
-      ).toJSON();
-      return { data: features };
+      return await this.esriAuthService.withEsriRetry(async () => {
+        const layer = this.strLayer;
+        const query = layer.createQuery();
+        query.start = 0;
+        query.num = 999;
+        query.where = filter?.where ?? '1=1';
+        query.outFields = ['GlobalID', 'StrNameCore', 'StrMunicipality'];
+        query.returnGeometry = false;
+        query.orderByFields = ['OBJECTID'];
+        query.outStatistics = [];
+        const features = await (await layer.queryFeatures(query)).toJSON();
+        return { data: features };
+      });
     } catch (e) {
       console.error(e);
       return null;
@@ -154,21 +155,21 @@ export class CommonStreetService {
   private async fetchStreetsData(
     filter?: Partial<QueryFilter>
   ): Promise<{ count: number; data: any } | null> {
-    const query = this.strLayer.createQuery();
-    query.start = filter?.start ?? 0;
-    query.num = filter?.num ?? 10;
-    query.where = filter?.where ?? '1=1';
-    query.outFields = filter?.outFields ?? ['*'];
-    query.returnGeometry = false;
-    query.orderByFields = filter?.orderByFields ?? ['OBJECTID'];
-    query.outStatistics = [];
-
     try {
-      const featureCount = await this.strLayer.queryFeatureCount(query);
-      const features = await (
-        await this.strLayer.queryFeatures(query)
-      ).toJSON();
-      return { count: featureCount, data: features };
+      return await this.esriAuthService.withEsriRetry(async () => {
+        const layer = this.strLayer;
+        const query = layer.createQuery();
+        query.start = filter?.start ?? 0;
+        query.num = filter?.num ?? 10;
+        query.where = filter?.where ?? '1=1';
+        query.outFields = filter?.outFields ?? ['*'];
+        query.returnGeometry = false;
+        query.orderByFields = filter?.orderByFields ?? ['OBJECTID'];
+        query.outStatistics = [];
+        const featureCount = await layer.queryFeatureCount(query);
+        const features = await (await layer.queryFeatures(query)).toJSON();
+        return { count: featureCount, data: features };
+      });
     } catch (e) {
       console.error(e);
       return null;

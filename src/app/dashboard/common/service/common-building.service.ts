@@ -232,13 +232,16 @@ export class CommonBuildingService {
     view: MapView,
     geometries: Collection<Geometry>
   ) {
-    const query = this.bldLayer.createQuery();
-    query.geometry = await geometryEngine.union(geometries.toArray());
-    query.outFields = ['GlobalID'];
-    const response = await this.bldLayer.queryFeatures(query);
-    const JSONResponse = await response.toJSON();
-    return JSONResponse.features.map((o: any) => o.attributes['GlobalID'])
-      .length;
+    return this.esriAuthService.withEsriRetry(async () => {
+      const layer = this.bldLayer;
+      const query = layer.createQuery();
+      query.geometry = await geometryEngine.union(geometries.toArray());
+      query.outFields = ['GlobalID'];
+      const response = await layer.queryFeatures(query);
+      const JSONResponse = await response.toJSON();
+      return JSONResponse.features.map((o: any) => o.attributes['GlobalID'])
+        .length;
+    });
   }
 
   hasUntestedBuildings(): Observable<boolean> {
@@ -259,89 +262,94 @@ export class CommonBuildingService {
   }
 
   private async fetchAttributesMetadata() {
-    const dataQuery = this.bldLayer.createQuery();
-    dataQuery.start = 0;
-    dataQuery.num = 1;
-    dataQuery.outFields = ['*'];
-    dataQuery.outStatistics = [];
-    dataQuery.returnGeometry = false;
-    const features = await (
-      await this.bldLayer.queryFeatures(dataQuery)
-    ).toJSON();
-    return features.fields;
+    return this.esriAuthService.withEsriRetry(async () => {
+      const layer = this.bldLayer;
+      const dataQuery = layer.createQuery();
+      dataQuery.start = 0;
+      dataQuery.num = 1;
+      dataQuery.outFields = ['*'];
+      dataQuery.outStatistics = [];
+      dataQuery.returnGeometry = false;
+      const features = await (await layer.queryFeatures(dataQuery)).toJSON();
+      return features.fields;
+    });
   }
 
   private async fetchBuildingData(
     filter?: Partial<QueryFilter>
   ): Promise<EntityDataResponse | null> {
-    const dataQuery = this.bldLayer.createQuery();
-    dataQuery.start = filter?.start ?? 0;
-    dataQuery.num = filter?.num ?? 5;
-    dataQuery.where = filter?.where ?? '1=1';
-    dataQuery.outFields = filter?.outFields ?? ['*'];
-    dataQuery.returnGeometry = filter?.returnGeometry ?? false;
-    dataQuery.orderByFields = filter?.orderByFields ?? ['BldStatus'];
-    dataQuery.outStatistics = [];
-
-    const globalIdQuery = this.bldLayer.createQuery();
-    globalIdQuery.where = filter?.where ?? '1=1';
-    globalIdQuery.outFields = ['GlobalID'];
-    globalIdQuery.returnGeometry = false;
-    globalIdQuery.outStatistics = [];
-
     try {
-      const featureCount = await this.bldLayer.queryFeatureCount(dataQuery);
-      const features = await (
-        await this.bldLayer.queryFeatures(dataQuery)
-      ).toJSON();
-      const globalIds = (
-        await (await this.bldLayer.queryFeatures(globalIdQuery)).toJSON()
-      ).features.map((o: any) => o.attributes['GlobalID']);
-      return { count: featureCount, data: features, globalIds };
-    } catch (e) {
-      console.log(e);
+      return await this.esriAuthService.withEsriRetry(async () => {
+        const layer = this.bldLayer;
+        const dataQuery = layer.createQuery();
+        dataQuery.start = filter?.start ?? 0;
+        dataQuery.num = filter?.num ?? 5;
+        dataQuery.where = filter?.where ?? '1=1';
+        dataQuery.outFields = filter?.outFields ?? ['*'];
+        dataQuery.returnGeometry = filter?.returnGeometry ?? false;
+        dataQuery.orderByFields = filter?.orderByFields ?? ['BldStatus'];
+        dataQuery.outStatistics = [];
+
+        const globalIdQuery = layer.createQuery();
+        globalIdQuery.where = filter?.where ?? '1=1';
+        globalIdQuery.outFields = ['GlobalID'];
+        globalIdQuery.returnGeometry = false;
+        globalIdQuery.outStatistics = [];
+
+        const featureCount = await layer.queryFeatureCount(dataQuery);
+        const features = await (await layer.queryFeatures(dataQuery)).toJSON();
+        const globalIds = (
+          await (await layer.queryFeatures(globalIdQuery)).toJSON()
+        ).features.map((o: any) => o.attributes['GlobalID']);
+        return { count: featureCount, data: features, globalIds };
+      });
+    } catch (error) {
+      console.log(error);
       return null;
     }
   }
 
   private async fetchBuildingMunicipality(buildingId: string) {
-    const dataQuery = this.bldLayer.createQuery();
-    dataQuery.start = 0;
-    dataQuery.num = 1;
-    dataQuery.where = `GlobalID = '${buildingId}'`;
-    dataQuery.outFields = ['BldMunicipality'];
-    dataQuery.returnGeometry = false;
-
     try {
-      const features = await (
-        await this.bldLayer.queryFeatures(dataQuery)
-      ).toJSON();
-      return { data: features };
-    } catch (e) {
-      console.log(e);
+      return await this.esriAuthService.withEsriRetry(async () => {
+        const layer = this.bldLayer;
+        const dataQuery = layer.createQuery();
+        dataQuery.start = 0;
+        dataQuery.num = 1;
+        dataQuery.where = `GlobalID = '${buildingId}'`;
+        dataQuery.outFields = ['BldMunicipality'];
+        dataQuery.returnGeometry = false;
+        const features = await (await layer.queryFeatures(dataQuery)).toJSON();
+        return { data: features };
+      });
+    } catch (error) {
+      console.log(error);
       return null;
     }
   }
 
   private async getStats(filter: Partial<QueryFilter>) {
-    const query = this.bldLayer.createQuery();
-    query.where = filter.where ?? '1=1';
-    query.outFields = filter.outFields ?? ['*'];
-    query.returnGeometry = false;
-    query.groupByFieldsForStatistics = filter.groupByFieldsForStatistics ?? [
-      'BldStatus',
-    ];
-    query.orderByFields = filter.orderByFields ?? ['BldStatus'];
-    query.outStatistics =
-      filter.outStatistics ??
-      ([
-        {
-          statisticType: 'count',
-          onStatisticField: 'BldStatus',
-          outStatisticFieldName: 'value',
-        },
-      ] as __esri.StatisticDefinition[]);
-    return await this.bldLayer.queryFeatures(query);
+    return this.esriAuthService.withEsriRetry(async () => {
+      const layer = this.bldLayer;
+      const query = layer.createQuery();
+      query.where = filter.where ?? '1=1';
+      query.outFields = filter.outFields ?? ['*'];
+      query.returnGeometry = false;
+      query.groupByFieldsForStatistics = filter.groupByFieldsForStatistics ?? [
+        'BldStatus',
+      ];
+      query.orderByFields = filter.orderByFields ?? ['BldStatus'];
+      query.outStatistics =
+        filter.outStatistics ??
+        ([
+          {
+            statisticType: 'count',
+            onStatisticField: 'BldStatus',
+            outStatisticFieldName: 'value',
+          },
+        ] as __esri.StatisticDefinition[]);
+      return layer.queryFeatures(query);
+    });
   }
 
   private createRequestBody(features: any[]) {
