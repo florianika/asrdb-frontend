@@ -1,8 +1,16 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, OnDestroy, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { AuthStateService } from '../../common/services/auth-state.service';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import {
+  EMPTY,
+  Subject,
+  catchError,
+  of,
+  switchMap,
+  takeUntil,
+  timer,
+} from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export type FieldWorkExecuteJobRequest = {
@@ -29,7 +37,10 @@ export type FieldWorkStatistics = {
 };
 
 @Injectable()
-export class FieldWorkStatisticService {
+export class FieldWorkStatisticService implements OnDestroy {
+  private destroy$ = new Subject<void>();
+  private stopStatusPolling$ = new Subject<void>();
+
   public statistics = signal({
     loading: false,
     statistics: [] as FieldWorkStatistics[],
@@ -41,7 +52,22 @@ export class FieldWorkStatisticService {
     private matSnackBar: MatSnackBar
   ) {}
 
+  ngOnDestroy(): void {
+    this.cancelStatusPolling(true);
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.stopStatusPolling$.complete();
+  }
+
+  public cancelStatusPolling(resetLoading = false) {
+    this.stopStatusPolling$.next();
+    if (resetLoading) {
+      this.statistics.update(state => ({ ...state, loading: false }));
+    }
+  }
+
   public startFieldWorkJobExecution(fieldWorkId: number) {
+    this.cancelStatusPolling();
     this.statistics.set({ loading: true, statistics: [] });
     const url = `${environment.base_url}/qms/fieldwork/${fieldWorkId}/execute-job`;
     const request: FieldWorkExecuteJobRequest = {
@@ -52,6 +78,7 @@ export class FieldWorkStatisticService {
     this.httpClient
       .post<FieldWorkExecuteJobResponse>(url, request)
       .pipe(
+        takeUntil(this.destroy$),
         catchError(error => {
           console.error(error);
           this.matSnackBar.open(
@@ -72,34 +99,42 @@ export class FieldWorkStatisticService {
           $localize`Close`,
           { duration: 3000 }
         );
-        this.getFieldWorkJobExecutionStatus(res.jobId);
+        this.startStatusPolling(res.jobId);
       });
   }
 
   public getFieldWorkJobExecutionStatus(jobId: number) {
+    this.startStatusPolling(jobId);
+  }
+
+  private startStatusPolling(jobId: number) {
+    this.cancelStatusPolling();
     this.statistics.set({ loading: true, statistics: [] });
     const url = `${environment.base_url}/qms/fieldwork/job/${jobId}/status`;
 
-    this.httpClient
-      .get<FieldWorkJobExecutionStatusResponse>(url)
+    timer(0, 5000)
       .pipe(
-        catchError(error => {
-          console.error(error);
-          this.matSnackBar.open(
-            $localize`Failed to get field work job execution status`,
-            $localize`Close`,
-            { duration: 3000 }
-          );
-          return of(null);
-        })
+        takeUntil(this.destroy$),
+        takeUntil(this.stopStatusPolling$),
+        switchMap(() =>
+          this.httpClient.get<FieldWorkJobExecutionStatusResponse>(url).pipe(
+            catchError(error => {
+              console.error(error);
+              this.matSnackBar.open(
+                $localize`Failed to get field work job execution status`,
+                $localize`Close`,
+                { duration: 3000 }
+              );
+              this.statistics.set({ loading: false, statistics: [] });
+              this.cancelStatusPolling();
+              return EMPTY;
+            })
+          )
+        )
       )
-      .subscribe((res: FieldWorkJobExecutionStatusResponse | null) => {
-        if (!res) {
-          this.statistics.set({ loading: false, statistics: [] });
-          return;
-        }
-
+      .subscribe((res: FieldWorkJobExecutionStatusResponse) => {
         if (res.status === 'COMPLETED') {
+          this.cancelStatusPolling();
           this.matSnackBar.open(
             $localize`Field work job execution completed successfully`,
             $localize`Close`,
@@ -112,9 +147,8 @@ export class FieldWorkStatisticService {
             $localize`Close`,
             { duration: 3000 }
           );
+          this.cancelStatusPolling();
           this.statistics.set({ loading: false, statistics: [] });
-        } else {
-          setTimeout(() => this.getFieldWorkJobExecutionStatus(jobId), 5000);
         }
       });
   }
@@ -126,6 +160,7 @@ export class FieldWorkStatisticService {
     this.httpClient
       .get<FieldWorkStatisticsResult>(url)
       .pipe(
+        takeUntil(this.destroy$),
         catchError(error => {
           console.error(error);
           this.matSnackBar.open(

@@ -1,5 +1,13 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { BehaviorSubject, catchError, of } from 'rxjs';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
+import {
+  BehaviorSubject,
+  Subject,
+  catchError,
+  of,
+  switchMap,
+  takeUntil,
+  timer,
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -49,7 +57,9 @@ export type FieldWorkClosureStatusResponse = {
 };
 
 @Injectable({ providedIn: 'root' })
-export class FieldWorkService {
+export class FieldWorkService implements OnDestroy {
+  private destroy$ = new Subject<void>();
+  private activeFieldWorkStatusPollingStop$ = new Subject<void>();
   private matSnackBar = inject(MatSnackBar);
   private httpClient = inject(HttpClient);
   private router = inject(Router);
@@ -72,6 +82,20 @@ export class FieldWorkService {
 
   get fieldWorksAsObservable() {
     return this.fieldWorks.asObservable();
+  }
+
+  ngOnDestroy(): void {
+    this.cancelActiveFieldWorkStatusPolling(true);
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.activeFieldWorkStatusPollingStop$.complete();
+  }
+
+  public cancelActiveFieldWorkStatusPolling(resetLoading = true) {
+    this.activeFieldWorkStatusPollingStop$.next();
+    if (resetLoading) {
+      this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
+    }
   }
 
   public loadSelectedRules(fieldWorkId: number) {
@@ -273,7 +297,7 @@ export class FieldWorkService {
           this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
           return;
         }
-        this.getActiveFieldWorkStatus(fieldWorkId);
+        this.startActiveFieldWorkStatusPolling(fieldWorkId);
       });
   }
 
@@ -373,29 +397,44 @@ export class FieldWorkService {
       });
   }
 
-  private getActiveFieldWorkStatus(fieldWorkId: number, retries = 20) {
+  private startActiveFieldWorkStatusPolling(fieldWorkId: number, retries = 20) {
+    this.cancelActiveFieldWorkStatusPolling(false);
     this.fieldWorkState.update(state => ({ ...state, isLoading: true }));
-    this.httpClient
-      .get<{ fieldWorkDTO: FieldWork }>(
-        `${environment.base_url}/qms/fieldwork/${fieldWorkId}`
-      )
+    let retriesLeft = retries;
+
+    timer(0, 5000)
       .pipe(
-        catchError(error => {
-          console.error(error);
-          this.matSnackBar.open(
-            $localize`Error fetching field work status`,
-            $localize`Close`,
-            { duration: 3000 }
-          );
-          return of(null);
-        })
+        takeUntil(this.destroy$),
+        takeUntil(this.activeFieldWorkStatusPollingStop$),
+        switchMap(() =>
+          this.httpClient
+            .get<{ fieldWorkDTO: FieldWork }>(
+              `${environment.base_url}/qms/fieldwork/${fieldWorkId}`
+            )
+            .pipe(
+              catchError(error => {
+                console.error(error);
+                this.matSnackBar.open(
+                  $localize`Error fetching field work status`,
+                  $localize`Close`,
+                  { duration: 3000 }
+                );
+                this.cancelActiveFieldWorkStatusPolling(false);
+                this.fieldWorkState.update(state => ({
+                  ...state,
+                  isLoading: false,
+                }));
+                return of(null);
+              })
+            )
+        )
       )
       .subscribe(res => {
         if (!res) {
-          this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
           return;
         }
         if (res.fieldWorkDTO.fieldWorkStatus === 'OPEN') {
+          this.cancelActiveFieldWorkStatusPolling(false);
           this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
           this.matSnackBar.open(
             $localize`Field work opened successfully`,
@@ -405,7 +444,12 @@ export class FieldWorkService {
           void this.router.navigate(['/dashboard/field-work']);
           return;
         }
-        if (res.fieldWorkDTO.fieldWorkStatus === 'FAILED' || retries === 0) {
+        retriesLeft -= 1;
+        if (
+          res.fieldWorkDTO.fieldWorkStatus === 'FAILED' ||
+          retriesLeft <= 0
+        ) {
+          this.cancelActiveFieldWorkStatusPolling(false);
           this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
           this.matSnackBar.open(
             $localize`Field work failed to open. Please try again.`,
@@ -414,10 +458,6 @@ export class FieldWorkService {
           );
           return;
         }
-        setTimeout(
-          () => this.getActiveFieldWorkStatus(fieldWorkId, retries - 1),
-          5000
-        );
       });
   }
 }

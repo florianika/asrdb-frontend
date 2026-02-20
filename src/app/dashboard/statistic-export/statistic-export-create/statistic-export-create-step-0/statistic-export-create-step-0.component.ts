@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, effect, inject } from '@angular/core';
 import { CommonBuildingService } from '../../../common/service/common-building.service';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -6,6 +6,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FieldWorkClosureService } from '../../../field-work/field-work-closure/field-work-closure.service';
 import { FieldWorkService } from '../../../field-work/field-work.service';
 import { StatisticExportService } from '../../statistic-export.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'asrdb-statistic-export-create-step-0',
@@ -14,11 +15,12 @@ import { StatisticExportService } from '../../statistic-export.service';
   templateUrl: './statistic-export-create-step-0.component.html',
   styleUrl: './statistic-export-create-step-0.component.css',
 })
-export class StatisticExportCreateStep0Component implements OnInit {
+export class StatisticExportCreateStep0Component implements OnInit, OnDestroy {
   private commonBuildingService = inject(CommonBuildingService);
   private fieldWorkClosureService = inject(FieldWorkClosureService);
   private fieldWorkService = inject(FieldWorkService);
   private statisticExportService = inject(StatisticExportService);
+  private destroy$ = new Subject<void>();
 
   public hasUntestedBuildings: number | null = null;
   public fieldWorkState = this.fieldWorkService.fieldWorkState;
@@ -44,6 +46,12 @@ export class StatisticExportCreateStep0Component implements OnInit {
     this.checkForUntestedBuildings();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.fieldWorkClosureService.cancelStatusPolling(true);
+  }
+
   public testAllBuildings(): void {
     const activeFieldWork = this.fieldWorkState().activeFieldWork?.fieldWorkId;
     if (activeFieldWork) {
@@ -61,6 +69,7 @@ export class StatisticExportCreateStep0Component implements OnInit {
   private checkForUntestedBuildings(): void {
     this.commonBuildingService
       .hasUntestedBuildings()
+      .pipe(takeUntil(this.destroy$))
       .subscribe(hasUntestedBuildings => {
         this.hasUntestedBuildings = hasUntestedBuildings ? 1 : 0;
       });

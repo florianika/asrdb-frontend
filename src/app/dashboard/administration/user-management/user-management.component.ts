@@ -1,10 +1,16 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { UserManagementService } from './user-management.service';
 import { User } from 'src/app/model/User.model';
 import { MatTableDataSource } from '@angular/material/table';
-import { map, Observable } from 'rxjs';
+import { Subject, map, Observable, takeUntil } from 'rxjs';
 import { MUNICIPALITIES } from '../../../common/data/municipalities';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SignupComponent } from '../../../auth/signup/signup.component';
@@ -15,7 +21,9 @@ import { SignupService } from '../../../auth/signup/signup.service';
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css'],
 })
-export class UserManagementComponent implements OnInit, AfterViewInit {
+export class UserManagementComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   displayedColumns: string[] = [
     'id',
     'email',
@@ -37,6 +45,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
   private dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
   private dialogRef?: MatDialogRef<SignupComponent, any>;
+  private destroy$ = new Subject<void>();
 
   resultsLength = 0;
   isLoadingResults = this.userManagementService.loadingAsObservable;
@@ -52,17 +61,25 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userManagementService.getUsers();
-    this.signupService.signingUpAsObservable.subscribe(isSigningUp => {
-      if (!isSigningUp && this.dialogRef) {
-        this.dialogRef.close();
-        this.refreshTable();
-      }
-    });
+    this.signupService.signingUpAsObservable
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isSigningUp => {
+        if (!isSigningUp && this.dialogRef) {
+          this.dialogRef.close();
+          this.refreshTable();
+        }
+      });
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.dialogRef?.close();
   }
 
   viewUser(user: User) {

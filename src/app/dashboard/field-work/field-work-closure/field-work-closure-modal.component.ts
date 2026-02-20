@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FieldWorkClosureService } from './field-work-closure.service';
 import { MatStepperModule } from '@angular/material/stepper';
 import { Step1FieldWorkClosureStatisticsComponent } from './steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component';
@@ -24,7 +24,7 @@ export type AggregatedStatistic = {
   templateUrl: './field-work-closure-modal.component.html',
   styleUrl: './field-work-closure-modal.component.css',
 })
-export class FieldWorkClosureModalComponent {
+export class FieldWorkClosureModalComponent implements OnDestroy {
   private fieldWorkClosureService = inject(FieldWorkClosureService);
   public fieldWorkStatistics = this.fieldWorkClosureService.fieldWorkStatistics;
 
@@ -34,4 +34,8 @@ export class FieldWorkClosureModalComponent {
       step: index,
     }));
   };
+
+  ngOnDestroy(): void {
+    this.fieldWorkClosureService.cancelStatusPolling(true);
+  }
 }

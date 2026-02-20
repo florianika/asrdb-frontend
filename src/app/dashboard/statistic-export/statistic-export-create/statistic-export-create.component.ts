@@ -1,4 +1,11 @@
-import { Component, effect, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  effect,
+  inject,
+} from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
@@ -25,7 +32,7 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './statistic-export-create.component.html',
   styleUrl: './statistic-export-create.component.css',
 })
-export class StatisticExportCreateComponent {
+export class StatisticExportCreateComponent implements OnInit, OnDestroy {
   @ViewChild(MatStepper) stepper!: MatStepper;
   private statisticExportService = inject(StatisticExportService);
   private dialogRef = inject(MatDialogRef);
@@ -53,6 +60,16 @@ export class StatisticExportCreateComponent {
         this.dialogRef.close();
       }
     });
+  }
+
+  ngOnInit(): void {
+    if (this.isCreatingSnapshot && this.statisticsGenerationData().jobId) {
+      this.statisticExportService.checkSnapshotGenerationStatus();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.statisticExportService.cancelSnapshotGenerationPolling();
   }
 
   protected readonly close = close;

@@ -1,5 +1,11 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { combineLatestWith, Observable } from 'rxjs';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { Subject, combineLatestWith, Observable, takeUntil } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -13,7 +19,7 @@ import { UserManagementService } from '../../user-management/user-management.ser
   styleUrls: ['./email-template-management-table.component.css'],
 })
 export class EmailTemplateManagementTableComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, OnDestroy
 {
   displayedColumns: string[] = [
     'emailTemplateId',
@@ -27,6 +33,7 @@ export class EmailTemplateManagementTableComponent
 
   private dataSource: MatTableDataSource<EmailTemplate> =
     new MatTableDataSource<EmailTemplate>();
+  private destroy$ = new Subject<void>();
 
   resultsLength = 0;
   isLoadingResults = this.emailTemplateManagementService.loadingAsObservable;
@@ -39,7 +46,10 @@ export class EmailTemplateManagementTableComponent
     private userManagementService: UserManagementService
   ) {
     this.emailTemplateManagementService.emailTemplatesAsObservable
-      .pipe(combineLatestWith(this.userManagementService.usersAsObservable))
+      .pipe(
+        combineLatestWith(this.userManagementService.usersAsObservable),
+        takeUntil(this.destroy$)
+      )
       .subscribe(([emails, users]) => {
         this.dataSource.data = emails?.map(email => {
           const user = users.find(user => user.id === email.createdUser);
@@ -66,6 +76,11 @@ export class EmailTemplateManagementTableComponent
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   createEmailTemplate() {

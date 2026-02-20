@@ -1,8 +1,19 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
-import { catchError, Observable, Observer, of, zip } from 'rxjs';
+import {
+  EMPTY,
+  Observable,
+  Observer,
+  Subject,
+  catchError,
+  of,
+  switchMap,
+  takeUntil,
+  timer,
+  zip,
+} from 'rxjs';
 import { User } from '../../model/User.model';
 
 export interface PivotRow {
@@ -73,7 +84,9 @@ export type RowUserDetails = {
 @Injectable({
   providedIn: 'root',
 })
-export class StatisticExportService {
+export class StatisticExportService implements OnDestroy {
+  private destroy$ = new Subject<void>();
+  private snapshotStatusPollingStop$ = new Subject<void>();
   private httpClient = inject(HttpClient);
   private matSnackBar = inject(MatSnackBar);
 
@@ -104,6 +117,24 @@ export class StatisticExportService {
       | null,
     jobId: null as number | null,
   });
+
+  ngOnDestroy(): void {
+    this.cancelSnapshotGenerationPolling();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.snapshotStatusPollingStop$.complete();
+  }
+
+  public cancelSnapshotGenerationPolling(resetGenerationData = false) {
+    this.snapshotStatusPollingStop$.next();
+    if (resetGenerationData) {
+      this.statisticsGenerationData.set({
+        step: 0,
+        generationStatus: null,
+        jobId: null,
+      });
+    }
+  }
 
   public getAllStatistics() {
     this.statisticsTableData.update(state => ({ ...state, isLoading: true }));
@@ -279,6 +310,7 @@ export class StatisticExportService {
     remarks: string,
     createdBy: string
   ) {
+    this.cancelSnapshotGenerationPolling();
     const url = environment.base_url + '/qms/buildings/annual-snapshot';
     const request = { referenceYear: year, createdBy, remarks };
     this.httpClient.post<{ downloadJobId: number }>(url, request).subscribe({
@@ -288,7 +320,7 @@ export class StatisticExportService {
           jobId: data.downloadJobId,
           generationStatus: 'IN_PROGRESS',
         }));
-        this.checkSnapshotGenerationStatus();
+        this.startSnapshotGenerationStatusPolling(data.downloadJobId);
         this.matSnackBar.open(
           $localize`Data snapshot generation started`,
           $localize`Ok`,
@@ -306,7 +338,8 @@ export class StatisticExportService {
   }
 
   public checkSnapshotGenerationStatus() {
-    if (this.statisticsGenerationData().jobId === null) {
+    const jobId = this.statisticsGenerationData().jobId;
+    if (jobId === null) {
       this.matSnackBar.open(
         $localize`No snapshot generation job in progress`,
         $localize`Close`,
@@ -314,31 +347,47 @@ export class StatisticExportService {
       );
       return;
     }
+    this.startSnapshotGenerationStatusPolling(jobId);
+  }
+
+  private startSnapshotGenerationStatusPolling(jobId: number) {
+    this.cancelSnapshotGenerationPolling();
     const url =
       environment.base_url +
       '/qms/buildings/annual-snapshot/' +
-      this.statisticsGenerationData().jobId;
-    this.httpClient.get<StatisticsGenerationStatusResponse>(url).subscribe({
-      next: data => {
-        this.statisticsGenerationData.update(state => ({
-          ...state,
-          generationStatus: data.downloadJobDTO.status,
-        }));
-        if (
-          data.downloadJobDTO.status !== 'COMPLETED' &&
-          data.downloadJobDTO.status !== 'FAILED'
-        ) {
-          setTimeout(() => this.checkSnapshotGenerationStatus(), 5000);
-        }
-      },
-      error: () => {
-        this.matSnackBar.open(
-          $localize`Error checking snapshot generation status`,
-          $localize`Close`,
-          { duration: 3000 }
-        );
-      },
-    });
+      jobId;
+
+    timer(0, 5000)
+      .pipe(
+        takeUntil(this.destroy$),
+        takeUntil(this.snapshotStatusPollingStop$),
+        switchMap(() =>
+          this.httpClient.get<StatisticsGenerationStatusResponse>(url).pipe(
+            catchError(() => {
+              this.matSnackBar.open(
+                $localize`Error checking snapshot generation status`,
+                $localize`Close`,
+                { duration: 3000 }
+              );
+              this.cancelSnapshotGenerationPolling();
+              return EMPTY;
+            })
+          )
+        )
+      )
+      .subscribe({
+        next: data => {
+          const status = data.downloadJobDTO.status;
+          this.statisticsGenerationData.update(state => ({
+            ...state,
+            generationStatus: status,
+          }));
+
+          if (status === 'COMPLETED' || status === 'FAILED') {
+            this.cancelSnapshotGenerationPolling();
+          }
+        },
+      });
   }
 
   public goToStep(step: number) {
@@ -346,11 +395,7 @@ export class StatisticExportService {
   }
 
   public reset() {
-    this.statisticsGenerationData.set({
-      step: 0,
-      generationStatus: null,
-      jobId: null,
-    });
+    this.cancelSnapshotGenerationPolling(true);
     this.statisticsForMunicipalityAndDwellingQuality.set({
       data: [],
       isLoading: false,

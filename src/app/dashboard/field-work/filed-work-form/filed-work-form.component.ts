@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, effect, inject } from '@angular/core';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -49,7 +49,7 @@ import { FieldWorkFormStep4Component } from './field-work-form-step4/field-work-
   templateUrl: './filed-work-form.component.html',
   styleUrl: './filed-work-form.component.css',
 })
-export class FiledWorkFormComponent implements OnInit {
+export class FiledWorkFormComponent implements OnInit, OnDestroy {
   private _formBuilder = inject(FormBuilder);
   private _fieldWorkService = inject(FieldWorkService);
   private _activatedRoute = inject(ActivatedRoute);
@@ -80,6 +80,10 @@ export class FiledWorkFormComponent implements OnInit {
     if (this.id) {
       this._fieldWorkService.getActiveFieldWork();
     }
+  }
+
+  ngOnDestroy(): void {
+    this._fieldWorkService.cancelActiveFieldWorkStatusPolling(true);
   }
 
   private handleFieldWorkState() {

@@ -1,8 +1,16 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, OnDestroy, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthStateService } from '../../../common/services/auth-state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  EMPTY,
+  Subject,
+  catchError,
+  switchMap,
+  takeUntil,
+  timer,
+} from 'rxjs';
 
 export type FieldWorkClosureStatistic = {
   municipality: string;
@@ -30,8 +38,10 @@ export type FieldWorkClosureStatus = {
 @Injectable({
   providedIn: 'root',
 })
-export class FieldWorkClosureService {
-  private httpClient: HttpClient = inject<any>(HttpClient);
+export class FieldWorkClosureService implements OnDestroy {
+  private destroy$ = new Subject<void>();
+  private closureStatusPollingStop$ = new Subject<void>();
+  private httpClient = inject(HttpClient);
   private auth = inject(AuthStateService);
   private matSnackBar = inject(MatSnackBar);
 
@@ -44,7 +54,25 @@ export class FieldWorkClosureService {
 
   constructor() {}
 
+  ngOnDestroy(): void {
+    this.cancelStatusPolling(true);
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.closureStatusPollingStop$.complete();
+  }
+
+  public cancelStatusPolling(resetLoading = false) {
+    this.closureStatusPollingStop$.next();
+    if (resetLoading) {
+      this.fieldWorkStatistics.update(prev => ({
+        ...prev,
+        loading: false,
+      }));
+    }
+  }
+
   public executeFieldWorkClosureStatistics(fieldWorkId: string) {
+    this.cancelStatusPolling();
     this.fieldWorkStatistics.set({
       ...this.fieldWorkStatistics(),
       loading: true,
@@ -59,9 +87,10 @@ export class FieldWorkClosureService {
         `${environment.base_url}/qms/fieldwork/${fieldWorkId}/run-test-job`,
         {}
       )
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ jobId }) =>
-          this.loadFieldWorkClosureStatus(fieldWorkId, jobId),
+          this.startFieldWorkClosureStatusPolling(fieldWorkId, jobId),
         error: error => {
           console.error(
             $localize`Error fetching field work closure statistics:`,
@@ -76,6 +105,11 @@ export class FieldWorkClosureService {
   }
 
   public loadFieldWorkClosureStatus(fieldWorkId: string, jobId: string) {
+    this.startFieldWorkClosureStatusPolling(fieldWorkId, jobId);
+  }
+
+  private startFieldWorkClosureStatusPolling(fieldWorkId: string, jobId: string) {
+    this.cancelStatusPolling();
     this.fieldWorkStatistics.set({
       ...this.fieldWorkStatistics(),
       loading: true,
@@ -83,30 +117,38 @@ export class FieldWorkClosureService {
       step: 0,
     });
 
-    this.httpClient
-      .get<{
-        status: string;
-      }>(`${environment.base_url}/qms/fieldwork/job/${jobId}/status`)
+    timer(0, 5000)
+      .pipe(
+        takeUntil(this.destroy$),
+        takeUntil(this.closureStatusPollingStop$),
+        switchMap(() =>
+          this.httpClient
+            .get<{
+              status: string;
+            }>(`${environment.base_url}/qms/fieldwork/job/${jobId}/status`)
+            .pipe(
+              catchError(error => {
+                console.error(
+                  $localize`Error fetching field work closure status:`,
+                  error
+                );
+                this.fieldWorkStatistics.update(prev => ({
+                  ...prev,
+                  loading: false,
+                }));
+                this.cancelStatusPolling();
+                return EMPTY;
+              })
+            )
+        )
+      )
       .subscribe({
         next: ({ status }) => {
           if (status === 'RUNNING') {
-            setTimeout(
-              () => this.loadFieldWorkClosureStatus(fieldWorkId, jobId),
-              5000
-            );
             return;
           }
+          this.cancelStatusPolling();
           this.loadFieldWorkClosureStatistics(fieldWorkId);
-        },
-        error: error => {
-          console.error(
-            $localize`Error fetching field work closure status:`,
-            error
-          );
-          this.fieldWorkStatistics.update(prev => ({
-            ...prev,
-            loading: false,
-          }));
         },
       });
   }
@@ -123,6 +165,7 @@ export class FieldWorkClosureService {
       .get<{
         statsDTO: FieldWorkClosureStatistic[];
       }>(`${environment.base_url}/qms/fieldwork/stats`)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: stats => {
           this.fieldWorkStatistics.update(prev => ({
@@ -158,6 +201,7 @@ export class FieldWorkClosureService {
         `${environment.base_url}/qms/fieldwork/${fieldWorkId}/email/template/close`,
         { EmailTemplateId: emailId }
       )
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.fieldWorkStatistics.update(prev => ({
@@ -194,6 +238,7 @@ export class FieldWorkClosureService {
         fieldWorkId,
         updatedUser: this.auth.getNameId(),
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => this.checkClosureStatus(fieldWorkId),
         error: error => {
@@ -220,6 +265,7 @@ export class FieldWorkClosureService {
     const url = `${environment.base_url}/qms/fieldwork/${fieldWorkId}/progress`;
     this.httpClient
       .get<{ progressDTO: FieldWorkClosureStatus[] }>(url)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ progressDTO }) => {
           this.fieldWorkStatistics.update(prev => ({

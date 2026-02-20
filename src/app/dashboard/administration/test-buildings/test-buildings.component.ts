@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import {
   FormControl,
@@ -26,7 +26,8 @@ import {
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import Moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
-import {environment} from "../../../../environments/environment";
+import { environment } from '../../../../environments/environment';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'asrdb-test-buildings',
@@ -53,8 +54,9 @@ import {environment} from "../../../../environments/environment";
   templateUrl: './test-buildings.component.html',
   styleUrl: './test-buildings.component.css',
 })
-export class TestBuildingsComponent {
+export class TestBuildingsComponent implements OnDestroy {
   private testBuildingService = inject(TestBuildingService);
+  private destroy$ = new Subject<void>();
   public testBuildingSignal = this.testBuildingService.testBuildingSignal;
   public formGroup = new FormGroup({
     runUpdates: new FormControl(false),
@@ -64,12 +66,20 @@ export class TestBuildingsComponent {
   });
 
   constructor(private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.queryParams.subscribe(params => {
-      const jobId = params[TEST_JOB_ID];
-      if (jobId) {
-        this.testBuildingService.updateJobIdFromUrl(jobId);
-      }
-    });
+    this.activatedRoute.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const jobId = params[TEST_JOB_ID];
+        if (jobId) {
+          this.testBuildingService.updateJobIdFromUrl(jobId);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.testBuildingService.cancelStatusPolling(true);
   }
 
   get isRunning() {
@@ -83,10 +93,10 @@ export class TestBuildingsComponent {
   openHangfireDashboard() {
     const hangfireJobId = this.testBuildingSignal().hangfireJobId;
     if (hangfireJobId) {
-      const url = environment.hangfire_url + "details/" + hangfireJobId;
+      const url = environment.hangfire_url + 'details/' + hangfireJobId;
       window.open(url, '_blank');
     } else {
-      window.open(environment.hangfire_url + "enqueued", '_blank');
+      window.open(environment.hangfire_url + 'enqueued', '_blank');
     }
   }
 
@@ -94,9 +104,10 @@ export class TestBuildingsComponent {
     const formValue = this.formGroup.value;
     const input = {
       runUpdates: formValue.runUpdates || false,
-      startAt: formValue.executionType === 'scheduled'
-        ? formValue.startAt?.toISOString() || ''
-        : new Date().toISOString(),
+      startAt:
+        formValue.executionType === 'scheduled'
+          ? formValue.startAt?.toISOString() || ''
+          : new Date().toISOString(),
     } as TestBuildingInput;
     if (formValue.buildingSelection === 'all') {
       this.testBuildingService.testAllBuildings(input);
