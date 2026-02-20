@@ -2,57 +2,66 @@ import { Chip } from '../../../common/standalone-components/chip/chip.component'
 import { BuildingFilter } from '../../register/model/building';
 import { Injectable } from '@angular/core';
 import { CommonRegisterHelperService } from '../service/common-helper.service';
-import {AuthStateService} from "../../../common/services/auth-state.service";
+import { AuthStateService } from '../../../common/services/auth-state.service';
+
+type FilterValue = string | string[] | number;
+type BuildingFilterColumn = keyof BuildingFilter['filter'];
 
 @Injectable()
 export class FilterHelper {
-  private fields: never[] = [];
+  private fields: Record<string, unknown>[] = [];
 
   constructor(
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private authState: AuthStateService
   ) {}
 
-  init(fields: never[]) {
+  init(fields: Record<string, unknown>[]) {
     this.fields = fields;
   }
 
   removeFilterValue($event: Chip, filter: BuildingFilter) {
-    const filterCopy = JSON.parse(JSON.stringify(filter));
-    if ($event.column === 'GlobalID') {
-      const values = (filterCopy as any).filter[$event.column]
+    const filterCopy = JSON.parse(JSON.stringify(filter)) as BuildingFilter;
+    const column = $event.column as BuildingFilterColumn;
+    const columnValue = filterCopy.filter[column];
+
+    if (column === 'GlobalID') {
+      const values = String(columnValue)
         .split(',')
         .filter((value: string) => value !== $event.value);
-      (filterCopy as any).filter[$event.column] = values.join(',');
-    } else if (Array.isArray((filterCopy as any).filter[$event.column])) {
-      (filterCopy as any).filter[$event.column] = (filterCopy as any).filter[
-        $event.column
-      ].filter(
-        (value: string) =>
-          this.commonBuildingRegisterHelper.getValueFromStatus(
-            this.fields,
-            $event.column,
-            value
+      filterCopy.filter[column] = values.join(',') as never;
+    } else if (Array.isArray(columnValue)) {
+      filterCopy.filter[column] = columnValue.filter(value => {
+        return (
+          String(
+            this.commonBuildingRegisterHelper.getValueFromStatus(
+              this.fields,
+              column,
+              value
+            )
           ) !== $event.value
-      );
+        );
+      }) as never;
     } else {
-      (filterCopy as any).filter[$event.column] = '';
+      filterCopy.filter[column] = '' as never;
     }
     return filterCopy;
   }
 
   getFilterChipStructure = (
     currentValue: Chip[],
-    [key, value]: [key: string, value: string | string[] | number]
+    [key, value]: [key: string, value: FilterValue]
   ) => {
     if (Array.isArray(value)) {
       value.forEach(subValues => {
         currentValue.push({
           column: key,
-          value: this.commonBuildingRegisterHelper.getValueFromStatus(
-            this.fields,
-            key,
-            subValues
+          value: String(
+            this.commonBuildingRegisterHelper.getValueFromStatus(
+              this.fields,
+              key,
+              subValues
+            )
           ),
         });
       });
@@ -76,15 +85,21 @@ export class FilterHelper {
       }
       return currentValue;
     } else {
-      if (key === 'BldMunicipality' && !this.authState.isAdmin() && !this.authState.isSupervisor()) {
+      if (
+        key === 'BldMunicipality' &&
+        !this.authState.isAdmin() &&
+        !this.authState.isSupervisor()
+      ) {
         return currentValue;
       }
       currentValue.push({
         column: key,
-        value: this.commonBuildingRegisterHelper.getValueFromStatus(
-          this.fields,
-          key,
-          value
+        value: String(
+          this.commonBuildingRegisterHelper.getValueFromStatus(
+            this.fields,
+            key,
+            value
+          )
         ),
       });
       return currentValue;

@@ -251,7 +251,10 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
     }
     if (field[NAME_PROP] === 'BldMunicipality') {
-      const municipalityValue = value ?? this.filterService.municipality;
+      const municipalityValue =
+        typeof value === 'number'
+          ? value
+          : this.filterService.municipality ?? null;
       if (municipalityValue) {
         control.setValue(municipalityValue);
       }
@@ -261,11 +264,18 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       this.mapService.setMunicipality(municipalityValue);
     }
     if (field[NAME_PROP] === 'BldPermitDate') {
+      const dateValue =
+        value instanceof Date
+          ? value
+          : typeof value === 'string' || typeof value === 'number'
+            ? new Date(value)
+            : null;
       if (
-        (value && value.toUTCString() === 'Thu, 01 Jan 1970 00:00:00 GMT') ||
-        isNaN(value.getDate())
+        (dateValue &&
+          dateValue.toUTCString() === 'Thu, 01 Jan 1970 00:00:00 GMT') ||
+        (dateValue ? isNaN(dateValue.getDate()) : false)
       ) {
-        console.log(value);
+        console.log(dateValue);
         control.setValue(null);
       }
     }

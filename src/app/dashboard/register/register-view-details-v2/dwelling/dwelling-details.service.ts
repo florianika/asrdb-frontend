@@ -127,13 +127,12 @@ export class DwellingDetailsService {
     if (!fields || !dwelling) {
       return '';
     }
-    return (
-      this.commonRegisterHelperService.getValueFromStatus(
-        fields,
-        column,
-        dwelling[column]
-      ) ?? ''
+    const value = this.commonRegisterHelperService.getValueFromStatus(
+      fields,
+      column,
+      dwelling[column]
     );
+    return String(value ?? '');
   }
 
   public viewDwellingDetails(

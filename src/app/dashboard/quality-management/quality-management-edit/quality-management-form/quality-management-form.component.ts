@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   Input,
   OnInit,
@@ -25,6 +26,7 @@ import { Router } from '@angular/router';
   selector: 'asrdb-quality-management-form',
   templateUrl: './quality-management-form.component.html',
   styleUrls: ['./quality-management-form.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QualityManagementFormComponent implements OnInit {
   @Input() rule?: QualityRule;
@@ -35,7 +37,7 @@ export class QualityManagementFormComponent implements OnInit {
   @ViewChild('cancelDialog') cancelDialog!: TemplateRef<any>;
   @ViewChild('stepper') stepper!: MatStepper;
 
-  public isSaving = this.qualityManagementService.isSavingAsObservable;
+  public isSaving = this.qualityManagementService.isSaving;
   public firstFormGroup!: FormGroup;
   public secondFormGroup!: FormGroup;
   public thirdFormGroup!: FormGroup;

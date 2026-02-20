@@ -5,26 +5,71 @@ import { CommonDwellingService } from '../../common/service/common-dwellings.ser
 import { BehaviorSubject, catchError, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthStateService } from '../../../common/services/auth-state.service';
+import { EsriQueryResponse } from '../model/esri-response';
+
+type DeleteAuditFields = {
+  external_editor: string;
+  external_editor_date: string;
+};
+
+type BuildingDeleteAttributes = {
+  GlobalID: string;
+  ObjectID?: number;
+  OBJECTID?: number;
+  BldQuality: number;
+} & DeleteAuditFields;
+
+type EntranceDeleteAttributes = {
+  GlobalID: string;
+  OBJECTID: number;
+  EntQuality: number;
+} & DeleteAuditFields;
+
+type DwellingDeleteAttributes = {
+  GlobalID: string;
+  OBJECTID: number;
+  DwlQuality: number;
+} & DeleteAuditFields;
+
+type DeleteFeature<TAttributes> = {
+  attributes: TAttributes;
+};
+
+type DeleteDoneState = {
+  buildingDone: boolean;
+  entranceDone: boolean;
+  dwellingDone: boolean;
+};
+
+type DeletePreviewState = {
+  buildingsToDelete: DeleteFeature<BuildingDeleteAttributes>[];
+  entrancesToDelete: DeleteFeature<EntranceDeleteAttributes>[];
+  dwellingsToDelete: DeleteFeature<DwellingDeleteAttributes>[];
+};
+
+type GlobalObjectIdAttributes = {
+  GlobalID?: string;
+  OBJECTID?: number;
+  ObjectID?: number;
+};
+
+type EsriAttributesResponse = EsriQueryResponse<GlobalObjectIdAttributes>;
 
 @Injectable()
 export class RegisterDeleteService {
-  buildingsToDelete = [] as any[];
-  entrancesToDelete = [] as any[];
-  dwellingsToDelete = [] as any[];
+  buildingsToDelete: DeleteFeature<BuildingDeleteAttributes>[] = [];
+  entrancesToDelete: DeleteFeature<EntranceDeleteAttributes>[] = [];
+  dwellingsToDelete: DeleteFeature<DwellingDeleteAttributes>[] = [];
 
-  private defaultDeleteSignal = {
+  private defaultDeleteSignal: DeleteDoneState = {
     buildingDone: false,
     entranceDone: false,
     dwellingDone: false,
   };
 
-  deleteDone = new BehaviorSubject(this.defaultDeleteSignal);
-  deleteDataLoading = new BehaviorSubject(false);
-  state = new BehaviorSubject({
-    buildingsToDelete: this.buildingsToDelete,
-    entrancesToDelete: this.entrancesToDelete,
-    dwellingsToDelete: this.dwellingsToDelete,
-  });
+  deleteDone = new BehaviorSubject<DeleteDoneState>(this.defaultDeleteSignal);
+  deleteDataLoading = new BehaviorSubject<boolean>(false);
+  state = new BehaviorSubject<DeletePreviewState>(this.getCurrentState());
 
   constructor(
     private commonBuildingService: CommonBuildingService,
@@ -40,11 +85,7 @@ export class RegisterDeleteService {
     this.dwellingsToDelete = [];
     this.deleteDone.next(this.defaultDeleteSignal);
     this.deleteDataLoading.next(false);
-    this.state.next({
-      buildingsToDelete: this.buildingsToDelete,
-      entrancesToDelete: this.entrancesToDelete,
-      dwellingsToDelete: this.dwellingsToDelete,
-    });
+    this.emitState();
   }
 
   deleteBuilding(buildingId: string) {
@@ -82,18 +123,20 @@ export class RegisterDeleteService {
       )
       .subscribe(building => {
         if (building?.data?.features[0]?.attributes) {
-          const attributes = {
-            ...building.data.features[0]?.attributes,
+          const baseAttributes = building.data.features[0].attributes;
+          if (!baseAttributes.GlobalID) {
+            this.deleteDataLoading.next(false);
+            return;
+          }
+          const attributes: BuildingDeleteAttributes = {
+            GlobalID: baseAttributes.GlobalID,
+            ObjectID: baseAttributes.ObjectID,
+            OBJECTID: baseAttributes.OBJECTID,
             BldQuality: 0,
-            external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now()),
+            ...this.getAuditFields(),
           };
           this.buildingsToDelete.push({ attributes });
-          this.state.next({
-            buildingsToDelete: this.buildingsToDelete,
-            entrancesToDelete: this.entrancesToDelete,
-            dwellingsToDelete: this.dwellingsToDelete,
-          });
+          this.emitState();
           this.loadEntrancesToDelete(buildingId);
         } else {
           this.deleteDataLoading.next(false);
@@ -116,38 +159,21 @@ export class RegisterDeleteService {
           return of(null);
         })
       )
-      .subscribe(entrances => {
-        if (!entrances?.data?.features?.length) {
+      .subscribe((entrances: EsriAttributesResponse | null) => {
+        const entranceRequests = this.getEntranceDeleteFeatures(entrances);
+        if (!entranceRequests.length) {
           this.deleteDataLoading.next(false);
-          this.state.next({
-            buildingsToDelete: this.buildingsToDelete,
-            entrancesToDelete: this.entrancesToDelete,
-            dwellingsToDelete: this.dwellingsToDelete,
-          });
+          this.emitState();
           return;
         }
-        const entranceRequests = entrances?.data?.features
-          ?.map((feature: any) => ({
-            GlobalID: feature.attributes.GlobalID as string,
-            OBJECTID: feature.attributes.OBJECTID,
-            EntQuality: 0,
-            external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now()),
-          }))
-          ?.map((attributes: any) => ({ attributes }));
-        if (entranceRequests.length > 0) {
-          this.entrancesToDelete = entranceRequests;
-          this.state.next({
-            buildingsToDelete: this.buildingsToDelete,
-            entrancesToDelete: this.entrancesToDelete,
-            dwellingsToDelete: this.dwellingsToDelete,
-          });
 
-          const globalIds = entrances?.data?.features
-            ?.map((feature: any) => feature.attributes.GlobalID as string)
-            ?.filter((feature: string) => !!feature);
-          this.loadDwellingsToDelete(globalIds);
-        }
+        this.entrancesToDelete = entranceRequests;
+        this.emitState();
+
+        const globalIds = entranceRequests
+          .map(feature => feature.attributes.GlobalID)
+          .filter(Boolean);
+        this.loadDwellingsToDelete(globalIds);
       });
   }
 
@@ -165,33 +191,21 @@ export class RegisterDeleteService {
           return of(null);
         })
       )
-      .subscribe(entrances => {
-        if (!entrances?.data?.features?.length) {
-          this.state.next({
-            buildingsToDelete: this.buildingsToDelete,
-            entrancesToDelete: this.entrancesToDelete,
-            dwellingsToDelete: this.dwellingsToDelete,
-          });
+      .subscribe((entrances: EsriAttributesResponse | null) => {
+        const entranceRequests = this.getEntranceDeleteFeatures(entrances);
+        if (!entranceRequests.length) {
+          this.emitState();
           this.deleteDataLoading.next(false);
           return;
         }
-        const entranceRequests = entrances?.data?.features
-          ?.map((feature: any) => ({
-            GlobalID: feature.attributes.GlobalID as string,
-            OBJECTID: feature.attributes.OBJECTID,
-            EntQuality: 0,
-            external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now()),
-          }))
-          ?.map((attributes: any) => ({ attributes }));
-        if (entranceRequests.length > 0) {
-          this.entrancesToDelete = entranceRequests;
 
-          const globalIds = entrances?.data?.features
-            ?.map((feature: any) => feature.attributes.GlobalID as string)
-            ?.filter((feature: string) => !!feature);
-          this.loadDwellingsToDelete(globalIds);
-        }
+        this.entrancesToDelete = entranceRequests;
+        this.emitState();
+
+        const globalIds = entranceRequests
+          .map(feature => feature.attributes.GlobalID)
+          .filter(Boolean);
+        this.loadDwellingsToDelete(globalIds);
       });
   }
 
@@ -210,22 +224,9 @@ export class RegisterDeleteService {
           return of(null);
         })
       )
-      .subscribe((dwellings: any) => {
-        const dwellingRequests = dwellings?.data?.features
-          ?.map((feature: any) => ({
-            GlobalID: feature.attributes.GlobalID as string,
-            OBJECTID: feature.attributes.OBJECTID,
-            DwlQuality: 0,
-            external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now()),
-          }))
-          ?.map((attributes: any) => ({ attributes }));
-        this.dwellingsToDelete = dwellingRequests ?? [];
-        this.state.next({
-          buildingsToDelete: this.buildingsToDelete,
-          entrancesToDelete: this.entrancesToDelete,
-          dwellingsToDelete: this.dwellingsToDelete,
-        });
+      .subscribe((dwellings: EsriAttributesResponse | null) => {
+        this.dwellingsToDelete = this.getDwellingDeleteFeatures(dwellings);
+        this.emitState();
         this.deleteDataLoading.next(false);
       });
   }
@@ -245,22 +246,9 @@ export class RegisterDeleteService {
           return of(null);
         })
       )
-      .subscribe((dwellings: any) => {
-        const dwellingRequests = dwellings?.data?.features
-          ?.map((feature: any) => ({
-            GlobalID: feature.attributes.GlobalID as string,
-            OBJECTID: feature.attributes.OBJECTID,
-            DwlQuality: 0,
-            external_editor: `{${this.authState.getNameId()}}` ?? '',
-            external_editor_date: String(Date.now()),
-          }))
-          ?.map((attributes: any) => ({ attributes }));
-        this.dwellingsToDelete = dwellingRequests ?? [];
-        this.state.next({
-          buildingsToDelete: this.buildingsToDelete,
-          entrancesToDelete: this.entrancesToDelete,
-          dwellingsToDelete: this.dwellingsToDelete,
-        });
+      .subscribe((dwellings: EsriAttributesResponse | null) => {
+        this.dwellingsToDelete = this.getDwellingDeleteFeatures(dwellings);
+        this.emitState();
         this.deleteDataLoading.next(false);
       });
   }
@@ -301,11 +289,7 @@ export class RegisterDeleteService {
         .subscribe(res => {
           if (!res) return;
           this.dwellingsToDelete = [];
-          this.state.next({
-            buildingsToDelete: this.buildingsToDelete,
-            entrancesToDelete: this.entrancesToDelete,
-            dwellingsToDelete: this.dwellingsToDelete,
-          });
+          this.emitState();
           setTimeout(() => {
             this.reloadSignal();
             this.deleteEntranceData();
@@ -334,11 +318,7 @@ export class RegisterDeleteService {
         .subscribe(res => {
           if (!res) return;
           this.entrancesToDelete = [];
-          this.state.next({
-            buildingsToDelete: this.buildingsToDelete,
-            entrancesToDelete: this.entrancesToDelete,
-            dwellingsToDelete: this.dwellingsToDelete,
-          });
+          this.emitState();
           setTimeout(() => {
             this.reloadSignal();
             this.deleteBuildingData();
@@ -367,11 +347,7 @@ export class RegisterDeleteService {
         .subscribe(res => {
           if (!res) return;
           this.buildingsToDelete = [];
-          this.state.next({
-            buildingsToDelete: this.buildingsToDelete,
-            entrancesToDelete: this.entrancesToDelete,
-            dwellingsToDelete: this.dwellingsToDelete,
-          });
+          this.emitState();
           setTimeout(() => {
             this.reloadSignal();
           }, 1000);
@@ -385,5 +361,72 @@ export class RegisterDeleteService {
       entranceDone: this.entrancesToDelete.length === 0,
       dwellingDone: this.dwellingsToDelete.length === 0,
     });
+  }
+
+  private getCurrentState(): DeletePreviewState {
+    return {
+      buildingsToDelete: this.buildingsToDelete,
+      entrancesToDelete: this.entrancesToDelete,
+      dwellingsToDelete: this.dwellingsToDelete,
+    };
+  }
+
+  private emitState() {
+    this.state.next(this.getCurrentState());
+  }
+
+  private getAuditFields(): DeleteAuditFields {
+    return {
+      external_editor: `{${this.authState.getNameId()}}` ?? '',
+      external_editor_date: String(Date.now()),
+    };
+  }
+
+  private getEntranceDeleteFeatures(
+    response: EsriAttributesResponse | null
+  ): DeleteFeature<EntranceDeleteAttributes>[] {
+    return (response?.data?.features ?? [])
+      .map(feature => feature.attributes)
+      .map(attributes => {
+        if (!attributes.GlobalID || attributes.OBJECTID == null) {
+          return null;
+        }
+        return {
+          attributes: {
+            GlobalID: attributes.GlobalID,
+            OBJECTID: attributes.OBJECTID,
+            EntQuality: 0,
+            ...this.getAuditFields(),
+          },
+        };
+      })
+      .filter(
+        (feature): feature is DeleteFeature<EntranceDeleteAttributes> =>
+          feature !== null
+      );
+  }
+
+  private getDwellingDeleteFeatures(
+    response: EsriAttributesResponse | null
+  ): DeleteFeature<DwellingDeleteAttributes>[] {
+    return (response?.data?.features ?? [])
+      .map(feature => feature.attributes)
+      .map(attributes => {
+        if (!attributes.GlobalID || attributes.OBJECTID == null) {
+          return null;
+        }
+        return {
+          attributes: {
+            GlobalID: attributes.GlobalID,
+            OBJECTID: attributes.OBJECTID,
+            DwlQuality: 0,
+            ...this.getAuditFields(),
+          },
+        };
+      })
+      .filter(
+        (feature): feature is DeleteFeature<DwellingDeleteAttributes> =>
+          feature !== null
+      );
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import {
   ActiveQualityRulesResponse,
   QualityManagementConfig,
@@ -8,7 +8,7 @@ import {
   ShortQualityRule,
 } from './quality-management-config';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
@@ -16,14 +16,36 @@ import { Router } from '@angular/router';
 const SAVE_URL = '/qms/rules';
 const UPDATE_URL = '/qms/rules/';
 
+type QualityManagementState = {
+  qualityRules: QualityRule[];
+  qualityRule: QualityRule | null;
+  loadingResults: boolean;
+  isSaving: boolean;
+  activeRules: ShortQualityRule[];
+  activeRulesLoading: boolean;
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class QualityManagementService {
-  private qualityRules = new BehaviorSubject<QualityRule[]>([]);
-  private qualityRule = new BehaviorSubject<QualityRule | null>(null);
-  private loadingResults = new BehaviorSubject<boolean>(false);
-  private isSaving = new BehaviorSubject<boolean>(false);
+  private readonly state = signal<QualityManagementState>({
+    qualityRules: [],
+    qualityRule: null,
+    loadingResults: false,
+    isSaving: false,
+    activeRules: [],
+    activeRulesLoading: false,
+  });
+
+  public readonly qualityRules = computed(() => this.state().qualityRules);
+  public readonly qualityRule = computed(() => this.state().qualityRule);
+  public readonly loadingResults = computed(() => this.state().loadingResults);
+  public readonly isSaving = computed(() => this.state().isSaving);
+  public readonly activeRules = computed(() => ({
+    rules: this.state().activeRules,
+    loading: this.state().activeRulesLoading,
+  }));
 
   constructor(
     private httpClient: HttpClient,
@@ -31,29 +53,8 @@ export class QualityManagementService {
     private router: Router
   ) {}
 
-  public activeRules = signal({
-    rules: [] as ShortQualityRule[],
-    loading: false,
-  });
-
-  public get qualityRulesAsObservable() {
-    return this.qualityRules.asObservable();
-  }
-
-  public get qualityRuleAsObservable() {
-    return this.qualityRule.asObservable();
-  }
-
-  public get loadingResultsAsObservable() {
-    return this.loadingResults.asObservable();
-  }
-
-  public get isSavingAsObservable() {
-    return this.isSaving.asObservable();
-  }
-
   public getActiveRules() {
-    this.activeRules.update(state => ({ ...state, loading: true }));
+    this.patchState({ activeRulesLoading: true });
     this.httpClient
       .get<ActiveQualityRulesResponse>(
         environment.base_url + '/qms/rules/active'
@@ -66,20 +67,19 @@ export class QualityManagementService {
             { duration: 3000 }
           );
           console.error(err);
-          return of({ shortRulesDTO: [] });
+          return of({ shortRulesDTO: [] as ShortQualityRule[] });
         })
       )
       .subscribe((res: ActiveQualityRulesResponse) => {
-        this.activeRules.update(state => ({
-          ...state,
-          rules: res.shortRulesDTO,
-          loading: false,
-        }));
+        this.patchState({
+          activeRules: res.shortRulesDTO,
+          activeRulesLoading: false,
+        });
       });
   }
 
   public getRules(type: string | null) {
-    this.loadingResults.next(true);
+    this.patchState({ loadingResults: true });
     const url = QualityManagementConfig.getUrlForType(type);
     this.httpClient
       .get<QualityRulesResponse>(url)
@@ -91,17 +91,19 @@ export class QualityManagementService {
             { duration: 3000 }
           );
           console.error(err);
-          return of({ rulesDTO: [] });
+          return of({ rulesDTO: [] as QualityRule[] });
         })
       )
       .subscribe((res: QualityRulesResponse) => {
-        this.qualityRules.next(res.rulesDTO);
-        this.loadingResults.next(false);
+        this.patchState({
+          qualityRules: res.rulesDTO,
+          loadingResults: false,
+        });
       });
   }
 
   public getRule(type: string | null, id: string) {
-    this.loadingResults.next(true);
+    this.patchState({ loadingResults: true });
     this.httpClient
       .get<QualityRuleResponse>(environment.base_url + UPDATE_URL + id)
       .pipe(
@@ -112,42 +114,48 @@ export class QualityManagementService {
             { duration: 3000 }
           );
           console.error(err);
-          return of({ rulesDTO: null });
+          return of({ rulesDTO: null as QualityRule | null });
         })
       )
-      .subscribe((res: QualityRuleResponse | { rulesDTO: null }) => {
-        this.qualityRule.next(res.rulesDTO);
-        this.loadingResults.next(false);
-      });
+      .subscribe(
+        (res: QualityRuleResponse | { rulesDTO: QualityRule | null }) => {
+          this.patchState({
+            qualityRule: res.rulesDTO,
+            loadingResults: false,
+          });
+        }
+      );
   }
 
   cancelEdit() {
-    this.isSaving.next(false);
-    this.qualityRule.next(null);
+    this.patchState({
+      isSaving: false,
+      qualityRule: null,
+    });
   }
 
-  public save(rule: any, qualityType: string) {
-    this.isSaving.next(true);
+  public save(rule: Partial<QualityRule>, qualityType: string) {
+    this.patchState({ isSaving: true });
     this.httpClient
       .post(environment.base_url + SAVE_URL, JSON.stringify(rule), {
         headers: { 'Content-Type': 'application/json' },
       })
       .subscribe({
         next: () => {
-          this.isSaving.next(false);
-          this.qualityRule.next(null);
-          this.router.navigateByUrl(
+          this.patchState({
+            isSaving: false,
+            qualityRule: null,
+          });
+          void this.router.navigateByUrl(
             '/dashboard/quality-management/' + qualityType
           );
-          this.snack.open(
-            $localize`Quality rule was saved`,
-            $localize`Ok`,
-            { duration: 3000 }
-          );
+          this.snack.open($localize`Quality rule was saved`, $localize`Ok`, {
+            duration: 3000,
+          });
         },
         error: err => {
           console.error(err);
-          this.isSaving.next(false);
+          this.patchState({ isSaving: false });
           this.snack.open(
             $localize`Error when trying to save the rule. Please try again.`,
             $localize`Ok`,
@@ -157,29 +165,34 @@ export class QualityManagementService {
       });
   }
 
-  public update(rule: any, qualityType: string) {
-    this.isSaving.next(true);
+  public update(
+    rule: Partial<QualityRule> & { id: string | number },
+    qualityType: string
+  ) {
+    this.patchState({ isSaving: true });
     this.httpClient
       .put(environment.base_url + UPDATE_URL + rule.id, JSON.stringify(rule), {
         headers: { 'Content-Type': 'application/json' },
       })
       .subscribe({
         next: () => {
-          this.isSaving.next(false);
-          this.qualityRule.next(null);
-          this.router.navigateByUrl(
+          this.patchState({
+            isSaving: false,
+            qualityRule: null,
+          });
+          void this.router.navigateByUrl(
             '/dashboard/quality-management/' + qualityType
           );
-          this.snack.open(
-            $localize`Quality rule was saved`,
-            $localize`Ok`,
-            { duration: 3000 }
-          );
+          this.snack.open($localize`Quality rule was saved`, $localize`Ok`, {
+            duration: 3000,
+          });
         },
         error: err => {
           console.error(err);
-          this.isSaving.next(false);
-          this.qualityRule.next(null);
+          this.patchState({
+            isSaving: false,
+            qualityRule: null,
+          });
           this.snack.open(
             $localize`Error when trying to save the rule. Please try again.`,
             $localize`Ok`,
@@ -190,27 +203,29 @@ export class QualityManagementService {
   }
 
   public toggleStatus(ruleId: string, qualityType: string) {
-    this.isSaving.next(true);
+    this.patchState({ isSaving: true });
     this.httpClient
       .patch(environment.base_url + UPDATE_URL + ruleId, {})
       .subscribe({
         next: () => {
-          this.isSaving.next(false);
-          this.qualityRule.next(null);
+          this.patchState({
+            isSaving: false,
+            qualityRule: null,
+          });
           this.getRules(qualityType);
           void this.router.navigateByUrl(
             '/dashboard/quality-management/' + qualityType
           );
-          this.snack.open(
-            $localize`Quality rule was saved`,
-            $localize`Ok`,
-            { duration: 3000 }
-          );
+          this.snack.open($localize`Quality rule was saved`, $localize`Ok`, {
+            duration: 3000,
+          });
         },
         error: err => {
           console.error(err);
-          this.isSaving.next(false);
-          this.qualityRule.next(null);
+          this.patchState({
+            isSaving: false,
+            qualityRule: null,
+          });
           this.getRules(qualityType);
           this.snack.open(
             $localize`Error when trying to change status. Please try again.`,
@@ -219,5 +234,12 @@ export class QualityManagementService {
           );
         },
       });
+  }
+
+  private patchState(statePatch: Partial<QualityManagementState>) {
+    this.state.update(state => ({
+      ...state,
+      ...statePatch,
+    }));
   }
 }

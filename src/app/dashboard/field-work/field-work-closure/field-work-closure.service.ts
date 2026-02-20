@@ -4,13 +4,11 @@ import { environment } from '../../../../environments/environment';
 import { AuthStateService } from '../../../common/services/auth-state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-  EMPTY,
   Subject,
   catchError,
-  switchMap,
   takeUntil,
-  timer,
 } from 'rxjs';
+import { AsyncOrchestrationService } from '../../common/service/async-orchestration.service';
 
 export type FieldWorkClosureStatistic = {
   municipality: string;
@@ -44,6 +42,7 @@ export class FieldWorkClosureService implements OnDestroy {
   private httpClient = inject(HttpClient);
   private auth = inject(AuthStateService);
   private matSnackBar = inject(MatSnackBar);
+  private asyncOrchestration = inject(AsyncOrchestrationService);
 
   public fieldWorkStatistics = signal<FieldWorkClosureStatisticsResponse>({
     loading: false,
@@ -62,7 +61,7 @@ export class FieldWorkClosureService implements OnDestroy {
   }
 
   public cancelStatusPolling(resetLoading = false) {
-    this.closureStatusPollingStop$.next();
+    this.asyncOrchestration.resetPolling(this.closureStatusPollingStop$);
     if (resetLoading) {
       this.fieldWorkStatistics.update(prev => ({
         ...prev,
@@ -117,31 +116,26 @@ export class FieldWorkClosureService implements OnDestroy {
       step: 0,
     });
 
-    timer(0, 5000)
-      .pipe(
-        takeUntil(this.destroy$),
-        takeUntil(this.closureStatusPollingStop$),
-        switchMap(() =>
-          this.httpClient
-            .get<{
-              status: string;
-            }>(`${environment.base_url}/qms/fieldwork/job/${jobId}/status`)
-            .pipe(
-              catchError(error => {
-                console.error(
-                  $localize`Error fetching field work closure status:`,
-                  error
-                );
-                this.fieldWorkStatistics.update(prev => ({
-                  ...prev,
-                  loading: false,
-                }));
-                this.cancelStatusPolling();
-                return EMPTY;
-              })
-            )
-        )
-      )
+    this.asyncOrchestration
+      .createPollingStream({
+        destroy$: this.destroy$,
+        stop$: this.closureStatusPollingStop$,
+        request: () =>
+          this.httpClient.get<{
+            status: string;
+          }>(`${environment.base_url}/qms/fieldwork/job/${jobId}/status`),
+        onError: error => {
+          console.error(
+            $localize`Error fetching field work closure status:`,
+            error
+          );
+          this.fieldWorkStatistics.update(prev => ({
+            ...prev,
+            loading: false,
+          }));
+          this.cancelStatusPolling();
+        },
+      })
       .subscribe({
         next: ({ status }) => {
           if (status === 'RUNNING') {

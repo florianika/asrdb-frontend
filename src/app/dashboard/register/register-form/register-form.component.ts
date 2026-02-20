@@ -142,7 +142,10 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
     }
 
     if (this.buildingId) {
-      this.registerLogService.loadLogs(this.buildingId);
+      this.registerLogService
+        .loadLogs(this.buildingId)
+        .pipe(takeUntil(this.subscriber))
+        .subscribe();
       this.commonEntityStructureService.getEntityStructure(this.entityType);
 
       const getBuildingRequest = this.buildingService

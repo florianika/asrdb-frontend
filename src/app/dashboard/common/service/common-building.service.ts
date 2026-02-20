@@ -3,7 +3,6 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import { catchError, defer, from, map, Observable, of } from 'rxjs';
 import { QueryFilter } from '../../register/model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
-import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { EntityManageResponse } from '../../register/model/entity-req-res';
 import MapView from '@arcgis/core/views/MapView';
@@ -13,6 +12,8 @@ import Geometry from '@arcgis/core/geometry/Geometry';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthStateService } from '../../../common/services/auth-state.service';
 import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
+import { EsriFeatureApiClientService } from './esri-feature-api-client.service';
+import { QmsApiClientService } from './qms-api-client.service';
 import UniqueValueInfoProperties = __esri.UniqueValueInfoProperties;
 import PopupTemplateProperties = __esri.PopupTemplateProperties;
 
@@ -90,7 +91,8 @@ export class CommonBuildingService {
   constructor(
     private esriAuthService: CommonEsriAuthService,
     private authState: AuthStateService,
-    private httpClient: HttpClient,
+    private esriFeatureApiClient: EsriFeatureApiClientService,
+    private qmsApiClient: QmsApiClientService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -120,20 +122,20 @@ export class CommonBuildingService {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
 
-  createFeature(features: any): Observable<EntityManageResponse> {
-    const url = `${environment.building_url}/addFeatures?token=${this.esriAuthService.getTokenForResource()}`;
-    const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(url, body, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+  createFeature(features: unknown[]): Observable<EntityManageResponse> {
+    return this.esriFeatureApiClient.addFeatures<EntityManageResponse>(
+      environment.building_url,
+      this.esriAuthService.getTokenForResource(),
+      features
+    );
   }
 
-  updateFeature(features: any): Observable<EntityManageResponse> {
-    const url = `${environment.building_url}/updateFeatures?token=${this.esriAuthService.getTokenForResource()}`;
-    const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(url, body, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+  updateFeature(features: unknown[]): Observable<EntityManageResponse> {
+    return this.esriFeatureApiClient.updateFeatures<EntityManageResponse>(
+      environment.building_url,
+      this.esriAuthService.getTokenForResource(),
+      features
+    );
   }
 
   getBuildingQuality(bldId: string): Observable<string | null> {
@@ -185,11 +187,9 @@ export class CommonBuildingService {
           response['addResults']?.[0]?.success ??
           response['updateResults']?.[0]?.success;
         if (!success) {
-          this.snackBar.open(
-            $localize`Could not update value`,
-            $localize`Ok`,
-            { duration: 3000 }
-          );
+          this.snackBar.open($localize`Could not update value`, $localize`Ok`, {
+            duration: 3000,
+          });
           return;
         }
         this.executeAutomaticRules(attributes.GlobalID, callback);
@@ -208,12 +208,8 @@ export class CommonBuildingService {
       buildingIds: [buildingId.replace('{', '').replace('}', '')],
       executionUser: this.authState.getNameId(),
     };
-    this.httpClient
-      .post(
-        environment.base_url + '/qms/check/automatic',
-        JSON.stringify(body),
-        { headers: { 'Content-Type': 'application/json' } }
-      )
+    this.qmsApiClient
+      .postJson<typeof body, void>('/qms/check/automatic', body)
       .subscribe({
         next: () => callback?.(),
         error: err => {
@@ -256,8 +252,8 @@ export class CommonBuildingService {
   }
 
   getAllBuildingIdsWithPendingQueLogs(): Observable<any> {
-    return this.httpClient
-      .get(environment.base_url + '/qms/buildings/que/pending')
+    return this.qmsApiClient
+      .get('/qms/buildings/que/pending')
       .pipe(catchError(() => of(null)));
   }
 
@@ -350,16 +346,5 @@ export class CommonBuildingService {
         ] as __esri.StatisticDefinition[]);
       return layer.queryFeatures(query);
     });
-  }
-
-  private createRequestBody(features: any[]) {
-    const data = [];
-    data.push(
-      encodeURIComponent('features') +
-        '=' +
-        encodeURIComponent(JSON.stringify(features))
-    );
-    data.push(encodeURIComponent('f') + '=' + encodeURIComponent('json'));
-    return data.join('&');
   }
 }

@@ -5,8 +5,8 @@ import { QueryFilter } from '../../register/model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
 import { environment } from 'src/environments/environment';
 import { EntityManageResponse } from '../../register/model/entity-req-res';
-import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EsriFeatureApiClientService } from './esri-feature-api-client.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,7 @@ export class CommonDwellingService {
 
   constructor(
     private esriAuthService: CommonEsriAuthService,
-    private httpClient: HttpClient,
+    private esriFeatureApiClient: EsriFeatureApiClientService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -41,20 +41,20 @@ export class CommonDwellingService {
     return defer(() => from(this.fetchAttributesMetadata()));
   }
 
-  createFeature(features: any): Observable<EntityManageResponse> {
-    const url = `${environment.dwelling_url}/addFeatures?token=${this.esriAuthService.getTokenForResource()}`;
-    const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(url, body, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+  createFeature(features: unknown[]): Observable<EntityManageResponse> {
+    return this.esriFeatureApiClient.addFeatures<EntityManageResponse>(
+      environment.dwelling_url,
+      this.esriAuthService.getTokenForResource(),
+      features
+    );
   }
 
-  updateFeature(features: any): Observable<EntityManageResponse> {
-    const url = `${environment.dwelling_url}/updateFeatures?token=${this.esriAuthService.getTokenForResource()}`;
-    const body = this.createRequestBody(features);
-    return this.httpClient.post<EntityManageResponse>(url, body, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+  updateFeature(features: unknown[]): Observable<EntityManageResponse> {
+    return this.esriFeatureApiClient.updateFeatures<EntityManageResponse>(
+      environment.dwelling_url,
+      this.esriAuthService.getTokenForResource(),
+      features
+    );
   }
 
   resetStatus(dwlId: string, callback?: () => void) {
@@ -84,11 +84,9 @@ export class CommonDwellingService {
         const responseData =
           response['addResults']?.[0] ?? response['updateResults']?.[0];
         if (!responseData?.success) {
-          this.snackBar.open(
-            $localize`Could not update value`,
-            $localize`Ok`,
-            { duration: 3000 }
-          );
+          this.snackBar.open($localize`Could not update value`, $localize`Ok`, {
+            duration: 3000,
+          });
           return;
         }
         callback?.();
@@ -139,16 +137,5 @@ export class CommonDwellingService {
       console.error(e);
       return null;
     }
-  }
-
-  private createRequestBody(features: any[]) {
-    const data = [];
-    data.push(
-      encodeURIComponent('features') +
-        '=' +
-        encodeURIComponent(JSON.stringify(features))
-    );
-    data.push(encodeURIComponent('f') + '=' + encodeURIComponent('json'));
-    return data.join('&');
   }
 }

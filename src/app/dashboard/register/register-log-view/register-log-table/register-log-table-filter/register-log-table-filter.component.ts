@@ -42,9 +42,9 @@ export class RegisterLogTableFilterComponent {
     this.filter = JSON.parse(JSON.stringify(data));
   }
 
-  clearFormValue($event: any, filterProp: string) {
+  clearFormValue($event: Event, filterProp: keyof LogFilter) {
     $event.stopPropagation();
     $event.preventDefault();
-    (this.filter as any)[filterProp] = '';
+    this.filter[filterProp] = '';
   }
 }

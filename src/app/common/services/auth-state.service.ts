@@ -1,4 +1,4 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable, isDevMode, Signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -20,6 +20,11 @@ import { ESRI_AUTH_KEY } from '../../dashboard/common/service/common-esri-auth.s
 import { EsriCredentials } from '../../model/EsriCredentials.model';
 import { JWT, SigninResponse } from '../../model/JWT.model';
 import { Role } from '../../model/RolePermissions.model';
+import {
+  AuthRefreshState,
+  AuthSessionSnapshot,
+  AuthSessionStore,
+} from './auth-session.store';
 
 export const DEFAULT_MUNICIPALITY = 53;
 export type RefreshState = 'idle' | 'refreshing' | 'failed';
@@ -43,13 +48,25 @@ export class AuthStateService {
   private webWorker!: Worker;
   private inFlightRefresh$?: Observable<boolean>;
 
+  public readonly session: Signal<AuthSessionSnapshot>;
+  public readonly role: Signal<Role | null>;
+  public readonly refreshStateSignal: Signal<AuthRefreshState>;
+  public readonly isRefreshingSignal: Signal<boolean>;
+
   constructor(
     private router: Router,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private authSessionStore: AuthSessionStore = new AuthSessionStore()
   ) {
     const item = localStorage.getItem(this.TOKEN_STORAGE_KEY);
     this.tokens = item ? JSON.parse(item) : null;
     this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
+    this.session = this.authSessionStore.session;
+    this.role = this.authSessionStore.role;
+    this.refreshStateSignal = this.authSessionStore.refreshState;
+    this.isRefreshingSignal = this.authSessionStore.isRefreshing;
+    this.syncSessionStore();
+    this.authSessionStore.setRefreshState(this.refreshState.value);
     this.createWebWorker();
   }
 
@@ -76,7 +93,7 @@ export class AuthStateService {
       return this.inFlightRefresh$;
     }
 
-    this.refreshState.next('refreshing');
+    this.setRefreshState('refreshing');
     this.webWorker?.postMessage(this.STOP_INTERVAL_MESSAGE);
 
     this.inFlightRefresh$ = this.httpClient
@@ -106,7 +123,7 @@ export class AuthStateService {
               map(() => true),
               catchError(error => {
                 console.error(error);
-                this.refreshState.next('failed');
+                this.setRefreshState('failed');
                 // JWT was refreshed successfully; map flows handle ESRI retry state.
                 return of(true);
               })
@@ -114,12 +131,12 @@ export class AuthStateService {
         ),
         tap(success => {
           if (success && this.refreshState.value !== 'failed') {
-            this.refreshState.next('idle');
+            this.setRefreshState('idle');
           }
         }),
         catchError(error => {
           console.error(error);
-          this.refreshState.next('failed');
+          this.setRefreshState('failed');
           this.logout();
           return of(false);
         }),
@@ -134,6 +151,7 @@ export class AuthStateService {
 
   setLoginState(loginState: boolean) {
     this.isLoggedIn?.next(loginState);
+    this.syncSessionStore();
   }
 
   getLoginStateAsObservable() {
@@ -196,6 +214,7 @@ export class AuthStateService {
     this.tokens = newJWT;
     localStorage.setItem(this.TOKEN_STORAGE_KEY, JSON.stringify(this.tokens));
     this.webWorker?.postMessage('');
+    this.syncSessionStore();
   }
 
   getEmail(): string {
@@ -269,6 +288,7 @@ export class AuthStateService {
     sessionStorage.removeItem(this.TOKEN_STORAGE_KEY);
     sessionStorage.removeItem(ESRI_AUTH_KEY);
     this.setLoginState(false);
+    this.setRefreshState('idle');
     void this.router.navigateByUrl(this.SIGNIN_URL);
   }
 
@@ -360,5 +380,19 @@ export class AuthStateService {
       console.error(error);
       return null;
     }
+  }
+
+  private syncSessionStore() {
+    this.authSessionStore.setSession({
+      isLoggedIn: this.isLoggedIn.value,
+      role: this.getRole() ?? null,
+      municipality: this.getMunicipality(),
+      nameId: this.getNameId() ?? null,
+    });
+  }
+
+  private setRefreshState(state: RefreshState) {
+    this.refreshState.next(state);
+    this.authSessionStore.setRefreshState(state);
   }
 }

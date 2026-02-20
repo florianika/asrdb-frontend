@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   effect,
   inject,
@@ -7,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FieldWork, FieldWorkService } from '../field-work.service';
-import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -24,7 +25,6 @@ import { Subject, takeUntil } from 'rxjs';
   standalone: true,
   imports: [
     NgIf,
-    AsyncPipe,
     MatProgressSpinner,
     MatTableModule,
     MatPaginatorModule,
@@ -37,6 +37,7 @@ import { Subject, takeUntil } from 'rxjs';
   ],
   templateUrl: './field-work-table.component.html',
   styleUrl: './field-work-table.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -47,7 +48,7 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
   private activatedRoute = inject(ActivatedRoute);
   private destroyed$ = new Subject<void>();
 
-  public fieldWorks$ = this.fieldWorkService.fieldWorksAsObservable;
+  public fieldWorksState = this.fieldWorkService.fieldWorksState;
   public fieldWorkState = this.fieldWorkService.fieldWorkState;
   public fieldWorkCanBeClosed = this.fieldWorkService.canBeClosed;
   public columns = [
@@ -72,11 +73,9 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this.fieldWorks$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(fieldWorkState => {
-        this.dataSource.data = fieldWorkState.fieldWorks;
-      });
+    effect(() => {
+      this.dataSource.data = this.fieldWorksState().fieldWorks;
+    });
   }
 
   ngAfterViewInit() {

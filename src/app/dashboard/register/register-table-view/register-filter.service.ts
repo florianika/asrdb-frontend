@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BuildingFilter } from '../model/building';
+import { BuildingFilter, FilterOption } from '../model/building';
 import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { BehaviorSubject } from 'rxjs';
@@ -8,6 +8,7 @@ import {
   AuthStateService,
   DEFAULT_MUNICIPALITY,
 } from '../../../common/services/auth-state.service';
+import { EsriField } from '../model/esri-response';
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
 
@@ -39,18 +40,18 @@ export class RegisterFilterService {
       BldWithQuePendingIds: '',
     },
     options: {
-      BldMunicipality: MUNICIPALITIES as never[],
-      BldStatus: [] as never[],
-      BldType: [] as never[],
-      BldQuality: [] as never[],
-      BldReview: [] as never[],
-      BldCentroidStatus: [] as never[],
+      BldMunicipality: MUNICIPALITIES,
+      BldStatus: [],
+      BldType: [],
+      BldQuality: [],
+      BldReview: [],
+      BldCentroidStatus: [],
     },
   };
   private filter = new BehaviorSubject<BuildingFilter>(this.defaultFilter);
   private globalIds = new BehaviorSubject<string[]>([]);
 
-  private fields: never[] = [];
+  private fields: EsriField[] = [];
 
   constructor(
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
@@ -102,7 +103,7 @@ export class RegisterFilterService {
     localStorage.setItem(key, JSON.stringify(filter));
   }
 
-  prepareFilter(fields: never[]) {
+  prepareFilter(fields: EsriField[]) {
     this.fields = fields;
     this.filter.next({
       filter: this.filter.value.filter,
@@ -147,8 +148,13 @@ export class RegisterFilterService {
           conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
         } else if (filter.column === 'BldWithQuePendingIds') {
           if (filter.value === 'notFound') {
+            const quote = String.fromCharCode(39);
             conditions.push(
-              "GlobalID in ('{00000000-0000-0000-0000-000000000000}')"
+              'GlobalID in (' +
+                quote +
+                '{00000000-0000-0000-0000-000000000000}' +
+                quote +
+                ')'
             );
           } else {
             const pendingIds = filter.value.split(',').map((id: string) => {
@@ -192,14 +198,18 @@ export class RegisterFilterService {
     ) {
       return '1=0';
     }
-    return `EntBldGlobalID in (${this.globalIds.getValue().map(id => "'" + id + "'")}) AND EntQuality <> 0`;
+    const globalIds = this.globalIds
+      .getValue()
+      .map(id => `'${id}'`)
+      .join(',');
+    return `EntBldGlobalID in (${globalIds}) AND EntQuality <> 0`;
   }
 
   getFilter() {
     return this.filter.value;
   }
 
-  private getOptions(column: string) {
+  private getOptions(column: keyof BuildingFilter['options']): FilterOption[] {
     const field = this.commonBuildingRegisterHelper.getField(
       this.fields,
       column
@@ -207,31 +217,28 @@ export class RegisterFilterService {
     if (!field) {
       return [];
     }
-    return field.domain?.codedValues
-      ?.map((codeValue: { name: string; code: string | number }) => ({
+    return (field.domain?.codedValues ?? [])
+      .map((codeValue: { name: string; code: string | number }) => ({
         name: codeValue.name,
         code: codeValue.code,
       }))
-      ?.sort(
-        (
-          a: { name: string; code: string },
-          b: { name: string; code: string | number }
-        ) => {
-          if (a.code > b.code) {
-            return 1;
-          } else if (a.code < b.code) {
-            return -1;
-          }
-          return 0;
+      .sort((a, b) => {
+        if (a.code > b.code) {
+          return 1;
+        } else if (a.code < b.code) {
+          return -1;
         }
-      );
+        return 0;
+      });
   }
 
-  private getOptionsFromDomain(domain: string) {
+  private getOptionsFromDomain<K extends keyof BuildingFilter['options']>(
+    domain: K
+  ): BuildingFilter['options'][K] {
     const options = this.getOptions(domain);
-    return options.length
-      ? options
-      : (this.filter.value.options as any)[domain];
+    return (
+      options.length ? options : this.filter.value.options[domain]
+    ) as BuildingFilter['options'][K];
   }
 
   private getBldMunicipalityOptions() {

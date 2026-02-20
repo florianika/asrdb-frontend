@@ -1,9 +1,11 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component, Inject,
-  Input, LOCALE_ID,
+  Component,
+  Inject,
+  Input,
+  LOCALE_ID,
+  OnDestroy,
   OnInit,
   TemplateRef,
   ViewChild,
@@ -18,7 +20,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { Log } from '../model/log';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConcatenateMessagePipe as ConcatinateMessagePipe } from './register-log-message.pipe';
@@ -64,13 +66,18 @@ import { Router } from '@angular/router';
   templateUrl: './register-log-table.component.html',
   styleUrls: ['./register-log-table.component.css'],
 })
-export class RegisterLogTableComponent implements OnInit, AfterViewInit {
+export class RegisterLogTableComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() building!: string;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('confirmResolveDialog') confirmResolveDialog!: TemplateRef<any>;
-  @ViewChild('confirmPendingDialog') confirmPendingDialog!: TemplateRef<any>;
+  @ViewChild('confirmResolveDialog')
+  confirmResolveDialog!: TemplateRef<unknown>;
+  @ViewChild('confirmPendingDialog')
+  confirmPendingDialog!: TemplateRef<unknown>;
   private dataSource: MatTableDataSource<Log> = new MatTableDataSource<Log>();
+  private destroy$ = new Subject<void>();
 
   public isLoadingResults = this.logService.isLoadingResults;
   public executionStatus = this.logService.isExecutingRules;
@@ -113,13 +120,15 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   constructor(
     private logService: RegisterLogService,
     private router: Router,
-    private changeDetectionRef: ChangeDetectorRef,
     private matDialog: MatDialog,
     @Inject(LOCALE_ID) private locale: string
   ) {}
 
   ngOnInit(): void {
-    this.logService.loadLogs(this.building);
+    this.logService
+      .loadLogs(this.building)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   ngAfterViewInit() {
@@ -127,8 +136,16 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   startExecuting() {
-    this.logService.executeRules(this.building);
+    this.logService
+      .executeRules(this.building)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   filterData() {
@@ -147,7 +164,11 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
   }
 
   remove($event: Chip) {
-    (this.filter as any)[$event.column] = '';
+    const column = $event.column as keyof LogFilter;
+    if (!(column in this.filter)) {
+      return;
+    }
+    this.filter[column] = '';
     this.filterLogs();
   }
 
@@ -157,7 +178,10 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
       .afterClosed()
       .subscribe((confirm: boolean) => {
         if (confirm) {
-          this.logService.resolveLog(id, this.building);
+          this.logService
+            .resolveLog(id, this.building)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe();
         }
       });
   }
@@ -168,7 +192,10 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
       .afterClosed()
       .subscribe((confirm: boolean) => {
         if (confirm) {
-          this.logService.unresolveLog(id, this.building);
+          this.logService
+            .unresolveLog(id, this.building)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe();
         }
       });
   }
@@ -179,7 +206,10 @@ export class RegisterLogTableComponent implements OnInit, AfterViewInit {
     );
   }
 
-  getMessage(row: { qualityMessageAl: string; qualityMessageEn: string }): string {
+  getMessage(row: {
+    qualityMessageAl: string;
+    qualityMessageEn: string;
+  }): string {
     return this.locale === 'sq' ? row.qualityMessageAl : row.qualityMessageEn;
   }
 

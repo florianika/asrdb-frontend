@@ -25,13 +25,14 @@ import {
   catchError,
   distinctUntilChanged,
   merge,
+  Observable,
   of,
   startWith,
   Subject,
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { BuildingFilter } from '../../model/building';
+import { Building, BuildingFilter } from '../../model/building';
 import { QueryFilter } from '../../model/query-filter';
 import { CommonBuildingService } from '../../../common/service/common-building.service';
 import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
@@ -56,6 +57,11 @@ import {
 } from '../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
 import { BUILDING_ENTITY } from '../../../../common/constants/common-constants';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
+import { EsriField, EsriQueryResponse } from '../../model/esri-response';
+
+type BuildingDataResponse = EsriQueryResponse<Building> & {
+  globalIds: string[];
+};
 
 @Component({
   selector: 'asrdb-register-table',
@@ -101,14 +107,14 @@ export class RegisterTableComponent
     'BldQuality',
     'BldReview',
   ];
-  private destroy$ = new Subject();
+  private destroy$ = new Subject<void>();
   private initialized = false;
 
   displayedColumns: string[] = ['selection'].concat(
     this.columns.concat(['actions'])
   );
-  data: never[] = [];
-  fields: never[] = [];
+  data: Building[] = [];
+  fields: EsriField[] = [];
   resultsLength = 0;
   isLoadingResults = true;
   selectedBuildings: string[] = [];
@@ -139,7 +145,6 @@ export class RegisterTableComponent
   ngOnInit(): void {
     const previousUrlQueryParam =
       this.activatedRoute.snapshot.queryParamMap.get('from');
-    const currentUrl = this.router.url;
     if (!previousUrlQueryParam || previousUrlQueryParam !== 'details') {
       this.registerFilterService.resetFilter();
     }
@@ -167,7 +172,7 @@ export class RegisterTableComponent
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next(true);
+    this.destroy$.next();
     this.destroy$.complete();
   }
 
@@ -221,7 +226,7 @@ export class RegisterTableComponent
 
   handleSelectAll(event: MatCheckboxChange) {
     this.selectedBuildings = event.checked
-      ? this.data.map(el => el['GlobalID'])
+      ? this.data.map(el => el.GlobalID)
       : [];
   }
 
@@ -292,9 +297,10 @@ export class RegisterTableComponent
   }
 
   startExecutionForSelected() {
-    this.registerLogService.executeRulesForMultipleBuildings(
-      this.selectedBuildings
-    );
+    this.registerLogService
+      .executeRulesForMultipleBuildings(this.selectedBuildings)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
     setTimeout(() => {
       this.handlePopupClose(
         JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
@@ -303,7 +309,10 @@ export class RegisterTableComponent
   }
 
   startExecutionForBuilding(buildingId: string) {
-    this.registerLogService.executeRules(buildingId, false);
+    this.registerLogService
+      .executeRules(buildingId, false)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
     setTimeout(() => {
       this.handlePopupClose(
         JSON.parse(JSON.stringify(this.registerFilterService.getFilter()))
@@ -324,8 +333,8 @@ export class RegisterTableComponent
   filterBuilding(GlobalID: string) {
     const filterCopy = JSON.parse(
       JSON.stringify(this.registerFilterService.getFilter())
-    );
-    (filterCopy as any).filter['GlobalID'] = GlobalID;
+    ) as BuildingFilter;
+    filterCopy.filter.GlobalID = GlobalID;
     this.registerFilterService.updateFilter(filterCopy, FILTER_REGISTER);
   }
 
@@ -359,7 +368,7 @@ export class RegisterTableComponent
     }
   }
 
-  private loadBuildings() {
+  private loadBuildings(): Observable<BuildingDataResponse | null> {
     this.isLoadingResults = true;
     const start =
       (this.paginator?.pageIndex ?? this.DEFAULT_PAGE) *
@@ -388,7 +397,7 @@ export class RegisterTableComponent
     );
   }
 
-  private handleResponse(res: any) {
+  private handleResponse(res: BuildingDataResponse | null) {
     if (isDevMode()) console.log('Data', res);
 
     if (!res) {
@@ -407,7 +416,7 @@ export class RegisterTableComponent
     }
 
     this.resultsLength = res.count;
-    this.data = res.data.features.map((feature: any) => feature.attributes);
+    this.data = res.data.features.map(feature => feature.attributes);
     this.isLoadingResults = false;
     this.registerFilterService.updateGlobalIds(res.globalIds);
 

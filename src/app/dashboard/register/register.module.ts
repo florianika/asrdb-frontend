@@ -21,6 +21,9 @@ import { EntranceDetailsService } from './register-view-details-v2/entrance/entr
 import { DwellingDetailsService } from './register-view-details-v2/dwelling/dwelling-details.service';
 import { RegisterViewDetailsV2Component } from './register-view-details-v2/register-view-details-v2.component';
 import { RegisterViewDetailsService } from './register-view-details-v2/register-view-details.service';
+import { RegisterViewDetailsStore } from './register-view-details-v2/register-view-details.store';
+import { RegisterViewDetailsMapper } from './register-view-details-v2/register-view-details.mapper';
+import { RegisterViewDetailsApiAdapter } from './register-view-details-v2/register-view-details-api.adapter';
 
 @NgModule({
   declarations: [],
@@ -49,6 +52,9 @@ import { RegisterViewDetailsService } from './register-view-details-v2/register-
     EntranceDetailsService,
     DwellingDetailsService,
     RegisterViewDetailsService,
+    RegisterViewDetailsStore,
+    RegisterViewDetailsMapper,
+    RegisterViewDetailsApiAdapter,
   ],
 })
 export class RegisterModule {}

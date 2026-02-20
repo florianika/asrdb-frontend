@@ -26,7 +26,7 @@ export type QualityRulesResponse = {
 };
 
 export type ActiveQualityRulesResponse = {
-  shortRulesDTO: QualityRule[];
+  shortRulesDTO: ShortQualityRule[];
 };
 
 export type QualityRuleResponse = {

@@ -3,13 +3,11 @@ import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../../environments/environment';
 import {
-  EMPTY,
   Subject,
   catchError,
-  switchMap,
   takeUntil,
-  timer,
 } from 'rxjs';
+import { AsyncOrchestrationService } from '../../common/service/async-orchestration.service';
 
 export const TEST_JOB_ID = 'testJobId';
 
@@ -26,6 +24,7 @@ export class TestBuildingService implements OnDestroy {
   private statusPollingStop$ = new Subject<void>();
   private matSnackBar = inject(MatSnackBar);
   private httpClient = inject(HttpClient);
+  private asyncOrchestration = inject(AsyncOrchestrationService);
 
   public testBuildingSignal = signal({
     jobId: '',
@@ -42,7 +41,7 @@ export class TestBuildingService implements OnDestroy {
   }
 
   public cancelStatusPolling(resetRunning = false) {
-    this.statusPollingStop$.next();
+    this.asyncOrchestration.resetPolling(this.statusPollingStop$);
     if (resetRunning) {
       this.testBuildingSignal.update(state => ({
         ...state,
@@ -126,33 +125,31 @@ export class TestBuildingService implements OnDestroy {
   private startStatusPolling(jobId: string) {
     this.cancelStatusPolling();
     const url = environment.base_url + `/qms/buildings/status-test-job/${jobId}`;
-    timer(0, 5000)
-      .pipe(
-        takeUntil(this.destroy$),
-        takeUntil(this.statusPollingStop$),
-        switchMap(() =>
-          this.httpClient.get<{ status: string, hangfireJobId: string }>(url).pipe(
-            catchError(error => {
-              const message = error?.error?.message
-                ? error.error.message
-                : $localize`Failed to fetch test job status`;
+    this.asyncOrchestration
+      .createPollingStream({
+        destroy$: this.destroy$,
+        stop$: this.statusPollingStop$,
+        request: () =>
+          this.httpClient.get<{ status: string; hangfireJobId: string }>(url),
+        onError: error => {
+          const message = (error as { error?: { message?: string } })?.error
+            ?.message
+            ? (error as { error: { message: string } }).error.message
+            : $localize`Failed to fetch test job status`;
 
-              this.matSnackBar.open(message, $localize`Close`, {
-                duration: 3000,
-              });
+          this.matSnackBar.open(message, $localize`Close`, {
+            duration: 3000,
+          });
 
-              this.testBuildingSignal.set({
-                jobId,
-                hangfireJobId: '',
-                status: 'FAILED',
-                isRunning: false,
-              });
-              this.cancelStatusPolling();
-              return EMPTY;
-            })
-          )
-        )
-      )
+          this.testBuildingSignal.set({
+            jobId,
+            hangfireJobId: '',
+            status: 'FAILED',
+            isRunning: false,
+          });
+          this.cancelStatusPolling();
+        },
+      })
       .subscribe({
         next: response => {
           const isRunning = response.status === 'RUNNING';

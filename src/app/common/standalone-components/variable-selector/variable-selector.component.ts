@@ -56,7 +56,7 @@ export class VariableSelectorComponent implements OnInit, OnDestroy {
 
   public filterValue = '';
 
-  private destroy$ = new Subject();
+  private destroy$ = new Subject<void>();
   private _variables = new Map<EntityType, SelectOption[]>([
     [BUILDING_ENTITY, []],
     [ENTRANCE_ENTITY, []],
@@ -66,7 +66,7 @@ export class VariableSelectorComponent implements OnInit, OnDestroy {
   public get variables(): SelectOption[] {
     return this._variables
       .get(this.entityType ? this.entityType : BUILDING_ENTITY)!
-      .filter((variable: any) => {
+      .filter(variable => {
         return (
           this.filterValue === '' ||
           variable.value.toLowerCase().includes(this.filterValue.toLowerCase())
@@ -97,21 +97,21 @@ export class VariableSelectorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   changeVariable(selectedVariable: MatSelectChange) {
     this.variableChange.emit(selectedVariable.value);
   }
 
-  clearValue($event: any) {
+  clearValue($event: Event) {
     $event.stopPropagation();
     $event.preventDefault();
     this.variableChange.emit('');
   }
 
-  clearFilter($event: any) {
+  clearFilter($event: Event) {
     $event.stopPropagation();
     $event.preventDefault();
     this.filterValue = '';

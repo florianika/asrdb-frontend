@@ -154,10 +154,7 @@ export class FieldWorkFormStep3Component {
   }
 
   public back() {
-    this.fieldWorkState.update(state => ({
-      ...state,
-      currentStep: Math.max(state.currentStep - 1, 0),
-    }));
+    this._fieldWorkService.moveCurrentStep(-1);
   }
 
   public next() {
@@ -177,10 +174,7 @@ export class FieldWorkFormStep3Component {
       );
       return;
     }
-    this.fieldWorkState.update(state => ({
-      ...state,
-      currentStep: Math.min(state.currentStep + 1, 3),
-    }));
+    this._fieldWorkService.moveCurrentStep(1);
   }
 
   public handleClose() {

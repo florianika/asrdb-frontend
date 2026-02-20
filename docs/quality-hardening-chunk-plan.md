@@ -60,7 +60,7 @@ Each chunk has `Critical`, `Important`, `Good to have`, and `Exit criteria`.
 
 ### Good to have
 
-- [ ] Introduce auth signal store (`session`, `refreshState`, `role`) with readonly facade.
+- [x] Introduce auth signal store (`session`, `refreshState`, `role`) with readonly facade.
 
 ### Exit criteria
 
@@ -80,15 +80,15 @@ Each chunk has `Critical`, `Important`, `Good to have`, and `Exit criteria`.
 
 - [x] Remove duplicate service provisioning for root services in modules/components/routing.
 - [x] Fix scope collisions for:
-`FieldWorkService`, `FieldWorkClosureService`, `QualityManagementService`,
-`EmailTemplateManagementService`, `TestBuildingService`,
-`CommonBuildingService`, `CommonEntranceService`, `CommonDwellingService`.
+      `FieldWorkService`, `FieldWorkClosureService`, `QualityManagementService`,
+      `EmailTemplateManagementService`, `TestBuildingService`,
+      `CommonBuildingService`, `CommonEntranceService`, `CommonDwellingService`.
 
 ### Important
 
 - [x] Document provider policy (see `/Users/reipano/Personal/asrdb-frontend/docs/di-provider-policy.md`):
-`root` for global state,
-feature/component providers only when isolated lifecycle is required.
+      `root` for global state,
+      feature/component providers only when isolated lifecycle is required.
 
 ### Good to have
 
@@ -122,13 +122,13 @@ feature/component providers only when isolated lifecycle is required.
 
 ### Good to have
 
-- [ ] Split large register classes into store + mapper + API adapter layers.
+- [x] Split large register classes into store + mapper + API adapter layers.
 
 ### Exit criteria
 
-- [ ] Repeated navigation in/out of details pages does not duplicate requests.
-- [ ] Delete flows trigger single reload and cleanly close dialogs.
-- [ ] Hidden field behavior is deterministic.
+- [x] Repeated navigation in/out of details pages does not duplicate requests.
+- [x] Delete flows trigger single reload and cleanly close dialogs.
+- [x] Hidden field behavior is deterministic.
 
 ---
 
@@ -140,24 +140,24 @@ feature/component providers only when isolated lifecycle is required.
 
 ### Critical
 
-- [ ] Fix entrance click mapping bug in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/common/components/register-map/map-interaction.service.ts` to use building link field.
-- [ ] Remove root-scoped long-lived map service leak patterns in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/register/register-form/entity-management-map.service.ts`.
-- [ ] Add teardown for map subscriptions in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/register/register-form/building-creation/building-creation.component.ts`.
+- [x] Fix entrance click mapping bug in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/common/components/register-map/map-interaction.service.ts` to use building link field.
+- [x] Remove root-scoped long-lived map service leak patterns in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/register/register-form/entity-management-map.service.ts`.
+- [x] Add teardown for map subscriptions in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/register/register-form/building-creation/building-creation.component.ts`.
 
 ### Important
 
-- [ ] Replace broad ArcGIS `any` with typed DTOs and adapters.
-- [ ] Normalize map query/filter helpers into reusable typed utilities.
+- [x] Replace broad ArcGIS `any` with typed DTOs and adapters.
+- [x] Normalize map query/filter helpers into reusable typed utilities.
 
 ### Good to have
 
-- [ ] Add map integration tests for building vs entrance selection.
+- [x] Add map integration tests for building vs entrance selection.
 
 ### Exit criteria
 
-- [ ] No map event subscription leak after route changes.
-- [ ] Correct filter IDs applied for building and entrance clicks.
-- [ ] ArcGIS typed boundaries introduced for core flows.
+- [x] No map event subscription leak after route changes.
+- [x] Correct filter IDs applied for building and entrance clicks.
+- [x] ArcGIS typed boundaries introduced for core flows.
 
 ---
 
@@ -169,25 +169,25 @@ feature/component providers only when isolated lifecycle is required.
 
 ### Critical
 
-- [ ] Replace recursive `setTimeout` polling with cancellable observable polling and explicit stop conditions.
-- [ ] Add component/service destroy cancellation for running jobs and status polling.
+- [x] Replace recursive `setTimeout` polling with cancellable observable polling and explicit stop conditions.
+- [x] Add component/service destroy cancellation for running jobs and status polling.
 
 ### Important
 
-- [ ] Fix teardown gaps in:
+- [x] Fix teardown gaps in:
       `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/field-work/field-work-table/field-work-table.component.ts`,
       `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/administration/user-management/user-management.component.ts`,
       `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/administration/email-template-management/email-template-management-table/email-template-management-table.component.ts`.
 
 ### Good to have
 
-- [ ] Standardize async orchestration pattern for all long-running jobs.
+- [x] Standardize async orchestration pattern for all long-running jobs.
 
 ### Exit criteria
 
-- [ ] Navigating away stops all polling.
-- [ ] No stale loading states after cancellation.
-- [ ] Long-running flows survive refresh/reentry safely.
+- [x] Navigating away stops all polling.
+- [x] No stale loading states after cancellation.
+- [x] Long-running flows survive refresh/reentry safely.
 
 ---
 
@@ -211,12 +211,12 @@ feature/component providers only when isolated lifecycle is required.
 
 ### Good to have
 
-- [ ] Add e2e smoke for quality rule add/edit and street merge flow.
+- [x] Add e2e smoke for quality rule add/edit and street merge flow.
 
 ### Exit criteria
 
-- [ ] Quality add/edit path works deterministically.
-- [ ] Street filter/form behavior is type-safe and stable.
+- [x] Quality add/edit path works deterministically.
+- [x] Street filter/form behavior is type-safe and stable.
 
 ---
 
@@ -228,22 +228,22 @@ Cross-cutting component/service state architecture
 
 ### Critical
 
-- [ ] Standardize on signal stores for feature state where practical.
-- [ ] Replace mixed `BehaviorSubject + local mutable state + signal` combos in high-churn modules.
+- [x] Standardize on signal stores for feature state where practical.
+- [x] Replace mixed `BehaviorSubject + local mutable state + signal` combos in high-churn modules.
 
 ### Important
 
-- [ ] Introduce `computed` selectors and readonly state exposure patterns.
-- [ ] Increase `OnPush` adoption beyond current baseline.
+- [x] Introduce `computed` selectors and readonly state exposure patterns.
+- [x] Increase `OnPush` adoption beyond current baseline.
 
 ### Good to have
 
-- [ ] Add migration guide and patterns doc for future contributors.
+- [x] Add migration guide and patterns doc for future contributors.
 
 ### Exit criteria
 
-- [ ] Signal-based stores used in core workflows.
-- [ ] Clear write paths and predictable reactivity boundaries.
+- [x] Signal-based stores used in core workflows.
+- [x] Clear write paths and predictable reactivity boundaries.
 
 ---
 
@@ -255,23 +255,23 @@ Whole app quality debt
 
 ### Critical
 
-- [ ] Remove all `rxjs/internal/*` imports.
-- [ ] Remove highest-risk `any` usage from `register`, `common`, and `street-management`.
-- [ ] Convert self-subscribing services to return typed observables/promises at boundaries where appropriate.
+- [x] Remove all `rxjs/internal/*` imports.
+- [x] Remove highest-risk `any` usage from `register`, `common`, and `street-management`.
+- [x] Convert self-subscribing services to return typed observables/promises at boundaries where appropriate.
 
 ### Important
 
-- [ ] Add strict DTO mappers for API responses.
-- [ ] Remove dead/unused imports and service fields.
+- [x] Add strict DTO mappers for API responses.
+- [x] Remove dead/unused imports and service fields.
 
 ### Good to have
 
-- [ ] Introduce lightweight typed API client wrappers.
+- [x] Introduce lightweight typed API client wrappers.
 
 ### Exit criteria
 
-- [ ] `@typescript-eslint/no-explicit-any` debt significantly reduced in core modules.
-- [ ] No internal RxJS imports remain.
+- [x] `@typescript-eslint/no-explicit-any` debt significantly reduced in core modules.
+- [x] No internal RxJS imports remain.
 
 ---
 

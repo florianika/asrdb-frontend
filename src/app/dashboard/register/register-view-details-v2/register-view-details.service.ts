@@ -5,61 +5,35 @@ import {
   Injectable,
   isDevMode,
   LOCALE_ID,
-  signal,
 } from '@angular/core';
 import { Building } from '../model/building';
-import { Log } from '../register-log-view/model/log';
-import { QueryFilter } from '../model/query-filter';
 import { catchError, filter, of, skipWhile, Subject, take, takeUntil } from 'rxjs';
-import { CommonBuildingService } from '../../common/service/common-building.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   NOT_EXECUTING,
   RegisterLogService,
 } from '../register-log-view/register-log-table/register-log.service';
-import {
-  CommonEntityStructureService,
-  EntityAttribute,
-} from '../../common/service/common-entity-structure.service';
-import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
-import { CommonEntranceService } from '../../common/service/common-entrance.service';
-import { SectionField } from '../constant/common-constants';
 import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Section, ViewSection } from './types';
-import {getLocaleProperty, getLogMessage} from '../../common/helper/locale-property-helper';
+import { RegisterViewDetailsStore } from './register-view-details.store';
+import { RegisterViewDetailsMapper } from './register-view-details.mapper';
+import { RegisterViewDetailsApiAdapter } from './register-view-details-api.adapter';
+import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
 
 @Injectable()
 export class RegisterViewDetailsService {
-  // private variables
   private destroy$: Subject<void> = new Subject<void>();
   private executionRefreshTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // service injections
-  private commonBuildingService = inject(CommonBuildingService);
   private registerLogService = inject(RegisterLogService);
-  private commonEntityStructureService = inject(CommonEntityStructureService);
-  private commonEntranceService = inject(CommonEntranceService);
   private commonBuildingRegisterHelper = inject(CommonRegisterHelperService);
-
-  // material service injection
   private matSnack = inject(MatSnackBar);
+  private store = inject(RegisterViewDetailsStore);
+  private mapper = inject(RegisterViewDetailsMapper);
+  private apiAdapter = inject(RegisterViewDetailsApiAdapter);
 
-  // store all necessary data for building details view in a signal
-  public viewData = signal({
-    building: null as Building | null,
-    buildingFields: [] as EntityAttribute[] | null,
-    logs: [] as Log[],
-    isLoading: true,
-    isExecutingRules: false,
-    isUpdatingFeature: false,
-  });
-
-  public viewStructures = signal({
-    buildingStructure: null as ViewSection | null,
-    entranceStructure: null as ViewSection | null,
-    dwellingStructure: null as ViewSection | null,
-  });
+  public viewData = this.store.viewData;
+  public viewStructures = this.store.viewStructures;
 
   constructor(@Inject(LOCALE_ID) private locale: string) {
     effect(
@@ -88,40 +62,32 @@ export class RegisterViewDetailsService {
   }
 
   public init(id: string) {
-    this.viewData.update(data => ({
-      ...data,
-      isLoading: true,
-      building: null,
-      buildingFields: [],
-    }));
+    this.store.resetForLoad();
     this.loadBuildingStructure();
     this.loadBuildingData(id);
     this.loadLogs(id);
   }
 
-  // mark as untested
   public markAsUntested(id: string, entranceId?: string) {
-    this.viewData.update(data => ({
-      ...data,
-      isLoading: true,
-      building: null,
-      buildingFields: [],
-    }));
+    this.store.resetForLoad();
     this.resetEntranceStatus(id, entranceId);
   }
 
   public startExecution(id: string, callback?: () => void) {
-    this.registerLogService.executeRules(id);
+    this.registerLogService
+      .executeRules(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
     this.matSnack.open(
       $localize`Started execution of quality rules`,
       $localize`Ok`,
       { duration: 5000 }
     );
-    this.viewData.update(data => ({
-      ...data,
+    this.store.patchViewData({
       isExecutingRules: true,
       buildingFields: [],
-    }));
+    });
+
     this.registerLogService.isExecutingRules
       .pipe(
         filter(value => value === NOT_EXECUTING),
@@ -132,6 +98,7 @@ export class RegisterViewDetailsService {
         if (value !== NOT_EXECUTING) {
           return;
         }
+
         this.executionRefreshTimer = setTimeout(() => {
           this.executionRefreshTimer = null;
           this.matSnack.open(
@@ -139,27 +106,25 @@ export class RegisterViewDetailsService {
             $localize`Ok`,
             { duration: 5000 }
           );
+
           if (callback) {
             callback();
-            this.viewData.update(data => ({
-              ...data,
-              isExecutingRules: false,
-            }));
-          } else {
-            this.viewData.update(data => ({
-              ...data,
-              isExecutingRules: false,
-            }));
-            this.init(id);
+            this.store.patchViewData({ isExecutingRules: false });
+            return;
           }
+
+          this.store.patchViewData({ isExecutingRules: false });
+          this.init(id);
         }, 1000);
       });
   }
 
-  public rejectReviewForBuilding(dialog: MatDialogRef<any>) {
-    this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+  public rejectReviewForBuilding(dialog: MatDialogRef<unknown>) {
+    this.store.patchViewData({ isUpdatingFeature: true });
     const building = this.viewData().building;
+
     if (!building) {
+      this.store.patchViewData({ isUpdatingFeature: false });
       this.matSnack.open(
         $localize`No building loaded. Cannot reject review.`,
         $localize`Ok`,
@@ -167,19 +132,14 @@ export class RegisterViewDetailsService {
       );
       return;
     }
-    const feature = {
-      attributes: {
-        ...building,
-        BldReview: 5,
-      },
-    };
-    this.commonBuildingService
-      .updateFeature([feature])
+
+    this.apiAdapter
+      .updateBuildingReview(building, 5)
       .pipe(
         takeUntil(this.destroy$),
         catchError(err => {
           console.error('Error updating feature', err);
-          this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+          this.store.patchViewData({ isUpdatingFeature: false });
           this.matSnack.open(
             $localize`Could not reject review. Please try again.`,
             $localize`Ok`,
@@ -188,9 +148,11 @@ export class RegisterViewDetailsService {
           return of(null);
         })
       )
-      .subscribe(feature => {
-        if (feature) {
-          if (isDevMode()) console.log('Feature updated', feature);
+      .subscribe(response => {
+        if (response) {
+          if (isDevMode()) {
+            console.log('Feature updated', response);
+          }
           this.matSnack.open(
             $localize`Review reopened successfully`,
             $localize`Ok`,
@@ -199,35 +161,31 @@ export class RegisterViewDetailsService {
           dialog.close();
           this.loadBuildingData(building.GlobalID);
         }
-        this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+        this.store.patchViewData({ isUpdatingFeature: false });
       });
   }
 
-  approveReviewForBuilding(dialog: MatDialogRef<any>) {
-    this.viewData.update(data => ({ ...data, isUpdatingFeature: true }));
+  public approveReviewForBuilding(dialog: MatDialogRef<unknown>) {
+    this.store.patchViewData({ isUpdatingFeature: true });
     const building = this.viewData().building;
+
     if (!building) {
+      this.store.patchViewData({ isUpdatingFeature: false });
       this.matSnack.open(
         $localize`No building loaded. Cannot approve review.`,
         $localize`Ok`,
         { duration: 3000 }
       );
-      this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
       return;
     }
-    const feature = {
-      attributes: {
-        ...building,
-        BldReview: 2,
-      },
-    };
-    this.commonBuildingService
-      .updateFeature([feature])
+
+    this.apiAdapter
+      .updateBuildingReview(building, 2)
       .pipe(
         takeUntil(this.destroy$),
         catchError(err => {
           console.error('Error updating feature', err);
-          this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+          this.store.patchViewData({ isUpdatingFeature: false });
           this.matSnack.open(
             $localize`Could not approve review. Please try again.`,
             $localize`Ok`,
@@ -236,9 +194,11 @@ export class RegisterViewDetailsService {
           return of(null);
         })
       )
-      .subscribe(feature => {
-        if (feature) {
-          if (isDevMode()) console.log('Feature updated', feature);
+      .subscribe(response => {
+        if (response) {
+          if (isDevMode()) {
+            console.log('Feature updated', response);
+          }
           this.matSnack.open(
             $localize`Review approved successfully`,
             $localize`Ok`,
@@ -247,17 +207,44 @@ export class RegisterViewDetailsService {
           dialog.close();
           this.loadBuildingData(building.GlobalID);
         }
-        this.viewData.update(data => ({ ...data, isUpdatingFeature: false }));
+        this.store.patchViewData({ isUpdatingFeature: false });
       });
   }
 
-  // load building details data
-  private loadBuildingData(id: string) {
-    this.viewData.update(data => ({ ...data, isLoading: true }));
-    const filter = { where: this.prepareWhereCase(id) } as Partial<QueryFilter>;
+  getMunicipality(): string | number {
+    const fields = this.viewData().buildingFields;
+    const building = this.viewData().building;
+    if (!fields || !building) {
+      return '';
+    }
 
-    this.commonBuildingService
-      .getBuildingData(filter)
+    return this.commonBuildingRegisterHelper.getMunicipality(
+      fields,
+      'BldMunicipality',
+      building.BldMunicipality
+    );
+  }
+
+  getValueFromStatus(column: keyof Building): string {
+    const fields = this.viewData().buildingFields;
+    const building = this.viewData().building;
+    if (!fields || !building) {
+      return '';
+    }
+
+    const value = this.commonBuildingRegisterHelper.getValueFromStatus(
+      fields,
+      column,
+      building[column]
+    );
+    return String(value ?? '');
+  }
+
+  private loadBuildingData(id: string) {
+    this.store.patchViewData({ isLoading: true });
+
+    this.apiAdapter
+      .loadBuildingData(id)
       .pipe(
         catchError(err => {
           console.log(err);
@@ -270,10 +257,31 @@ export class RegisterViewDetailsService {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(res => this.handleResponse(res));
+      .subscribe(response => {
+        if (isDevMode()) {
+          console.log('Data', response);
+        }
+        if (!response) {
+          this.matSnack.open(
+            $localize`Could not load result. Please try again`,
+            $localize`Ok`,
+            { duration: 3000 }
+          );
+          this.store.patchViewData({ isLoading: false });
+          return;
+        }
+
+        const { building, fields } = this.mapper.mapBuildingDataResponse(
+          response
+        );
+
+        this.store.patchViewData({
+          building,
+          buildingFields: fields,
+        });
+      });
   }
 
-  // load logs for building
   private loadLogs(id: string) {
     this.registerLogService.isLoadingResults
       .pipe(
@@ -283,169 +291,58 @@ export class RegisterViewDetailsService {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        const logs = this.registerLogService.logsValue;
-        this.viewData.update(data => ({ ...data, logs }));
+        this.store.patchViewData({ logs: this.registerLogService.logsValue });
       });
-    this.registerLogService.loadLogs(id);
+
+    this.apiAdapter
+      .loadLogs(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
-  // load building structure
   private loadBuildingStructure() {
-    this.commonEntityStructureService.structureLoaded
-      .pipe(
-        filter(
-          response =>
-            !response.loading &&
-            !!response.structure &&
-            response.type === BUILDING_ENTITY
-        ),
-        take(1),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(response => {
-        if (response.structure) {
-          this.prepareStructure(response.structure);
-        }
+    this.apiAdapter
+      .loadBuildingStructure()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(structure => {
+        const mappedStructure = this.mapper.buildBuildingStructure(
+          structure,
+          this.locale as 'en' | 'sq'
+        );
+        this.store.patchViewStructures({ buildingStructure: mappedStructure });
       });
-    this.commonEntityStructureService.getEntityStructure(BUILDING_ENTITY);
   }
 
-  // reset building status
   private resetBuildingStatus(id: string) {
-    this.commonBuildingService.resetStatus(id, () =>
-      setTimeout(() => this.init(id), 500)
-    );
+    this.apiAdapter.resetBuildingStatus(id, () => setTimeout(() => this.init(id), 500));
   }
 
-  // reset entrance status
-  private resetEntranceStatus(id: string, entranceId?: string, ) {
+  private resetEntranceStatus(id: string, entranceId?: string) {
     if (entranceId) {
-      this.commonEntranceService.resetStatus(entranceId, () =>
+      this.apiAdapter.resetEntranceStatus(entranceId, () =>
         this.resetBuildingStatus(id)
       );
-    } else {
-      this.resetBuildingStatus(id);
-    }
-  }
-
-  // prepare structure for display
-  private prepareStructure(structure: EntityAttribute[]) {
-    const visibleFields = structure.reduce(
-      (acc, attr: EntityAttribute) => {
-        if (attr.section !== 'none' && !attr.internal) {
-          const field = {
-            title: getLocaleProperty(attr.label, this.locale as 'en' | 'sq'),
-            propName: attr.name,
-            value: '',
-            log: '',
-            logType: '',
-          } as SectionField;
-
-          if (attr.section === 'identification') acc.identifying.push(field);
-          else if (attr.section === 'description') acc.describing.push(field);
-          else if (attr.section === 'title') acc.title.push(field);
-        }
-        return acc;
-      },
-      {
-        identifying: [] as SectionField[],
-        describing: [] as SectionField[],
-        title: [] as SectionField[],
-      }
-    );
-
-    const sections: Section[] = [
-      {
-        title: $localize`Identifying Information`,
-        entries: visibleFields.identifying,
-      },
-      {
-        title: $localize`Describing Information`,
-        entries: visibleFields.describing,
-      },
-    ];
-
-    const titleSection = visibleFields.title;
-
-    this.viewStructures.update(data => ({
-      ...data,
-      buildingStructure: { sections, titleSection } as ViewSection,
-    }));
-  }
-
-  // fill sections with data
-  private fillSections(id: string) {
-    this.viewStructures().buildingStructure?.sections.forEach(section => {
-      section.entries.forEach(entry => {
-        const log = this.registerLogService.getLogForVariable(
-          BUILDING_ENTITY,
-          entry.propName,
-          id
-        );
-        entry.value = this.getValue(entry)?.toString();
-        entry.log = getLogMessage(log, this.locale as 'en' | 'sq');
-        entry.logType = log?.qualityAction ?? '';
-      });
-    });
-    this.viewData.update(data => ({ ...data, isLoading: false }));
-  }
-
-  // HELPERS
-
-  getMunicipality(): string | number {
-    const fields = this.viewData().buildingFields;
-    const building = this.viewData().building;
-    if (!fields || !building) return '';
-    return this.commonBuildingRegisterHelper.getMunicipality(
-      fields,
-      'BldMunicipality',
-      building.BldMunicipality
-    );
-  }
-
-  getValueFromStatus(column: keyof Building): string {
-    const fields = this.viewData().buildingFields;
-    const building = this.viewData().building;
-    if (!fields || !building) return '';
-    return (
-      this.commonBuildingRegisterHelper.getValueFromStatus(
-        fields,
-        column,
-        building[column]
-      ) ?? ''
-    );
-  }
-
-  private prepareWhereCase(id: string) {
-    return `GlobalID='${id}'`;
-  }
-
-  private handleResponse(res: any) {
-    if (isDevMode()) console.log('Data', res);
-    if (!res) {
-      this.matSnack.open(
-        $localize`Could not load result. Please try again`,
-        $localize`Ok`,
-        { duration: 3000 }
-      );
-      this.viewData.update(data => ({ ...data, isLoading: false }));
       return;
     }
-    let fields = [];
-    if (res.data.fields.length) fields = res.data.fields;
-    const building = res.data.features.map(
-      (feature: any) => feature.attributes
-    )[0];
-    this.viewData.update(data => ({
-      ...data,
-      building,
-      buildingFields: fields,
-    }));
+    this.resetBuildingStatus(id);
   }
 
-  private getValue(entry: any) {
-    return entry.propName === 'BldMunicipality'
-      ? this.getMunicipality()
-      : this.getValueFromStatus(entry.propName);
+  private fillSections(id: string) {
+    this.mapper.fillSections(
+      this.viewStructures().buildingStructure,
+      id,
+      this.locale as 'en' | 'sq',
+      propName => this.getDisplayValue(propName),
+      (variable, logId) =>
+        this.registerLogService.getLogForVariable(BUILDING_ENTITY, variable, logId)
+    );
+    this.store.patchViewData({ isLoading: false });
+  }
+
+  private getDisplayValue(propName: keyof Building): string {
+    if (propName === 'BldMunicipality') {
+      return String(this.getMunicipality());
+    }
+    return this.getValueFromStatus(propName);
   }
 }

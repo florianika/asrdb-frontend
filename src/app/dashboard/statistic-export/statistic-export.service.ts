@@ -3,18 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
 import {
-  EMPTY,
   Observable,
   Observer,
   Subject,
   catchError,
   of,
-  switchMap,
   takeUntil,
-  timer,
   zip,
 } from 'rxjs';
 import { User } from '../../model/User.model';
+import { AsyncOrchestrationService } from '../common/service/async-orchestration.service';
 
 export interface PivotRow {
   municipality: string;
@@ -89,6 +87,7 @@ export class StatisticExportService implements OnDestroy {
   private snapshotStatusPollingStop$ = new Subject<void>();
   private httpClient = inject(HttpClient);
   private matSnackBar = inject(MatSnackBar);
+  private asyncOrchestration = inject(AsyncOrchestrationService);
 
   public statisticsTableData = signal<StatisticTableData>({
     data: [],
@@ -126,7 +125,7 @@ export class StatisticExportService implements OnDestroy {
   }
 
   public cancelSnapshotGenerationPolling(resetGenerationData = false) {
-    this.snapshotStatusPollingStop$.next();
+    this.asyncOrchestration.resetPolling(this.snapshotStatusPollingStop$);
     if (resetGenerationData) {
       this.statisticsGenerationData.set({
         step: 0,
@@ -357,24 +356,20 @@ export class StatisticExportService implements OnDestroy {
       '/qms/buildings/annual-snapshot/' +
       jobId;
 
-    timer(0, 5000)
-      .pipe(
-        takeUntil(this.destroy$),
-        takeUntil(this.snapshotStatusPollingStop$),
-        switchMap(() =>
-          this.httpClient.get<StatisticsGenerationStatusResponse>(url).pipe(
-            catchError(() => {
-              this.matSnackBar.open(
-                $localize`Error checking snapshot generation status`,
-                $localize`Close`,
-                { duration: 3000 }
-              );
-              this.cancelSnapshotGenerationPolling();
-              return EMPTY;
-            })
-          )
-        )
-      )
+    this.asyncOrchestration
+      .createPollingStream({
+        destroy$: this.destroy$,
+        stop$: this.snapshotStatusPollingStop$,
+        request: () => this.httpClient.get<StatisticsGenerationStatusResponse>(url),
+        onError: () => {
+          this.matSnackBar.open(
+            $localize`Error checking snapshot generation status`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
+          this.cancelSnapshotGenerationPolling();
+        },
+      })
       .subscribe({
         next: data => {
           const status = data.downloadJobDTO.status;

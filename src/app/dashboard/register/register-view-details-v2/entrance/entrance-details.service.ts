@@ -91,13 +91,15 @@ export class EntranceDetailsService {
     if (!fields || !entrance) {
       return '';
     }
-    return (
-      this.commonRegisterHelperService.getValueFromStatus(
-        fields,
-        column,
-        entrance[column] as any
-      ) ?? ''
+    const code = entrance[column];
+    const normalizedCode =
+      typeof code === 'string' || typeof code === 'number' ? code : '';
+    const value = this.commonRegisterHelperService.getValueFromStatus(
+      fields,
+      column,
+      normalizedCode
     );
+    return String(value ?? '');
   }
 
   public viewEntranceDetails(id: string, logs: Log[], streetName?: string) {
@@ -331,11 +333,13 @@ export class EntranceDetailsService {
       return [];
     }
 
-    return field.domain?.codedValues?.map(
-      (codeValue: { name: string; code: string }) => ({
-        name: codeValue.name,
-        code: codeValue.code,
-      })
+    return (
+      field.domain?.codedValues?.map(
+        (codeValue: { name: string; code: string | number }) => ({
+          name: codeValue.name,
+          code: codeValue.code,
+        })
+      ) ?? []
     );
   }
 

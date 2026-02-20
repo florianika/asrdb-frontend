@@ -4,7 +4,7 @@ import { QualityManagementTableComponent } from './quality-management-table/qual
 import { QualityManagementEditComponent } from './quality-management-edit/quality-management-edit.component';
 import { BUILDING_ENTITY } from '../../common/constants/common-constants';
 
-const routes: Routes = [
+export const QUALITY_MANAGEMENT_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: BUILDING_ENTITY },
   {
     path: ':entity/edit/:id',
@@ -29,7 +29,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(QUALITY_MANAGEMENT_ROUTES)],
   exports: [RouterModule],
 })
 export class QualityManagementRoutingModule {}

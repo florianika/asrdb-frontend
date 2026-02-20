@@ -1,3 +1,8 @@
+export type EntranceFilterOption = {
+  name: string;
+  code: string | number;
+};
+
 export type Entrance = {
   OBJECTID: number;
   GlobalID: string;
@@ -38,6 +43,6 @@ export type EntranceFilter = {
     EntBldGlobalID?: string;
   };
   options: {
-    EntPointStatus: any[];
+    EntPointStatus: EntranceFilterOption[];
   };
 };

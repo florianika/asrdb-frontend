@@ -11,7 +11,7 @@
 </section>
 
 <ng-template #editForm>
-  <mat-card class="full-width" *ngIf="qualityRuleObservable | async as rule">
+  <mat-card class="full-width" *ngIf="qualityRule() as rule">
     <mat-card-content>
       <h2 *ngIf="id" i18n>Update rule</h2>
       <asrdb-quality-management-form
@@ -22,7 +22,7 @@
   </mat-card>
 </ng-template>
 
-<ng-container *ngIf="isLoadingResults | async">
+<ng-container *ngIf="isLoadingResults()">
   <div style="margin: 20px auto">
     <mat-spinner diameter="20"></mat-spinner>
   </div>

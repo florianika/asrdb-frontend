@@ -1,4 +1,5 @@
 import { TYPE_PROP } from '../constant/common-constants';
+import { EsriDomain } from './esri-response';
 
 export type FormObject = {
   name: string;
@@ -16,16 +17,12 @@ export type FormObjectType =
   | 'text-area'
   | 'select'
   | 'date';
+
+export type FormFieldValue = string | number | Date | null | undefined;
 export type FormObjectSelectOption = {
   text: string;
   value: string | number | null;
 };
-export type EsriDomain = {
-  codedValues: EsriCodedValue[];
-  name: string;
-  type: string;
-};
-export type EsriCodedValue = { code: number; name: string };
 
 export function getFormObjectType(
   esriType: string,
@@ -42,7 +39,7 @@ export function getFormObjectType(
 
 export function getFormObjectOptions(
   type: FormObjectType,
-  domain: EsriDomain
+  domain?: EsriDomain | null
 ): FormObjectSelectOption[] | null {
   if (type !== 'select' || !domain || !Array.isArray(domain.codedValues)) {
     return null;
@@ -54,12 +51,19 @@ export function getFormObjectOptions(
 }
 
 export function getValue(
-  field: any,
-  fieldName: any,
-  existingBuildingDetails?: any
-) {
-  const value = existingBuildingDetails?.[fieldName];
-  return field[TYPE_PROP] === 'esriFieldTypeDate'
-    ? new Date(value as number)
-    : value;
+  field: Record<string, unknown>,
+  fieldName: string,
+  existingBuildingDetails?: Record<string, unknown> | null
+): FormFieldValue {
+  const value = existingBuildingDetails?.[fieldName] as FormFieldValue;
+  if (field[TYPE_PROP] !== 'esriFieldTypeDate' || value == null) {
+    return value;
+  }
+  if (value instanceof Date) {
+    return value;
+  }
+  if (typeof value === 'string' || typeof value === 'number') {
+    return new Date(value);
+  }
+  return value;
 }

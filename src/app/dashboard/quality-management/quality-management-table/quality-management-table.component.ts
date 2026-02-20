@@ -2,12 +2,13 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  effect,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
-import { Observable, Subject, map, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
 import { MatPaginator } from '@angular/material/paginator';
@@ -39,8 +40,7 @@ export class QualityManagementTableComponent
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  public qualityRulesObservable!: Observable<MatTableDataSource<any>>;
-  public isLoadingResults!: Observable<boolean>;
+  public isLoadingResults = this.qualityManagementService.loadingResults;
   public displayedColumns = [
     'id',
     'localId',
@@ -51,10 +51,10 @@ export class QualityManagementTableComponent
     'qualityAction',
     'actions',
   ];
-  private datasource = new MatTableDataSource();
+  public datasource = new MatTableDataSource();
 
   private qualityType: EntityType = BUILDING_ENTITY;
-  private subscription = new Subject();
+  private subscription = new Subject<void>();
 
   filterConfig: QualityRuleFilter = {
     localId: '',
@@ -90,16 +90,24 @@ export class QualityManagementTableComponent
         this.init();
         this.reload();
       });
+
+    effect(() => {
+      this.datasource.data = this.qualityManagementService.qualityRules();
+      this.loadFilter(false);
+    });
   }
 
   ngOnInit(): void {
     this.qualityManagementService.getRules(this.qualityType);
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    this.datasource.paginator = this.paginator;
+    this.datasource.sort = this.sort;
+  }
 
   ngOnDestroy(): void {
-    this.subscription.next(true);
+    this.subscription.next();
     this.subscription.complete();
   }
 
@@ -181,7 +189,7 @@ export class QualityManagementTableComponent
       })
       .map((item: any) => {
         return {
-          ...item
+          ...item,
         };
       });
     const csv: CsvOutput = generateCsv(this.csvConfig as any)(data);
@@ -249,18 +257,6 @@ export class QualityManagementTableComponent
     }
 
     this.loadFilter();
-    this.qualityRulesObservable =
-      this.qualityManagementService.qualityRulesAsObservable.pipe(
-        map((value: any) => {
-          this.datasource.data = value;
-          this.datasource.paginator = this.paginator;
-          this.datasource.sort = this.sort;
-          this.loadFilter(false);
-          return this.datasource;
-        })
-      );
-    this.isLoadingResults =
-      this.qualityManagementService.loadingResultsAsObservable;
     this.datasource.filterPredicate = (data: any, filter) => {
       const filterObject: QualityRuleFilter = JSON.parse(filter);
       let shouldShow = true;

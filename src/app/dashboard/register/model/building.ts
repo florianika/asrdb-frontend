@@ -1,3 +1,10 @@
+import { Municipality } from '../../../common/data/municipalities';
+
+export type FilterOption = {
+  name: string;
+  code: string | number;
+};
+
 export type Building = {
   OBJECTID: number;
   Shape__Length: number;
@@ -58,11 +65,11 @@ export type BuildingFilter = {
     BldWithQuePendingIds: string;
   };
   options: {
-    BldMunicipality: any[];
-    BldStatus: any[];
-    BldType: any[];
-    BldQuality: any[];
-    BldReview: any[];
-    BldCentroidStatus: any[];
+    BldMunicipality: Municipality[];
+    BldStatus: FilterOption[];
+    BldType: FilterOption[];
+    BldQuality: FilterOption[];
+    BldReview: FilterOption[];
+    BldCentroidStatus: FilterOption[];
   };
 };

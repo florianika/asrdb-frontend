@@ -178,14 +178,16 @@ export class StreetManagementTableComponent
     this.destroy$.complete();
   }
 
-  getValueFromStatus(column: StreetFilterKey, code: string) {
+  getValueFromStatus(column: StreetFilterKey, code: string): string {
     if (column === 'StrMunicipality') {
-      return this.getMunicipality(column, code);
+      return String(this.getMunicipality(column, code));
     }
-    return this.commonBuildingRegisterHelper.getValueFromStatus(
-      this.fields,
-      column,
-      code
+    return String(
+      this.commonBuildingRegisterHelper.getValueFromStatus(
+        this.fields,
+        column,
+        code
+      )
     );
   }
 

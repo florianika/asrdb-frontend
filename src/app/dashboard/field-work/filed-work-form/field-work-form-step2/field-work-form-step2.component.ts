@@ -73,10 +73,7 @@ export class FieldWorkFormStep2Component {
   }
 
   public back() {
-    this.fieldWorkState.update(state => ({
-      ...state,
-      currentStep: Math.max(state.currentStep - 1, 0),
-    }));
+    this._fieldWorkService.moveCurrentStep(-1);
   }
 
   public setSelectedEmailTemplate(emailTemplateId: number) {

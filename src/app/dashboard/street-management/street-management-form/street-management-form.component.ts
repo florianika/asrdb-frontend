@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import {
   FormObject,
+  FormObjectSelectOption,
   getFormObjectOptions,
   getFormObjectType,
   getValue,
@@ -39,6 +40,12 @@ import {
 import { StreetManagementService } from '../../register/register-form/street-creation.service';
 import { CommonStreetService } from '../../common/service/common-street.service';
 import { Street } from '../../register/model/street';
+import {
+  EsriDomain,
+  EsriQueryResponse,
+} from '../../register/model/esri-response';
+
+type StreetField = Record<string, unknown>;
 
 @Component({
   selector: 'asrdb-street-management-form',
@@ -46,13 +53,14 @@ import { Street } from '../../register/model/street';
   styleUrls: ['./street-management-form.component.css'],
 })
 export class StreetManagementFormComponent implements OnDestroy {
-  private onDestroy = new Subject();
+  private onDestroy = new Subject<void>();
   private initialized = false;
   private street?: Street;
 
-  @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
+  @ViewChild('cancelConfirmDialog')
+  cancelConfirmDialog?: TemplateRef<unknown>;
 
-  formGroup: FormGroup<any> = new FormGroup({});
+  formGroup: FormGroup = new FormGroup({});
   formStructure: FormObject[] = [];
   id?: string;
   municipality: string;
@@ -83,8 +91,8 @@ export class StreetManagementFormComponent implements OnDestroy {
     });
   }
 
-  filterInputOptions($event: any, name: string) {
-    const value = $event.target.value;
+  filterInputOptions($event: Event, name: string) {
+    const value = ($event.target as HTMLInputElement | null)?.value ?? '';
     this.inputFilters[name] = value;
     this.formStructure.forEach((field: FormObject) => {
       if (
@@ -92,14 +100,14 @@ export class StreetManagementFormComponent implements OnDestroy {
         field.type === 'select' &&
         field.originalOptions
       ) {
-        field.selectOptions = field.originalOptions.filter((option: any) =>
+        field.selectOptions = field.originalOptions.filter(option =>
           option.text.toLowerCase().includes(value.toLowerCase())
         );
       }
     });
   }
 
-  clearInputFilter($event: any, name: string) {
+  clearInputFilter($event: Event, name: string) {
     $event.stopPropagation();
     $event.preventDefault();
     this.inputFilters[name] = '';
@@ -116,24 +124,28 @@ export class StreetManagementFormComponent implements OnDestroy {
 
   private initForm() {
     this.isLoadingResults = true;
-    this.streetService.getAttributesMetadata().subscribe((fields: never[]) => {
-      fields = fields.filter(field => {
-        console.log(
-          field[NAME_PROP],
-          `Editable: ${field[EDITABLE_PROP]} | Show: ${!STREET_HIDDEN_FIELDS.includes(field[NAME_PROP])}`
-        );
-        return (
-          field[EDITABLE_PROP] &&
-          !STREET_HIDDEN_FIELDS.includes(field[NAME_PROP])
-        );
-      });
-      fields.forEach(field => {
-        this.createFormControlForField(field);
-        this.createFormObject(field);
-      });
+    this.streetService
+      .getAttributesMetadata()
+      .subscribe((fields: unknown[]) => {
+        fields = fields.filter(field => {
+          const fieldRecord = field as StreetField;
+          console.log(
+            fieldRecord[NAME_PROP],
+            `Editable: ${fieldRecord[EDITABLE_PROP]} | Show: ${!STREET_HIDDEN_FIELDS.includes(String(fieldRecord[NAME_PROP]))}`
+          );
+          return (
+            Boolean(fieldRecord[EDITABLE_PROP]) &&
+            !STREET_HIDDEN_FIELDS.includes(String(fieldRecord[NAME_PROP]))
+          );
+        });
+        fields.forEach(field => {
+          const typedField = field as StreetField;
+          this.createFormControlForField(typedField);
+          this.createFormObject(typedField);
+        });
 
-      this.isLoadingResults = false;
-    });
+        this.isLoadingResults = false;
+      });
   }
 
   private loadStreetById(id?: string) {
@@ -153,7 +165,7 @@ export class StreetManagementFormComponent implements OnDestroy {
             return of(null);
           })
         )
-        .subscribe(res => {
+        .subscribe((res: EsriQueryResponse<Street> | null) => {
           if (isDevMode()) {
             console.log('Street: ', res);
           }
@@ -166,9 +178,7 @@ export class StreetManagementFormComponent implements OnDestroy {
             this.isLoadingResults = false;
             return;
           }
-          this.street = res.data.features.map(
-            (feature: any) => feature.attributes
-          )[0];
+          this.street = res.data.features[0]?.attributes;
           this.initForm();
           this.isLoadingResults = false;
         });
@@ -177,24 +187,30 @@ export class StreetManagementFormComponent implements OnDestroy {
     }
   }
 
-  private createFormObject(field: never) {
+  private createFormObject(field: StreetField) {
     const isSelect = field[DOMAIN_PROP];
     const fieldType = isSelect
       ? 'select'
-      : getFormObjectType(field[TYPE_PROP], field[LENGTH_PROP] ?? 0);
-    const fieldOptions = getFormObjectOptions(fieldType, field[DOMAIN_PROP]);
+      : getFormObjectType(
+          String(field[TYPE_PROP]),
+          Number(field[LENGTH_PROP] ?? 0)
+        );
+    const fieldOptions = getFormObjectOptions(
+      fieldType,
+      (field[DOMAIN_PROP] as EsriDomain | undefined) ?? undefined
+    );
     this.formStructure.push({
-      name: field[NAME_PROP],
-      alias: field[ALIAS_PROP],
+      name: String(field[NAME_PROP]),
+      alias: String(field[ALIAS_PROP]),
       type: fieldType,
-      selectOptions: fieldOptions,
-      originalOptions: fieldOptions,
-      maxLength: field[LENGTH_PROP],
+      selectOptions: fieldOptions as FormObjectSelectOption[] | null,
+      originalOptions: fieldOptions as FormObjectSelectOption[] | null,
+      maxLength: Number(field[LENGTH_PROP] ?? 0) || undefined,
     });
   }
 
-  private createFormControlForField(field: never) {
-    const fieldName = field[NAME_PROP];
+  private createFormControlForField(field: StreetField) {
+    const fieldName = String(field[NAME_PROP]);
     const value = getValue(field, fieldName, this.street);
     const defaultValue =
       fieldName === 'GlobalID' ? undefined : (field[DEFAULT_VALUE_PROP] ?? '');
@@ -204,14 +220,15 @@ export class StreetManagementFormComponent implements OnDestroy {
     if (!field[NULLABLE_PROP]) {
       control.addValidators(Validators.required);
     }
-    if (field[LENGTH_PROP]) {
-      control.addValidators(Validators.maxLength(field[LENGTH_PROP]));
+    const maxLength = Number(field[LENGTH_PROP] ?? 0);
+    if (maxLength) {
+      control.addValidators(Validators.maxLength(maxLength));
     }
     this.formGroup.addControl(fieldName, control);
   }
 
   ngOnDestroy(): void {
-    this.onDestroy.next(true);
+    this.onDestroy.next();
     this.onDestroy.complete();
   }
 
@@ -266,7 +283,10 @@ export class StreetManagementFormComponent implements OnDestroy {
 
   getError(control: AbstractControl) {
     if (control.errors?.['maxlength']) {
-      return $localize`Value should not be longer than ` + control.errors?.['maxlength'].requiredLength;
+      return (
+        $localize`Value should not be longer than ` +
+        control.errors?.['maxlength'].requiredLength
+      );
     }
     return '';
   }

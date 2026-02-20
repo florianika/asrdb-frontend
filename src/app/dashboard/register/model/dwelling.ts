@@ -1,3 +1,8 @@
+export type DwellingFilterOption = {
+  name: string;
+  code: string | number;
+};
+
 export type Dwelling = {
   OBJECTID: number;
   DwlID: number;
@@ -42,7 +47,7 @@ export type DwellingFilter = {
     DwlEntGlobalID?: string;
   };
   options: {
-    DwlType: any[];
-    DwlStatus: any[];
+    DwlType: DwellingFilterOption[];
+    DwlStatus: DwellingFilterOption[];
   };
 };

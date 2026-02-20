@@ -3,15 +3,13 @@ import { environment } from '../../../environments/environment';
 import { AuthStateService } from '../../common/services/auth-state.service';
 import { HttpClient } from '@angular/common/http';
 import {
-  EMPTY,
   Subject,
   catchError,
   of,
-  switchMap,
   takeUntil,
-  timer,
 } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AsyncOrchestrationService } from '../common/service/async-orchestration.service';
 
 export type FieldWorkExecuteJobRequest = {
   id: number;
@@ -49,7 +47,8 @@ export class FieldWorkStatisticService implements OnDestroy {
   constructor(
     private authStateService: AuthStateService,
     private httpClient: HttpClient,
-    private matSnackBar: MatSnackBar
+    private matSnackBar: MatSnackBar,
+    private asyncOrchestration: AsyncOrchestrationService
   ) {}
 
   ngOnDestroy(): void {
@@ -60,7 +59,7 @@ export class FieldWorkStatisticService implements OnDestroy {
   }
 
   public cancelStatusPolling(resetLoading = false) {
-    this.stopStatusPolling$.next();
+    this.asyncOrchestration.resetPolling(this.stopStatusPolling$);
     if (resetLoading) {
       this.statistics.update(state => ({ ...state, loading: false }));
     }
@@ -112,26 +111,23 @@ export class FieldWorkStatisticService implements OnDestroy {
     this.statistics.set({ loading: true, statistics: [] });
     const url = `${environment.base_url}/qms/fieldwork/job/${jobId}/status`;
 
-    timer(0, 5000)
-      .pipe(
-        takeUntil(this.destroy$),
-        takeUntil(this.stopStatusPolling$),
-        switchMap(() =>
-          this.httpClient.get<FieldWorkJobExecutionStatusResponse>(url).pipe(
-            catchError(error => {
-              console.error(error);
-              this.matSnackBar.open(
-                $localize`Failed to get field work job execution status`,
-                $localize`Close`,
-                { duration: 3000 }
-              );
-              this.statistics.set({ loading: false, statistics: [] });
-              this.cancelStatusPolling();
-              return EMPTY;
-            })
-          )
-        )
-      )
+    this.asyncOrchestration
+      .createPollingStream({
+        destroy$: this.destroy$,
+        stop$: this.stopStatusPolling$,
+        request: () =>
+          this.httpClient.get<FieldWorkJobExecutionStatusResponse>(url),
+        onError: error => {
+          console.error(error);
+          this.matSnackBar.open(
+            $localize`Failed to get field work job execution status`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
+          this.statistics.set({ loading: false, statistics: [] });
+          this.cancelStatusPolling();
+        },
+      })
       .subscribe((res: FieldWorkJobExecutionStatusResponse) => {
         if (res.status === 'COMPLETED') {
           this.cancelStatusPolling();

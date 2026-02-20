@@ -1,14 +1,21 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  finalize,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  timer,
+} from 'rxjs';
 import { Log } from '../model/log';
-import { environment } from 'src/environments/environment';
 import { EntityType } from '../../../quality-management/quality-management-config';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonBuildingService } from '../../../common/service/common-building.service';
-import { CommonEntranceService } from '../../../common/service/common-entrance.service';
-import { CommonDwellingService } from '../../../common/service/common-dwellings.service';
+import { QmsApiClientService } from '../../../common/service/qms-api-client.service';
 import {
   BUILDING_ENTITY,
   DWELLING_ENTITY,
@@ -17,6 +24,15 @@ import {
 
 export const EXECUTING = 1;
 export const NOT_EXECUTING = 2;
+
+type LogResponse = {
+  processOutputLogDto: Log[];
+};
+
+type ExecuteRulesPayload = {
+  BuildingIds: string[];
+  ExecutionUser: string;
+};
 
 @Injectable()
 export class RegisterLogService {
@@ -55,97 +71,98 @@ export class RegisterLogService {
 
   constructor(
     private commonBuildingService: CommonBuildingService,
-    private commonEntranceService: CommonEntranceService,
-    private commonDwellingService: CommonDwellingService,
-    private httpClient: HttpClient,
+    private qmsApiClient: QmsApiClientService,
     private authState: AuthStateService,
     private matSnack: MatSnackBar
   ) {}
 
-  public loadLogsAfterExecution(buildingId: string) {
+  public loadLogsAfterExecution(buildingId: string): Observable<Log[]> {
+    const previousLength = this.loadedLogs.value.length;
     this.isLoading.next(true);
-    this.httpClient
-      .get<{
-        processOutputLogDto: Log[];
-      }>(
-        environment.base_url +
-          this.LOGS_URL +
-          buildingId.replace('{', '').replace('}', '')
-      )
-      .subscribe({
-        next: data => {
-          if (
-            data.processOutputLogDto.length !== this.loadedLogs.value.length
-          ) {
-            setTimeout(() => this.loadLogs(buildingId), 3000);
-            this.isExecuting.next(EXECUTING);
-          } else {
-            this.isExecuting.next(NOT_EXECUTING);
-          }
-          this.loadedLogs.next(data.processOutputLogDto);
-          this.isLoading.next(false);
-        },
-        error: err => {
-          console.error(err);
-          this.isLoading.next(false);
-          this.isExecuting.next(NOT_EXECUTING);
-        },
-      });
-    this.loadBuildingQuality(buildingId);
+    return this.fetchLogs(buildingId).pipe(
+      tap(logs => {
+        this.loadedLogs.next(logs);
+        this.isExecuting.next(
+          logs.length !== previousLength ? EXECUTING : NOT_EXECUTING
+        );
+      }),
+      switchMap(logs => {
+        if (logs.length === previousLength) {
+          return this.loadBuildingQuality(buildingId).pipe(map(() => logs));
+        }
+        return timer(3000).pipe(switchMap(() => this.loadLogs(buildingId)));
+      }),
+      catchError(err => {
+        console.error(err);
+        this.isExecuting.next(NOT_EXECUTING);
+        return of(this.loadedLogs.value);
+      }),
+      finalize(() => this.isLoading.next(false))
+    );
   }
 
-  public loadLogs(buildingId: string) {
+  public loadLogs(buildingId: string): Observable<Log[]> {
     this.isLoading.next(true);
-    this.httpClient
-      .get<{
-        processOutputLogDto: Log[];
-      }>(
-        environment.base_url +
-          this.LOGS_URL +
-          buildingId.replace('{', '').replace('}', '')
-      )
-      .subscribe({
-        next: data => {
-          this.loadedLogs.next(data.processOutputLogDto);
-          this.isLoading.next(false);
-          this.isExecuting.next(NOT_EXECUTING);
-        },
-        error: err => {
-          console.error(err);
-          this.isLoading.next(false);
-          this.isExecuting.next(NOT_EXECUTING);
-        },
-      });
-    this.loadBuildingQuality(buildingId);
+    return this.fetchLogs(buildingId).pipe(
+      tap(logs => {
+        this.loadedLogs.next(logs);
+        this.isExecuting.next(NOT_EXECUTING);
+      }),
+      switchMap(logs =>
+        this.loadBuildingQuality(buildingId).pipe(map(() => logs))
+      ),
+      catchError(err => {
+        console.error(err);
+        this.isExecuting.next(NOT_EXECUTING);
+        return of(this.loadedLogs.value);
+      }),
+      finalize(() => this.isLoading.next(false))
+    );
   }
 
-  private loadBuildingQuality(buildingId: string) {
-    this.commonBuildingService.getBuildingQuality(buildingId).subscribe({
-      next: quality => this.buildingQuality.next(quality ?? ''),
-      error: err => console.error(err),
-    });
+  private fetchLogs(buildingId: string): Observable<Log[]> {
+    return this.qmsApiClient
+      .get<LogResponse>(this.LOGS_URL + this.cleanId(buildingId))
+      .pipe(map(response => response.processOutputLogDto ?? []));
   }
 
-  public executeRulesForMultipleBuildings(buildingIds: string[]) {
-    this.isExecuting.next(EXECUTING);
-    const data = {
-      BuildingIds: buildingIds.map(b => b.replace('{', '').replace('}', '')),
-      ExecutionUser: this.authState.getNameId(),
-    };
-    this.httpClient
-      .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
-        headers: { 'Content-Type': 'application/json' },
+  private loadBuildingQuality(buildingId: string): Observable<string> {
+    return this.commonBuildingService.getBuildingQuality(buildingId).pipe(
+      tap(quality => this.buildingQuality.next(quality ?? '')),
+      map(quality => quality ?? ''),
+      catchError(err => {
+        console.error(err);
+        this.buildingQuality.next('');
+        return of('');
       })
-      .subscribe({
-        next: () => {
+    );
+  }
+
+  private cleanId(id: string): string {
+    return id.replace('{', '').replace('}', '');
+  }
+
+  public executeRulesForMultipleBuildings(
+    buildingIds: string[]
+  ): Observable<void> {
+    this.isExecuting.next(EXECUTING);
+    const data: ExecuteRulesPayload = {
+      BuildingIds: buildingIds.map(id => this.cleanId(id)),
+      ExecutionUser: this.authState.getNameId() ?? '',
+    };
+    return this.qmsApiClient
+      .postJson<ExecuteRulesPayload, void>(this.EXECUTE_RULES, data)
+      .pipe(
+        tap(() => {
           this.isExecuting.next(EXECUTING);
           this.matSnack.open(
             $localize`Started testing buildings data`,
             $localize`Ok`,
             { duration: 2000 }
           );
-        },
-        error: err => {
+        }),
+        map(() => void 0),
+        catchError(err => {
           console.error(err);
           this.matSnack.open(
             $localize`Action could not be performed`,
@@ -153,34 +170,35 @@ export class RegisterLogService {
             { duration: 3000 }
           );
           this.isExecuting.next(NOT_EXECUTING);
-        },
-      });
+          return of(void 0);
+        })
+      );
   }
 
-  public executeRules(buildingId: string, loadLogs = true) {
+  public executeRules(buildingId: string, loadLogs = true): Observable<void> {
     this.isExecuting.next(EXECUTING);
-    const data = {
-      BuildingIds: [buildingId.replace('{', '').replace('}', '')],
-      ExecutionUser: this.authState.getNameId(),
+    const data: ExecuteRulesPayload = {
+      BuildingIds: [this.cleanId(buildingId)],
+      ExecutionUser: this.authState.getNameId() ?? '',
     };
-    this.httpClient
-      .post(environment.base_url + this.EXECUTE_RULES, JSON.stringify(data), {
-        headers: { 'Content-Type': 'application/json' },
-      })
-      .subscribe({
-        next: () => {
-          this.isExecuting.next(EXECUTING);
+    return this.qmsApiClient
+      .postJson<ExecuteRulesPayload, void>(this.EXECUTE_RULES, data)
+      .pipe(
+        tap(() => this.isExecuting.next(EXECUTING)),
+        switchMap(() => {
           if (loadLogs) {
-            this.loadLogsAfterExecution(buildingId);
-          } else {
-            this.matSnack.open(
-              $localize`Started testing building data`,
-              $localize`Ok`,
-              { duration: 2000 }
+            return this.loadLogsAfterExecution(buildingId).pipe(
+              map(() => void 0)
             );
           }
-        },
-        error: err => {
+          this.matSnack.open(
+            $localize`Started testing building data`,
+            $localize`Ok`,
+            { duration: 2000 }
+          );
+          return of(void 0);
+        }),
+        catchError(err => {
           console.error(err);
           this.matSnack.open(
             $localize`Action could not be performed`,
@@ -188,50 +206,43 @@ export class RegisterLogService {
             { duration: 3000 }
           );
           this.isExecuting.next(NOT_EXECUTING);
-        },
-      });
+          return of(void 0);
+        })
+      );
   }
 
-  public resolveLog(logId: string, buildingId: string) {
+  public resolveLog(logId: string, buildingId: string): Observable<void> {
     this.isResolving.next(true);
-    this.httpClient
-      .patch(environment.base_url + this.RESOLVE_LOG + logId, null)
-      .subscribe({
-        next: () => {
-          this.isResolving.next(false);
-          this.executeRules(buildingId);
-        },
-        error: err => {
-          this.isResolving.next(false);
-          this.matSnack.open(
-            $localize`Action could not be performed`,
-            $localize`Ok`,
-            { duration: 3000 }
-          );
-          console.error(err);
-        },
-      });
+    return this.qmsApiClient.patch<void>(this.RESOLVE_LOG + logId, null).pipe(
+      switchMap(() => this.executeRules(buildingId)),
+      catchError(err => {
+        this.matSnack.open(
+          $localize`Action could not be performed`,
+          $localize`Ok`,
+          { duration: 3000 }
+        );
+        console.error(err);
+        return of(void 0);
+      }),
+      finalize(() => this.isResolving.next(false))
+    );
   }
 
-  public unresolveLog(logId: string, buildingId: string) {
+  public unresolveLog(logId: string, buildingId: string): Observable<void> {
     this.isResolving.next(true);
-    this.httpClient
-      .patch(environment.base_url + this.UNRESOLVE_LOG + logId, null)
-      .subscribe({
-        next: () => {
-          this.isResolving.next(false);
-          this.executeRules(buildingId);
-        },
-        error: err => {
-          this.isResolving.next(false);
-          this.matSnack.open(
-            $localize`Action could not be performed`,
-            $localize`Ok`,
-            { duration: 3000 }
-          );
-          console.error(err);
-        },
-      });
+    return this.qmsApiClient.patch<void>(this.UNRESOLVE_LOG + logId, null).pipe(
+      switchMap(() => this.executeRules(buildingId)),
+      catchError(err => {
+        this.matSnack.open(
+          $localize`Action could not be performed`,
+          $localize`Ok`,
+          { duration: 3000 }
+        );
+        console.error(err);
+        return of(void 0);
+      }),
+      finalize(() => this.isResolving.next(false))
+    );
   }
 
   public getLogForVariable(

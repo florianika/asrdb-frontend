@@ -111,9 +111,6 @@ export class FiledWorkFormComponent implements OnInit, OnDestroy {
   }
 
   public updateCurrentTab(index: number) {
-    this.fieldWorkState.update(state => ({
-      ...state,
-      currentStep: index,
-    }));
+    this._fieldWorkService.setCurrentStep(index);
   }
 }

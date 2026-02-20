@@ -1,17 +1,10 @@
-import { inject, Injectable, OnDestroy, signal } from '@angular/core';
-import {
-  BehaviorSubject,
-  Subject,
-  catchError,
-  of,
-  switchMap,
-  takeUntil,
-  timer,
-} from 'rxjs';
+import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
+import { Subject, catchError, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { AsyncOrchestrationService } from '../common/service/async-orchestration.service';
 
 export type FieldWork = {
   fieldWorkId: number;
@@ -56,6 +49,18 @@ export type FieldWorkClosureStatusResponse = {
   lastChecked: string;
 };
 
+type FieldWorkStoreState = {
+  fieldWorksLoading: boolean;
+  fieldWorks: FieldWork[];
+  isSaving: boolean;
+  activeFieldWork: FieldWork | null;
+  isLoading: boolean;
+  currentStep: number;
+  selectedRules: SelectedRule[];
+  selectedRulesLoading: boolean;
+  canBeClosed: FieldWorkClosureStatusResponse | null;
+};
+
 @Injectable({ providedIn: 'root' })
 export class FieldWorkService implements OnDestroy {
   private destroy$ = new Subject<void>();
@@ -63,26 +68,35 @@ export class FieldWorkService implements OnDestroy {
   private matSnackBar = inject(MatSnackBar);
   private httpClient = inject(HttpClient);
   private router = inject(Router);
+  private asyncOrchestration = inject(AsyncOrchestrationService);
 
-  private fieldWorks = new BehaviorSubject<{
-    loading: boolean;
-    fieldWorks: FieldWork[];
-  }>({ loading: false, fieldWorks: [] });
-  public fieldWorkState = signal({
+  private readonly state = signal<FieldWorkStoreState>({
+    fieldWorksLoading: false,
+    fieldWorks: [],
     isSaving: false,
-    activeFieldWork: null as FieldWork | null,
+    activeFieldWork: null,
     isLoading: false,
     currentStep: 0,
+    selectedRules: [],
+    selectedRulesLoading: false,
+    canBeClosed: null,
   });
-  public selectedRules = signal({
-    rules: [] as SelectedRule[],
-    loading: false,
-  });
-  public canBeClosed = signal<FieldWorkClosureStatusResponse | null>(null);
 
-  get fieldWorksAsObservable() {
-    return this.fieldWorks.asObservable();
-  }
+  public readonly fieldWorksState = computed(() => ({
+    loading: this.state().fieldWorksLoading,
+    fieldWorks: this.state().fieldWorks,
+  }));
+  public readonly fieldWorkState = computed(() => ({
+    isSaving: this.state().isSaving,
+    activeFieldWork: this.state().activeFieldWork,
+    isLoading: this.state().isLoading,
+    currentStep: this.state().currentStep,
+  }));
+  public readonly selectedRules = computed(() => ({
+    rules: this.state().selectedRules,
+    loading: this.state().selectedRulesLoading,
+  }));
+  public readonly canBeClosed = computed(() => this.state().canBeClosed);
 
   ngOnDestroy(): void {
     this.cancelActiveFieldWorkStatusPolling(true);
@@ -92,14 +106,24 @@ export class FieldWorkService implements OnDestroy {
   }
 
   public cancelActiveFieldWorkStatusPolling(resetLoading = true) {
-    this.activeFieldWorkStatusPollingStop$.next();
+    this.asyncOrchestration.resetPolling(this.activeFieldWorkStatusPollingStop$);
     if (resetLoading) {
-      this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
+      this.patchState({ isLoading: false });
     }
   }
 
+  public setCurrentStep(step: number) {
+    this.patchState({ currentStep: step });
+  }
+
+  public moveCurrentStep(offset: number, min = 0, max = 3) {
+    const currentStep = this.state().currentStep;
+    const nextStep = Math.min(max, Math.max(min, currentStep + offset));
+    this.patchState({ currentStep: nextStep });
+  }
+
   public loadSelectedRules(fieldWorkId: number) {
-    this.selectedRules.update(state => ({ ...state, loading: true }));
+    this.patchState({ selectedRulesLoading: true });
     this.httpClient
       .get<{ fieldworkRulesDTO: SelectedRule[] }>(
         `${environment.base_url}/qms/fieldwork/${fieldWorkId}/rules`
@@ -116,16 +140,15 @@ export class FieldWorkService implements OnDestroy {
         })
       )
       .subscribe(res => {
-        this.selectedRules.update(state => ({
-          ...state,
-          rules: res.fieldworkRulesDTO,
-          loading: false,
-        }));
+        this.patchState({
+          selectedRules: res.fieldworkRulesDTO,
+          selectedRulesLoading: false,
+        });
       });
   }
 
   public loadAllFieldWorks() {
-    this.fieldWorks.next({ loading: true, fieldWorks: [] });
+    this.patchState({ fieldWorksLoading: true, fieldWorks: [] });
     this.httpClient
       .get<FieldWorkListResponse>(`${environment.base_url}/qms/fieldwork`)
       .pipe(
@@ -139,13 +162,16 @@ export class FieldWorkService implements OnDestroy {
           return of({ fieldworksDTO: [] as FieldWork[] });
         })
       )
-      .subscribe(res =>
-        this.fieldWorks.next({ loading: false, fieldWorks: res.fieldworksDTO })
-      );
+      .subscribe(res => {
+        this.patchState({
+          fieldWorksLoading: false,
+          fieldWorks: res.fieldworksDTO,
+        });
+      });
   }
 
   public getActiveFieldWork(step: number = 0) {
-    this.fieldWorkState.update(state => ({ ...state, isLoading: true }));
+    this.patchState({ isLoading: true });
     this.httpClient
       .get<{ fieldWorkDTO: FieldWork }>(
         `${environment.base_url}/qms/fieldwork/active`
@@ -156,24 +182,23 @@ export class FieldWorkService implements OnDestroy {
           return of(null);
         })
       )
-      .subscribe(res =>
-        this.fieldWorkState.update(state => ({
-          ...state,
+      .subscribe(res => {
+        this.patchState({
           isLoading: false,
           isSaving: false,
           activeFieldWork: res?.fieldWorkDTO || null,
           currentStep: step,
-        }))
-      );
+        });
+      });
   }
 
   public updateFieldWork(changes: Partial<FieldWork>, fieldWorkId: number) {
     const data = {
-      ...this.fieldWorkState().activeFieldWork,
+      ...this.state().activeFieldWork,
       ...changes,
       fieldWorkId,
     } as FieldWork;
-    this.fieldWorkState.update(state => ({ ...state, isSaving: true }));
+    this.patchState({ isSaving: true });
     this.httpClient
       .put<{ message: string }>(
         `${environment.base_url}/qms/fieldwork/${fieldWorkId}`,
@@ -192,7 +217,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .subscribe(res => {
         if (!res) {
-          this.fieldWorkState.update(state => ({ ...state, isSaving: false }));
+          this.patchState({ isSaving: false });
           this.matSnackBar.open(
             $localize`Field work update failed. Please try again.`,
             $localize`Close`,
@@ -200,12 +225,12 @@ export class FieldWorkService implements OnDestroy {
           );
           return;
         }
-        this.getActiveFieldWork(this.fieldWorkState().currentStep + 1);
+        this.getActiveFieldWork(this.state().currentStep + 1);
       });
   }
 
   public assignEmailTemplate(emailTemplateId: number, fieldWorkId: number) {
-    this.fieldWorkState.update(state => ({ ...state, isSaving: true }));
+    this.patchState({ isSaving: true });
     const request = { emailTemplateId };
     this.httpClient
       .patch<{ message: string }>(
@@ -225,7 +250,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .subscribe(res => {
         if (!res) {
-          this.fieldWorkState.update(state => ({ ...state, isSaving: false }));
+          this.patchState({ isSaving: false });
           this.matSnackBar.open(
             $localize`Email template assignment failed. Please try again.`,
             $localize`Close`,
@@ -233,12 +258,12 @@ export class FieldWorkService implements OnDestroy {
           );
           return;
         }
-        this.getActiveFieldWork(this.fieldWorkState().currentStep + 1);
+        this.getActiveFieldWork(this.state().currentStep + 1);
       });
   }
 
   public createFieldWork(request: FieldWorkCreateRequest) {
-    this.fieldWorkState.update(state => ({ ...state, isSaving: true }));
+    this.patchState({ isSaving: true });
     this.httpClient
       .post<{ fieldWorkId: number }>(
         `${environment.base_url}/qms/fieldwork`,
@@ -265,7 +290,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .subscribe(res => {
         if (!res?.fieldWorkId) {
-          this.fieldWorkState.update(state => ({ ...state, isSaving: false }));
+          this.patchState({ isSaving: false });
           this.matSnackBar.open(
             $localize`Field work creation failed. Please try again.`,
             $localize`Close`,
@@ -278,7 +303,7 @@ export class FieldWorkService implements OnDestroy {
   }
 
   public openFieldWork(fieldWorkId: number) {
-    this.fieldWorkState.update(state => ({ ...state, isLoading: true }));
+    this.patchState({ isLoading: true });
     this.httpClient
       .post(`${environment.base_url}/qms/fieldwork/${fieldWorkId}/open`, {})
       .pipe(
@@ -294,7 +319,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .subscribe(res => {
         if (!res) {
-          this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
+          this.patchState({ isLoading: false });
           return;
         }
         this.startActiveFieldWorkStatusPolling(fieldWorkId);
@@ -303,11 +328,11 @@ export class FieldWorkService implements OnDestroy {
 
   public addRule(ruleId: number) {
     const request = { ruleId };
-    this.selectedRules.update(state => ({ ...state, loading: true }));
-    const fieldWorkId = this.fieldWorkState().activeFieldWork?.fieldWorkId;
+    this.patchState({ selectedRulesLoading: true });
+    const fieldWorkId = this.state().activeFieldWork?.fieldWorkId;
     if (!fieldWorkId) {
       console.error('No active field work found');
-      this.selectedRules.update(state => ({ ...state, loading: false }));
+      this.patchState({ selectedRulesLoading: false });
       return;
     }
     this.httpClient
@@ -328,7 +353,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .subscribe(res => {
         if (!res) {
-          this.selectedRules.update(state => ({ ...state, loading: false }));
+          this.patchState({ selectedRulesLoading: false });
           return;
         }
         this.loadSelectedRules(fieldWorkId);
@@ -336,11 +361,11 @@ export class FieldWorkService implements OnDestroy {
   }
 
   public removeRule(ruleId: number) {
-    this.selectedRules.update(state => ({ ...state, loading: true }));
-    const id = this.fieldWorkState().activeFieldWork?.fieldWorkId;
+    this.patchState({ selectedRulesLoading: true });
+    const id = this.state().activeFieldWork?.fieldWorkId;
     if (!id) {
       console.error('No active field work found');
-      this.selectedRules.update(state => ({ ...state, loading: false }));
+      this.patchState({ selectedRulesLoading: false });
       return;
     }
     this.httpClient
@@ -360,7 +385,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .subscribe(res => {
         if (!res) {
-          this.selectedRules.update(state => ({ ...state, loading: false }));
+          this.patchState({ selectedRulesLoading: false });
           return;
         }
         this.loadSelectedRules(id);
@@ -385,7 +410,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .subscribe(res => {
         if (!res) {
-          this.canBeClosed.set(null);
+          this.patchState({ canBeClosed: null });
           this.matSnackBar.open(
             $localize`Error checking field work closure status`,
             $localize`Close`,
@@ -393,49 +418,42 @@ export class FieldWorkService implements OnDestroy {
           );
           return;
         }
-        this.canBeClosed.set(res);
+        this.patchState({ canBeClosed: res });
       });
   }
 
   private startActiveFieldWorkStatusPolling(fieldWorkId: number, retries = 20) {
     this.cancelActiveFieldWorkStatusPolling(false);
-    this.fieldWorkState.update(state => ({ ...state, isLoading: true }));
+    this.patchState({ isLoading: true });
     let retriesLeft = retries;
 
-    timer(0, 5000)
-      .pipe(
-        takeUntil(this.destroy$),
-        takeUntil(this.activeFieldWorkStatusPollingStop$),
-        switchMap(() =>
+    this.asyncOrchestration
+      .createPollingStream({
+        destroy$: this.destroy$,
+        stop$: this.activeFieldWorkStatusPollingStop$,
+        request: () =>
           this.httpClient
-            .get<{ fieldWorkDTO: FieldWork }>(
-              `${environment.base_url}/qms/fieldwork/${fieldWorkId}`
-            )
-            .pipe(
-              catchError(error => {
-                console.error(error);
-                this.matSnackBar.open(
-                  $localize`Error fetching field work status`,
-                  $localize`Close`,
-                  { duration: 3000 }
-                );
-                this.cancelActiveFieldWorkStatusPolling(false);
-                this.fieldWorkState.update(state => ({
-                  ...state,
-                  isLoading: false,
-                }));
-                return of(null);
-              })
-            )
-        )
-      )
+            .get<{
+              fieldWorkDTO: FieldWork;
+            }>(`${environment.base_url}/qms/fieldwork/${fieldWorkId}`),
+        onError: error => {
+          console.error(error);
+          this.matSnackBar.open(
+            $localize`Error fetching field work status`,
+            $localize`Close`,
+            { duration: 3000 }
+          );
+          this.cancelActiveFieldWorkStatusPolling(false);
+          this.patchState({ isLoading: false });
+        },
+      })
       .subscribe(res => {
         if (!res) {
           return;
         }
         if (res.fieldWorkDTO.fieldWorkStatus === 'OPEN') {
           this.cancelActiveFieldWorkStatusPolling(false);
-          this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
+          this.patchState({ isLoading: false });
           this.matSnackBar.open(
             $localize`Field work opened successfully`,
             $localize`Close`,
@@ -445,12 +463,9 @@ export class FieldWorkService implements OnDestroy {
           return;
         }
         retriesLeft -= 1;
-        if (
-          res.fieldWorkDTO.fieldWorkStatus === 'FAILED' ||
-          retriesLeft <= 0
-        ) {
+        if (res.fieldWorkDTO.fieldWorkStatus === 'FAILED' || retriesLeft <= 0) {
           this.cancelActiveFieldWorkStatusPolling(false);
-          this.fieldWorkState.update(state => ({ ...state, isLoading: false }));
+          this.patchState({ isLoading: false });
           this.matSnackBar.open(
             $localize`Field work failed to open. Please try again.`,
             $localize`Close`,
@@ -459,5 +474,12 @@ export class FieldWorkService implements OnDestroy {
           return;
         }
       });
+  }
+
+  private patchState(statePatch: Partial<FieldWorkStoreState>) {
+    this.state.update(state => ({
+      ...state,
+      ...statePatch,
+    }));
   }
 }
