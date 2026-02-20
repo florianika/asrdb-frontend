@@ -81,23 +81,23 @@
           <mat-menu #menu="matMenu">
             <button
               mat-menu-item
-              i18n
               (click)="viewEntranceDetails(element.GlobalID)">
-              <mat-icon>meeting_room</mat-icon> View entrance details
+              <mat-icon>meeting_room</mat-icon>
+              <span i18n>View entrance details</span>
             </button>
             @if (isAdmin || isSupervisor) {
-              <button mat-menu-item i18n (click)="editEntrance(element.GlobalID)">
-                <mat-icon>edit</mat-icon> Edit entrance details
+              <button mat-menu-item (click)="editEntrance(element.GlobalID)">
+                <mat-icon>edit</mat-icon>
+                <span i18n>Edit entrance details</span>
               </button>
             }
             @if (isAdmin) {
               <mat-divider />
               <button
                 mat-menu-item
-                i18n
                 (click)="openDeleteDialog(element.GlobalID)">
                 <mat-icon color="warn">delete</mat-icon>
-                Delete entrance
+                <span i18n>Delete entrance</span>
               </button>
             }
           </mat-menu>

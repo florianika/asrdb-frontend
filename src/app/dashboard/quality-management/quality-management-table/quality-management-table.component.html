@@ -1,7 +1,8 @@
 <div class="asrbd-container mat-elevation-z8" style="background-color: white">
   <div class="header-container">
-    <h1 i18n class="header-title">
-      <span>{{ entityTitle }}</span> Quality Rules
+    <h1 class="header-title">
+      <span>{{ entityTitle }}</span>
+      <span i18n>Quality Rules</span>
     </h1>
 
     <div class="spacer"></div>
@@ -103,11 +104,13 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item i18n (click)="edit(element.id)">
-              <mat-icon>edit</mat-icon>Edit rule
+            <button mat-menu-item (click)="edit(element.id)">
+              <mat-icon>edit</mat-icon>
+              <span i18n>Edit rule</span>
             </button>
-            <button mat-menu-item i18n (click)="toggleEdit(element.id)">
-              <mat-icon>published_with_changes</mat-icon>Toggle status
+            <button mat-menu-item (click)="toggleEdit(element.id)">
+              <mat-icon>published_with_changes</mat-icon>
+              <span i18n>Toggle status</span>
             </button>
           </mat-menu>
         </td>

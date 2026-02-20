@@ -198,34 +198,34 @@
           <mat-menu #menu="matMenu">
             <button
               mat-menu-item
-              i18n
               (click)="viewBuildingDetails(element.GlobalID)">
-              <mat-icon>apartment</mat-icon> View building details
+              <mat-icon>apartment</mat-icon>
+              <span i18n>View building details</span>
             </button>
             <button
               mat-menu-item
-              i18n
               *ngIf="isAdmin || isSupervisor"
               (click)="editBuildingDetails(element.GlobalID)">
-              <mat-icon>edit</mat-icon> Edit building details
+              <mat-icon>edit</mat-icon>
+              <span i18n>Edit building details</span>
             </button>
-            <button mat-menu-item i18n (click)="viewLogs(element.GlobalID)">
-              <mat-icon>rule</mat-icon> View quality report
+            <button mat-menu-item (click)="viewLogs(element.GlobalID)">
+              <mat-icon>rule</mat-icon>
+              <span i18n>View quality report</span>
             </button>
             <button
               mat-menu-item
-              i18n
               (click)="startExecutionForBuilding(element.GlobalID)">
-              <mat-icon>play_arrow</mat-icon> Test building data
+              <mat-icon>play_arrow</mat-icon>
+              <span i18n>Test building data</span>
             </button>
             @if (isAdmin) {
               <mat-divider />
               <button
                 mat-menu-item
-                i18n
                 (click)="openDeleteDialog(element.GlobalID)">
                 <mat-icon color="warn">delete</mat-icon>
-                Delete building
+                <span i18n>Delete building</span>
               </button>
             }
           </mat-menu>

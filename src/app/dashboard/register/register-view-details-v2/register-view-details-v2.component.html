@@ -63,16 +63,16 @@
             </mat-menu>
           </div>
           <mat-divider class="mt-2 mb-3"></mat-divider>
-          <h2 class="details-header" i18n>
-            <span>Details for building</span>
+          <h2 class="details-header">
+            <span i18n>Details for building</span>
           </h2>
           @for (
             titlePart of buildingStructure?.titleSection;
             track titlePart.propName
           ) {
             <span class="details-subheader mb-1 d-block">
-              <span i18n class="me-1">{{ titlePart.title }}:</span>
-              <span style="font-weight: bold" i18n>{{
+              <span class="me-1">{{ titlePart.title }}:</span>
+              <span style="font-weight: bold">{{
                 getValueFromStatus(titlePart.propName)
               }}</span>
             </span>

@@ -9,11 +9,12 @@
     </asrdb-building-creation>
   </div>
   <div class="entity-management-section entity-management-form">
-    <h1 i18n>
-      Please fill all the details for the
-      <span *ngIf="isEntrance"> entrance</span>
-      <span *ngIf="isBuilding"> building</span>
-    </h1>
+    @if (isEntrance) {
+      <h1 i18n>Please fill all the details for the entrance</h1>
+    }
+    @if (isBuilding) {
+      <h1 i18n>Please fill all the details for the building</h1>
+    }
     <asrdb-building-details-form
       *ngIf="isBuilding && structure"
       [structure]="structure"
@@ -33,8 +34,8 @@
       style="float: right; margin-top: 20px"
       [disabled]="isSaving | async"
       (click)="save()"
-      i18n>
-      Save changes
+      >
+      <span i18n>Save changes</span>
       <mat-icon iconPositionBefore>save</mat-icon>
     </button>
     <button
@@ -42,8 +43,8 @@
       style="float: right; margin-top: 20px; margin-right: 10px"
       [disabled]="isSaving | async"
       (click)="cancel()"
-      i18n>
-      Cancel
+      >
+      <span i18n>Cancel</span>
       <mat-icon iconPositionBefore>close</mat-icon>
     </button>
   </div>

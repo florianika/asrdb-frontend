@@ -4,8 +4,8 @@
   <div class="header-container">
     <div>
       <h1 i18n class="header-title details-header">Quality Report</h1>
-      <span class="details-subheader" i18n>
-        Quality status:
+      <span class="details-subheader">
+        <span i18n>Quality status:</span>
         <span style="font-weight: bold">{{ buildingQuality | async }}</span>
       </span>
       <br />
@@ -116,16 +116,16 @@
               <button
                 *ngIf="row.qualityStatus === 'PENDING'"
                 mat-menu-item
-                (click)="resolve(row.id)"
-                i18n>
-                <mat-icon>check_circle</mat-icon> Resolve
+                (click)="resolve(row.id)">
+                <mat-icon>check_circle</mat-icon>
+                <span i18n>Resolve</span>
               </button>
               <button
                 *ngIf="row.qualityStatus !== 'PENDING'"
                 mat-menu-item
-                (click)="unresolve(row.id)"
-                i18n>
-                <mat-icon>check_circle</mat-icon> Mark as pending
+                (click)="unresolve(row.id)">
+                <mat-icon>check_circle</mat-icon>
+                <span i18n>Mark as pending</span>
               </button>
             </mat-menu>
           </ng-container>

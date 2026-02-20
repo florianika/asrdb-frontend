@@ -13,12 +13,12 @@
             <mat-icon>edit</mat-icon>
           </button>
         </h2>
-        <span class="details-subheader" i18n
-          >Data Quality:
+        <span class="details-subheader">
+          <span i18n>Data Quality:</span>
           <span style="font-weight: bold">{{
             getValueFromStatus('DwlQuality')
-          }}</span></span
-        >
+          }}</span>
+        </span>
         @for (section of sections; track section.title) {
           <section [id]="section.title.toLowerCase().replace(' ', '-')">
             <h3>{{ section.title }}</h3>

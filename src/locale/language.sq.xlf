@@ -115,7 +115,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2446227100022235850" datatype="html">
-        <source>Ju lutemi, futni një adresë email-i të vlefshme.</source>
+        <source>Ju lutem, futni një adresë email-i të vlefshme.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.component.ts</context>
           <context context-type="linenumber">89</context>
@@ -165,7 +165,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2554677377844181242" datatype="html">
-        <source>Ju lutemi, sigurohuni që formulari të jetë i plotë dhe i saktë para se ta dërgoni.</source>
+        <source>Ju lutem, sigurohuni që formulari të jetë i plotë dhe i saktë para se ta dërgoni.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.component.ts</context>
           <context context-type="linenumber">104</context>
@@ -179,14 +179,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="9152578120686436630" datatype="html">
-        <source>Ju lutemi kontrolloni email-in për udhëzimet se si të rivendosni fjalëkalimin.</source>
+        <source>Ju lutem kontrolloni email-in për udhëzimet se si të rivendosni fjalëkalimin.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4370022449704914454" datatype="html">
-        <source>Ndodhi një gabim gjatë përpjekjes për të rivendosur fjalëkalimin. Ju lutemi provoni përsëri më vonë.</source>
+        <source>Ndodhi një gabim gjatë përpjekjes për të rivendosur fjalëkalimin. Ju lutem provoni përsëri më vonë.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/forgot-password/forgot-password.service.ts</context>
           <context context-type="linenumber">36</context>
@@ -211,7 +211,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="1512890127368410643" datatype="html">
-        <source>Kycu me emrin e perdoruesit dhe password</source>
+        <source>Hyr me emrin e përdoruesit dhe fjalëkalimin</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signin-v2/signin-v2.component.html</context>
           <context context-type="linenumber">14</context>
@@ -299,14 +299,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="1198787058256473854" datatype="html">
-        <source>Ju lutemi jepni mbiemrin tuaj</source>
+        <source>Ju lutem jepni mbiemrin tuaj</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
           <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5480342526565273009" datatype="html">
-        <source>Ju lutemi jepni një email të vlefshëm</source>
+        <source>Ju lutem jepni një email të vlefshëm</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
           <context context-type="linenumber">62</context>
@@ -336,7 +336,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="8477886540703200234" datatype="html">
-        <source>Ju lutemi zgjidhni një komunë</source>
+        <source>Ju lutem zgjidhni një komunë</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/signup/signup.component.html</context>
           <context context-type="linenumber">77</context>
@@ -588,29 +588,6 @@
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="187187500641108332" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ variable.value }}"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/common/standalone-components/variable-selector/variable-selector.component.html</context>
-          <context context-type="linenumber">28</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/field-work/filed-work-form/field-work-form-step3/field-work-form-step3.component.html</context>
-          <context context-type="linenumber">46</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/confirm-dialog/confirm-dialog.component.html</context>
-          <context context-type="linenumber">1</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/confirm-dialog/confirm-dialog.component.html</context>
-          <context context-type="linenumber">6</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details-v2.component.html</context>
-          <context context-type="linenumber">74,76</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="8803323125919671141" datatype="html">
         <source>Krijoni shabllonin e postës elektronike</source>
         <context-group purpose="location">
@@ -781,7 +758,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="3129604876054849035" datatype="html">
-        <source>Ju lutemi plotësoni të gjitha fushat e kërkuara</source>
+        <source>Ju lutem plotësoni të gjitha fushat e kërkuara</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.ts</context>
           <context context-type="linenumber">145</context>
@@ -869,14 +846,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="4474472332913475808" datatype="html">
-        <source>Nuk mund të ngarkoheshin shabllonet e email-it. Ju lutemi ringarkoni faqen për të provuar përsëri.</source>
+        <source>Nuk mund të ngarkoheshin shabllonet e email-it. Ju lutem ringarkoni faqen për të provuar përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management.service.ts</context>
           <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8851601820123750274" datatype="html">
-        <source>Shablloni i email-it nuk mund të ngarkohej. Ju lutemi, ringarkoni faqen për të provuar përsëri.</source>
+        <source>Shablloni i email-it nuk mund të ngarkohej. Ju lutem, ringarkoni faqen për të provuar përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management.service.ts</context>
           <context context-type="linenumber">93</context>
@@ -1455,7 +1432,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="6674032448525346563" datatype="html">
-        <source>Ekzekutoni përditësimet përpara testimit</source>
+        <source>Kryej përditësimet para testimit</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
           <context context-type="linenumber">9</context>
@@ -1494,7 +1471,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2159130950882492111" datatype="html">
-        <source>Cancel</source>
+        <source>Anulo</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-edit-dialog/user-edit-dialog.component.html</context>
           <context context-type="linenumber">18</context>
@@ -1642,14 +1619,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="4825263130350589487" datatype="html">
-        <source>Nuk mund të ngarkoheshin përdoruesit. Ju lutemi ringarkoni faqen për të provuar përsëri.</source>
+        <source>Nuk mund të ngarkoheshin përdoruesit. Ju lutem ringarkoni faqen për të provuar përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-management.service.ts</context>
           <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8602919176010682310" datatype="html">
-        <source>Nuk mundi të ngarkonte përdoruesin. Ju lutemi ringarkoni faqen për të provuar përsëri.</source>
+        <source>Nuk mundi të ngarkonte përdoruesin. Ju lutem ringarkoni faqen për të provuar përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-management.service.ts</context>
           <context context-type="linenumber">65</context>
@@ -1742,26 +1719,6 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8856328565029454326" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="an&gt;"/>Dwellings:<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (
-        (loadingDeleteData | async) ||
-        (disableDialogButtons &amp;&amp; toDelete.dwellingsToDelete.length)
-      ) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="} @el"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE_IF" equiv-text="@else if (disableDialogButtons &amp;&amp; toDelete.dwellingsToDelete.length) {"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Fshirë!<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_BLOCK_ELSE_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/> <x id="INTERPOLATION" equiv-text="{{ toDelete.dwellingsToDelete.length }}"/> <x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component.html</context>
-          <context context-type="linenumber">6,18</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8629238107608919130" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="an&gt;"/>Entrances:<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (
-          (loadingDeleteData | async) ||
-          (disableDialogButtons &amp;&amp; toDelete.entrancesToDelete.length)
-        ) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="} @"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE_IF" equiv-text="@else if (disableDialogButtons &amp;&amp; toDelete.entrancesToDelete.length) {"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Fshirë!<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_BLOCK_ELSE_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/> <x id="INTERPOLATION" equiv-text="{{ toDelete.entrancesToDelete.length }}"/> <x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component.html</context>
-          <context context-type="linenumber">20,33</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="3943376829329436225" datatype="html">
         <source>Kjo do të fshijë ndërtesën, të gjitha hyrjet dhe të gjitha banesat që i përkasin kësaj ndërtese. Ky operacion <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>nuk mundet<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> të zhbëhet.</source>
         <context-group purpose="location">
@@ -1834,7 +1791,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="7846491364471076299" datatype="html">
-        <source>Statusi i gjerësisë/gjatësisë</source>
+        <source>Statusi i koordinatave (gjerësi/gjatësi)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/common/components/register-filter/register-filter.component.html</context>
           <context context-type="linenumber">133</context>
@@ -1895,41 +1852,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/common/components/register-map/custom-map-logic/feature-selection.ts</context>
           <context context-type="linenumber">110</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7264269664583826078" datatype="html">
-        <source>Leja e ndërtimit e lëshuar</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">28</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3882296411390501541" datatype="html">
-        <source>Në ndërtim</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">33</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="858399290883800911" datatype="html">
-        <source>Ekzistuese</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">38</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3475330484272222039" datatype="html">
-        <source>E rrënuar</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">43</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8651605223232348724" datatype="html">
-        <source>E shkatërruar / nuk ekziston më</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6829111916743158183" datatype="html">
@@ -2159,13 +2081,6 @@
           <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="147255264615137253" datatype="html">
-        <source><x id="START_BLOCK_IF" equiv-text="@if (fieldWorkStatistics().loading) {"/><x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div class=&quot;closure-statistics-loader mt-5&quot;&gt;"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner [diameter]=&quot;36&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;/mat-spinner&gt;"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/>Po ngarkohen statistikat e punës në terren. Ju lutemi prisni...<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/> No data matching the filter &quot;<x id="INTERPOLATION" equiv-text="{{ input.value }}"/>&quot; <x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
-          <context context-type="linenumber">66,73</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="5547981558491672240" datatype="html">
         <source> Mbylle </source>
         <context-group purpose="location">
@@ -2257,14 +2172,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="8537572266720036309" datatype="html">
-        <source> Puna në terren është gati për t'u mbyllur. Duke klikuar te butoni &quot;Konfirmo mbylljen&quot;, do ta finalizoni procesin e punës në terren. Ky veprim do t'ua dërgojë email-in e mbylljes të gjithë regjistruesve dhe mbikëqyrësve, dhe gjithashtu do ta përditësojë statusin e punës në terren në "Mbyllur". Ju lutemi sigurohuni që të gjitha hapat e nevojshëm janë përfunduar përpara se të vazhdoni me mbylljen. </source>
+        <source> Puna në terren është gati për t'u mbyllur. Duke klikuar te butoni &quot;Konfirmo mbylljen&quot;, do ta finalizoni procesin e punës në terren. Ky veprim do t'ua dërgojë email-in e mbylljes të gjithë regjistruesve dhe mbikëqyrësve, dhe gjithashtu do ta përditësojë statusin e punës në terren në "Mbyllur". Ju lutem sigurohuni që të gjitha hapat e nevojshëm janë përfunduar përpara se të vazhdoni me mbylljen. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-3-field-work-closure-summary/step-3-field-work-closure-summary.component.html</context>
           <context context-type="linenumber">5,11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4857792311532536713" datatype="html">
-        <source> Ndodhi një gabim gjatë përpjekjes për të mbyllur punën në terren. Ju lutemi provoni përsëri më vonë ose kontaktoni mbështetjen nëse problemi vazhdon. </source>
+        <source> Ndodhi një gabim gjatë përpjekjes për të mbyllur punën në terren. Ju lutem provoni përsëri më vonë ose kontaktoni mbështetjen nëse problemi vazhdon. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-3-field-work-closure-summary/step-3-field-work-closure-summary.component.html</context>
           <context context-type="linenumber">13,16</context>
@@ -2362,7 +2277,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="6324922381552461520" datatype="html">
-        <source>Field work</source>
+        <source>Puna në terren</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work-table/field-work-table.component.html</context>
           <context context-type="linenumber">6</context>
@@ -2443,7 +2358,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="1914559595114695289" datatype="html">
-        <source>Përditësimi i punës në terren dështoi. Ju lutemi provoni përsëri.</source>
+        <source>Përditësimi i punës në terren dështoi. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work.service.ts</context>
           <context context-type="linenumber">173</context>
@@ -2457,7 +2372,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="1162186555086623168" datatype="html">
-        <source>Caktimi i shabllonit të email-it dështoi. Ju lutemi provoni përsëri.</source>
+        <source>Caktimi i shabllonit të email-it dështoi. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work.service.ts</context>
           <context context-type="linenumber">206</context>
@@ -2478,7 +2393,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="1542924554956975688" datatype="html">
-        <source>Krijimi i punës në terren dështoi. Ju lutemi provoni përsëri.</source>
+        <source>Krijimi i punës në terren dështoi. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work.service.ts</context>
           <context context-type="linenumber">246</context>
@@ -2534,7 +2449,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="1803249749182112344" datatype="html">
-        <source>Puna në terren dështoi të hapet. Ju lutemi provoni përsëri.</source>
+        <source>Puna në terren dështoi të hapet. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work.service.ts</context>
           <context context-type="linenumber">411</context>
@@ -2629,7 +2544,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="7811202202226118236" datatype="html">
-        <source>Testoni rregullat e zgjedhura</source>
+        <source>Testo rregullat e zgjedhura</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/filed-work-form/field-work-form-step3/field-work-form-step3-statistic-table/field-work-form-step3-statistic-table.component.html</context>
           <context context-type="linenumber">15</context>
@@ -2664,7 +2579,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="4799341332661998013" datatype="html">
-        <source> Zgjidhni disa rregulla dhe klikoni mbi butonin &quot;Testoni rregullat e zgjedhura&quot; për të gjeneruar disa statistika </source>
+        <source> Zgjidhni disa rregulla dhe klikoni mbi butonin &quot;Testo rregullat e zgjedhura&quot; për të gjeneruar disa statistika </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/filed-work-form/field-work-form-step3/field-work-form-step3-statistic-table/field-work-form-step3-statistic-table.component.html</context>
           <context context-type="linenumber">51,54</context>
@@ -2734,7 +2649,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2783192372897560936" datatype="html">
-        <source>Ju lutemi gjeneroni statistika përpara se të vazhdoni</source>
+        <source>Ju lutem gjeneroni statistika përpara se të vazhdoni</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/filed-work-form/field-work-form-step3/field-work-form-step3.component.ts</context>
           <context context-type="linenumber">174</context>
@@ -2832,17 +2747,10 @@
         </context-group>
       </trans-unit>
       <trans-unit id="4700882957798614260" datatype="html">
-        <source>Nuk ka punë aktive në terren për momentin. Ju lutemi kontrolloni përsëri më vonë.</source>
+        <source>Nuk ka punë aktive në terren për momentin. Ju lutem kontrolloni përsëri më vonë.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
           <context context-type="linenumber">63,64</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3045758555460843969" datatype="html">
-        <source> Mirë se vjen, <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;text-transform: capitalize&quot;&gt;"/><x id="INTERPOLATION" equiv-text="&lt;/span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/h1&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
-          <context context-type="linenumber">70,73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="785891933839918927" datatype="html">
@@ -2980,7 +2888,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="1519954996184640001" datatype="html">
-        <source>Error</source>
+        <source>Gabim</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.html</context>
           <context context-type="linenumber">62</context>
@@ -3115,17 +3023,10 @@
         </context-group>
       </trans-unit>
       <trans-unit id="6033370178141809442" datatype="html">
-        <source>Ju lutemi kontrolloni formularin për fusha të pavlefshme të shënuara me të kuqe</source>
+        <source>Ju lutem kontrolloni formularin për fusha të pavlefshme të shënuara me të kuqe</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-edit/quality-management-form/quality-management-form.component.ts</context>
           <context context-type="linenumber">130</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1820874839774213139" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="an&gt;"/><x id="INTERPOLATION" equiv-text="&lt;/"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="Quality Ru"/> Rregullat e cilësisë </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">4,5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8040881171107393560" datatype="html">
@@ -3171,20 +3072,6 @@
           <context context-type="linenumber">94,96</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5219396547345969220" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>Redakto rregullin </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">107,108</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7354483473585318928" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>published_with_changes<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>Ndrysho statusin </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">110,111</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="6675489273490913513" datatype="html">
         <source>Nuk mund të ngarkoheshin rregullat aktive të cilësisë</source>
         <context-group purpose="location">
@@ -3222,7 +3109,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="8370420342983122835" datatype="html">
-        <source>Gabim gjatë përpjekjes për të ruajtur rregullin. Ju lutemi provoni përsëri.</source>
+        <source>Gabim gjatë përpjekjes për të ruajtur rregullin. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management.service.ts</context>
           <context context-type="linenumber">152</context>
@@ -3233,7 +3120,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="9065055796264507169" datatype="html">
-        <source>Gabim gjatë përpjekjes për të ndryshuar statusin. Ju lutemi provoni përsëri.</source>
+        <source>Gabim gjatë përpjekjes për të ndryshuar statusin. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management.service.ts</context>
           <context context-type="linenumber">216</context>
@@ -3281,13 +3168,6 @@
           <context context-type="linenumber">9,11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5705744078647526519" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon inline&gt;"/>error<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Ju lutem vizatoni të paktën një pikë hyrjeje për të vazhduar!</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/building-creation/building-creation.component.html</context>
-          <context context-type="linenumber">18,19</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="2085026434988519214" datatype="html">
         <source>Ju keni ndryshuar poligonin e ndërtesës ndërsa jeni në modalitetin &quot;Hyrje&quot;. Ky veprim nuk lejohet dhe ndryshimet nuk do të ruhen. Për të modifikuar poligonin e ndërtesës, ju lutemi modifikoni ndërtesën.</source>
         <context-group purpose="location">
@@ -3317,7 +3197,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="3322294228855895608" datatype="html">
-        <source>Poligoni që keni krijuar/redaktuar kryqëzohet me një poligon ekzistues. Ndryshimet nuk do të zbatohen. Ju lutemi zhvendoseni poligonin në mënyrë që të mos kryqëzohet me asgjë.</source>
+        <source>Poligoni që keni krijuar/redaktuar kryqëzohet me një poligon ekzistues. Ndryshimet nuk do të zbatohen. Ju lutem zhvendoseni poligonin në mënyrë që të mos kryqëzohet me asgjë.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/building-creation/building-creation.component.ts</context>
           <context context-type="linenumber">152</context>
@@ -3384,7 +3264,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="3976052311899768281" datatype="html">
-        <source>Nuk mundi të ngarkonte rezultatin. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mundi të ngarkonte rezultatin. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.ts</context>
           <context context-type="linenumber">266</context>
@@ -3411,7 +3291,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="7431148387534930970" datatype="html">
-        <source>Të dhënat nuk mund të ruhen. Ju lutemi kontrolloni formularin për të dhëna të pavlefshme.</source>
+        <source>Të dhënat nuk mund të ruhen. Ju lutem kontrolloni formularin për të dhëna të pavlefshme.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/dwelling-details-form/dwelling-details-form.component.ts</context>
           <context context-type="linenumber">367</context>
@@ -3455,27 +3335,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/entrance-details-form/entrance-details-form.component.ts</context>
           <context context-type="linenumber">186</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6389467666496840549" datatype="html">
-        <source> Ju lutemi plotësoni të gjitha detajet për <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;isEntrance&quot;&gt;"/> hyrje<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span *ngIf=&quot;isBuilding&quot;&gt;"/> ndërtesë<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">12,17</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4223595619753037316" datatype="html">
-        <source> Ruaj ndryshimet <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon iconPositionBefore&gt;"/>save<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">36,40</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3523992029590236250" datatype="html">
-        <source> Anulo <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon iconPositionBefore&gt;"/>close<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">45,49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4801399186124880454" datatype="html">
@@ -3577,7 +3436,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="33103837241885949" datatype="html">
-        <source>Nuk mund të vërtetohej veçantia e emrit të rrugës. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mund të vërtetohej veçantia e emrit të rrugës. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/street-creation.service.ts</context>
           <context context-type="linenumber">95</context>
@@ -3616,7 +3475,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="7951141180013650655" datatype="html">
-        <source>Nuk mund të bashkohen rrugët. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mund të bashkohen rrugët. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/street-creation.service.ts</context>
           <context context-type="linenumber">165</context>
@@ -3630,7 +3489,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="3780061839932883416" datatype="html">
-        <source>Nuk mundi të fshinte rrugën e dublikuar. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mundi të fshinte rrugën e dublikuar. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/street-creation.service.ts</context>
           <context context-type="linenumber">190</context>
@@ -3671,13 +3530,6 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7927503951085905736" datatype="html">
-        <source> Statusi i cilësisë: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold&quot;&gt;"/><x id="INTERPOLATION" equiv-text="| async }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/sp"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
-          <context context-type="linenumber">7,11</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="578616033451631020" datatype="html">
         <source> Ndërtesa nuk është testuar, lista e gabimeve më poshtë mund të mos jetë më e vlefshme. Ekzekutoni rregullat për të parë gabimet më të fundit. </source>
         <context-group purpose="location">
@@ -3690,20 +3542,6 @@ Ky veprim nuk mund të anulohet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
           <context context-type="linenumber">52</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6336280740370214301" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>check_circle<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Zgjidheni </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
-          <context context-type="linenumber">121,122</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="907507096288356020" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>check_circle<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Shëno si në pritje </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
-          <context context-type="linenumber">128,129</context>
         </context-group>
       </trans-unit>
       <trans-unit id="60339518069223848" datatype="html">
@@ -3789,7 +3627,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="8945909359051331208" datatype="html">
-        <source>Nuk u gjetën ID ndërtesash. Ju lutemi ringarkoni faqen</source>
+        <source>Nuk u gjetën ID ndërtesash. Ju lutem ringarkoni faqen</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-view.component.ts</context>
           <context context-type="linenumber">32</context>
@@ -3876,41 +3714,6 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="linenumber">181,183</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="936141021565816925" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>apartment<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Shikoni detajet e ndërtesës </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">202,203</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1125260499152979775" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Redakto detajet e ndërtesës </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">208,209</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2262801882943759392" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>rule<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View quality report </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">211,212</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8660155309434600030" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>play_arrow<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Testoni të dhënat e ndërtesës </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">217,218</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3883460852972334580" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon color=&quot;warn&quot;&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Fshi ndërtesën </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">225,227</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="3807699453257291879" datatype="html">
         <source>Komentet</source>
         <context-group purpose="location">
@@ -3968,7 +3771,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="8752153290540372450" datatype="html">
-        <source>Nuk mundi ta ruante komentin. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mundi ta ruante komentin. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/comment-view/comment.service.ts</context>
           <context context-type="linenumber">104</context>
@@ -3982,7 +3785,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="8259884369703971496" datatype="html">
-        <source>Nuk mundi të fshinte komentin. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mundi të fshinte komentin. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/comment-view/comment.service.ts</context>
           <context context-type="linenumber">130</context>
@@ -3993,15 +3796,6 @@ Ky veprim nuk mund të anulohet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-details/dwelling-details.component.html</context>
           <context context-type="linenumber">8</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6493496716060748102" datatype="html">
-        <source>Cilësia e të dhënave: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{
-            getValueFromStatus(&apos;DwlQuality&apos;)
-          }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-details/dwelling-details.component.html</context>
-          <context context-type="linenumber">17,20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="887509999658032278" datatype="html">
@@ -4075,27 +3869,6 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="linenumber">74</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7045956992443930485" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>light<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Shikoni detajet e banesës </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-list/dwelling-list.component.html</context>
-          <context context-type="linenumber">90,91</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6922114319718653437" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Redakto detajet e banesës </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-list/dwelling-list.component.html</context>
-          <context context-type="linenumber">96,97</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="383490694423591097" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon color=&quot;warn&quot;&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Fshij banesën </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-list/dwelling-list.component.html</context>
-          <context context-type="linenumber">104,106</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="1672531363756112343" datatype="html">
         <source>Informacion identifikues</source>
         <context-group purpose="location">
@@ -4119,32 +3892,10 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="8757426867757568261" datatype="html">
-        <source>Nuk mund të ngarkohej lista e hyrjeve. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mund të ngarkohej lista e hyrjeve. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details.service.ts</context>
           <context context-type="linenumber">250</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2956864723250708020" datatype="html">
-        <source> Detajet e hyrjes <x id="START_TAG_BUTTON" ctype="x-button" equiv-text="&lt;button
-              class=&quot;float-end&quot;
-              mat-icon-button
-              (click)=&quot;openEditView()&quot;
-              mat-dialog-close&gt;"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_TAG_BUTTON" ctype="x-button" equiv-text="&lt;/button&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">8,16</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="868001410870321196" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ titlePart.title }}"/>:</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details-v2.component.html</context>
-          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="298220819667557605" datatype="html">
@@ -4187,27 +3938,6 @@ Ky veprim nuk mund të anulohet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-list/entrance-list.component.html</context>
           <context context-type="linenumber">68</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5753901924991238462" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>meeting_room<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Shikoni detajet e hyrjes </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-list/entrance-list.component.html</context>
-          <context context-type="linenumber">84,85</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5262974821276714948" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Redakto detajet e hyrjes </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-list/entrance-list.component.html</context>
-          <context context-type="linenumber">87,88</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7203759249743415333" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon color=&quot;warn&quot;&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Fshi hyrjen </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-list/entrance-list.component.html</context>
-          <context context-type="linenumber">95,97</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3408871773261273776" datatype="html">
@@ -4265,13 +3995,6 @@ Ky veprim nuk mund të anulohet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details-v2.component.html</context>
           <context context-type="linenumber">163</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1595533951302945143" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>Detaje për ndërtimin<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details-v2.component.html</context>
-          <context context-type="linenumber">66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="761071135242906056" datatype="html">
@@ -4338,7 +4061,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="6927001225501282901" datatype="html">
-        <source>Nuk mund të refuzohej vlerësimi. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mund të refuzohej vlerësimi. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
           <context context-type="linenumber">175</context>
@@ -4359,7 +4082,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="1413691279963447078" datatype="html">
-        <source>Nuk mundi të miratojë vlerësimin. Ju lutemi provoni përsëri.</source>
+        <source>Nuk mundi të miratojë vlerësimin. Ju lutem provoni përsëri.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details.service.ts</context>
           <context context-type="linenumber">223</context>
@@ -4387,7 +4110,7 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="5215024345558135665" datatype="html">
-        <source> Janë gjetur disa ndërtesa të patestuara. Ju lutemi kryeni testin që të gjitha ndërtesat e patestuara të vazhdojnë. </source>
+        <source> Janë gjetur disa ndërtesa të patestuara. Ju lutem kryeni testin që të gjitha ndërtesat e patestuara të vazhdojnë. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export-create/statistic-export-create-step-0/statistic-export-create-step-0.component.html</context>
           <context context-type="linenumber">9,12</context>
@@ -4426,17 +4149,6 @@ Ky veprim nuk mund të anulohet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export-create/statistic-export-create-step-3/statistic-export-create-step-3.component.html</context>
           <context context-type="linenumber">38</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5323138100935811142" datatype="html">
-        <source> Krijo eksport të ri statistikor <x id="START_TAG_BUTTON" ctype="x-button" equiv-text="&lt;button
-    mat-icon-button
-    mat-dialog-close
-    class=&quot;position-absolute end-0&quot;
-    aria-label=&quot;Close&quot;&gt;"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>close<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_TAG_BUTTON" ctype="x-button" equiv-text="&lt;/button&gt;"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export-create/statistic-export-create.component.html</context>
-          <context context-type="linenumber">1,9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7040513614230229179" datatype="html">
@@ -4507,16 +4219,6 @@ Ky veprim nuk mund të anulohet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.component.html</context>
           <context context-type="linenumber">63</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6689901229817758473" datatype="html">
-        <source><x id="START_BLOCK_IF" equiv-text="@if (
-              downloadRowId === element.id &amp;&amp;
-              statisticsTableData().isDownloading
-            ) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;24&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;/mat-spinner&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>download<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.component.html</context>
-          <context context-type="linenumber">74,81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3448925269201544337" datatype="html">
@@ -4698,13 +4400,6 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="linenumber">95,97</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="881876949420171493" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Redakto rrugën </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/street-management/street-management-table/street-management-table.component.html</context>
-          <context context-type="linenumber">122,123</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="2851099401880682220" datatype="html">
         <source>Gabim gjatë analizimit të filtrit nga localStorage</source>
         <context-group purpose="location">
@@ -4792,6 +4487,99 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="sourcefile">src/app/dashboard/common/components/register-map/register-map.component.ts</context>
           <context context-type="linenumber">166</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="4905722057494907069" datatype="html">
+        <source>Redakto rrugën</source>
+      </trans-unit>
+      <trans-unit id="394032864783334976" datatype="html">
+        <source>Duke ngarkuar statistikat e mbylljes së punës në terren. Ju lutem pritni...</source>
+      </trans-unit>
+      <trans-unit id="571559318874154726" datatype="html">
+        <source>Nuk ka të dhëna që përputhen me filtrin &quot;<x id="INTERPOLATION" equiv-text="{{ input.value }}"/>&quot;</source>
+      </trans-unit>
+      <trans-unit id="5628200256561847479" datatype="html">
+        <source>Banesa:</source>
+      </trans-unit>
+      <trans-unit id="2708103402690240336" datatype="html">
+        <source>Hyrje:</source>
+      </trans-unit>
+      <trans-unit id="5110650189434804328" datatype="html">
+        <source>Ju lutem vizatoni të paktën një pikë hyrjeje për të vazhduar!</source>
+      </trans-unit>
+      <trans-unit id="7000649363168371045" datatype="html">
+        <source>Ruaj ndryshimet</source>
+      </trans-unit>
+      <trans-unit id="1725858362581416020" datatype="html">
+        <source>Ju lutem plotësoni të gjitha detajet për hyrjen</source>
+      </trans-unit>
+      <trans-unit id="4088489357969277922" datatype="html">
+        <source>Ju lutem plotësoni të gjitha detajet për ndërtesën</source>
+      </trans-unit>
+      <trans-unit id="8614288566122686781" datatype="html">
+        <source>Shiko detajet e ndërtesës</source>
+      </trans-unit>
+      <trans-unit id="2883489715051839535" datatype="html">
+        <source>Shiko raportin e cilësisë</source>
+      </trans-unit>
+      <trans-unit id="4450560170675061159" datatype="html">
+        <source>Testo të dhënat e ndërtesës</source>
+      </trans-unit>
+      <trans-unit id="8792198732278457440" datatype="html">
+        <source>Redakto detajet e ndërtesës</source>
+      </trans-unit>
+      <trans-unit id="7744923136835488725" datatype="html">
+        <source>Fshi ndërtesën</source>
+      </trans-unit>
+      <trans-unit id="8683507609049589665" datatype="html">
+        <source>Shiko detajet e banesës</source>
+      </trans-unit>
+      <trans-unit id="6857720781699428475" datatype="html">
+        <source>Redakto detajet e banesës</source>
+      </trans-unit>
+      <trans-unit id="8417272152274516610" datatype="html">
+        <source>Fshi banesën</source>
+      </trans-unit>
+      <trans-unit id="4091938725695658415" datatype="html">
+        <source>Detajet e hyrjes</source>
+      </trans-unit>
+      <trans-unit id="3126827990438591200" datatype="html">
+        <source>Shiko detajet e hyrjes</source>
+      </trans-unit>
+      <trans-unit id="1379412368677929094" datatype="html">
+        <source>Redakto detajet e hyrjes</source>
+      </trans-unit>
+      <trans-unit id="994919004966154516" datatype="html">
+        <source>Fshi hyrjen</source>
+      </trans-unit>
+      <trans-unit id="5335928833902614593" datatype="html">
+        <source>Detajet për ndërtesën</source>
+      </trans-unit>
+      <trans-unit id="4698623592954641832" datatype="html">
+        <source>Krijo eksport të ri statistikor</source>
+      </trans-unit>
+      <trans-unit id="5597687526699672518" datatype="html">
+        <source>Statusi i cilësisë:</source>
+      </trans-unit>
+      <trans-unit id="544071003621073559" datatype="html">
+        <source>Zgjidh</source>
+      </trans-unit>
+      <trans-unit id="7076077373627741687" datatype="html">
+        <source>Shëno si në pritje</source>
+      </trans-unit>
+      <trans-unit id="7706479704362093018" datatype="html">
+        <source>Rregullat e cilësisë</source>
+      </trans-unit>
+      <trans-unit id="1083429400694527107" datatype="html">
+        <source>Redakto rregullin</source>
+      </trans-unit>
+      <trans-unit id="4572135416673940627" datatype="html">
+        <source>Ndrysho statusin</source>
+      </trans-unit>
+      <trans-unit id="4146830966635061119" datatype="html">
+        <source>Mirë se vini,</source>
+      </trans-unit>
+      <trans-unit id="4219788328302683152" datatype="html">
+        <source>Cilësia e të dhënave:</source>
       </trans-unit>
     </body>
   </file>

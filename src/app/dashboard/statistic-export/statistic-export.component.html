@@ -68,7 +68,6 @@
         <td mat-cell *matCellDef="let element">
           <button
             mat-icon-button
-            i18n
             [disabled]="statisticsTableData().isDownloading"
             (click)="download(element.fileUrl, element.id)">
             @if (

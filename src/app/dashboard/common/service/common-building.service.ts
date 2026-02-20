@@ -25,27 +25,27 @@ export class CommonBuildingService {
   uniqueValueInfos = [
     {
       value: 1,
-      label: $localize`Leja e ndërtimit e lëshuar`,
+      label: 'Leja e ndërtimit e lëshuar',
       symbol: this.getSymbol('#89CE00'),
     },
     {
       value: 2,
-      label: $localize`Në ndërtim`,
+      label: 'Në ndërtim',
       symbol: this.getSymbol('#5BA300'),
     },
     {
       value: 4,
-      label: $localize`Ekzistuese`,
+      label: 'Ekzistuese',
       symbol: this.getSymbol('#B51963'),
     },
     {
       value: 5,
-      label: $localize`E rrënuar`,
+      label: 'E rrënuar',
       symbol: this.getSymbol('#F57600'),
     },
     {
       value: 6,
-      label: $localize`E shkatërruar / nuk ekziston më`,
+      label: 'E shkatërruar / nuk ekziston më',
       symbol: this.getSymbol('rgba(145,145,145,0.53)'),
     },
   ] as UniqueValueInfoProperties[];

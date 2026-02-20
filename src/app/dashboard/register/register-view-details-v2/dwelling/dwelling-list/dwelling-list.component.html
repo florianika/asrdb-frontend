@@ -85,26 +85,25 @@
           <mat-menu #menu="matMenu">
             <button
               mat-menu-item
-              i18n
               (click)="viewDwellingDetails(element.GlobalID)">
-              <mat-icon>light</mat-icon> View dwelling details
+              <mat-icon>light</mat-icon>
+              <span i18n>View dwelling details</span>
             </button>
             @if (isAdmin || isSupervisor) {
               <button
                 mat-menu-item
-                i18n
                 (click)="editDwellingDetails(element.GlobalID)">
-                <mat-icon>edit</mat-icon> Edit dwelling details
+                <mat-icon>edit</mat-icon>
+                <span i18n>Edit dwelling details</span>
               </button>
             }
             @if (isAdmin) {
               <mat-divider />
               <button
                 mat-menu-item
-                i18n
                 (click)="openDeleteDialog(element.GlobalID)">
                 <mat-icon color="warn">delete</mat-icon>
-                Delete dwelling
+                <span i18n>Delete dwelling</span>
               </button>
             }
           </mat-menu>

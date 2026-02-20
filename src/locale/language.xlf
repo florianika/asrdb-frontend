@@ -561,7 +561,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8854094932942190741" datatype="html">
@@ -601,29 +601,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/street-management/street-management-table/street-management-table-filter/street-management-table-filter.component.html</context>
           <context context-type="linenumber">13</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="187187500641108332" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ variable.value }}"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/common/standalone-components/variable-selector/variable-selector.component.html</context>
-          <context context-type="linenumber">28</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/field-work/filed-work-form/field-work-form-step3/field-work-form-step3.component.html</context>
-          <context context-type="linenumber">46</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/confirm-dialog/confirm-dialog.component.html</context>
-          <context context-type="linenumber">1</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/confirm-dialog/confirm-dialog.component.html</context>
-          <context context-type="linenumber">6</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details-v2.component.html</context>
-          <context context-type="linenumber">75,77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8803323125919671141" datatype="html">
@@ -856,7 +833,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">101</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
@@ -1558,6 +1535,10 @@
           <context context-type="linenumber">85</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/street-creation.service.ts</context>
           <context context-type="linenumber">149</context>
         </context-group>
@@ -1678,10 +1659,6 @@
           <context context-type="sourcefile">src/app/dashboard/administration/user-management/user-management.component.html</context>
           <context context-type="linenumber">83,85</context>
         </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-form/confirm-dialog/confirm-dialog.component.html</context>
-          <context context-type="linenumber">7,9</context>
-        </context-group>
       </trans-unit>
       <trans-unit id="4825263130350589487" datatype="html">
         <source>Could not load the users. Please reload the page to try again.</source>
@@ -1766,7 +1743,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">91</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table-filter/register-log-table-filter.component.html</context>
@@ -1784,24 +1761,18 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8856328565029454326" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="an&gt;"/>Dwellings:<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (
-        (loadingDeleteData | async) ||
-        (disableDialogButtons &amp;&amp; toDelete.dwellingsToDelete.length)
-      ) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="} @el"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE_IF" equiv-text="@else if (disableDialogButtons &amp;&amp; toDelete.dwellingsToDelete.length) {"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Deleted!<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_BLOCK_ELSE_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/> <x id="INTERPOLATION" equiv-text="{{ toDelete.dwellingsToDelete.length }}"/> <x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
+      <trans-unit id="5628200256561847479" datatype="html">
+        <source>Dwellings:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component.html</context>
-          <context context-type="linenumber">6,18</context>
+          <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8629238107608919130" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="an&gt;"/>Entrances:<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (
-          (loadingDeleteData | async) ||
-          (disableDialogButtons &amp;&amp; toDelete.entrancesToDelete.length)
-        ) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="} @"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE_IF" equiv-text="@else if (disableDialogButtons &amp;&amp; toDelete.entrancesToDelete.length) {"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Deleted!<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_BLOCK_ELSE_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/> <x id="INTERPOLATION" equiv-text="{{ toDelete.entrancesToDelete.length }}"/> <x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
+      <trans-unit id="2708103402690240336" datatype="html">
+        <source>Entrances:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component.html</context>
-          <context context-type="linenumber">20,33</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3943376829329436225" datatype="html">
@@ -1969,41 +1940,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/common/components/register-map/register-map.component.ts</context>
           <context context-type="linenumber">166</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7264269664583826078" datatype="html">
-        <source>Leja e ndërtimit e lëshuar</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">28</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3882296411390501541" datatype="html">
-        <source>Në ndërtim</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">33</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="858399290883800911" datatype="html">
-        <source>Ekzistuese</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">38</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3475330484272222039" datatype="html">
-        <source>E rrënuar</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">43</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8651605223232348724" datatype="html">
-        <source>E shkatërruar / nuk ekziston më</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/common/service/common-building.service.ts</context>
-          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6829111916743158183" datatype="html">
@@ -2240,11 +2176,18 @@
           <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="147255264615137253" datatype="html">
-        <source><x id="START_BLOCK_IF" equiv-text="@if (fieldWorkStatistics().loading) {"/><x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div class=&quot;closure-statistics-loader mt-5&quot;&gt;"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner [diameter]=&quot;36&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;/mat-spinner&gt;"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/>Loading filed fork statistics. Please wait...<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/> No data matching the filter &quot;<x id="INTERPOLATION" equiv-text="{{ input.value }}"/>&quot; <x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
+      <trans-unit id="394032864783334976" datatype="html">
+        <source>Loading filed fork statistics. Please wait...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
-          <context context-type="linenumber">105,112</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="571559318874154726" datatype="html">
+        <source>No data matching the filter &quot;<x id="INTERPOLATION" equiv-text="{{ input.value }}"/>&quot;</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
+          <context context-type="linenumber">111</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5547981558491672240" datatype="html">
@@ -2706,7 +2649,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
-          <context context-type="linenumber">94</context>
+          <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7811202202226118236" datatype="html">
@@ -2919,11 +2862,11 @@
           <context context-type="linenumber">63,64</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3045758555460843969" datatype="html">
-        <source> Welcome, <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;text-transform: capitalize&quot;&gt;"/><x id="INTERPOLATION" equiv-text="&lt;/span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/h1&gt;"/></source>
+      <trans-unit id="4146830966635061119" datatype="html">
+        <source>Welcome,</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
-          <context context-type="linenumber">70,73</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="785891933839918927" datatype="html">
@@ -3202,18 +3145,18 @@
           <context context-type="linenumber">130</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1820874839774213139" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="an&gt;"/><x id="INTERPOLATION" equiv-text="&lt;/"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="Quality Ru"/> Quality Rules </source>
+      <trans-unit id="7706479704362093018" datatype="html">
+        <source>Quality Rules</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">4,5</context>
+          <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8040881171107393560" datatype="html">
         <source>ID</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">65</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.component.html</context>
@@ -3224,7 +3167,7 @@
         <source> Reference </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">68,70</context>
+          <context context-type="linenumber">69,71</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.component.html</context>
@@ -3235,35 +3178,35 @@
         <source> Requirement </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">78,80</context>
+          <context context-type="linenumber">79,81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2724055831234181057" datatype="html">
         <source>Version</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9084241831664366908" datatype="html">
         <source> Quality Action </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">94,96</context>
+          <context context-type="linenumber">95,97</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5219396547345969220" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>Edit rule </source>
+      <trans-unit id="1083429400694527107" datatype="html">
+        <source>Edit rule</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">107,108</context>
+          <context context-type="linenumber">109</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7354483473585318928" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>published_with_changes<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>Toggle status </source>
+      <trans-unit id="4572135416673940627" datatype="html">
+        <source>Toggle status</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.html</context>
-          <context context-type="linenumber">110,111</context>
+          <context context-type="linenumber">113</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6675489273490913513" datatype="html">
@@ -3362,11 +3305,11 @@
           <context context-type="linenumber">9,11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5705744078647526519" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon inline&gt;"/>error<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Please draw at least one entrance point to continue!</source>
+      <trans-unit id="5110650189434804328" datatype="html">
+        <source>Please draw at least one entrance point to continue!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/building-creation/building-creation.component.html</context>
-          <context context-type="linenumber">18,19</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2085026434988519214" datatype="html">
@@ -3538,74 +3481,74 @@
           <context context-type="linenumber">186</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6389467666496840549" datatype="html">
-        <source> Please fill all the details for the <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;isEntrance&quot;&gt;"/> entrance<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span *ngIf=&quot;isBuilding&quot;&gt;"/> building<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+      <trans-unit id="1725858362581416020" datatype="html">
+        <source>Please fill all the details for the entrance</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">12,17</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4223595619753037316" datatype="html">
-        <source> Save changes <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon iconPositionBefore&gt;"/>save<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></source>
+      <trans-unit id="4088489357969277922" datatype="html">
+        <source>Please fill all the details for the building</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">36,40</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3523992029590236250" datatype="html">
-        <source> Cancel <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon iconPositionBefore&gt;"/>close<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></source>
+      <trans-unit id="7000649363168371045" datatype="html">
+        <source>Save changes</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">45,49</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4801399186124880454" datatype="html">
         <source> Cancel creating building? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">53,55</context>
+          <context context-type="linenumber">54,56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6006355510635766166" datatype="html">
         <source> Cancel editing dwelling? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">56,58</context>
+          <context context-type="linenumber">57,59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7320287643515410920" datatype="html">
         <source> Cancel creating entrance? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">60,62</context>
+          <context context-type="linenumber">61,63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8797330086136603569" datatype="html">
         <source> Cancel editing entrance? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">63,65</context>
+          <context context-type="linenumber">64,66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2660563062676016995" datatype="html">
         <source> Are you sure you want to close the dialog? All changes will be lost. This action cannot be undone! <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> Do you want to continue? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">66,71</context>
+          <context context-type="linenumber">67,72</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5752932580828867957" datatype="html">
         <source> No, close dialog </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">73,75</context>
+          <context context-type="linenumber">74,76</context>
         </context-group>
       </trans-unit>
       <trans-unit id="535937999288743235" datatype="html">
         <source> Yes, cancel editing </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-form/register-form.component.html</context>
-          <context context-type="linenumber">81,83</context>
+          <context context-type="linenumber">82,84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="667131905362081289" datatype="html">
@@ -3752,11 +3695,11 @@ This action cannot be undone.</source>
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7927503951085905736" datatype="html">
-        <source> Quality status: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold&quot;&gt;"/><x id="INTERPOLATION" equiv-text="| async }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/sp"/></source>
+      <trans-unit id="5597687526699672518" datatype="html">
+        <source>Quality status:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
-          <context context-type="linenumber">7,11</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="578616033451631020" datatype="html">
@@ -3773,18 +3716,18 @@ This action cannot be undone.</source>
           <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6336280740370214301" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>check_circle<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Resolve </source>
+      <trans-unit id="544071003621073559" datatype="html">
+        <source>Resolve</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
-          <context context-type="linenumber">121,122</context>
+          <context context-type="linenumber">121</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="907507096288356020" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="t-icon&gt;"/>check_circle<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Mark as pending </source>
+      <trans-unit id="7076077373627741687" datatype="html">
+        <source>Mark as pending</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table.component.html</context>
-          <context context-type="linenumber">128,129</context>
+          <context context-type="linenumber">128</context>
         </context-group>
       </trans-unit>
       <trans-unit id="60339518069223848" datatype="html">
@@ -3957,39 +3900,39 @@ This action cannot be undone.</source>
           <context context-type="linenumber">182,184</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="936141021565816925" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>apartment<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View building details </source>
+      <trans-unit id="8614288566122686781" datatype="html">
+        <source>View building details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">203,204</context>
+          <context context-type="linenumber">203</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1125260499152979775" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit building details </source>
+      <trans-unit id="8792198732278457440" datatype="html">
+        <source>Edit building details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">210,211</context>
+          <context context-type="linenumber">210</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2262801882943759392" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>rule<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View quality report </source>
+      <trans-unit id="2883489715051839535" datatype="html">
+        <source>View quality report</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">213,214</context>
+          <context context-type="linenumber">214</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8660155309434600030" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>play_arrow<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Test building data </source>
+      <trans-unit id="4450560170675061159" datatype="html">
+        <source>Test building data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">219,220</context>
+          <context context-type="linenumber">220</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3883460852972334580" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon color=&quot;warn&quot;&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Delete building </source>
+      <trans-unit id="7744923136835488725" datatype="html">
+        <source>Delete building</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-table-view/register-table/register-table.component.html</context>
-          <context context-type="linenumber">227,229</context>
+          <context context-type="linenumber">228</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3807699453257291879" datatype="html">
@@ -4076,13 +4019,11 @@ This action cannot be undone.</source>
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6493496716060748102" datatype="html">
-        <source>Data Quality: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span style=&quot;font-weight: bold&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{
-            getValueFromStatus(&apos;DwlQuality&apos;)
-          }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+      <trans-unit id="4219788328302683152" datatype="html">
+        <source>Data Quality:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-details/dwelling-details.component.html</context>
-          <context context-type="linenumber">17,20</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="887509999658032278" datatype="html">
@@ -4156,25 +4097,25 @@ This action cannot be undone.</source>
           <context context-type="linenumber">74</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7045956992443930485" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>light<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View dwelling details </source>
+      <trans-unit id="8683507609049589665" datatype="html">
+        <source>View dwelling details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-list/dwelling-list.component.html</context>
-          <context context-type="linenumber">90,91</context>
+          <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6922114319718653437" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit dwelling details </source>
+      <trans-unit id="6857720781699428475" datatype="html">
+        <source>Edit dwelling details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-list/dwelling-list.component.html</context>
-          <context context-type="linenumber">97,98</context>
+          <context context-type="linenumber">97</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="383490694423591097" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon color=&quot;warn&quot;&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Delete dwelling </source>
+      <trans-unit id="8417272152274516610" datatype="html">
+        <source>Delete dwelling</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/dwelling/dwelling-list/dwelling-list.component.html</context>
-          <context context-type="linenumber">106,108</context>
+          <context context-type="linenumber">106</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1672531363756112343" datatype="html">
@@ -4206,26 +4147,11 @@ This action cannot be undone.</source>
           <context context-type="linenumber">250</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2956864723250708020" datatype="html">
-        <source> Entrance details <x id="START_TAG_BUTTON" ctype="x-button" equiv-text="&lt;button
-              class=&quot;float-end&quot;
-              mat-icon-button
-              (click)=&quot;openEditView()&quot;
-              mat-dialog-close&gt;"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_TAG_BUTTON" ctype="x-button" equiv-text="&lt;/button&gt;"/></source>
+      <trans-unit id="4091938725695658415" datatype="html">
+        <source>Entrance details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">8,16</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="868001410870321196" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ titlePart.title }}"/>:</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-details/entrance-details.component.html</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details-v2.component.html</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="298220819667557605" datatype="html">
@@ -4270,25 +4196,25 @@ This action cannot be undone.</source>
           <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5753901924991238462" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>meeting_room<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> View entrance details </source>
+      <trans-unit id="3126827990438591200" datatype="html">
+        <source>View entrance details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-list/entrance-list.component.html</context>
-          <context context-type="linenumber">86,87</context>
+          <context context-type="linenumber">86</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5262974821276714948" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit entrance details </source>
+      <trans-unit id="1379412368677929094" datatype="html">
+        <source>Edit entrance details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-list/entrance-list.component.html</context>
-          <context context-type="linenumber">90,91</context>
+          <context context-type="linenumber">91</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7203759249743415333" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon color=&quot;warn&quot;&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Delete entrance </source>
+      <trans-unit id="994919004966154516" datatype="html">
+        <source>Delete entrance</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/entrance/entrance-list/entrance-list.component.html</context>
-          <context context-type="linenumber">99,101</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3408871773261273776" datatype="html">
@@ -4348,8 +4274,8 @@ This action cannot be undone.</source>
           <context context-type="linenumber">164</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1595533951302945143" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>Details for building<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+      <trans-unit id="5335928833902614593" datatype="html">
+        <source>Details for building</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-view-details-v2/register-view-details-v2.component.html</context>
           <context context-type="linenumber">67</context>
@@ -4509,15 +4435,11 @@ This action cannot be undone.</source>
           <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5323138100935811142" datatype="html">
-        <source> Create new statistic export <x id="START_TAG_BUTTON" ctype="x-button" equiv-text="&lt;button
-    mat-icon-button
-    mat-dialog-close
-    class=&quot;position-absolute end-0&quot;
-    aria-label=&quot;Close&quot;&gt;"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>close<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_TAG_BUTTON" ctype="x-button" equiv-text="&lt;/button&gt;"/></source>
+      <trans-unit id="4698623592954641832" datatype="html">
+        <source>Create new statistic export</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export-create/statistic-export-create.component.html</context>
-          <context context-type="linenumber">1,9</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7040513614230229179" datatype="html">
@@ -4588,16 +4510,6 @@ This action cannot be undone.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.component.html</context>
           <context context-type="linenumber">63</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6689901229817758473" datatype="html">
-        <source><x id="START_BLOCK_IF" equiv-text="@if (
-              downloadRowId === element.id &amp;&amp;
-              statisticsTableData().isDownloading
-            ) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;24&quot;&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;/mat-spinner&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>download<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_BLOCK_ELSE" equiv-text="}"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/statistic-export/statistic-export.component.html</context>
-          <context context-type="linenumber">74,81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3448925269201544337" datatype="html">
@@ -4779,11 +4691,11 @@ This action cannot be undone.</source>
           <context context-type="linenumber">95,97</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="881876949420171493" datatype="html">
-        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit street </source>
+      <trans-unit id="4905722057494907069" datatype="html">
+        <source>Edit street</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/street-management/street-management-table/street-management-table.component.html</context>
-          <context context-type="linenumber">122,123</context>
+          <context context-type="linenumber">122</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2851099401880682220" datatype="html">
