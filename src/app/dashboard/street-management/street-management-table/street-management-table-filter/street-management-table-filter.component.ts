@@ -1,7 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
-import { StreetFilter } from '../../../register/model/street';
+import {
+  StreetFilter,
+  StreetFilterKey,
+  StreetFilterOption,
+} from '../../../register/model/street';
 
 @Component({
   selector: 'asrdb-street-management-table-filter',
@@ -18,7 +22,7 @@ export class StreetManagementTableFilterComponent {
 
   get municipalities() {
     return this.filterConfig.options.StrMunicipality.filter(
-      (el: any) =>
+      (el: StreetFilterOption) =>
         !this.filterValue ||
         el.name
           .toString()
@@ -27,13 +31,42 @@ export class StreetManagementTableFilterComponent {
     );
   }
 
-  changeValue(event: MatSelectChange, filterProp: string) {
-    (this.filterConfig.filter as any)[filterProp] = event.value;
+  changeValue(event: MatSelectChange, filterProp: StreetFilterKey) {
+    if (filterProp === 'StrType') {
+      const nextValue = Array.isArray(event.value)
+        ? event.value
+            .map(value => Number.parseInt(value?.toString() ?? '', 10))
+            .filter(value => !Number.isNaN(value))
+        : [];
+      this.filterConfig.filter.StrType = nextValue;
+      return;
+    }
+
+    if (filterProp === 'StrMunicipality') {
+      const parsed = Number.parseInt(event.value?.toString() ?? '', 10);
+      this.filterConfig.filter.StrMunicipality = Number.isNaN(parsed)
+        ? null
+        : parsed;
+      return;
+    }
+
+    this.filterConfig.filter[filterProp] = event.value?.toString() ?? '';
   }
 
-  cleanValue(event: any, filterProp: string) {
+  cleanValue(event: Event, filterProp: StreetFilterKey) {
     event.stopPropagation();
     event.preventDefault();
-    (this.filterConfig.filter as any)[filterProp] = '';
+
+    if (filterProp === 'StrMunicipality') {
+      this.filterConfig.filter.StrMunicipality = null;
+      return;
+    }
+
+    if (filterProp === 'StrType') {
+      this.filterConfig.filter.StrType = [];
+      return;
+    }
+
+    this.filterConfig.filter[filterProp] = '';
   }
 }

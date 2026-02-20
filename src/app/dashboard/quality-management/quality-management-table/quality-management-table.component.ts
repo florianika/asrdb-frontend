@@ -20,6 +20,12 @@ import {
 import { QualityRuleFilter } from './model/quality-rule-filter';
 import { MatSort } from '@angular/material/sort';
 import { mkConfig, generateCsv, asBlob, CsvOutput } from 'export-to-csv';
+import {
+  BUILDING_ENTITY,
+  DWELLING_ENTITY,
+  ENTRANCE_ENTITY,
+} from '../../../common/constants/common-constants';
+import { EntityType } from '../quality-management-config';
 
 @Component({
   selector: 'asrdb-quality-management-table',
@@ -47,7 +53,7 @@ export class QualityManagementTableComponent
   ];
   private datasource = new MatTableDataSource();
 
-  private qualityType!: string | null;
+  private qualityType: EntityType = BUILDING_ENTITY;
   private subscription = new Subject();
 
   filterConfig: QualityRuleFilter = {
@@ -98,9 +104,6 @@ export class QualityManagementTableComponent
   }
 
   get entityTitle() {
-    if (!this.qualityType) {
-      return 'Building';
-    }
     return (
       this.qualityType.charAt(0) + this.qualityType.substring(1).toLowerCase()
     );
@@ -233,6 +236,18 @@ export class QualityManagementTableComponent
   }
 
   private init() {
+    const entity = this.activatedRoute.snapshot.paramMap.get('entity');
+    if (
+      entity &&
+      [BUILDING_ENTITY, ENTRANCE_ENTITY, DWELLING_ENTITY].includes(
+        entity as EntityType
+      )
+    ) {
+      this.qualityType = entity as EntityType;
+    } else {
+      this.qualityType = BUILDING_ENTITY;
+    }
+
     this.loadFilter();
     this.qualityRulesObservable =
       this.qualityManagementService.qualityRulesAsObservable.pipe(
@@ -246,7 +261,6 @@ export class QualityManagementTableComponent
       );
     this.isLoadingResults =
       this.qualityManagementService.loadingResultsAsObservable;
-    this.qualityType = this.activatedRoute.snapshot.paramMap.get('entity');
     this.datasource.filterPredicate = (data: any, filter) => {
       const filterObject: QualityRuleFilter = JSON.parse(filter);
       let shouldShow = true;

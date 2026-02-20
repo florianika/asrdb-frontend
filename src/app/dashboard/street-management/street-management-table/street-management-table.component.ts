@@ -7,15 +7,14 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewContainerRef,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import {
+  Subject,
   catchError,
   merge,
   of as observableOf,
-  Subject,
   switchMap,
   takeUntil,
 } from 'rxjs';
@@ -23,8 +22,13 @@ import { Chip } from '../../../common/standalone-components/chip/chip.component'
 import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { QueryFilter } from '../../register/model/query-filter';
-import { StreetFilter } from '../../register/model/street';
+import {
+  Street,
+  StreetFilter,
+  StreetFilterKey,
+  StreetFilterOption,
+  StreetFilterValues,
+} from '../../register/model/street';
 import { CommonStreetService } from '../../common/service/common-street.service';
 import {
   AuthStateService,
@@ -32,15 +36,19 @@ import {
 } from '../../../common/services/auth-state.service';
 import { StreetManagementFormComponent } from '../street-management-form/street-management-form.component';
 import { StreetManagementTableFilterComponent } from './street-management-table-filter/street-management-table-filter.component';
-import {
-  MUNICIPALITIES,
-  Municipality,
-} from '../../../common/data/municipalities';
-import { RegisterFilterService } from '../../register/register-table-view/register-filter.service';
-import { CommonEntranceService } from '../../common/service/common-entrance.service';
-import { CommonBuildingService } from '../../common/service/common-building.service';
+import { MUNICIPALITIES } from '../../../common/data/municipalities';
+import { StreetManagementTableFilterService } from './street-management-table-filter.service';
+import { StreetManagementTableSelectionService } from './street-management-table-selection.service';
 
 const FILTER_KEY = 'streetManagementTableFilter';
+
+type StreetQueryResponse = {
+  count: number;
+  data: {
+    fields: Array<Record<string, unknown>>;
+    features: Array<{ attributes: Street }>;
+  };
+};
 
 @Component({
   selector: 'asrdb-street-management-table',
@@ -74,57 +82,60 @@ export class StreetManagementTableComponent
     'StrNameFull',
     'StrAddressID',
   ];
-  private destroy$ = new Subject();
+  private destroy$ = new Subject<void>();
 
   displayedColumns: string[] = this.columns.concat(['actions']);
-  data: any[] = [];
-  fields: any[] = [];
+  data: Street[] = [];
+  fields: Array<Record<string, unknown>> = [];
   resultsLength = 0;
   isLoadingResults = false;
   streetEntranceMap: Map<string, number> = new Map<string, number>();
 
+  private readonly defaultMunicipality =
+    this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY;
+
   filterConfig: StreetFilter = {
-    filter: {
-      StrMunicipality: this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY,
-      StrType: '',
-      StrNameCore: '',
-      StrNameFull: '',
-      GlobalID: '',
-      StrAddressID: '',
-    },
+    filter: this.streetFilterService.getDefaultFilterValues(
+      this.defaultMunicipality
+    ),
     options: {
-      StrType: [] as any[],
-      StrMunicipality: MUNICIPALITIES as any[],
+      StrType: [],
+      StrMunicipality: this.mapMunicipalitiesToOptions(MUNICIPALITIES),
     },
   };
 
   get filterChips(): Chip[] {
-    return Object.entries(this.filterConfig.filter)
-      .filter(([, value]) => !!value)
-      .map(([key, value]): any => ({
-        column: key,
-        value: this.getValueFromStatus(key, value.toString()),
-      }));
+    return this.streetFilterService.buildFilterChips(
+      this.filterConfig.filter,
+      (column, value) => this.getValueFromStatus(column, value)
+    );
   }
 
   constructor(
     private authState: AuthStateService,
     private commonStreetService: CommonStreetService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
-    private commonEntranceService: CommonEntranceService,
-    private commonBuildingService: CommonBuildingService,
+    private streetFilterService: StreetManagementTableFilterService,
+    private streetSelectionService: StreetManagementTableSelectionService,
     private changeDetectorRef: ChangeDetectorRef,
-    private viewContainerRef: ViewContainerRef,
     private matDialog: MatDialog,
-    private matSnack: MatSnackBar,
-    private registerFilterService: RegisterFilterService
+    private matSnack: MatSnackBar
   ) {}
 
   ngOnInit() {
     try {
-      const filter = localStorage.getItem(FILTER_KEY);
-      if (filter) {
-        this.filterConfig = JSON.parse(filter);
+      const rawConfig = localStorage.getItem(FILTER_KEY);
+      if (rawConfig) {
+        const parsedConfig = JSON.parse(rawConfig) as
+          | Partial<StreetFilter>
+          | { filter?: Partial<StreetFilterValues> };
+        this.filterConfig = {
+          ...this.filterConfig,
+          filter: this.streetFilterService.normalizeFilterValues(
+            parsedConfig?.filter,
+            this.defaultMunicipality
+          ),
+        };
       }
     } catch (e) {
       console.error(
@@ -132,9 +143,7 @@ export class StreetManagementTableComponent
         e
       );
     }
-    this.loadStreetsForMunicipality(
-      this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY
-    );
+
     this.loadStreets()
       .pipe(
         takeUntil(this.destroy$),
@@ -165,11 +174,11 @@ export class StreetManagementTableComponent
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next(true);
+    this.destroy$.next();
     this.destroy$.complete();
   }
 
-  getValueFromStatus(column: string, code: string) {
+  getValueFromStatus(column: StreetFilterKey, code: string) {
     if (column === 'StrMunicipality') {
       return this.getMunicipality(column, code);
     }
@@ -187,8 +196,19 @@ export class StreetManagementTableComponent
   }
 
   remove($event: Chip) {
-    (this.filterConfig.filter as any)[$event.column] = '';
-    localStorage.setItem(FILTER_KEY, JSON.stringify(this.filterConfig));
+    if (!this.isStreetFilterKey($event.column)) {
+      return;
+    }
+
+    this.filterConfig = {
+      ...this.filterConfig,
+      filter: this.streetFilterService.removeFilterValue(
+        this.filterConfig.filter,
+        $event.column,
+        $event.value
+      ),
+    };
+    this.persistFilter();
     this.reload();
   }
 
@@ -240,7 +260,9 @@ export class StreetManagementTableComponent
     } else {
       this.selectedStreets.add(globalId);
     }
-    this.filterMap();
+
+    this.isLoadingResults = true;
+    this.syncSelectedStreetsWithMap();
   }
 
   isSelected(globalId: string): boolean {
@@ -252,55 +274,38 @@ export class StreetManagementTableComponent
   }
 
   private handlePopupClose(newFilterConfig: StreetFilter | null) {
-    if (newFilterConfig) {
-      localStorage.setItem(FILTER_KEY, JSON.stringify(newFilterConfig));
-      this.filterConfig = newFilterConfig;
-      this.reload();
+    if (!newFilterConfig) {
+      return;
     }
-  }
 
-  private prepareWhereCase() {
-    const conditions: string[] = [];
-    Object.entries(this.filterConfig.filter)
-      .filter(([, value]: any) => !!value)
-      .map(([key, value]: any) => ({ column: key, value }) as Chip)
-      .forEach((filter: any) => {
-        if (filter.column === 'GlobalID') {
-          conditions.push(filter.column + ' in ' + filter.value);
-        } else if (
-          filter.column === 'StrNameCore' ||
-          filter.column === 'StrNameFull'
-        ) {
-          conditions.push(filter.column + ' like ' + `'%${filter.value}%'`);
-        } else if (filter.column === 'StrType') {
-          conditions.push(
-            filter.column + '=' + Number.parseInt(filter.value, 10)
-          );
-        } else {
-          conditions.push(
-            filter.column + '=' + this.getWhereConditionValue(filter.value)
-          );
-        }
-      });
-    return conditions.length ? conditions.join(' and ') : '1=1';
-  }
-
-  private getWhereConditionValue(value: string | number) {
-    return typeof value == 'number' ? value : `'${value}'`;
+    this.filterConfig = {
+      ...newFilterConfig,
+      filter: this.streetFilterService.normalizeFilterValues(
+        newFilterConfig.filter,
+        this.defaultMunicipality
+      ),
+      options: {
+        ...newFilterConfig.options,
+        StrMunicipality: this.mapMunicipalitiesToOptions(MUNICIPALITIES),
+      },
+    };
+    this.persistFilter();
+    this.reload();
   }
 
   private loadStreets() {
     this.isLoadingResults = true;
-    const filter = {
-      start:
-        (this.paginator?.pageIndex ?? 0) * (this.paginator?.pageSize ?? 10),
-      num: this.paginator?.pageSize ?? 10,
-      outFields: this.STR_FIELDS,
-      where: this.prepareWhereCase(),
-      orderByFields: this.sort?.active
-        ? [this.sort.active + ' ' + this.sort.direction.toUpperCase()]
-        : undefined,
-    } as Partial<QueryFilter>;
+    const filter = this.streetFilterService.createStreetQuery(
+      this.filterConfig.filter,
+      this.paginator?.pageIndex ?? 0,
+      this.paginator?.pageSize ?? 10,
+      this.STR_FIELDS,
+      {
+        active: this.sort?.active,
+        direction: this.sort?.direction,
+      }
+    );
+
     return this.commonStreetService.getStreets(filter).pipe(
       catchError(err => {
         console.log(err);
@@ -309,11 +314,12 @@ export class StreetManagementTableComponent
     );
   }
 
-  private handleResponse(res: any) {
+  private handleResponse(res: StreetQueryResponse | null) {
     if (isDevMode()) {
       console.log('Streets: ', res);
     }
-    if (!res) {
+
+    if (!res?.data?.features) {
       this.matSnack.open(
         $localize`Could not load result. Please try again`,
         $localize`Ok`,
@@ -321,151 +327,81 @@ export class StreetManagementTableComponent
       );
       this.isLoadingResults = false;
       this.data = [];
+      this.streetEntranceMap.clear();
       this.changeDetectorRef.markForCheck();
       return;
     }
-    if (res.data.fields.length) {
+
+    if (res.data.fields?.length) {
       this.fields = res.data.fields;
     }
+
     this.resultsLength = res.count;
-    this.data = res.data.features.map(
-      (feature: { attributes: object }) => feature.attributes
-    );
-    this.filterMap();
-    this.loadEntrancesForStreets();
+    this.data = res.data.features.map(feature => feature.attributes);
+    this.prepareFilter();
+    this.syncSelectedStreetsWithMap();
+    this.loadEntranceCountsForVisibleStreets();
   }
 
-  private loadEntrancesForStreets() {
-    const ids = this.data.map(street => street['GlobalID']);
-    if (!ids.length) {
-      return;
-    }
-    const filter = {
-      outFields: ['EntStrGlobalID'],
-      where:
-        'EntStrGlobalID in (' +
-        ids.map((id: string) => `'${id}'`).join(',') +
-        ') AND EntQuality <> 0',
-      start: 0,
-      num: 20000,
-    } as QueryFilter;
-    this.commonEntranceService
-      .getEntranceData(filter)
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError(() => observableOf(null))
-      )
-      .subscribe(data => {
-        if (data && data.data && data.data.features) {
-          this.streetEntranceMap.clear();
-          data.data.features.forEach((feature: any) => {
-            const streetId = feature.attributes.EntStrGlobalID;
-            const count = this.streetEntranceMap.get(streetId) || 0;
-            this.streetEntranceMap.set(streetId, count + 1);
-          });
-          this.changeDetectorRef.markForCheck();
-        }
+  private loadEntranceCountsForVisibleStreets() {
+    const ids = this.data
+      .map(street => street.GlobalID)
+      .filter((globalId): globalId is string => !!globalId);
+
+    this.streetSelectionService
+      .loadEntranceCountByStreet(ids)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(counts => {
+        this.streetEntranceMap = counts;
+        this.changeDetectorRef.markForCheck();
       });
   }
 
-  private filterMap() {
-    const ids = Array.from(this.selectedStreets);
-    if (!ids.length) {
-      this.registerFilterService.resetFilter();
-      this.registerFilterService.updateGlobalIds([]);
-      this.handleLoadFinish();
-      return;
-    }
-    const filter = {
-      outFields: ['EntBldGlobalID'],
-      where:
-        'EntStrGlobalID in (' +
-        ids.map((id: string) => `'${id}'`).join(',') +
-        ') AND EntQuality <> 0',
-      start: 0,
-      num: 20000,
-    } as QueryFilter;
-    this.commonEntranceService
-      .getEntranceData(filter)
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError(() => observableOf(null))
-      )
-      .subscribe(data => {
-        if (data && data.data && data.data.features) {
-          const entIds = data.data.features.map(
-            (feature: any) => feature.attributes.EntBldGlobalID
-          );
-          if (!entIds.length) {
-            this.handleLoadFinish();
-            return;
-          }
-          const buildingFilter = {
-            outFields: ['GlobalID'],
-            where:
-              'GlobalID in (' +
-              entIds.map((id: string) => `'${id}'`).join(',') +
-              ')',
-            start: 0,
-            num: 20000,
-          } as QueryFilter;
-          this.commonBuildingService
-            .getBuildingData(buildingFilter)
-            .pipe(
-              takeUntil(this.destroy$),
-              catchError(() => observableOf(null))
-            )
-            .subscribe(data => {
-              if (data && data.data && data.data.features) {
-                const bldIds = data.data.features.map(
-                  (feature: any) => feature.attributes.GlobalID
-                );
-                this.registerFilterService.setBuildingsGlobalIdFilter(bldIds);
-                this.registerFilterService.updateGlobalIds(bldIds);
-              }
-              this.handleLoadFinish();
-            });
-        }
+  private syncSelectedStreetsWithMap() {
+    const selectedIds = Array.from(this.selectedStreets);
+
+    this.streetSelectionService
+      .syncRegisterMapSelection(selectedIds)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.handleLoadFinish();
       });
   }
 
   private handleLoadFinish() {
     this.isLoadingResults = false;
-    this.prepareFilter();
+    this.persistFilter();
     this.changeDetectorRef.markForCheck();
   }
 
   private prepareFilter() {
+    const options = this.getStreetTypeOptions();
     this.filterConfig = {
       ...this.filterConfig,
       options: {
-        StrType: this.getOptions('StrType').length
-          ? this.getOptions('StrType')
-          : this.filterConfig.options.StrType,
-        StrMunicipality: MUNICIPALITIES as Municipality[],
+        StrType: options.length ? options : this.filterConfig.options.StrType,
+        StrMunicipality: this.mapMunicipalitiesToOptions(MUNICIPALITIES),
       },
     };
   }
 
-  private getOptions(column: string) {
+  private getStreetTypeOptions(): StreetFilterOption[] {
     const field = this.commonBuildingRegisterHelper.getField(
       this.fields,
-      column
-    );
-    if (!field) {
+      'StrType'
+    ) as { domain?: { codedValues?: Array<{ name: string; code: number }> } };
+
+    if (!field?.domain?.codedValues?.length) {
       return [];
     }
-    return field.domain?.codedValues?.map(
-      (codeValue: { name: string; code: string }) => {
-        return {
-          name: codeValue.name,
-          code: codeValue.code,
-        };
-      }
-    );
+
+    return field.domain.codedValues.map(codeValue => ({
+      name: codeValue.name,
+      code: codeValue.code,
+    }));
   }
 
-  private getMunicipality(column: string, code: number | string) {
+  private getMunicipality(column: StreetFilterKey, code: number | string) {
     return this.commonBuildingRegisterHelper.getMunicipality(
       this.fields,
       column,
@@ -473,7 +409,23 @@ export class StreetManagementTableComponent
     );
   }
 
-  private loadStreetsForMunicipality(municipality: number) {
-    this.filterConfig.filter.StrMunicipality = municipality;
+  private persistFilter() {
+    localStorage.setItem(
+      FILTER_KEY,
+      JSON.stringify({ filter: this.filterConfig.filter })
+    );
+  }
+
+  private isStreetFilterKey(column: string): column is StreetFilterKey {
+    return Object.prototype.hasOwnProperty.call(this.filterConfig.filter, column);
+  }
+
+  private mapMunicipalitiesToOptions(
+    municipalities: ReadonlyArray<{ name: string; code: number }>
+  ): StreetFilterOption[] {
+    return municipalities.map(municipality => ({
+      name: municipality.name,
+      code: municipality.code,
+    }));
   }
 }

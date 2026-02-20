@@ -42,6 +42,8 @@ export const STREET_HIDDEN_FIELDS = [
   'external_editor',
   'external_creator_date',
   'external_editor_date',
-  'DwlQuality',
-  'DwlID',
+  'StrQuality',
+  'StrID',
+  'OBJECTID',
+  'GlobalID',
 ];

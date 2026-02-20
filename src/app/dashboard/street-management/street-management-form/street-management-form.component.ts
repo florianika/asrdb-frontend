@@ -81,10 +81,6 @@ export class StreetManagementFormComponent implements OnDestroy {
         this.initialized = true;
       }
     });
-
-    if (!data.id) {
-      STREET_HIDDEN_FIELDS.push('GlobalID');
-    }
   }
 
   filterInputOptions($event: any, name: string) {

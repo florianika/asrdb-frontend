@@ -199,15 +199,15 @@ feature/component providers only when isolated lifecycle is required.
 
 ### Critical
 
-- [ ] Fix quality table init-order bug where filter loads before `entity` is set:
+- [x] Fix quality table init-order bug where filter loads before `entity` is set:
       `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/quality-management/quality-management-table/quality-management-table.component.ts`.
-- [ ] Fix create/edit route consistency in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/quality-management/quality-management-routing.module.ts`.
-- [ ] Remove wrong hidden field definitions for street in `/Users/reipano/Personal/asrdb-frontend/src/app/common/data/hidden-fields.ts`.
+- [x] Fix create/edit route consistency in `/Users/reipano/Personal/asrdb-frontend/src/app/dashboard/quality-management/quality-management-routing.module.ts`.
+- [x] Remove wrong hidden field definitions for street in `/Users/reipano/Personal/asrdb-frontend/src/app/common/data/hidden-fields.ts`.
 
 ### Important
 
-- [ ] Break oversized street table logic into focused services.
-- [ ] Eliminate stringly filter logic and improve typed filter contracts.
+- [x] Break oversized street table logic into focused services.
+- [x] Eliminate stringly filter logic and improve typed filter contracts.
 
 ### Good to have
 

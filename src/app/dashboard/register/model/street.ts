@@ -16,17 +16,26 @@ export type Street = {
   external_editor_date: string;
 };
 
+export type StreetFilterValues = {
+  StrMunicipality: number | null;
+  StrType: number[];
+  StrNameCore: string;
+  StrNameFull: string;
+  GlobalID: string;
+  StrAddressID: string;
+};
+
+export type StreetFilterOption = {
+  name: string;
+  code: number;
+};
+
 export type StreetFilter = {
-  filter: {
-    StrMunicipality: number;
-    StrType: string;
-    StrNameCore: string;
-    StrNameFull: string;
-    GlobalID: string;
-    StrAddressID?: string;
-  };
+  filter: StreetFilterValues;
   options: {
-    StrType: any[];
-    StrMunicipality: any[];
+    StrType: StreetFilterOption[];
+    StrMunicipality: StreetFilterOption[];
   };
 };
+
+export type StreetFilterKey = keyof StreetFilterValues;

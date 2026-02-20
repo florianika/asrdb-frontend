@@ -7,19 +7,24 @@ import { BUILDING_ENTITY } from '../../common/constants/common-constants';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: BUILDING_ENTITY },
   {
-    path: ':entity',
-    pathMatch: 'full',
-    component: QualityManagementTableComponent,
-  },
-  {
     path: ':entity/edit/:id',
     pathMatch: 'full',
     component: QualityManagementEditComponent,
   },
   {
     path: ':entity/edit',
-    redirectTo: '/dashboard/quality-management/:entity/edit/',
     pathMatch: 'full',
+    component: QualityManagementEditComponent,
+  },
+  {
+    path: ':entity/create',
+    pathMatch: 'full',
+    component: QualityManagementEditComponent,
+  },
+  {
+    path: ':entity',
+    pathMatch: 'full',
+    component: QualityManagementTableComponent,
   },
 ];
 
