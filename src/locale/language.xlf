@@ -4705,6 +4705,34 @@ This action cannot be undone.</source>
           <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8829497237648100098" datatype="html">
+        <source>Filter</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1408000645646126950" datatype="html">
+        <source>All municipalities</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
+          <context context-type="linenumber">83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3369265151617164003" datatype="html">
+        <source> See all progress bars </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
+          <context context-type="linenumber">93,95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3678587636556283620" datatype="html">
+        <source> No data matching the filter &quot;<x id="INTERPOLATION" equiv-text="{{ selectedMunicipality }}"/>&quot; </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
+          <context context-type="linenumber">157,159</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

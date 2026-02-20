@@ -4581,6 +4581,18 @@ Ky veprim nuk mund të anulohet.</source>
       <trans-unit id="4219788328302683152" datatype="html">
         <source>Cilësia e të dhënave:</source>
       </trans-unit>
+      <trans-unit id="8829497237648100098" datatype="html">
+        <source>Filtër</source>
+      </trans-unit>
+      <trans-unit id="1408000645646126950" datatype="html">
+        <source>Të gjitha komunat</source>
+      </trans-unit>
+      <trans-unit id="3369265151617164003" datatype="html">
+        <source> Shfaq të gjitha shiritat e progresit </source>
+      </trans-unit>
+      <trans-unit id="3678587636556283620" datatype="html">
+        <source> Nuk ka të dhëna që përputhen me filtrin &quot;<x id="INTERPOLATION" equiv-text="{{ selectedMunicipality }}"/>&quot; </source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -13,7 +13,9 @@
         mode="determinate"
         [value]="overallCompleteness.percent"></mat-progress-bar>
 
-      @if (municipalityCompleteness.length) {
+      @if (
+        showAllMunicipalityProgressBars && municipalityCompleteness.length
+      ) {
         <div class="municipality-progress-list">
           @for (
             municipalityMetric of municipalityCompleteness;
@@ -36,19 +38,63 @@
             </div>
           }
         </div>
+      } @else if (selectedMunicipalityCompleteness) {
+        <div class="municipality-progress-list">
+          <div class="municipality-progress-item">
+            <div class="municipality-progress-title-row">
+              <span class="municipality-name">
+                {{ selectedMunicipalityCompleteness.municipality }}
+              </span>
+              <span class="municipality-value">
+                {{ formatPercent(selectedMunicipalityCompleteness.percent) }}
+                ({{ selectedMunicipalityCompleteness.numerator }} /
+                {{ selectedMunicipalityCompleteness.denominator }})
+              </span>
+            </div>
+            <mat-progress-bar
+              mode="determinate"
+              [value]="selectedMunicipalityCompleteness.percent"></mat-progress-bar>
+          </div>
+        </div>
       }
     </div>
 
-    <mat-form-field>
-      <mat-label>Filter</mat-label>
-      <mat-select (selectionChange)="applyFilter($event)" #input>
-        <mat-option
-          *ngFor="let municipality of municipalities"
-          [value]="municipality.name">
-          {{ municipality.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="statistics-filters">
+      <mat-form-field>
+        <mat-label i18n>Filter</mat-label>
+        <mat-select (selectionChange)="applyFilter($event)" #input>
+          <div class="search-field-container">
+            <mat-form-field class="w-100" appearance="outline">
+              <input
+                matInput
+                i18n-placeholder
+                placeholder="Search..."
+                [(ngModel)]="municipalityFilterValue" />
+              <button
+                class="z-2"
+                mat-icon-button
+                matSuffix
+                *ngIf="municipalityFilterValue"
+                (click)="clearMunicipalityFilter($event)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <mat-option value="" i18n>All municipalities</mat-option>
+          <mat-option
+            *ngFor="let municipality of filteredMunicipalities"
+            [value]="municipality.name"
+            (click)="input.close()">
+            {{ municipality.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-checkbox [(ngModel)]="showAllMunicipalityProgressBars" i18n>
+        See all progress bars
+      </mat-checkbox>
+    </div>
+
     <table mat-table [dataSource]="aggregatedStatisticsDatasource">
       <ng-container matColumnDef="municipality">
         <th mat-header-cell *matHeaderCellDef i18n>Municipality</th>
@@ -108,7 +154,9 @@
               <p i18n>Loading filed fork statistics. Please wait...</p>
             </div>
           } @else {
-            <span i18n>No data matching the filter "{{ input.value }}"</span>
+            <span i18n>
+              No data matching the filter "{{ selectedMunicipality }}"
+            </span>
           }
         </td>
       </tr>

@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
 import {
   MatCell,
   MatCellDef,
@@ -21,11 +22,13 @@ import {
 } from '@angular/material/table';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { NgForOf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import {
   FieldWorkClosureService,
   FieldWorkClosureStatistic,
@@ -53,6 +56,7 @@ type MunicipalityCompleteness = {
   standalone: true,
   imports: [
     MatButton,
+    MatCheckbox,
     MatCell,
     MatCellDef,
     MatColumnDef,
@@ -70,8 +74,11 @@ type MunicipalityCompleteness = {
     MatSelect,
     MatTable,
     NgForOf,
+    NgIf,
     MatTableModule,
     MatIcon,
+    MatInput,
+    FormsModule,
   ],
   templateUrl: './step-1-field-work-closure-statistics.component.html',
   styleUrl: './step-1-field-work-closure-statistics.component.css',
@@ -90,6 +97,10 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
     percent: 0,
   };
   public municipalityCompleteness: MunicipalityCompleteness[] = [];
+  public selectedMunicipalityCompleteness: MunicipalityCompleteness | null = null;
+  public selectedMunicipality = '';
+  public municipalityFilterValue = '';
+  public showAllMunicipalityProgressBars = false;
   public municipalities = MUNICIPALITIES.sort((a, b) =>
     a.name.localeCompare(b.name)
   );
@@ -125,6 +136,7 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
         this.aggregatedStatisticsDatasource.data = [];
         this.overallCompleteness = { numerator: 0, denominator: 0, percent: 0 };
         this.municipalityCompleteness = [];
+        this.updateSelectedMunicipalityCompleteness();
         return;
       }
 
@@ -196,6 +208,7 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
             b.percent - a.percent ||
             a.municipality.localeCompare(b.municipality)
         );
+      this.updateSelectedMunicipalityCompleteness();
     });
   }
 
@@ -211,14 +224,34 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
   }
 
   applyFilter(event: MatSelectChange) {
-    const filterValue = event.value;
+    const filterValue = (event.value ?? '').toString();
+    this.selectedMunicipality = filterValue;
     this.aggregatedStatisticsDatasource.filter = filterValue
       .trim()
       .toLowerCase();
+    this.updateSelectedMunicipalityCompleteness();
 
     if (this.aggregatedStatisticsDatasource.paginator) {
       this.aggregatedStatisticsDatasource.paginator.firstPage();
     }
+  }
+
+  clearMunicipalityFilter(event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.municipalityFilterValue = '';
+  }
+
+  get filteredMunicipalities() {
+    if (!this.municipalityFilterValue) {
+      return this.municipalities;
+    }
+
+    return this.municipalities.filter(municipality =>
+      municipality.name
+        .toLowerCase()
+        .includes(this.municipalityFilterValue.toLowerCase())
+    );
   }
 
   close() {
@@ -272,5 +305,17 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
     }
 
     return Math.round((numerator / denominator) * 10000) / 100;
+  }
+
+  private updateSelectedMunicipalityCompleteness() {
+    if (!this.selectedMunicipality) {
+      this.selectedMunicipalityCompleteness = null;
+      return;
+    }
+
+    this.selectedMunicipalityCompleteness =
+      this.municipalityCompleteness.find(
+        item => item.municipality === this.selectedMunicipality
+      ) ?? null;
   }
 }
