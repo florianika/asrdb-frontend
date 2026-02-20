@@ -1,5 +1,44 @@
 <div class="full-height-stepper">
   <div class="closure-statistics-content">
+    <div class="completeness-panel">
+      <div class="completeness-title-row">
+        <h3 i18n>Fieldwork completeness</h3>
+        <span class="completeness-value">
+          {{ formatPercent(overallCompleteness.percent) }}
+          ({{ overallCompleteness.numerator }} /
+          {{ overallCompleteness.denominator }})
+        </span>
+      </div>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="overallCompleteness.percent"></mat-progress-bar>
+
+      @if (municipalityCompleteness.length) {
+        <div class="municipality-progress-list">
+          @for (
+            municipalityMetric of municipalityCompleteness;
+            track municipalityMetric.municipality
+          ) {
+            <div class="municipality-progress-item">
+              <div class="municipality-progress-title-row">
+                <span class="municipality-name">
+                  {{ municipalityMetric.municipality }}
+                </span>
+                <span class="municipality-value">
+                  {{ formatPercent(municipalityMetric.percent) }}
+                  ({{ municipalityMetric.numerator }} /
+                  {{ municipalityMetric.denominator }})
+                </span>
+              </div>
+              <mat-progress-bar
+                mode="determinate"
+                [value]="municipalityMetric.percent"></mat-progress-bar>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
     <mat-form-field>
       <mat-label>Filter</mat-label>
       <mat-select (selectionChange)="applyFilter($event)" #input>

@@ -4712,6 +4712,87 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="6766392573712482125" datatype="html">
+        <source>Përmbushja e punës në terren</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/field-work/field-work-closure/steps/step-1-field-work-closure-statistics/step-1-field-work-closure-statistics.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="276847847864963738" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni brenda mesazhin që dëshironi t&apos;u dërgoni komunave që kanë përfunduar të gjitha detyrat </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5187178491622993291" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni brenda mesazhin që dëshironi t&apos;u dërgoni komunave që nuk kanë përfunduar të gjitha detyrat </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4356962800686798536" datatype="html">
+        <source>Shiko punët e Hangfire</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3212630520924615567" datatype="html">
+        <source>Ekzekuto menjëherë</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5988402427999567520" datatype="html">
+        <source>Planifiko për më vonë</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6524262610032366385" datatype="html">
+        <source>Zgjidh një datë</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8621231013670382361" datatype="html">
+        <source>Po rifreskohet autentikimi dhe po ngarkohet harta...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-map/register-map.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5171192616638755303" datatype="html">
+        <source> Riprovo </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-map/register-map.component.html</context>
+          <context context-type="linenumber">10,12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7967250582102540817" datatype="html">
+        <source>Autentikimi i hartës dështoi. Ju lutem riprovoni.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-map/register-map.component.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-map/register-map.component.ts</context>
+          <context context-type="linenumber">165</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4677045839902116911" datatype="html">
+        <source>Nuk u ngarkuan të dhënat e hartës. Ju lutem riprovoni.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/common/components/register-map/register-map.component.ts</context>
+          <context context-type="linenumber">166</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
