@@ -132,17 +132,18 @@ export class AuthStateService {
             } else {
               this.logout();
               observer.next(false);
+              observer.complete();
             }
           },
           error: () => {
             this.logout();
             observer.next(false);
+            observer.complete();
           },
         });
       } else {
         this.handleSuccess(admin, observer);
       }
-      observer.complete();
     });
   }
 
@@ -160,6 +161,7 @@ export class AuthStateService {
       this.setLoginState(true);
       observer.next(true);
     }
+    observer.complete();
   }
 
   isTokenValid(): boolean {
@@ -221,8 +223,9 @@ export class AuthStateService {
     }
   }
 
-  getAuthorizationToken() {
-    return 'Bearer ' + this.tokens?.accessToken;
+  getAuthorizationToken(): string | null {
+    const accessToken = this.tokens?.accessToken;
+    return accessToken ? `Bearer ${accessToken}` : null;
   }
 
   private createWebWorker() {

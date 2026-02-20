@@ -10,7 +10,7 @@ import { AuthStateService } from './auth-state.service';
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private injector: Injector) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
+  intercept(req: HttpRequest<unknown>, next: HttpHandler) {
     if (
       req.url.includes('/addFeatures') ||
       req.url.includes('/updateFeatures') ||
@@ -23,10 +23,13 @@ export class AuthInterceptor implements HttpInterceptor {
     const auth = this.injector.get(AuthStateService);
     // Get the auth token from the service.
     const authToken = auth.getAuthorizationToken();
+    if (!authToken) {
+      return next.handle(req);
+    }
     // Clone the request and replace the original headers with
     // cloned headers, updated with the authorization.
     const authReq = req.clone({
-      headers: req.headers.set('Authorization', authToken ?? ''),
+      headers: req.headers.set('Authorization', authToken),
     });
 
     // send cloned request with header to the next handler.
