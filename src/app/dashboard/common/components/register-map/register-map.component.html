@@ -1,7 +1,12 @@
 <div class="map-wrapper">
   <div [class]="small ? 'small-map' : ''" #mapViewNode></div>
 
-  <div class="map-status-overlay" *ngIf="isMapInitializing || (isRefreshing$ | async)">
+  <div
+    class="map-status-overlay"
+    *ngIf="
+      (isMapInitializing || (!isMapReady && (isRefreshing$ | async))) &&
+      !mapAuthError
+    ">
     <div i18n>Refreshing authentication and loading map...</div>
   </div>
 

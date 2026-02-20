@@ -21,7 +21,6 @@ export type AggregatedStatistic = {
     Step2FieldWorkClosureEmailComponent,
     Step3FieldWorkClosureSummaryComponent,
   ],
-  providers: [FieldWorkClosureService],
   templateUrl: './field-work-closure-modal.component.html',
   styleUrl: './field-work-closure-modal.component.css',
 })

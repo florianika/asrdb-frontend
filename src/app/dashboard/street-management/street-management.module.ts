@@ -24,9 +24,6 @@ import { StreetManagementService } from '../register/register-form/street-creati
 import { StreetManagementTableFilterComponent } from './street-management-table/street-management-table-filter/street-management-table-filter.component';
 import { RegisterMapComponent } from '../common/components/register-map/register-map.component';
 import { RegisterFilterService } from '../register/register-table-view/register-filter.service';
-import { CommonBuildingService } from '../common/service/common-building.service';
-import { CommonEntranceService } from '../common/service/common-entrance.service';
-import { CommonDwellingService } from '../common/service/common-dwellings.service';
 import { CommonEsriAuthService } from '../common/service/common-esri-auth.service';
 import { MatCheckbox } from '@angular/material/checkbox';
 
@@ -59,9 +56,6 @@ import { MatCheckbox } from '@angular/material/checkbox';
     MatCheckbox,
   ],
   providers: [
-    CommonBuildingService,
-    CommonEntranceService,
-    CommonDwellingService,
     CommonEsriAuthService,
     CommonRegisterHelperService,
     RegisterFilterService,

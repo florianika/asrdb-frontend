@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthStateService } from './common/services/auth-state.service';
 import { NotAuthorizedComponent } from './common/components/not-authorized/not-authorized.component';
 import { NotFoundComponent } from './common/components/not-found/not-found.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -52,7 +51,6 @@ import {NgOptimizedImage} from "@angular/common";
         NgOptimizedImage,
     ],
   providers: [
-    AuthStateService,
     CommonEsriAuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {

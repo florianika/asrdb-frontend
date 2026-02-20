@@ -9,16 +9,14 @@ import {Log} from '../../register-log-view/model/log';
 import {ENTRANCE_ENTITY} from '../../../../common/constants/common-constants';
 import {Entrance} from '../../model/entrance';
 import {QueryFilter} from '../../model/query-filter';
-import {catchError, of as observableOf, Subject, takeUntil} from 'rxjs';
+import {catchError, of as observableOf, Subject, take, takeUntil} from 'rxjs';
 import {CommonEntranceService} from '../../../common/service/common-entrance.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CommonStreetService} from '../../../common/service/common-street.service';
 import {EntranceDetailsComponent} from './entrance-details/entrance-details.component';
 import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class EntranceDetailsService {
   private matDialog = inject(MatDialog);
   private matSnackBar = inject(MatSnackBar);
@@ -130,10 +128,9 @@ export class EntranceDetailsService {
       },
       disableClose: true,
     });
-    const sub = this.dialogRef.afterClosed().subscribe(() => {
-      this.viewData.update(data => ({ ...data, selectedDwelling: null }));
+    this.dialogRef.afterClosed().pipe(take(1)).subscribe(() => {
+      this.viewData.update(data => ({ ...data, selectedEntrance: null }));
       this.previousEntranceId = '';
-      sub.unsubscribe();
     });
   }
 

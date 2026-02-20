@@ -2,15 +2,35 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
-import { catchError, of } from 'rxjs';
-import { MatStepper } from '@angular/material/stepper';
+import {
+  catchError,
+  finalize,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { AuthStateService } from '../../common/services/auth-state.service';
 import { EsriCredentials } from '../../model/EsriCredentials.model';
 import { Router } from '@angular/router';
+import { SigninResponse } from '../../model/JWT.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+type SigninV2LoginRequest = {
+  email: string;
+  password: string;
+};
+
+type SigninV2LoginResponse = {
+  userId: string;
+};
+
+type SigninV2VerifyRequest = {
+  userId: string;
+  code: string;
+};
+
+@Injectable()
 export class SigninV2Service {
   private matSnack = inject(MatSnackBar);
   private authStateService = inject(AuthStateService);
@@ -27,119 +47,123 @@ export class SigninV2Service {
 
   constructor(private httpClient: HttpClient) {}
 
-  public login(username: string, password: string, stepper: MatStepper) {
+  public login(username: string, password: string): Observable<boolean> {
     this.loginSignal.set({
       userId: '',
       isLoggingIn: true,
     });
-    const data = {
+
+    const data: SigninV2LoginRequest = {
       email: username,
-      password: password,
+      password,
     };
+
     const url = environment.base_url + '/Auth/2fa/login';
-    const subscription = this.httpClient
-      .post(url, data)
+    return this.httpClient
+      .post<SigninV2LoginResponse>(url, data)
       .pipe(
         catchError(error => {
-          console.error(error);
-          this.matSnack.open('Username or password not correct', 'Ok', {
-            duration: 3000,
-          });
-          return of(null);
+          this.handleLoginError(error);
+          return of<SigninV2LoginResponse | null>(null);
         })
       )
-      .subscribe({
-        next: response => {
-          if (response) {
-            const userId = (response as any).userId;
-            this.loginSignal.set({
-              userId: userId,
-              isLoggingIn: false,
-            });
-            stepper.next();
-          } else {
+      .pipe(
+        tap(response => {
+          if (!response?.userId) {
             this.loginSignal.set({
               userId: '',
               isLoggingIn: false,
             });
+            return;
           }
-          subscription.unsubscribe();
-        },
-        complete: () => {
-          subscription.unsubscribe();
-        }
-      });
+
+          this.loginSignal.set({
+            userId: response.userId,
+            isLoggingIn: false,
+          });
+        }),
+        map(response => !!response?.userId)
+      );
   }
 
-  public verify2FA(token: string) {
+  public verify2FA(token: string): Observable<boolean> {
     this.verify2FASignal.set({
       isVerifying: true,
     });
-    const data = {
-      userId: this.loginSignal().userId,
+
+    const userId = this.loginSignal().userId;
+    if (!userId) {
+      this.verify2FASignal.set({ isVerifying: false });
+      this.authStateService.setLoginState(false);
+      this.matSnack.open('Session expired. Please sign in again.', 'Ok', {
+        duration: 3000,
+      });
+      return of(false);
+    }
+
+    const data: SigninV2VerifyRequest = {
+      userId,
       code: token,
     };
     const url = environment.base_url + '/Auth/2fa/verify';
-    const subscription = this.httpClient
-      .post(url, data)
-      .pipe(
-        catchError(error => {
-          console.error(error);
-          this.matSnack.open('2FA token not correct', 'Ok', {
-            duration: 3000,
-          });
-          return of(null);
-        })
-      )
-      .subscribe({
-        next: response => {
-          if (response) {
-            this.authStateService.setJWT(response as any);
-            this.getEsriCredentials();
-            this.verify2FASignal.set({
-              isVerifying: false,
-            });
-            // Handle successful 2FA verification, e.g., navigate to dashboard
-          } else {
-            this.verify2FASignal.set({
-              isVerifying: false,
-            });
-          }
-          subscription.unsubscribe();
-        },
-        complete: () => {
-          subscription.unsubscribe();
+
+    return this.httpClient.post<SigninResponse>(url, data).pipe(
+      catchError(error => {
+        this.handle2FATokenError(error);
+        return of<SigninResponse | null>(null);
+      }),
+      switchMap(response => {
+        if (!response) {
+          return of(false);
         }
-      });
+
+        this.authStateService.setJWT(response);
+        return this.getEsriCredentials();
+      }),
+      finalize(() => {
+        this.verify2FASignal.set({ isVerifying: false });
+      })
+    );
   }
 
-  private getEsriCredentials() {
-    this.httpClient
+  private getEsriCredentials(): Observable<boolean> {
+    return this.httpClient
       .get<EsriCredentials>(environment.base_url + '/auth/gis/login')
-      .subscribe({
-        next: async credentials => {
-          try {
-            this.authStateService.initEsriConfig(credentials);
-            void this.router.navigateByUrl('/dashboard');
-            this.authStateService.setLoginState(true);
-            this.verify2FASignal.set({
-              isVerifying: false,
-            });
-          } catch (error) {
-            this.handleError(error);
-          }
-        },
-        error: error => {
-          this.handleError(error);
-        },
-      });
+      .pipe(
+        tap(credentials => {
+          this.authStateService.initEsriConfig(credentials);
+          this.authStateService.setLoginState(true);
+          void this.router.navigateByUrl('/dashboard');
+        }),
+        map(() => true),
+        catchError(error => {
+          this.handleCredentialError(error);
+          return of(false);
+        })
+      );
   }
 
-  private handleError(error: any) {
+  private handleLoginError(error: unknown): void {
     console.error(error);
-    this.verify2FASignal.set({
-      isVerifying: false,
+    this.loginSignal.set({
+      userId: '',
+      isLoggingIn: false,
     });
+    this.matSnack.open('Username or password not correct', 'Ok', {
+      duration: 3000,
+    });
+  }
+
+  private handle2FATokenError(error: unknown): void {
+    console.error(error);
+    this.authStateService.setLoginState(false);
+    this.matSnack.open('2FA token not correct', 'Ok', {
+      duration: 3000,
+    });
+  }
+
+  private handleCredentialError(error: unknown): void {
+    console.error(error);
     this.authStateService.setLoginState(false);
     this.matSnack.open('Could not load credentials. Please try again.', 'Ok', {
       duration: 3000,

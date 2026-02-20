@@ -57,14 +57,13 @@ import {
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { getColor, MY_FORMATS } from '../../model/common-utils';
 import { Log } from '../../register-log-view/model/log';
-import { STREET_HIDDEN_FIELDS } from '../../../../common/data/hidden-fields';
 import { DWELLING_ENTITY } from '../../../../common/constants/common-constants';
 import {
   CommonEntityStructureService,
   EntityAttribute,
 } from '../../../common/service/common-entity-structure.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
-import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
+import { getLocaleProperty, getLogMessage } from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-dwelling-details-form',
@@ -94,7 +93,8 @@ import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-pr
   styleUrls: ['./dwelling-details-form.component.css'],
 })
 export class DwellingDetailsFormComponent implements OnDestroy {
-  private onDestroy = new Subject();
+  private onDestroy = new Subject<void>();
+  private hiddenFields = new Set<string>();
   private initialized = false;
   private dwelling?: Dwelling;
   private logs: Log[] = [];
@@ -129,16 +129,18 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     @Inject(LOCALE_ID) public locale: 'sq' | 'en'
   ) {
     this.commonStructureService.getEntityStructure(DWELLING_ENTITY);
-    this.commonStructureService.structureLoaded.subscribe(response => {
-      if (!response.loading && response.structure) {
-        this.structure = response.structure;
-        if (data.id) {
-          this.loadDwellingById(data.id);
-        } else {
-          this.initForm();
+    this.commonStructureService.structureLoaded
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(response => {
+        if (!response.loading && response.structure) {
+          this.structure = response.structure;
+          if (data.id) {
+            this.loadDwellingById(data.id);
+          } else {
+            this.initForm();
+          }
         }
-      }
-    });
+      });
 
     this.entranceId = data.entranceId;
     this.entrances = this.data.entrances;
@@ -153,7 +155,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     });
 
     if (!data.id) {
-      STREET_HIDDEN_FIELDS.push('DwlEntGlobalID');
+      this.hiddenFields.add('DwlEntGlobalID');
     }
   }
 
@@ -193,6 +195,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     const role = this.authStateService.getRole();
     this.dwellingService
       .getAttributesMetadata()
+      .pipe(takeUntil(this.onDestroy))
       .subscribe((fieldsResponse: any[]) => {
         const fields = this.structure
           .map(structureEntry => {
@@ -296,6 +299,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
       selectOptions: fieldOptions,
       originalOptions: fieldOptions,
       maxLength: field[LENGTH_PROP],
+      hidden: this.hiddenFields.has(field[NAME_PROP]),
     });
   }
 
@@ -326,7 +330,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.onDestroy.next(true);
+    this.onDestroy.next();
     this.onDestroy.complete();
   }
 
@@ -337,6 +341,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
     this.matDialog
       .open(this.cancelConfirmDialog)
       .afterClosed()
+      .pipe(takeUntil(this.onDestroy))
       .subscribe(confirm => {
         if (confirm) {
           setTimeout(() => {

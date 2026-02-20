@@ -6,7 +6,6 @@ import {
   BehaviorSubject,
   Observable,
   Subject,
-  Subscriber,
   catchError,
   finalize,
   map,
@@ -55,9 +54,15 @@ export class AuthStateService {
   }
 
   logout() {
+    const userId = this.getNameId();
+    if (!this.tokens || !userId) {
+      this.logoutUser();
+      return;
+    }
+
     this.httpClient
       .post(environment.base_url + this.SIGNOUT_URL, {
-        UserId: this.getNameId(),
+        UserId: userId,
       })
       .pipe(takeUntil(this.subscription))
       .subscribe({
@@ -144,46 +149,35 @@ export class AuthStateService {
   }
 
   isUserLoggedIn(admin = false): Observable<boolean> {
-    return new Observable(observer => {
-      const isLoggedIn = this.isTokenValid();
-      if (!isLoggedIn) {
-        this.refreshToken('guard').subscribe({
-          next: refreshed => {
-            if (refreshed) {
-              this.handleSuccess(admin, observer);
-            } else {
-              this.logout();
-              observer.next(false);
-              observer.complete();
-            }
-          },
-          error: () => {
-            this.logout();
-            observer.next(false);
-            observer.complete();
-          },
-        });
-      } else {
-        this.handleSuccess(admin, observer);
-      }
-    });
-  }
+    const authCheck$ = this.isTokenValid()
+      ? of(true)
+      : this.refreshToken('guard');
 
-  private handleSuccess(admin: boolean, observer: Subscriber<boolean>) {
-    if (admin) {
-      const isAdmin = this.isAdmin() || this.isSupervisor();
-      if (!isAdmin) {
+    return authCheck$.pipe(
+      map(isAuthenticated => {
+        if (!isAuthenticated) {
+          this.setLoginState(false);
+          return false;
+        }
+
+        if (!admin) {
+          this.setLoginState(true);
+          return true;
+        }
+
+        const hasAdminAccess = this.isAdmin() || this.isSupervisor();
+        this.setLoginState(hasAdminAccess);
+        if (!hasAdminAccess) {
+          this.logout();
+        }
+        return hasAdminAccess;
+      }),
+      catchError(() => {
+        this.setLoginState(false);
         this.logout();
-        observer.next(false);
-      } else {
-        this.setLoginState(true);
-        observer.next(true);
-      }
-    } else {
-      this.setLoginState(true);
-      observer.next(true);
-    }
-    observer.complete();
+        return of(false);
+      })
+    );
   }
 
   isTokenValid(): boolean {
@@ -262,7 +256,6 @@ export class AuthStateService {
 
   private getDecodedJWT(): JWT | null {
     if (!this.tokens) {
-      void this.router.navigateByUrl(this.SIGNIN_URL);
       return null;
     }
     return this.helper.decodeToken<JWT>(this.tokens.idToken);
@@ -270,9 +263,12 @@ export class AuthStateService {
 
   private logoutUser() {
     this.webWorker?.postMessage(this.STOP_INTERVAL_MESSAGE);
+    this.tokens = null;
+    localStorage.removeItem(this.TOKEN_STORAGE_KEY);
+    localStorage.removeItem(ESRI_AUTH_KEY);
+    sessionStorage.removeItem(this.TOKEN_STORAGE_KEY);
+    sessionStorage.removeItem(ESRI_AUTH_KEY);
     this.setLoginState(false);
-    localStorage.clear();
-    sessionStorage.clear();
     void this.router.navigateByUrl(this.SIGNIN_URL);
   }
 

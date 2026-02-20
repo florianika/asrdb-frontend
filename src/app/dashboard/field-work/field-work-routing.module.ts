@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FieldWorkService } from './field-work.service';
 import { FieldWorkTableComponent } from './field-work-table/field-work-table.component';
 import { FiledWorkFormComponent } from './filed-work-form/filed-work-form.component';
 import { FieldWorkClosureModalComponent } from './field-work-closure/field-work-closure-modal.component';
@@ -15,6 +14,5 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [FieldWorkService],
 })
 export class FieldWorkRoutingModule {}

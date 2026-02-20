@@ -48,14 +48,21 @@ export class SigninV2Component {
   });
 
   public onUsernamePasswordProceed() {
-    this.signinService.login(
-      this.usernamePasswordFormGroup.value.username ?? '',
-      this.usernamePasswordFormGroup.value.password ?? '',
-      this.stepper
-    );
+    this.signinService
+      .login(
+        this.usernamePasswordFormGroup.value.username ?? '',
+        this.usernamePasswordFormGroup.value.password ?? ''
+      )
+      .subscribe(isLoggedIn => {
+        if (isLoggedIn) {
+          this.stepper.next();
+        }
+      });
   }
 
   public onTokenVerifyProceed() {
-    this.signinService.verify2FA(this.tokenVerifyFormGroup.value.token ?? '');
+    this.signinService
+      .verify2FA(this.tokenVerifyFormGroup.value.token ?? '')
+      .subscribe();
   }
 }

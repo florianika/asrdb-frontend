@@ -42,7 +42,7 @@ import { FieldWorkStatisticService } from '../../field-work-statistic.service';
     MatButton,
     FieldWorkFormStep3StatisticTableComponent,
   ],
-  providers: [QualityManagementService, FieldWorkStatisticService],
+  providers: [FieldWorkStatisticService],
   templateUrl: './field-work-form-step3.component.html',
   styleUrl: './field-work-form-step3.component.css',
 })

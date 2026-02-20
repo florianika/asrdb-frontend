@@ -30,9 +30,7 @@ const STREET_NAME = 'Street name';
 const BUILDING_NUMBER = 'Building number';
 const ENTRANCE_NUMBER = 'Entrance number';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class DwellingDetailsService {
   private previousEntranceId = '';
   private previousDwellingId = '';

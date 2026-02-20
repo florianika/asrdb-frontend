@@ -5,9 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class CommentService {
   private comments = new BehaviorSubject<{
     loading: boolean;

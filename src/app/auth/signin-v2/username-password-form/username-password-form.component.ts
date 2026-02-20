@@ -8,7 +8,7 @@ import {
 } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { SigninV2Service } from '../signin-v2.service';
 
 @Component({
@@ -29,7 +29,7 @@ import { SigninV2Service } from '../signin-v2.service';
 })
 export class UsernamePasswordFormComponent {
   @Input() form!: FormGroup;
-  @Output() proceed = new EventEmitter();
+  @Output() proceed = new EventEmitter<void>();
   public signinService = inject(SigninV2Service);
 
   public showPassword: boolean = false;

@@ -8,7 +8,7 @@ export interface WMTSLOD {
   resolution?: number;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class WmtsCapabilitiesService {
   private lodCache = new Map<string, WMTSLOD[]>();
 

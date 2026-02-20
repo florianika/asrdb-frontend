@@ -31,7 +31,7 @@ import {
 import SketchProperties = __esri.SketchProperties;
 import { CommonMunicipalityService } from '../../common/service/common-municipality.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class EntityCreationMapService {
   private valueUpdate = new Subject<MapData>();
   private graphicsLayer!: GraphicsLayer;

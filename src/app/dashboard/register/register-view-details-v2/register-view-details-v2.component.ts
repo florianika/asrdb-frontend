@@ -1,4 +1,12 @@
-import { Component, inject, isDevMode, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  isDevMode,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { RegisterViewDetailsService } from './register-view-details.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommentViewComponent } from './comment-view/comment-view.component';
@@ -25,7 +33,7 @@ import { EntranceDetailsService } from './entrance/entrance-details.service';
 import { EntranceListComponent } from './entrance/entrance-list/entrance-list.component';
 import { DwellingListComponent } from './dwelling/dwelling-list/dwelling-list.component';
 import { BuildingDetailComponent } from './building-detail/building-detail.component';
-import {AuthStateService} from "../../../common/services/auth-state.service";
+import { AuthStateService } from '../../../common/services/auth-state.service';
 
 @Component({
   selector: 'asrdb-register-view-details-v2',
@@ -58,9 +66,9 @@ import {AuthStateService} from "../../../common/services/auth-state.service";
   standalone: true,
   styleUrl: './register-view-details-v2.component.css',
 })
-export class RegisterViewDetailsV2Component implements OnInit {
-  @ViewChild('approveReview') approveReview?: any;
-  @ViewChild('rejectReview') rejectReview?: any;
+export class RegisterViewDetailsV2Component implements OnInit, OnDestroy {
+  @ViewChild('approveReview') approveReview?: TemplateRef<unknown>;
+  @ViewChild('rejectReview') rejectReview?: TemplateRef<unknown>;
 
   id: string = '';
   private activatedRoute = inject(ActivatedRoute);
@@ -115,6 +123,11 @@ export class RegisterViewDetailsV2Component implements OnInit {
     } else {
       void this.router.navigateByUrl('dashboard/register');
     }
+  }
+
+  ngOnDestroy(): void {
+    this.dialog?.close();
+    this.registerViewDetailsService.cleanup();
   }
 
   goBack() {

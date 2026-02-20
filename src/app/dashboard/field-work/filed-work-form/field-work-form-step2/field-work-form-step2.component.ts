@@ -27,7 +27,6 @@ import { Router } from '@angular/router';
     NgxEditorModule,
     MatIcon,
   ],
-  providers: [EmailTemplateManagementService],
   templateUrl: './field-work-form-step2.component.html',
   styleUrl: './field-work-form-step2.component.css',
 })

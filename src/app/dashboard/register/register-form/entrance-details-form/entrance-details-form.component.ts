@@ -84,8 +84,6 @@ import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-pr
       deps: [MAT_DATE_LOCALE],
     },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-    CommonStreetService,
-    CommonBuildingService,
   ],
   templateUrl: './entrance-details-form.component.html',
   styleUrls: ['./entrance-details-form.component.css'],

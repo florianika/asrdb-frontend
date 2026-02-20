@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import {
@@ -17,6 +17,7 @@ import {
   DWELLING_ENTITY,
   ENTRANCE_ENTITY,
 } from '../../../../common/constants/common-constants';
+import { filter, Subject, take, takeUntil } from 'rxjs';
 
 export type EntityDeleteDialogData = {
   type: EntityType;
@@ -41,8 +42,8 @@ export type EntityDeleteDialogData = {
   templateUrl: './entity-delete-confirmation-dialog.component.html',
   styleUrl: './entity-delete-confirmation-dialog.component.css',
 })
-export class EntityDeleteConfirmationDialogComponent {
-  private deleteDialog?: MatDialogRef<any>;
+export class EntityDeleteConfirmationDialogComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
   private readonly idToDelete?: string;
 
   type?: EntityType;
@@ -53,7 +54,8 @@ export class EntityDeleteConfirmationDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: EntityDeleteDialogData,
-    private registerDeleteService: RegisterDeleteService
+    private registerDeleteService: RegisterDeleteService,
+    private dialogRef: MatDialogRef<EntityDeleteConfirmationDialogComponent>
   ) {
     this.type = data.type;
     this.idToDelete = data.idToDelete;
@@ -78,25 +80,36 @@ export class EntityDeleteConfirmationDialogComponent {
 
   handleCancelClick() {
     this.disableDialogButtons = false;
-    this.deleteDialog?.close();
     this.registerDeleteService.reset();
+    this.dialogRef.close();
   }
 
   handleDeleteConfirm() {
-    if (!this.idToDelete) {
+    if (!this.idToDelete || this.disableDialogButtons) {
       return;
     }
     this.disableDialogButtons = true;
-    this.registerDeleteService.confirmDelete();
-    this.registerDeleteService.deleteDone.subscribe(deleted => {
-      if (
-        deleted.buildingDone &&
-        deleted.entranceDone &&
-        deleted.dwellingDone
-      ) {
+    this.registerDeleteService.deleteDone
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(
+          deleted =>
+            deleted.buildingDone &&
+            deleted.entranceDone &&
+            deleted.dwellingDone
+        ),
+        take(1)
+      )
+      .subscribe(() => {
         this.reload();
-      }
-    });
+        this.dialogRef.close();
+      });
+    this.registerDeleteService.confirmDelete();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   protected readonly ENTRANCE_ENTITY = ENTRANCE_ENTITY;

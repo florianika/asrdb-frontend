@@ -16,9 +16,6 @@ import {
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { EntityType } from 'src/app/model/RolePermissions.model';
 import { CommonModule } from '@angular/common';
-import { CommonBuildingService } from '../../../dashboard/common/service/common-building.service';
-import { CommonEntranceService } from '../../../dashboard/common/service/common-entrance.service';
-import { CommonDwellingService } from '../../../dashboard/common/service/common-dwellings.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -46,11 +43,6 @@ type SelectOption = { text: string; value: string };
     MatIconModule,
     MatInputModule,
     MatButtonModule,
-  ],
-  providers: [
-    CommonBuildingService,
-    CommonEntranceService,
-    CommonDwellingService,
   ],
 })
 export class VariableSelectorComponent implements OnInit, OnDestroy {

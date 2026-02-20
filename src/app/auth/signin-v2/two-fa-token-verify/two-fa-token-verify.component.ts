@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, OnDestroy, Output} from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
@@ -19,15 +19,11 @@ import { SigninV2Service } from '../signin-v2.service';
   templateUrl: './two-fa-token-verify.component.html',
   styleUrl: './two-fa-token-verify.component.css',
 })
-export class TwoFaTokenVerifyComponent implements OnDestroy {
+export class TwoFaTokenVerifyComponent {
   @Input() form!: FormGroup;
-  @Output() proceed = new EventEmitter();
+  @Output() proceed = new EventEmitter<void>();
 
   public signinService = inject(SigninV2Service);
-
-  ngOnDestroy() {
-    this.proceed.unsubscribe();
-  }
 
   checkToken() {
     this.proceed.emit();

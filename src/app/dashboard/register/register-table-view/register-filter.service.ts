@@ -190,7 +190,7 @@ export class RegisterFilterService {
       this.noFilterApplied() ||
       this.globalIds.getValue()?.length > 100
     ) {
-      return '1!=1';
+      return '1=0';
     }
     return `EntBldGlobalID in (${this.globalIds.getValue().map(id => "'" + id + "'")}) AND EntQuality <> 0`;
   }

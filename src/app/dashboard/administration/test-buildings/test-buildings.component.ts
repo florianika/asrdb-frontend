@@ -49,7 +49,6 @@ import {environment} from "../../../../environments/environment";
       deps: [MAT_DATE_LOCALE],
     },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-    TestBuildingService,
   ],
   templateUrl: './test-buildings.component.html',
   styleUrl: './test-buildings.component.css',

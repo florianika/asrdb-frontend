@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -57,7 +57,7 @@ import {
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css'],
 })
-export class RegisterFormComponent implements OnInit {
+export class RegisterFormComponent implements OnInit, OnDestroy {
   @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
 
   private isSavingBuilding = this.buildingManagementService.isSavingObservable;
@@ -84,7 +84,7 @@ export class RegisterFormComponent implements OnInit {
   buildingDetails = new FormGroup({});
   entranceDetails = new FormGroup({});
 
-  private subscriber = new Subject();
+  private subscriber = new Subject<void>();
   private entranceCentroids: Centroid[] = [];
   readonly entranceId: string | null;
 
@@ -202,6 +202,11 @@ export class RegisterFormComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.subscriber.next();
+    this.subscriber.complete();
+  }
+
   updateCentroid(centroid: Centroid) {
     if (this.buildingId === centroid.id || !centroid.id) {
       this.buildingDetails.patchValue({
@@ -220,6 +225,7 @@ export class RegisterFormComponent implements OnInit {
     this.matDialog
       .open(this.cancelConfirmDialog)
       .afterClosed()
+      .pipe(takeUntil(this.subscriber))
       .subscribe(confirm => {
         if (confirm) {
           this.closeDialog();

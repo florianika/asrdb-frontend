@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { QualityManagementRoutingModule } from './quality-management-routing.module';
 import { QualityManagementTableComponent } from './quality-management-table/quality-management-table.component';
 import { QualityManagementEditComponent } from './quality-management-edit/quality-management-edit.component';
-import { QualityManagementService } from './quality-management.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -29,9 +28,6 @@ import { ACE_CONFIG, AceConfigInterface, AceModule } from 'ngx-ace-wrapper';
 import { QualityManagementVariableSelectionComponent } from './quality-management-edit/quality-management-form/quality-management-variable-selection/quality-management-variable-selection.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonEsriAuthService } from '../common/service/common-esri-auth.service';
-import { CommonBuildingService } from '../common/service/common-building.service';
-import { CommonEntranceService } from '../common/service/common-entrance.service';
-import { CommonDwellingService } from '../common/service/common-dwellings.service';
 import { CommonEntityStructureService } from '../common/service/common-entity-structure.service';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
@@ -73,11 +69,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatTooltipModule,
   ],
   providers: [
-    QualityManagementService,
     CommonEsriAuthService,
-    CommonBuildingService,
-    CommonEntranceService,
-    CommonDwellingService,
     CommonEntityStructureService,
     {
       provide: ACE_CONFIG,

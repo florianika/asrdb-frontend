@@ -3,11 +3,9 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ForgotPasswordService {
   private loading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.loading.asObservable();
@@ -56,7 +54,7 @@ export class ForgotPasswordService {
             $localize`OK`,
             { duration: 5000 }
           );
-          void this.router.navigateByUrl('/auth/signin')
+          void this.router.navigateByUrl('/auth/signin');
         },
         error: () => {
           this.loading.next(false);

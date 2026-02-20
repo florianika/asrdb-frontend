@@ -44,6 +44,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   mapAuthError: string | null = null;
   isMapInitializing = false;
+  isMapReady = false;
   isRefreshing$ = this.authStateService.isRefreshing$();
   private destroyed$ = new Subject<void>();
 
@@ -71,13 +72,14 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
     this.registerFilterService.filterObservable
       .pipe(takeUntil(this.destroyed$))
       .subscribe(async () => {
-        if (this.isMapInitializing || this.mapAuthError) {
+        if (this.isMapInitializing) {
           return;
         }
         try {
           await this.registerMapService.filterBuildingData(
             this.registerFilterService.prepareWhereCase()
           );
+          this.mapAuthError = null;
         } catch (error) {
           this.handleMapError(error);
         }
@@ -86,7 +88,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
     this.registerFilterService.globalIdsObservable
       .pipe(takeUntil(this.destroyed$))
       .subscribe(async () => {
-        if (this.isMapInitializing || this.mapAuthError) {
+        if (this.isMapInitializing) {
           return;
         }
         try {
@@ -95,6 +97,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
               this.entranceGlobalId
             )
           );
+          this.mapAuthError = null;
         } catch (error) {
           this.handleMapError(error);
         }
@@ -106,11 +109,18 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
       changes['entranceGlobalId'] &&
       changes['entranceGlobalId'].currentValue
     ) {
-      void this.registerMapService.filterEntranceData(
-        this.registerFilterService.prepareWhereCaseForEntrance(
-          this.entranceGlobalId
+      void this.registerMapService
+        .filterEntranceData(
+          this.registerFilterService.prepareWhereCaseForEntrance(
+            this.entranceGlobalId
+          )
         )
-      );
+        .then(() => {
+          this.mapAuthError = null;
+        })
+        .catch(error => {
+          this.handleMapError(error);
+        });
     }
   }
 
@@ -123,18 +133,18 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   async initializeMap(): Promise<any> {
     this.mapAuthError = null;
     this.isMapInitializing = true;
-
-    const isReady = await firstValueFrom(
-      this.esriAuthService.ensureEsriReady(1200, 'esri-auth-retry')
-    );
-
-    if (!isReady) {
-      this.isMapInitializing = false;
-      this.mapAuthError = $localize`Map authentication failed. Please retry.`;
-      return;
-    }
+    this.isMapReady = false;
 
     try {
+      const isReady = await firstValueFrom(
+        this.esriAuthService.ensureEsriReady(1200, 'esri-auth-retry')
+      );
+
+      if (!isReady) {
+        this.mapAuthError = $localize`Map authentication failed. Please retry.`;
+        return;
+      }
+
       await this.registerMapService.init(this.mapViewEl, {
         enableFilter: this.enableFilter,
         enableSelection: this.enableSelection,
@@ -147,6 +157,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
         ),
       });
       this.mapAuthError = null;
+      this.isMapReady = true;
     } catch (error) {
       this.handleMapError(error);
     } finally {

@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host=0.0.0.0 --disable-host-check --configuration development",
-    "start-prod": "ng serve --host=0.0.0.0 --disable-host-check --configuration production",
+    "start": "ng serve --host=0.0.0.0 --configuration development",
+    "start-prod": "ng serve --host=0.0.0.0 --configuration production",
     "build": "ng build --localize --configuration development",
     "build-prod": "ng build --localize",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
     "localize": "ng extract-i18n --output-path src/locale/ --out-file language.xlf",
     "prod-start": "npm run build-prod && cd ./dist/asrdb-frontend && python3 -m http.server 9000",
     "lint": "eslint . --ext .ts,.html",
     "lint:fix": "eslint . --ext .ts,.html --fix",
-    "format": "prettier --write \"src/**/*.{ts,html,css,scss,json,md}\""
+    "check:di-scope": "node scripts/check-root-provider-collisions.mjs",
+    "format": "prettier --write \"src/**/*.{ts,html,css,scss,json,md}\"",
+    "ci:check": "npm run check:di-scope && npm run build && npm run lint && npm run test:ci",
+    "prepush": "npm run build && npm run lint"
   },
   "private": true,
   "dependencies": {

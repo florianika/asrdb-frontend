@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { AuthStateService } from '../../services/auth-state.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/internal/operators/filter';
+import { filter } from 'rxjs';
 import { FILTER_REGISTER } from '../../../dashboard/register/register-table-view/register-filter.service';
 
 @Component({

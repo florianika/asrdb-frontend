@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { QualityManagementService } from '../quality-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { EntityType, QualityRule } from '../quality-management-config';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
 
 @Component({

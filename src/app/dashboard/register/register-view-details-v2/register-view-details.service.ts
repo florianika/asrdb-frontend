@@ -10,7 +10,7 @@ import {
 import { Building } from '../model/building';
 import { Log } from '../register-log-view/model/log';
 import { QueryFilter } from '../model/query-filter';
-import { catchError, of, Subject, takeUntil } from 'rxjs';
+import { catchError, filter, of, skipWhile, Subject, take, takeUntil } from 'rxjs';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
@@ -29,12 +29,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Section, ViewSection } from './types';
 import {getLocaleProperty, getLogMessage} from '../../common/helper/locale-property-helper';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class RegisterViewDetailsService {
   // private variables
   private destroy$: Subject<void> = new Subject<void>();
+  private executionRefreshTimer: ReturnType<typeof setTimeout> | null = null;
 
   // service injections
   private commonBuildingService = inject(CommonBuildingService);
@@ -79,8 +78,13 @@ export class RegisterViewDetailsService {
   }
 
   public cleanup() {
+    if (this.executionRefreshTimer) {
+      clearTimeout(this.executionRefreshTimer);
+      this.executionRefreshTimer = null;
+    }
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$ = new Subject<void>();
   }
 
   public init(id: string) {
@@ -118,32 +122,37 @@ export class RegisterViewDetailsService {
       isExecutingRules: true,
       buildingFields: [],
     }));
-    const subscription = this.registerLogService.isExecutingRules
-      .pipe(takeUntil(this.destroy$))
+    this.registerLogService.isExecutingRules
+      .pipe(
+        filter(value => value === NOT_EXECUTING),
+        take(1),
+        takeUntil(this.destroy$)
+      )
       .subscribe(value => {
-        if (value === NOT_EXECUTING) {
-          setTimeout(() => {
-            this.matSnack.open(
-              $localize`Execution of quality rules finished. Reloading logs!`,
-              $localize`Ok`,
-              { duration: 5000 }
-            );
-            if (callback) {
-              callback();
-              this.viewData.update(data => ({
-                ...data,
-                isExecutingRules: false,
-              }));
-            } else {
-              this.viewData.update(data => ({
-                ...data,
-                isExecutingRules: false,
-              }));
-              this.init(id);
-            }
-            subscription.unsubscribe();
-          }, 1000);
+        if (value !== NOT_EXECUTING) {
+          return;
         }
+        this.executionRefreshTimer = setTimeout(() => {
+          this.executionRefreshTimer = null;
+          this.matSnack.open(
+            $localize`Execution of quality rules finished. Reloading logs!`,
+            $localize`Ok`,
+            { duration: 5000 }
+          );
+          if (callback) {
+            callback();
+            this.viewData.update(data => ({
+              ...data,
+              isExecutingRules: false,
+            }));
+          } else {
+            this.viewData.update(data => ({
+              ...data,
+              isExecutingRules: false,
+            }));
+            this.init(id);
+          }
+        }, 1000);
       });
   }
 
@@ -266,26 +275,38 @@ export class RegisterViewDetailsService {
 
   // load logs for building
   private loadLogs(id: string) {
-    this.registerLogService.isLoadingResults.subscribe(isLoadingResult => {
-      if (!isLoadingResult) {
+    this.registerLogService.isLoadingResults
+      .pipe(
+        skipWhile(isLoadingResult => !isLoadingResult),
+        filter(isLoadingResult => !isLoadingResult),
+        take(1),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
         const logs = this.registerLogService.logsValue;
         this.viewData.update(data => ({ ...data, logs }));
-      }
-    });
+      });
     this.registerLogService.loadLogs(id);
   }
 
   // load building structure
   private loadBuildingStructure() {
-    this.commonEntityStructureService.structureLoaded.subscribe(response => {
-      if (
-        !response.loading &&
-        response.structure &&
-        response.type === BUILDING_ENTITY
-      ) {
-        this.prepareStructure(response.structure);
-      }
-    });
+    this.commonEntityStructureService.structureLoaded
+      .pipe(
+        filter(
+          response =>
+            !response.loading &&
+            !!response.structure &&
+            response.type === BUILDING_ENTITY
+        ),
+        take(1),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(response => {
+        if (response.structure) {
+          this.prepareStructure(response.structure);
+        }
+      });
     this.commonEntityStructureService.getEntityStructure(BUILDING_ENTITY);
   }
 
