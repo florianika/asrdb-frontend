@@ -4,7 +4,9 @@ import { RegisterFilterService } from '../../../register/register-table-view/reg
 import GraphicHit = __esri.GraphicHit;
 import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
-import { catchError, of } from 'rxjs';
+import { catchError, firstValueFrom, of } from 'rxjs';
+
+type ArcGisFeatureAttributes = Record<string, unknown>;
 
 export class MapInteractionService {
   static addZoomWatcher(
@@ -44,60 +46,106 @@ export class MapInteractionService {
       const data = response.results[0] as GraphicHit;
       const layerTitle = data?.layer?.title;
       const objectId = data?.graphic?.attributes['OBJECTID'];
-      // load data from the feature using the globalId
+      const attributes = data?.graphic?.attributes as
+        | ArcGisFeatureAttributes
+        | undefined;
 
       if (layerTitle === 'ASRDB Buildings') {
-        buildingLayerService
-          .getBuildingData({
-            where: `OBJECTID=${objectId}`,
-            outFields: ['*'],
-            num: 1,
-          })
-          .pipe(
-            catchError((error: any) => {
-              console.error('Error fetching building data:', error);
-              return of(null);
-            })
-          )
-          .subscribe({
-            next: (buildingData: any) => {
-              if (!buildingData) {
-                return;
-              }
-              if (buildingData.data?.features?.length > 0) {
-                registerFilterService.setBuildingGlobalIdFilter(
-                  buildingData.data?.features[0].attributes['GlobalID']
-                );
-              }
-            },
-          });
+        let buildingGlobalId = MapInteractionService.getAttributeValue(
+          attributes,
+          'GlobalID'
+        );
+
+        if (!buildingGlobalId && objectId !== undefined) {
+          buildingGlobalId =
+            await MapInteractionService.getBuildingGlobalIdFromObjectId(
+              objectId as string | number,
+              buildingLayerService
+            );
+        }
+
+        if (buildingGlobalId) {
+          registerFilterService.setBuildingGlobalIdFilter(buildingGlobalId);
+        }
+        return;
       }
+
       if (layerTitle === 'ASRDB Entrances') {
-        entranceLayerService
-          .getEntranceData({
-            where: `OBJECTID=${objectId}`,
-            outFields: ['*'],
-            num: 1,
-          })
-          .pipe(
-            catchError((error: any) => {
-              console.error('Error fetching entrance data:', error);
-              return of(null);
-            })
-          )
-          .subscribe({
-            next: (buildingData: any) => {
-              if (!buildingData) {
-                return;
-              }
-              if (buildingData.data?.features?.length > 0) {
-                registerFilterService.setBuildingGlobalIdFilter(
-                  buildingData.data?.features[0].attributes['GlobalID']
-                );
-              }
-            },
-          });
+        let buildingGlobalId = MapInteractionService.getAttributeValue(
+          attributes,
+          'EntBldGlobalID'
+        );
+
+        if (!buildingGlobalId && objectId !== undefined) {
+          buildingGlobalId =
+            await MapInteractionService.getEntranceBuildingGlobalIdFromObjectId(
+              objectId as string | number,
+              entranceLayerService
+            );
+        }
+
+        if (buildingGlobalId) {
+          registerFilterService.setBuildingGlobalIdFilter(buildingGlobalId);
+        }
       }
     });
+  }
+
+  private static getAttributeValue(
+    attributes: ArcGisFeatureAttributes | undefined,
+    key: string
+  ): string | null {
+    const value = attributes?.[key];
+    return typeof value === 'string' && value.length ? value : null;
+  }
+
+  private static async getBuildingGlobalIdFromObjectId(
+    objectId: string | number,
+    buildingLayerService: CommonBuildingService
+  ): Promise<string | null> {
+    const buildingData = await firstValueFrom(
+      buildingLayerService
+        .getBuildingData({
+          where: `OBJECTID=${objectId}`,
+          outFields: ['GlobalID'],
+          num: 1,
+        })
+        .pipe(
+          catchError(error => {
+            console.error('Error fetching building data:', error);
+            return of(null);
+          })
+        )
+    );
+
+    return MapInteractionService.getAttributeValue(
+      buildingData?.data?.features?.[0]?.attributes,
+      'GlobalID'
+    );
+  }
+
+  private static async getEntranceBuildingGlobalIdFromObjectId(
+    objectId: string | number,
+    entranceLayerService: CommonEntranceService
+  ): Promise<string | null> {
+    const entranceData = await firstValueFrom(
+      entranceLayerService
+        .getEntranceData({
+          where: `OBJECTID=${objectId}`,
+          outFields: ['EntBldGlobalID'],
+          num: 1,
+        })
+        .pipe(
+          catchError(error => {
+            console.error('Error fetching entrance data:', error);
+            return of(null);
+          })
+        )
+    );
+
+    return MapInteractionService.getAttributeValue(
+      entranceData?.data?.features?.[0]?.attributes,
+      'EntBldGlobalID'
+    );
   }
 }

@@ -1,10 +1,10 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { ElementRef, Injectable, OnDestroy } from '@angular/core';
 import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
 import WebMap from '@arcgis/core/WebMap';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
-import { BehaviorSubject, Subject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom, takeUntil } from 'rxjs';
 import { MapData } from '../model/map-data';
 import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
@@ -30,18 +30,30 @@ import {
 } from '../../../common/constants/common-constants';
 import SketchProperties = __esri.SketchProperties;
 import { CommonMunicipalityService } from '../../common/service/common-municipality.service';
+import { CleanupCallback } from '../../common/components/register-map/map-types';
+
+export type EditableGeometry = {
+  id?: number | string | null;
+  type: 'polygon' | 'point';
+  rings?: number[][][];
+  x?: number;
+  y?: number;
+  spatialReference: __esri.SpatialReferenceProperties;
+};
 
 @Injectable()
-export class EntityCreationMapService {
+export class EntityCreationMapService implements OnDestroy {
+  private destroy$ = new Subject<void>();
   private valueUpdate = new Subject<MapData>();
   private graphicsLayer!: GraphicsLayer;
-  private eventsCleanupCallbacks: (() => void)[] = [];
-  private readonly bldLayer;
-  private readonly municipalityLayer;
-  private municipality;
+  private eventsCleanupCallbacks: CleanupCallback[] = [];
+  private readonly bldLayer: FeatureLayer;
+  private readonly municipalityLayer: FeatureLayer;
+  private municipality: BehaviorSubject<number | null>;
   private view: MapView | undefined = undefined;
-  private createdGraphic: any | null = null;
-  private totalResults = null;
+  private createdGraphic: Graphic | null = null;
+  private totalResults: number | null = null;
+  private zoomVisibilityDebounce: ReturnType<typeof setTimeout> | null = null;
 
   get valueChanged() {
     return this.valueUpdate.asObservable();
@@ -58,7 +70,7 @@ export class EntityCreationMapService {
 
   private nativeElement: string | HTMLDivElement | undefined;
   private availableTools: string[] = [];
-  private editingGeometry: any[] | undefined;
+  private editingGeometry: EditableGeometry[] | undefined;
 
   private readonly entranceId: string;
 
@@ -79,32 +91,55 @@ export class EntityCreationMapService {
     this.municipalityLayer = this.municipalityService.municipalityLayer;
     this.bldLayer = this.buildingService.bldLayer as FeatureLayer;
     (this.bldLayer.renderer as UniqueValueRenderer).uniqueValueInfos = [];
-    (this.bldLayer.renderer as UniqueValueRenderer).defaultSymbol = {
-      type: 'simple-fill', // autocasts as new SimpleFillSymbol()
-      color: 'rgba(119,119,119,0.25)',
-      outline: {
-        // autocasts as new SimpleLineSymbol()
+    (this.bldLayer.renderer as UniqueValueRenderer).defaultSymbol =
+      new SimpleFillSymbol({
         color: 'rgba(119,119,119,0.25)',
-        width: 3,
-      } as any,
-    } as any;
-    this.municipalityObservable.subscribe(municipality => {
-      if (municipality && municipality !== 99 && this.view) {
-        void this.filterBuildingData(
-          `BldMunicipality=${municipality.toString()}`
-        );
-      }
-    });
+        outline: {
+          color: 'rgba(119,119,119,0.25)',
+          width: 3,
+        },
+      });
+    this.municipalityObservable
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(municipality => {
+        if (municipality && municipality !== 99 && this.view) {
+          void this.filterBuildingData(
+            `BldMunicipality=${municipality.toString()}`
+          );
+        }
+      });
   }
 
   public setMunicipality(municipality: number | null) {
     this.municipality.next(municipality);
   }
 
+  public cleanup() {
+    this.eventsCleanupCallbacks.forEach(cleanup => cleanup());
+    this.eventsCleanupCallbacks = [];
+
+    if (this.zoomVisibilityDebounce) {
+      clearTimeout(this.zoomVisibilityDebounce);
+      this.zoomVisibilityDebounce = null;
+    }
+
+    this.view?.destroy();
+    this.view = undefined;
+  }
+
+  ngOnDestroy(): void {
+    this.cleanup();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.valueUpdate.complete();
+    this.valueDelete.complete();
+    this.municipality.complete();
+  }
+
   public async initBuildingCreationMap(
     mapViewEl: ElementRef,
     entityType?: EntityType,
-    editingGeometry?: any[]
+    editingGeometry?: EditableGeometry[]
   ) {
     const isReady = await firstValueFrom(
       this.esriAuthService.ensureEsriReady(1200, 'esri-auth-retry')
@@ -134,8 +169,8 @@ export class EntityCreationMapService {
   private async init(
     mapViewEl?: ElementRef,
     availableTools?: string[],
-    editingGeometry?: any[],
-    basemap?: any
+    editingGeometry?: EditableGeometry[],
+    basemap?: __esri.Basemap | string
   ): Promise<MapView> {
     if (mapViewEl) {
       this.nativeElement = mapViewEl.nativeElement;
@@ -151,12 +186,14 @@ export class EntityCreationMapService {
       throw new Error('MapView element or available tools are not defined');
     }
 
+    this.cleanup();
+
     this.graphicsLayer = new GraphicsLayer();
     const mainGraphic: Graphic | null = this.addExistingGraphics(
       this.editingGeometry,
       this.graphicsLayer
     );
-    const layers: any[] = [this.graphicsLayer];
+    const layers: Array<GraphicsLayer | FeatureLayer> = [this.graphicsLayer];
     if (this.availableTools.includes('polygon')) {
       layers.push(this.bldLayer);
       layers.push(this.municipalityLayer);
@@ -183,14 +220,21 @@ export class EntityCreationMapService {
         this.view!.goTo(mainGraphic);
       }
     });
-    this.view.watch('zoom', newZoom => {
-      setTimeout(() => {
+
+    const zoomWatcher = this.view.watch('zoom', newZoom => {
+      if (this.zoomVisibilityDebounce) {
+        clearTimeout(this.zoomVisibilityDebounce);
+      }
+      this.zoomVisibilityDebounce = setTimeout(() => {
         if (!this.view?.map) {
           return;
         }
         this.bldLayer.visible =
           newZoom >= 15 || !!(this.totalResults && this.totalResults < 1000);
       }, 500);
+    });
+    this.eventsCleanupCallbacks.push(() => {
+      zoomWatcher.remove();
     });
 
     this.createSketch();
@@ -233,14 +277,15 @@ export class EntityCreationMapService {
       this.registerCreateEvent(sketch);
       this.registerUpdateEvent(sketch);
       this.registerDeleteEvent(sketch);
-      if (this.createdGraphic) {
+      const createdGraphic = this.createdGraphic;
+      if (createdGraphic) {
         setTimeout(() => {
           this.addExistingGraphics(
             [
               {
-                ...this.createdGraphic.geometry!.toJSON(),
-                id: this.createdGraphic.attributes.id,
-                type: this.createdGraphic.geometry!.toJSON().rings
+                ...createdGraphic.geometry!.toJSON(),
+                id: createdGraphic.attributes.id,
+                type: createdGraphic.geometry!.toJSON().rings
                   ? 'polygon'
                   : 'point',
               },
@@ -252,7 +297,7 @@ export class EntityCreationMapService {
     }
   }
 
-  private reload(basemap: any) {
+  private reload(basemap: __esri.Basemap | string) {
     void this.init(undefined, undefined, undefined, basemap);
   }
 
@@ -289,7 +334,10 @@ export class EntityCreationMapService {
       });
       this.createdGraphic = null;
 
-      sketch.availableCreateTools = [event.graphics[0].geometry!.type as any];
+      const geometryType = event.graphics[0].geometry?.type;
+      if (geometryType === 'polygon' || geometryType === 'point') {
+        sketch.availableCreateTools = [geometryType];
+      }
     });
     this.eventsCleanupCallbacks.push(() => {
       cleanup.remove();
@@ -299,22 +347,23 @@ export class EntityCreationMapService {
   private registerUpdateEvent(sketch: Sketch) {
     const cleanup = sketch.on('update', event => {
       if (event.state === 'complete') {
-        const centroid =
-          event.graphics[0].geometry!.type === 'polygon'
-            ? (event.graphics[0].geometry as any)['centroid']
-            : {
-                latitude: (event.graphics[0].geometry as any).latitude,
-                longitude: (event.graphics[0].geometry as any).longitude,
-              };
+        const geometry = event.graphics[0].geometry;
+        const centroid = geometry
+          ? this.getGeometryCentroid(geometry)
+          : undefined;
+
+        if (!geometry) {
+          return;
+        }
+        const spatialReference = geometry.spatialReference.toJSON();
+
         this.valueUpdate.next({
-          ...event.graphics[0].geometry!.toJSON(),
+          ...geometry.toJSON(),
           id: event.graphics[0].attributes.id,
           centroid: centroid,
           spatialReference: {
-            latestWkid: (event.graphics[0].geometry!.spatialReference as any)[
-              'latestWkid'
-            ],
-            wkid: event.graphics[0].geometry!.spatialReference.wkid,
+            latestWkid: spatialReference.latestWkid,
+            wkid: spatialReference.wkid,
           },
         });
         const existingItemIndex = this.editingGeometry?.findIndex(
@@ -323,16 +372,16 @@ export class EntityCreationMapService {
         if (existingItemIndex !== -1) {
           if (this.editingGeometry![existingItemIndex!].rings) {
             this.editingGeometry![existingItemIndex!].rings =
-              event.graphics[0].geometry.toJSON().rings;
+              geometry.toJSON().rings;
             this.editingGeometry![existingItemIndex!].spatialReference =
-              event.graphics[0].geometry.toJSON().spatialReference;
+              geometry.toJSON().spatialReference;
           } else {
             this.editingGeometry![existingItemIndex!].x =
-              event.graphics[0].geometry.toJSON().x;
+              geometry.toJSON().x;
             this.editingGeometry![existingItemIndex!].y =
-              event.graphics[0].geometry.toJSON().y;
+              geometry.toJSON().y;
             this.editingGeometry![existingItemIndex!].spatialReference =
-              event.graphics[0].geometry.toJSON().spatialReference;
+              geometry.toJSON().spatialReference;
           }
         } else {
           this.createdGraphic = event.graphics[0];
@@ -347,24 +396,21 @@ export class EntityCreationMapService {
   private registerCreateEvent(sketch: Sketch) {
     const cleanup = sketch.on('create', event => {
       if (event.state === 'complete') {
-        const type = event.graphic.geometry!.type;
+        const geometry = event.graphic.geometry;
+        if (!geometry) {
+          return;
+        }
+        const type = geometry.type;
         const id = type === 'polygon' ? null : 'New (' + Math.random() + ')';
-        const centroid =
-          event.graphic.geometry!.type === 'polygon'
-            ? (event.graphic.geometry! as any)['centroid']
-            : {
-                latitude: (event.graphic.geometry! as any).latitude,
-                longitude: (event.graphic.geometry! as any).longitude,
-              };
+        const centroid = this.getGeometryCentroid(geometry);
+        const spatialReference = geometry.spatialReference.toJSON();
         this.valueUpdate.next({
-          ...event.graphic.geometry!.toJSON(),
+          ...geometry.toJSON(),
           id: id,
           centroid: centroid,
           spatialReference: {
-            latestWkid: (event.graphic.geometry?.spatialReference as any)[
-              'latestWkid'
-            ],
-            wkid: event.graphic.geometry?.spatialReference.wkid,
+            latestWkid: spatialReference.latestWkid,
+            wkid: spatialReference.wkid,
           },
         });
         event.graphic.attributes = {
@@ -383,7 +429,7 @@ export class EntityCreationMapService {
   }
 
   private addExistingGraphics(
-    editingGeometry: any[] | undefined,
+    editingGeometry: EditableGeometry[] | undefined,
     graphicsLayer: GraphicsLayer
   ) {
     let mainGraphic: Graphic | null = null;
@@ -392,12 +438,12 @@ export class EntityCreationMapService {
       const geometry =
         g.type === 'point'
           ? new Point({
-              x: g.x,
-              y: g.y,
+              x: g.x as number,
+              y: g.y as number,
               spatialReference: g.spatialReference,
             })
           : new Polygon({
-              rings: g.rings,
+              rings: g.rings as number[][][],
               spatialReference: g.spatialReference,
             });
 
@@ -458,5 +504,21 @@ export class EntityCreationMapService {
       console.log(e);
       void this.filterBuildingData(whereCondition, --retires);
     }
+  }
+
+  private getGeometryCentroid(geometry: __esri.Geometry) {
+    if (geometry.type === 'polygon') {
+      return (geometry as Polygon).centroid;
+    }
+
+    if (geometry.type === 'point') {
+      const point = geometry as Point;
+      return {
+        latitude: point.latitude,
+        longitude: point.longitude,
+      };
+    }
+
+    return undefined;
   }
 }

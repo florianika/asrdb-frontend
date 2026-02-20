@@ -9,13 +9,16 @@ import {
   MAP_2024,
 } from './BasemapTypes';
 import Basemap from '@arcgis/core/Basemap';
+import { BasemapInput, CleanupCallback } from '../map-types';
+
+type BasemapChangeCallback = (basemap: BasemapInput) => void;
 
 @Injectable()
 export class BaseMapChangeService {
   async createBasemapChangeAction(
     view: MapView,
-    webmapCallback: Function,
-    eventsCleanupCallbacks: any[]
+    webmapCallback: BasemapChangeCallback,
+    eventsCleanupCallbacks: CleanupCallback[]
   ) {
     const basemap = this.createBasemapButton();
     const popup = await this.createPopupForBasemapChange(
@@ -29,8 +32,8 @@ export class BaseMapChangeService {
   }
 
   private async createPopupForBasemapChange(
-    webmapCallback: Function,
-    eventsCleanupCallbacks: any[]
+    webmapCallback: BasemapChangeCallback,
+    eventsCleanupCallbacks: CleanupCallback[]
   ) {
     const popup = new Popup({
       title: $localize`Change base map`,
@@ -54,7 +57,7 @@ export class BaseMapChangeService {
   private registerBasemapEventListener(
     popup: Popup,
     basemap: HTMLDivElement,
-    eventsCleanupCallbacks: any[]
+    eventsCleanupCallbacks: CleanupCallback[]
   ) {
     const basemapEventListener = () => {
       popup.open();
@@ -66,9 +69,9 @@ export class BaseMapChangeService {
   }
 
   private async createPopupContent(
-    webmapCallback: Function,
+    webmapCallback: BasemapChangeCallback,
     popup: Popup,
-    eventsCleanupCallbacks: any[]
+    eventsCleanupCallbacks: CleanupCallback[]
   ) {
     const popupContent = document.createElement('div');
     popupContent.style.width = '100%';
@@ -112,9 +115,9 @@ export class BaseMapChangeService {
   }
 
   private createOsmMapItem(
-    webmapCallback: Function,
+    webmapCallback: BasemapChangeCallback,
     popup: Popup,
-    eventsCleanupCallbacks: any[]
+    eventsCleanupCallbacks: CleanupCallback[]
   ) {
     const osmMap = document.createElement('div');
     osmMap.id = 'basemap-osm-selection';
@@ -131,7 +134,7 @@ export class BaseMapChangeService {
     osmMap.appendChild(popupContentSpan2);
 
     const osmMapEventListener = () => {
-      webmapCallback(OSM_BASEMAP as any);
+      webmapCallback(OSM_BASEMAP);
       popup.close();
     };
     osmMap.addEventListener('click', osmMapEventListener);
@@ -142,9 +145,9 @@ export class BaseMapChangeService {
   }
 
   private createHybridMapItem(
-    webmapCallback: Function,
+    webmapCallback: BasemapChangeCallback,
     popup: Popup,
-    eventsCleanupCallbacks: any[]
+    eventsCleanupCallbacks: CleanupCallback[]
   ) {
     const hybridMap = document.createElement('div');
     hybridMap.id = 'basemap-hybrid-selection';
@@ -172,9 +175,9 @@ export class BaseMapChangeService {
   }
 
   private async createCustomMapItem(
-    webmapCallback: Function,
+    webmapCallback: BasemapChangeCallback,
     popup: Popup,
-    eventsCleanupCallbacks: any[],
+    eventsCleanupCallbacks: CleanupCallback[],
     basemap: Basemap
   ) {
     const customMap = document.createElement('div');

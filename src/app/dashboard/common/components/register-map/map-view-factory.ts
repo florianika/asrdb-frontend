@@ -3,8 +3,12 @@ import WebMap from '@arcgis/core/WebMap';
 import Popup from '@arcgis/core/widgets/Popup';
 import Legend from '@arcgis/core/widgets/Legend';
 import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
+import { BasemapInput, MapLayer } from './map-types';
 
-export function createWebMap(basemap: any, layers: any[]) {
+export function createWebMap(
+  basemap: BasemapInput | undefined,
+  layers: MapLayer[]
+) {
   return new WebMap({
     basemap: basemap ?? OSM_BASEMAP, // OSM_BASEMAP can be passed here
     layers,

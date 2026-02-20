@@ -11,7 +11,10 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import MapView from '@arcgis/core/views/MapView';
-import { EntityCreationMapService } from '../entity-management-map.service';
+import {
+  EditableGeometry,
+  EntityCreationMapService,
+} from '../entity-management-map.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,10 +25,17 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonBuildingService } from '../../../common/service/common-building.service';
 import Geometry from '@arcgis/core/geometry/Geometry';
 import Collection from '@arcgis/core/core/Collection';
+import { Subject, takeUntil } from 'rxjs';
 import {
   BUILDING_ENTITY,
   ENTRANCE_ENTITY,
 } from '../../../../common/constants/common-constants';
+
+type ExistingEntranceGeometry = EditableGeometry & {
+  x: number;
+  y: number;
+  id: string | number;
+};
 
 @Component({
   selector: 'asrdb-building-creation',
@@ -36,14 +46,15 @@ import {
 })
 export class BuildingCreationComponent implements OnInit, OnDestroy {
   @Input() formGroup!: FormGroup;
-  @Input() existingBuildingGeometry?: any;
-  @Input() existingEntrancesGeometry?: any[];
+  @Input() existingBuildingGeometry?: EditableGeometry;
+  @Input() existingEntrancesGeometry?: EditableGeometry[];
   @Input() entityType?: EntityType;
   @Output() centroidUpdated = new EventEmitter<Centroid>();
 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   public view!: MapView;
   public intersectsBuilding = false;
+  private destroy$ = new Subject<void>();
 
   get isBuilding() {
     return this.entityType === BUILDING_ENTITY;
@@ -69,17 +80,37 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     if (!this.formGroup) {
       this.formGroup = new FormGroup({});
     }
+
+    const existingBuildingPoly =
+      this.existingBuildingGeometry?.rings &&
+      this.existingBuildingGeometry.spatialReference
+        ? {
+            rings: this.existingBuildingGeometry.rings,
+            spatialReference: this.existingBuildingGeometry.spatialReference,
+          }
+        : null;
+
+    const existingEntrancePoints =
+      this.existingEntrancesGeometry
+        ?.filter(
+          (entrance): entrance is ExistingEntranceGeometry =>
+            typeof entrance.x === 'number' &&
+            typeof entrance.y === 'number' &&
+            entrance.id !== undefined &&
+            entrance.id !== null
+        )
+        .map(entrance => ({
+          x: entrance.x,
+          y: entrance.y,
+          id: entrance.id,
+          spatialReference: entrance.spatialReference,
+        })) ?? [];
+
     if (this.isBuilding) {
       this.formGroup.addControl(
         'buildingPoly',
         new FormControl<BuildingPoly | null>(
-          this.existingBuildingGeometry
-            ? {
-                rings: this.existingBuildingGeometry.rings,
-                spatialReference:
-                  this.existingBuildingGeometry.spatialReference,
-              }
-            : null,
+          existingBuildingPoly,
           [Validators.required]
         )
       );
@@ -87,17 +118,10 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     if (this.isEntrance) {
       this.formGroup.addControl(
         'entrancePoints',
-        new FormControl<Point[]>(
-          this.existingEntrancesGeometry
-            ? this.existingEntrancesGeometry.map(o => ({
-                x: o.x,
-                y: o.y,
-                id: o.id,
-                spatialReference: o.spatialReference,
-              }))
-            : [],
-          [Validators.required, Validators.minLength(1)]
-        )
+        new FormControl<Point[]>(existingEntrancePoints, [
+          Validators.required,
+          Validators.minLength(1),
+        ])
       );
     }
 
@@ -106,114 +130,118 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
       console.log('The map is ready.');
     });
 
-    this.mapService.valueChanged.subscribe(async value => {
-      this.intersectsBuilding = true;
-      if (value.rings && !this.isBuilding) {
-        this.matSnackBar.open(
-          $localize`You have changed the building polygon while in "Entrance" mode. This operation is not allowed and changes will not be saved. To modify the building polygon, please edit the building.`,
-          $localize`Ok`,
-          { duration: 5000 }
-        );
-        return;
-      } else if (value.x && value.y && !this.isEntrance) {
-        this.matSnackBar.open(
-          $localize`You have changed the entrance point while in "Building" mode. This operation is not allowed and changes will not be saved. To modify the entrance point, please edit the entrance.`,
-          $localize`Ok`,
-          { duration: 5000 }
-        );
-        return;
-      } else if (value.x && value.y && this.isEntrance) {
-        if (this.entranceId && value.id!.toString() !== this.entranceId) {
+    this.mapService.valueChanged
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async value => {
+        this.intersectsBuilding = true;
+        if (value.rings && !this.isBuilding) {
           this.matSnackBar.open(
-            $localize`You have changed the position of an entrance which is not the one being edited. The change will not be saved. Please only work with the entrance colored in white.`,
+            $localize`You have changed the building polygon while in "Entrance" mode. This operation is not allowed and changes will not be saved. To modify the building polygon, please edit the building.`,
             $localize`Ok`,
             { duration: 5000 }
           );
           return;
-        } else if (!this.entranceId && value.id!.toString().startsWith('{')) {
+        } else if (value.x && value.y && !this.isEntrance) {
           this.matSnackBar.open(
-            $localize`You have changed the position of an entrance which is not the one being created. The change will not be saved. Please only work with the entrance colored in white.`,
+            $localize`You have changed the entrance point while in "Building" mode. This operation is not allowed and changes will not be saved. To modify the entrance point, please edit the entrance.`,
             $localize`Ok`,
             { duration: 5000 }
           );
           return;
+        } else if (value.x && value.y && this.isEntrance) {
+          if (this.entranceId && value.id!.toString() !== this.entranceId) {
+            this.matSnackBar.open(
+              $localize`You have changed the position of an entrance which is not the one being edited. The change will not be saved. Please only work with the entrance colored in white.`,
+              $localize`Ok`,
+              { duration: 5000 }
+            );
+            return;
+          } else if (!this.entranceId && value.id!.toString().startsWith('{')) {
+            this.matSnackBar.open(
+              $localize`You have changed the position of an entrance which is not the one being created. The change will not be saved. Please only work with the entrance colored in white.`,
+              $localize`Ok`,
+              { duration: 5000 }
+            );
+            return;
+          }
         }
-      }
 
-      if (value.rings) {
-        if (
-          await this.buildingService.checkIntersectingBuildings(
-            this.view,
-            this.mapService.getCreatedGraphic() as Collection<Geometry>
-          )
-        ) {
-          this.intersectsBuilding = true;
-          this.matSnackBar.open(
-            $localize`The polygon you created/edited intersects with an existing one. Changes will not be applied. Please move the polygon so it does not intersect with anything.`,
-            $localize`Ok`,
-            { duration: 5000 }
-          );
+        if (value.rings) {
+          if (
+            await this.buildingService.checkIntersectingBuildings(
+              this.view,
+              this.mapService.getCreatedGraphic() as Collection<Geometry>
+            )
+          ) {
+            this.intersectsBuilding = true;
+            this.matSnackBar.open(
+              $localize`The polygon you created/edited intersects with an existing one. Changes will not be applied. Please move the polygon so it does not intersect with anything.`,
+              $localize`Ok`,
+              { duration: 5000 }
+            );
+            this.formGroup.patchValue({
+              buildingPoly: undefined,
+            });
+            return;
+          }
           this.formGroup.patchValue({
-            buildingPoly: undefined,
+            buildingPoly: {
+              rings: value.rings,
+              spatialReference: value.spatialReference,
+            },
           });
-          return;
-        }
-        this.formGroup.patchValue({
-          buildingPoly: {
-            rings: value.rings,
+          this.centroidUpdated.emit({
+            latitude: value.centroid?.latitude,
+            longitude: value.centroid?.longitude,
+          });
+        } else if (value.x && value.y) {
+          const currentMapPoint = this.formGroup.value.entrancePoints.filter(
+            (mp: Point) => mp.id !== value.id
+          );
+          currentMapPoint.push({
+            x: value.x,
+            y: value.y,
+            id: value.id,
             spatialReference: value.spatialReference,
-          },
-        });
-        this.centroidUpdated.emit({
-          latitude: value.centroid?.latitude,
-          longitude: value.centroid?.longitude,
-        });
-      } else if (value.x && value.y) {
-        const currentMapPoint = this.formGroup.value.entrancePoints.filter(
-          (mp: Point) => mp.id !== value.id
-        );
-        currentMapPoint.push({
-          x: value.x,
-          y: value.y,
-          id: value.id,
-          spatialReference: value.spatialReference,
-        });
-        this.formGroup.patchValue({ entrancePoints: currentMapPoint });
-        this.centroidUpdated.emit({
-          latitude: value.centroid?.latitude,
-          longitude: value.centroid?.longitude,
-          id: value.id,
-        });
-      }
+          });
+          this.formGroup.patchValue({ entrancePoints: currentMapPoint });
+          this.centroidUpdated.emit({
+            latitude: value.centroid?.latitude,
+            longitude: value.centroid?.longitude,
+            id: value.id,
+          });
+        }
 
-      if (isDevMode()) {
-        console.log(this.formGroup.value);
-      }
-    });
+        if (isDevMode()) {
+          console.log(this.formGroup.value);
+        }
+      });
 
-    this.mapService.valueDeleted.subscribe(value => {
-      if (value.rings) {
-        this.formGroup.patchValue({ buildingPoly: null });
-      } else if (value.x && value.y) {
-        const currentMapPoint = this.formGroup.value.entrancePoints.filter(
-          (mp: Point) => mp.id !== value.id
-        );
-        this.formGroup.patchValue({ entrancePoints: currentMapPoint });
-      }
-      if (isDevMode()) {
-        console.log(this.formGroup.value);
-      }
-    });
+    this.mapService.valueDeleted
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(value => {
+        if (value.rings) {
+          this.formGroup.patchValue({ buildingPoly: null });
+        } else if (value.x && value.y) {
+          const currentMapPoint = this.formGroup.value.entrancePoints.filter(
+            (mp: Point) => mp.id !== value.id
+          );
+          this.formGroup.patchValue({ entrancePoints: currentMapPoint });
+        }
+        if (isDevMode()) {
+          console.log(this.formGroup.value);
+        }
+      });
   }
 
   ngOnDestroy(): void {
-    if (this.view) {
-      this.view.destroy();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.mapService.cleanup();
   }
 
-  async initializeMap(): Promise<any> {
-    const editingGeometry = [];
+  async initializeMap(): Promise<void> {
+    const editingGeometry: EditableGeometry[] = [];
     if (this.existingBuildingGeometry) {
       editingGeometry.push(this.existingBuildingGeometry);
     }

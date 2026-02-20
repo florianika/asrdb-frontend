@@ -130,7 +130,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
     this.registerMapService.cleanup();
   }
 
-  async initializeMap(): Promise<any> {
+  async initializeMap(): Promise<void> {
     this.mapAuthError = null;
     this.isMapInitializing = true;
     this.isMapReady = false;
@@ -159,7 +159,13 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
       this.mapAuthError = null;
       this.isMapReady = true;
     } catch (error) {
-      this.handleMapError(error);
+      if (this.registerMapService.hasActiveView()) {
+        // Keep map usable when initial filtering fails after view bootstrap.
+        this.mapAuthError = null;
+        this.isMapReady = true;
+      } else {
+        this.handleMapError(error);
+      }
     } finally {
       this.isMapInitializing = false;
     }
@@ -172,6 +178,10 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
 
   private handleMapError(error: unknown) {
     console.error(error);
+    if (this.isMapReady) {
+      this.mapAuthError = null;
+      return;
+    }
     this.mapAuthError = this.esriAuthService.isEsriAuthError(error)
       ? $localize`Map authentication failed. Please retry.`
       : $localize`Could not load map data. Please retry.`;

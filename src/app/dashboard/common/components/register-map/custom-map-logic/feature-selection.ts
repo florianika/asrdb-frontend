@@ -9,6 +9,7 @@ import { CommonEntranceService } from '../../../service/common-entrance.service'
 import { RegisterFilterService } from '../../../../register/register-table-view/register-filter.service';
 import Map from '@arcgis/core/Map';
 import { CommonEsriAuthService } from '../../../service/common-esri-auth.service';
+import { CleanupCallback } from '../map-types';
 
 @Injectable()
 export class FeatureSelectionService {
@@ -22,7 +23,7 @@ export class FeatureSelectionService {
   createFeatureSelection(
     view: MapView,
     webmap: Map,
-    eventsCleanupCallbacks: any[]
+    eventsCleanupCallbacks: CleanupCallback[]
   ) {
     const featureSelection = this.createSelectionButton();
     const eraseSelection = this.createEraseButton();
@@ -41,6 +42,10 @@ export class FeatureSelectionService {
           graphic => graphic.geometry
         );
         const queryGeometry = await geometryEngine.union(geometries.toArray());
+        if (!queryGeometry) {
+          polygonGraphicsLayer.removeAll();
+          return;
+        }
         await this.selectFeatures(view, queryGeometry);
         polygonGraphicsLayer.removeAll();
       }
@@ -68,6 +73,13 @@ export class FeatureSelectionService {
 
     view.ui.add(featureSelection, 'top-left');
     view.ui.add(eraseSelection, 'top-left');
+
+    eventsCleanupCallbacks.push(() => {
+      webmap.remove(polygonGraphicsLayer);
+      view.ui.remove(featureSelection);
+      view.ui.remove(eraseSelection);
+      sketchViewModel.destroy();
+    });
   }
 
   private async selectFeatures(view: MapView, geometry: Geometry) {
@@ -78,9 +90,13 @@ export class FeatureSelectionService {
         query.geometry = geometry;
         query.outFields = ['GlobalID'];
         query.where = this.registerFilterService.prepareWhereCase();
-        return (
-          await (await bldLayer.queryFeatures(query)).toJSON()
-        ).features.map((o: any) => o.attributes['GlobalID']);
+        const featureSet = await bldLayer.queryFeatures(query);
+        return featureSet.features
+          .map(feature => {
+            const globalId = feature.attributes?.['GlobalID'];
+            return typeof globalId === 'string' ? globalId : null;
+          })
+          .filter((globalId): globalId is string => !!globalId);
       });
       if (globalIds.length) {
         this.registerFilterService.setBuildingsGlobalIdFilter(globalIds);

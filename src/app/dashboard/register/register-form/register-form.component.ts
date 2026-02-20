@@ -16,12 +16,14 @@ import { Building } from '../model/building';
 import { Entrance } from '../model/entrance';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import Geometry from '@arcgis/core/geometry/Geometry';
 import { EntranceManagementService } from './entrance-creation.service';
 import { EntityType } from '../../quality-management/quality-management-config';
 import { RegisterLogService } from '../register-log-view/register-log-table/register-log.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { EntityCreationMapService } from './entity-management-map.service';
+import {
+  EditableGeometry,
+  EntityCreationMapService,
+} from './entity-management-map.service';
 import { BaseMapChangeService } from '../../common/components/register-map/custom-map-logic/basemap-change';
 import {
   BUILDING_ENTITY,
@@ -75,9 +77,9 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
   buildingId?: string;
   entityType?: EntityType;
   existingBuildingDetails?: Building;
-  existingBuildingGeometry?: Geometry;
+  existingBuildingGeometry?: EditableGeometry;
   existingEntrancesDetails?: Entrance[];
-  existingEntrancesGeometry?: Geometry[];
+  existingEntrancesGeometry?: EditableGeometry[];
   structure: EntityAttribute[] = [];
 
   mapDetails = new FormGroup({});

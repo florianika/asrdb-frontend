@@ -11,6 +11,12 @@ import { WmtsCapabilitiesService } from './wmts-capabilities.service';
 import { LayerFilterService } from './layer-filter.service';
 import { MapInteractionService } from './map-interaction.service';
 import { createMapView, createWebMap } from './map-view-factory';
+import {
+  BasemapInput,
+  CleanupCallback,
+  GoToTarget,
+  MapLayer,
+} from './map-types';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
@@ -32,17 +38,17 @@ export class RegisterMapService {
   public isOnlyOneBuilding = false;
 
   private view?: MapView;
-  private bldlayer?: FeatureLayer;
-  private entlayer?: FeatureLayer;
-  private municipalityLayer?: FeatureLayer;
+  private bldlayer!: FeatureLayer;
+  private entlayer!: FeatureLayer;
+  private municipalityLayer!: FeatureLayer;
   private graphicsLayer?: GraphicsLayer;
   private options?: MapInitOptions;
   private nativeElement?: string | HTMLDivElement;
-  private eventsCleanupCallbacks: (() => void)[] = [];
+  private eventsCleanupCallbacks: CleanupCallback[] = [];
   private customZoom: number | null = null;
   private alreadyFocused = false;
   private totalResults: number | null = null;
-  private _goToDebounce: any;
+  private _goToDebounce: ReturnType<typeof setTimeout> | null = null;
   private maxZoomHide = 15;
 
   constructor(
@@ -68,7 +74,7 @@ export class RegisterMapService {
   async init(
     containerEl?: ElementRef,
     options?: MapInitOptions,
-    basemap?: any
+    basemap?: BasemapInput
   ) {
     if (containerEl) this.nativeElement = containerEl.nativeElement;
     if (options) this.options = options;
@@ -79,7 +85,7 @@ export class RegisterMapService {
     this.createLayerInstances();
 
     this.graphicsLayer = new GraphicsLayer();
-    const layers = [this.municipalityLayer, this.graphicsLayer];
+    const layers: MapLayer[] = [this.municipalityLayer, this.graphicsLayer];
     if (this.options.showBuildingLayer) layers.push(this.bldlayer);
     if (this.options.showEntranceLayer) layers.push(this.entlayer);
 
@@ -213,8 +219,16 @@ export class RegisterMapService {
   cleanup() {
     this.eventsCleanupCallbacks.forEach(fn => fn());
     this.eventsCleanupCallbacks = [];
+    if (this._goToDebounce) {
+      clearTimeout(this._goToDebounce);
+      this._goToDebounce = null;
+    }
     this.view?.destroy();
     this.view = undefined;
+  }
+
+  hasActiveView(): boolean {
+    return !!this.view;
   }
 
   /** Private helpers */
@@ -237,7 +251,7 @@ export class RegisterMapService {
     }
   }
 
-  private handleGoTo(goTo: any) {
+  private handleGoTo(goTo: GoToTarget) {
     if (!this.view) return;
 
     if (this.isOnlyOneBuilding) {
@@ -255,11 +269,16 @@ export class RegisterMapService {
         if (!this.alreadyFocused) {
           void this.view.goTo(goTo);
         } else {
-          const zoom = this.customZoom ?? goTo.zoom;
-          if (zoom) {
+          const zoom = this.customZoom ?? this.getTargetZoom(goTo);
+          if (
+            zoom !== undefined &&
+            goTo &&
+            typeof goTo === 'object' &&
+            !Array.isArray(goTo)
+          ) {
             void this.view.goTo({
               ...goTo,
-              zoom: this.customZoom ?? goTo.zoom,
+              zoom,
             });
           } else {
             void this.view.goTo(goTo);
@@ -280,7 +299,7 @@ export class RegisterMapService {
     return split[idx + 2].split(',').length;
   }
 
-  private reload(basemap?: any) {
+  private reload(basemap?: BasemapInput) {
     this.customZoom = 0;
     void this.init(undefined, undefined, basemap);
   }
@@ -301,8 +320,18 @@ export class RegisterMapService {
     return false;
   }
 
-  private handleGoToDebounced(goTo: any) {
-    clearTimeout(this._goToDebounce);
-    this._goToDebounce = setTimeout(() => this.handleGoTo(goTo), 500); // 100ms debounce
+  private handleGoToDebounced(goTo: GoToTarget) {
+    if (this._goToDebounce) {
+      clearTimeout(this._goToDebounce);
+    }
+    this._goToDebounce = setTimeout(() => this.handleGoTo(goTo), 500);
+  }
+
+  private getTargetZoom(goTo: GoToTarget): number | undefined {
+    if (!goTo || typeof goTo !== 'object' || !('zoom' in goTo)) {
+      return undefined;
+    }
+    const zoomValue = goTo.zoom;
+    return typeof zoomValue === 'number' ? zoomValue : undefined;
   }
 }
