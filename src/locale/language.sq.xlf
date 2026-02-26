@@ -4456,6 +4456,20 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="1025323958448619026" datatype="html">
+        <source>Zgjidh orën</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1269305137899998593" datatype="html">
+        <source>Zgjidh minutën</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/administration/test-buildings/test-buildings.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="8621231013670382361" datatype="html">
         <source>Po rifreskohet autentikimi dhe po ngarkohet harta...</source>
         <context-group purpose="location">

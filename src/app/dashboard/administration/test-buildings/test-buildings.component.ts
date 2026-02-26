@@ -10,6 +10,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import {
   DateAdapter,
   MAT_DATE_FORMATS,
@@ -40,6 +41,7 @@ import { Subject, takeUntil } from 'rxjs';
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
+    MatSelectModule,
     MatButtonModule,
     MatProgressSpinner,
   ],
@@ -57,12 +59,17 @@ import { Subject, takeUntil } from 'rxjs';
 export class TestBuildingsComponent implements OnDestroy {
   private testBuildingService = inject(TestBuildingService);
   private destroy$ = new Subject<void>();
+  private now = Moment();
   public testBuildingSignal = this.testBuildingService.testBuildingSignal;
+  public hours = this.buildTimeOptions(24);
+  public minutes = this.buildTimeOptions(60);
   public formGroup = new FormGroup({
     runUpdates: new FormControl(false),
     buildingSelection: new FormControl('all'),
     executionType: new FormControl('immediate'),
     startAt: new FormControl(Moment(new Date())),
+    startHour: new FormControl(this.now.format('HH')),
+    startMinute: new FormControl(this.now.format('mm')),
   });
 
   constructor(private activatedRoute: ActivatedRoute) {
@@ -106,7 +113,7 @@ export class TestBuildingsComponent implements OnDestroy {
       runUpdates: formValue.runUpdates || false,
       startAt:
         formValue.executionType === 'scheduled'
-          ? formValue.startAt?.toISOString() || ''
+          ? this.getScheduledStartAt()
           : new Date().toISOString(),
     } as TestBuildingInput;
     if (formValue.buildingSelection === 'all') {
@@ -114,5 +121,30 @@ export class TestBuildingsComponent implements OnDestroy {
     } else {
       this.testBuildingService.testUntestedBuildings(input);
     }
+  }
+
+  private getScheduledStartAt(): string {
+    const dateValue = this.formGroup.get('startAt')?.value;
+    const hourValue = this.formGroup.get('startHour')?.value || '00';
+    const minuteValue = this.formGroup.get('startMinute')?.value || '00';
+    const scheduledStartAt = Moment(dateValue);
+
+    if (!scheduledStartAt.isValid()) {
+      return '';
+    }
+
+    scheduledStartAt
+      .hour(Number(hourValue))
+      .minute(Number(minuteValue))
+      .second(0)
+      .millisecond(0);
+
+    return scheduledStartAt.toISOString();
+  }
+
+  private buildTimeOptions(limit: number): string[] {
+    return Array.from({ length: limit }, (_, index) =>
+      index.toString().padStart(2, '0')
+    );
   }
 }

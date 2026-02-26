@@ -31,14 +31,34 @@
     </section>
     @if (formGroup.get('executionType')?.value === 'scheduled') {
       <section id="start-at-section">
-        <mat-form-field class="ps-2 mt-2" appearance="outline">
-          <mat-label i18n>Choose a date</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="startAt" />
-          <mat-datepicker-toggle
-            matIconSuffix
-            [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+        <div class="schedule-time-fields ps-2 mt-2">
+          <mat-form-field appearance="outline">
+            <mat-label i18n>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="startAt" />
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label i18n>Choose hour</mat-label>
+            <mat-select formControlName="startHour">
+              @for (hour of hours; track hour) {
+                <mat-option [value]="hour">{{ hour }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label i18n>Choose minute</mat-label>
+            <mat-select formControlName="startMinute">
+              @for (minute of minutes; track minute) {
+                <mat-option [value]="minute">{{ minute }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
       </section>
     }
   </form>

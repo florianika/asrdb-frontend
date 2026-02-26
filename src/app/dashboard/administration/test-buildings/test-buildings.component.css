@@ -1,1 +1,11 @@
 @import '../../style/table.css';
+
+.schedule-time-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.schedule-time-fields mat-form-field {
+  min-width: 160px;
+}
