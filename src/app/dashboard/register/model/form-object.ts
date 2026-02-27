@@ -44,10 +44,14 @@ export function getFormObjectOptions(
   if (type !== 'select' || !domain || !Array.isArray(domain.codedValues)) {
     return null;
   }
-  return domain.codedValues.map(codedValue => ({
-    text: codedValue.name,
-    value: codedValue.code,
-  }));
+  return domain.codedValues
+    .map(codedValue => ({
+      text: codedValue.name,
+      value: codedValue.code,
+    }))
+    .sort(
+      (a, b) => a.value.toString().localeCompare(b.value.toString())
+    );
 }
 
 export function getValue(
