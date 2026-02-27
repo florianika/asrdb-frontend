@@ -400,8 +400,8 @@ export class FieldWorkService implements OnDestroy {
       });
   }
 
-  public canFieldWorkBeClosed(fieldWorkId: number) {
-    if (this.state().canBeClosed?.fieldWorkId === fieldWorkId) {
+  public canFieldWorkBeClosed(fieldWorkId: number, force = false) {
+    if (!force && this.state().canBeClosed?.fieldWorkId === fieldWorkId) {
       return;
     }
     if (this.canBeClosedRequestInFlightFor === fieldWorkId) {

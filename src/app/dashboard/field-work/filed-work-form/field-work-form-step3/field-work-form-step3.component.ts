@@ -7,7 +7,7 @@ import {
   MatLabel,
   MatSuffix,
 } from '@angular/material/form-field';
-import { MatOptgroup, MatOption, MatSelect } from '@angular/material/select';
+import { MatOption, MatSelect } from '@angular/material/select';
 import {
   BUILDING_ENTITY,
   DWELLING_ENTITY,
@@ -31,7 +31,6 @@ import { FieldWorkStatisticService } from '../../field-work-statistic.service';
     MatFormField,
     MatSelect,
     MatOption,
-    MatOptgroup,
     MatIcon,
     MatIconButton,
     MatLabel,
@@ -54,7 +53,20 @@ export class FieldWorkFormStep3Component {
   private _fieldWorkStatisticService = inject(FieldWorkStatisticService);
   private idRef: null | number = null;
 
-  public selectControl = new FormControl('');
+  public selectControlByEntityType: Record<
+    string,
+    FormControl<number | ''>
+  > = {
+    [BUILDING_ENTITY]: new FormControl<number | ''>('', {
+      nonNullable: true,
+    }),
+    [ENTRANCE_ENTITY]: new FormControl<number | ''>('', {
+      nonNullable: true,
+    }),
+    [DWELLING_ENTITY]: new FormControl<number | ''>('', {
+      nonNullable: true,
+    }),
+  };
 
   public rulesToRender = [
     {
@@ -130,13 +142,31 @@ export class FieldWorkFormStep3Component {
     );
   }
 
-  addRule(id: number) {
+  addRule(id: number | '', entityType: string) {
     if (!id) return;
     this._fieldWorkService.addRule(id);
     this.resetFilterValue();
-    this.selectControl.setValue('');
+    this.selectControlByEntityType[entityType]?.setValue('');
     this.statistics.update(state => ({ ...state, statistics: [] }));
     this.showRegenerateStatisticsMessage();
+  }
+
+  getSelectControl(entityType: string): FormControl<number | ''> {
+    return this.selectControlByEntityType[entityType];
+  }
+
+  getActiveRulesByEntityType(entityType: string): ShortQualityRule[] {
+    return (
+      this.rulesToRender.find(group => group.entityType === entityType)?.rules ??
+      []
+    );
+  }
+
+  getRuleGroupLabel(entityType: string): string {
+    return (
+      this.rulesToRender.find(group => group.entityType === entityType)?.label ??
+      ''
+    );
   }
 
   removeRule(id: number) {
@@ -192,4 +222,5 @@ export class FieldWorkFormStep3Component {
   protected readonly BUILDING_ENTITY = BUILDING_ENTITY;
   protected readonly ENTRANCE_ENTITY = ENTRANCE_ENTITY;
   protected readonly DWELLING_ENTITY = DWELLING_ENTITY;
+  protected readonly JSON = JSON;
 }

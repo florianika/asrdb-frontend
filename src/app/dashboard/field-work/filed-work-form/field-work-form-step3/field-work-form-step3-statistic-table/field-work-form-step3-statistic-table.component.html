@@ -16,11 +16,44 @@
       <mat-icon>play_arrow</mat-icon>
     </button>
   </div>
+  <div class="statistics-filters">
+    <mat-form-field>
+      <mat-label i18n>Filter</mat-label>
+      <mat-select (selectionChange)="applyFilter($event)" #input>
+        <div class="search-field-container">
+          <mat-form-field class="w-100" appearance="outline">
+            <input
+              matInput
+              i18n-placeholder
+              placeholder="Search..."
+              [(ngModel)]="municipalityFilterValue" />
+            @if (municipalityFilterValue) {
+              <button
+                class="z-2"
+                mat-icon-button
+                matSuffix
+                (click)="clearMunicipalityFilter($event)">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+        </div>
+        <mat-option value="" i18n>All municipalities</mat-option>
+        @for (municipality of filteredMunicipalities; track municipality.code) {
+          <mat-option [value]="municipality.code" (click)="input.close()">
+            {{ municipality.name }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="municipality">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Municipality</th>
-        <td mat-cell *matCellDef="let row">{{ row.municipality }}</td>
+        <td mat-cell *matCellDef="let row">
+          {{ formatMunicipality(row.municipality) }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="ruleStatistics">
         <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>
@@ -47,11 +80,17 @@
               <p class="mt-2" i18n>Loading statistics...</p>
             </div>
           } @else {
-            <p class="w-100 text-center mt-5" i18n>No statistics found!</p>
-            <p class="w-100 text-center" i18n>
-              Select some rules and click the "Test selected rules" button to
-              generate some statistics
-            </p>
+            @if (selectedMunicipality) {
+              <p class="w-100 text-center mt-5" i18n>
+                No data matching the filter "{{ selectedMunicipality }}"
+              </p>
+            } @else {
+              <p class="w-100 text-center mt-5" i18n>No statistics found!</p>
+              <p class="w-100 text-center" i18n>
+                Select some rules and click the "Test selected rules" button to
+                generate some statistics
+              </p>
+            }
           }
         </td>
       </tr>

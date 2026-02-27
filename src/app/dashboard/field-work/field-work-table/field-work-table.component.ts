@@ -78,7 +78,7 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
         return;
       }
       this.lastCanBeClosedCheckFieldWorkId = fieldWorkId;
-      this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId);
+      this.fieldWorkService.canFieldWorkBeClosed(fieldWorkId, true);
     });
 
     effect(() => {

@@ -132,7 +132,11 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
       }
 
       const stats = this.fieldWorkStatistics().stats as FieldWorkClosureStatistic[];
-      if (!stats.length) {
+      const filteredStats = stats.filter(
+        stat => !this.isDisallowedQuality(stat.quality)
+      );
+
+      if (!filteredStats.length) {
         this.aggregatedStatisticsDatasource.data = [];
         this.overallCompleteness = { numerator: 0, denominator: 0, percent: 0 };
         this.municipalityCompleteness = [];
@@ -144,7 +148,9 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
       let overallNumerator = 0;
       let overallDenominator = 0;
 
-      this.aggregatedStatisticsDatasource.data = stats.reduce((acc, stat) => {
+      this.aggregatedStatisticsDatasource.data = filteredStats.reduce((acc, stat) => {
+          const normalizedQuality = this.normalizeQuality(stat.quality);
+          const qualityKey = normalizedQuality.toLowerCase();
           const reviewCode = this.getReviewCode(stat.review);
           if (reviewCode !== null) {
             const municipalityMetric = municipalityMetrics.get(stat.municipality) ?? {
@@ -169,11 +175,11 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
           let existing = acc.find(
             item =>
               item.municipality === stat.municipality &&
-              item.quality === stat.quality
+              item.quality.toLowerCase() === qualityKey
           );
           if (!existing) {
             existing = {
-              id: `${stat.municipality}-${stat.quality}`,
+              id: `${stat.municipality}-${qualityKey}`,
               municipality: stat.municipality,
               quality: stat.quality,
               data: [0, 0, 0, 0, 0, 0],
@@ -297,6 +303,41 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
     }
 
     return reviewValue.slice(separatorIndex + 1).trim();
+  }
+
+  private isDisallowedQuality(quality: string): boolean {
+    const qualityValue = quality?.trim();
+    if (!qualityValue) {
+      return false;
+    }
+
+    const separatorIndex = qualityValue.indexOf('|');
+    const numericPart =
+      separatorIndex >= 0
+        ? qualityValue.slice(0, separatorIndex).trim()
+        : qualityValue;
+    const qualityCode = Number.parseInt(numericPart, 10);
+
+    return !Number.isNaN(qualityCode) && qualityCode === 0;
+  }
+
+  private normalizeQuality(quality: string): string {
+    const qualityValue = quality?.trim();
+    if (!qualityValue) {
+      return '';
+    }
+
+    const separatorIndex = qualityValue.indexOf('|');
+    if (separatorIndex < 0) {
+      return qualityValue.replace(/\s+/g, ' ');
+    }
+
+    const labelPart = qualityValue.slice(separatorIndex + 1).trim();
+    if (!labelPart) {
+      return qualityValue.slice(0, separatorIndex).trim();
+    }
+
+    return labelPart.replace(/\s+/g, ' ');
   }
 
   private calculatePercent(numerator: number, denominator: number) {

@@ -63,6 +63,7 @@ export type QualityRule = {
   createdTimestamp: string;
   updatedUser: string | null;
   updatedTimestamp: string | null;
+  reference: string;
 };
 export const BaseUrl = environment.base_url + '/qms/rules/entity/';
 

@@ -99,8 +99,8 @@
       <ng-container matColumnDef="municipality">
         <th mat-header-cell *matHeaderCellDef i18n>Municipality</th>
         <ng-container *matCellDef="let row; let i = index">
-          @if (i % 5 === 0) {
-            <td mat-cell rowspan="5">{{ row.municipality }}</td>
+          @if (i % 4 === 0) {
+            <td mat-cell rowspan="4">{{ row.municipality }}</td>
           }
         </ng-container>
       </ng-container>

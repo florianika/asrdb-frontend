@@ -1,47 +1,42 @@
 <div class="full-height-stepper">
   <div class="row mt-2">
-    <div class="col-12 col-md-4">
-      <mat-form-field class="w-100" appearance="outline">
-        <mat-label i18n>Select Quality Rule to add</mat-label>
-        <mat-select
-          [formControl]="selectControl"
-          class="w-100"
-          [disabled]="activeRules().loading"
-          (selectionChange)="addRule($event.value)">
-          <div class="search-field-container">
-            <mat-form-field class="w-100" appearance="outline">
-              <input
-                matInput
-                i18n-placeholder
-                placeholder="Search..."
-                [(ngModel)]="filterValue" />
-              <button
-                mat-icon-button
-                matSuffix
-                *ngIf="filterValue()"
-                (click)="resetFilterValue()">
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-form-field>
-          </div>
-          @for (group of rulesToRender; track group.entityType) {
-            <mat-option value="">-- SELECT --</mat-option>
-            <mat-optgroup [label]="group.label" class="mt-2 fw-bold w-100">
-              @for (activeRule of group.rules; track activeRule.id) {
-                <mat-option [value]="activeRule.id">
-                  {{ activeRule.nameEn }} | {{ activeRule.id }}
-                </mat-option>
-              }
-            </mat-optgroup>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-12"></div>
-
     @for (group of selectedRulesToRender; track group.entityType) {
       <div class="col-12 col-md-4">
-        <div class="border p-3 h-100">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>{{ getRuleGroupLabel(group.entityType) }}</mat-label>
+          <mat-select
+            [formControl]="getSelectControl(group.entityType)"
+            class="w-100"
+            [disabled]="activeRules().loading"
+            (selectionChange)="addRule($event.value, group.entityType)">
+            <div class="search-field-container">
+              <mat-form-field class="w-100" appearance="outline">
+                <input
+                  matInput
+                  i18n-placeholder
+                  placeholder="Search..."
+                  [(ngModel)]="filterValue" />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  *ngIf="filterValue()"
+                  (click)="resetFilterValue()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+            <mat-option value="">-- SELECT --</mat-option>
+            @for (
+              activeRule of getActiveRulesByEntityType(group.entityType);
+              track activeRule.id
+            ) {
+              <mat-option [value]="activeRule.id">
+                {{ activeRule.nameEn }} | {{ activeRule.localId }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <div class="border p-3">
           <p class="fs-5">
             <span>{{ group.label }}</span>
             <span class="ms-2 text-black-50 small"
@@ -52,7 +47,7 @@
             @if (group.rules.length) {
               @for (rule of group.rules; track rule.ruleId) {
                 <div class="d-flex justify-content-between align-items-center">
-                  <span>{{ rule.ruleNameEn }} | {{ rule.ruleId }}</span>
+                  <span>{{ rule.ruleNameEn }} | {{ rule.ruleLocalId }}</span>
                   <button
                     mat-icon-button
                     color="warn"
