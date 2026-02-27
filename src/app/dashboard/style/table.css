@@ -31,7 +31,6 @@ table {
   display: flex;
   flex-direction: row;
   padding: 0px 10px;
-  align-items: center;
 }
 
 .header-title {
