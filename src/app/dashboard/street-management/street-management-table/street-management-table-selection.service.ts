@@ -9,9 +9,7 @@ type ArcGisAttributes = Record<string, unknown>;
 type ArcGisFeature = { attributes: ArcGisAttributes };
 type ArcGisResponse = { data?: { features?: ArcGisFeature[] } } | null;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class StreetManagementTableSelectionService {
   constructor(
     private commonEntranceService: CommonEntranceService,

@@ -26,6 +26,7 @@ import { RegisterMapComponent } from '../common/components/register-map/register
 import { RegisterFilterService } from '../register/register-table-view/register-filter.service';
 import { CommonEsriAuthService } from '../common/service/common-esri-auth.service';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { StreetManagementTableSelectionService } from './street-management-table/street-management-table-selection.service';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
     CommonRegisterHelperService,
     RegisterFilterService,
     StreetManagementService,
+    StreetManagementTableSelectionService,
   ],
 })
 export class StreetManagementModule {}
