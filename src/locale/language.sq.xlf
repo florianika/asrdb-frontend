@@ -2585,13 +2585,6 @@
           <context context-type="linenumber">51,54</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6949324632079504314" datatype="html">
-        <source>Zgjidhni Rregullin e Cilësisë për ta shtuar</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/dashboard/field-work/filed-work-form/field-work-form-step3/field-work-form-step3.component.html</context>
-          <context context-type="linenumber">5</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="2427326032490832942" datatype="html">
         <source> Nuk ka rregulla të zgjedhura </source>
         <context-group purpose="location">
@@ -2751,6 +2744,13 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
           <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8990834416288415919" datatype="html">
+        <source>Mirë se vini, </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.html</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="785891933839918927" datatype="html">
@@ -4414,15 +4414,15 @@ Ky veprim nuk mund të anulohet.</source>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="276847847864963738" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni brenda mesazhin që dëshironi t&apos;u dërgoni komunave që kanë përfunduar të gjitha detyrat </source>
+      <trans-unit id="712239655267408994" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="&apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION_2" equiv-text="{{ &apos;{/&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni brenda mesazhin që dëshironi t&apos;u dërgoni komunave që kanë përfunduar të gjitha detyrat </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5187178491622993291" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni brenda mesazhin që dëshironi t&apos;u dërgoni komunave që nuk kanë përfunduar të gjitha detyrat </source>
+      <trans-unit id="2221381003373726034" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="&apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION_2" equiv-text="{{ &apos;{/&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni brenda mesazhin që dëshironi t&apos;u dërgoni komunave që nuk kanë përfunduar të gjitha detyrat </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/administration/email-template-management/email-template-management-form/email-template-management-form.component.html</context>
           <context context-type="linenumber">22</context>
@@ -4508,9 +4508,6 @@ Ky veprim nuk mund të anulohet.</source>
       <trans-unit id="394032864783334976" datatype="html">
         <source>Duke ngarkuar statistikat e mbylljes së punës në terren. Ju lutem pritni...</source>
       </trans-unit>
-      <trans-unit id="571559318874154726" datatype="html">
-        <source>Nuk ka të dhëna që përputhen me filtrin &quot;<x id="INTERPOLATION" equiv-text="{{ input.value }}"/>&quot;</source>
-      </trans-unit>
       <trans-unit id="5628200256561847479" datatype="html">
         <source>Banesa:</source>
       </trans-unit>
@@ -4588,9 +4585,6 @@ Ky veprim nuk mund të anulohet.</source>
       </trans-unit>
       <trans-unit id="4572135416673940627" datatype="html">
         <source>Ndrysho statusin</source>
-      </trans-unit>
-      <trans-unit id="4146830966635061119" datatype="html">
-        <source>Mirë se vini,</source>
       </trans-unit>
       <trans-unit id="4219788328302683152" datatype="html">
         <source>Cilësia e të dhënave:</source>
