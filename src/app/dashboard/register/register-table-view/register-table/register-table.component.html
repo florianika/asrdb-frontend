@@ -3,7 +3,7 @@
     <h1 i18n class="header-title">Building List</h1>
 
     <div class="spacer"></div>
-    @if (isAdmin || isSupervisor) {
+    @if (canManageEntities) {
       <button
         mat-icon-button
         i18n-matTooltip
@@ -215,7 +215,7 @@
               <mat-icon>apartment</mat-icon>
               <span i18n>View building details</span>
             </button>
-            @if (isAdmin || isSupervisor) {
+            @if (canManageEntities) {
               <button
                 mat-menu-item
                 (click)="editBuildingDetails(element.GlobalID)">
@@ -233,7 +233,7 @@
               <mat-icon>play_arrow</mat-icon>
               <span i18n>Test building data</span>
             </button>
-            @if (isAdmin) {
+            @if (canDeleteEntities) {
               <mat-divider />
               <button
                 mat-menu-item

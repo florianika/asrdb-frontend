@@ -56,7 +56,7 @@ import {
   EntityDeleteDialogData,
 } from '../../../common/components/entity-delete-confirmation-doalog/entity-delete-confirmation-dialog.component';
 import { BUILDING_ENTITY } from '../../../../common/constants/common-constants';
-import { AuthStateService } from '../../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../../common/services/authorization-policy.service';
 import { EsriField, EsriQueryResponse } from '../../model/esri-response';
 import { arcGisOrderBy } from '../../../common/helper/arcgis-query';
 
@@ -128,7 +128,7 @@ export class RegisterTableComponent
     private commonBuildingService: CommonBuildingService,
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
     private registerFilterService: RegisterFilterService,
-    private authStateService: AuthStateService,
+    private authorizationPolicy: AuthorizationPolicyService,
     private matDialog: MatDialog,
     private matSnack: MatSnackBar,
     private changeDetectionRef: ChangeDetectorRef,
@@ -175,12 +175,12 @@ export class RegisterTableComponent
     this.destroy$.complete();
   }
 
-  get isAdmin() {
-    return this.authStateService.isAdmin();
+  get canManageEntities() {
+    return this.authorizationPolicy.can('manage-entities');
   }
 
-  get isSupervisor() {
-    return this.authStateService.isSupervisor();
+  get canDeleteEntities() {
+    return this.authorizationPolicy.can('delete-entities');
   }
 
   getMunicipality(column: string, code: number | string) {

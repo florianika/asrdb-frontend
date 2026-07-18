@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CreateComment } from './comment.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../../common/services/authorization-policy.service';
 
 @Component({
     selector: 'asrdb-comment-view',
@@ -47,6 +48,7 @@ export class CommentViewComponent implements OnInit {
   constructor(
     private commentService: CommentService,
     private authStateService: AuthStateService,
+    private authorizationPolicy: AuthorizationPolicyService,
     private matDialog: MatDialog
   ) {}
 
@@ -91,11 +93,10 @@ export class CommentViewComponent implements OnInit {
       return false;
     }
     const currentUserId = this.authStateService.getNameId();
-    const isAdmin =
-      this.authStateService.isAdmin() || this.authStateService.isSupervisor();
+    const canModerate = this.authorizationPolicy.can('moderate-comments');
     const isCurrentUser = currentUserId
       ? commentUserId === currentUserId
       : false;
-    return isAdmin || isCurrentUser;
+    return canModerate || isCurrentUser;
   }
 }

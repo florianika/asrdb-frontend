@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { Role } from 'src/app/model/RolePermissions.model';
-import {AuthStateService} from "../../services/auth-state.service";
+import { AuthorizationPolicyService } from '../../services/authorization-policy.service';
 
 @Component({
     selector: 'asrdb-role-selector',
@@ -17,10 +17,10 @@ export class RoleSelectorComponent {
   @Input() role: Role = 'ADMIN';
   @Output() roleChange = new EventEmitter<Role>();
 
-  private authSate = inject(AuthStateService);
+  private authorizationPolicy = inject(AuthorizationPolicyService);
 
-  get isAdmin() {
-    return this.authSate.isAdmin();
+  get canAssignAdminRole() {
+    return this.authorizationPolicy.can('assign-admin-role');
   }
 
   changeRole(selectedRole: MatSelectChange) {

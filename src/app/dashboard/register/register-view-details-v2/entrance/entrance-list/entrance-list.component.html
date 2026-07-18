@@ -6,7 +6,7 @@
 
     <div class="spacer"></div>
 
-    @if (isAdmin || isSupervisor) {
+    @if (canManageEntities) {
       <button
         mat-icon-button
         [matTooltip]="'Add new entrance'"
@@ -89,13 +89,13 @@
               <mat-icon>meeting_room</mat-icon>
               <span i18n>View entrance details</span>
             </button>
-            @if (isAdmin || isSupervisor) {
+            @if (canManageEntities) {
               <button mat-menu-item (click)="editEntrance(element.GlobalID)">
                 <mat-icon>edit</mat-icon>
                 <span i18n>Edit entrance details</span>
               </button>
             }
-            @if (isAdmin) {
+            @if (canDeleteEntities) {
               <mat-divider />
               <button
                 mat-menu-item

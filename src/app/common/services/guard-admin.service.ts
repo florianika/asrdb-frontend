@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { AuthStateService } from './auth-state.service';
 import { map, Observable } from 'rxjs';
+import { AuthorizationPolicyService } from './authorization-policy.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ import { map, Observable } from 'rxjs';
 export class GuardAdminService {
   constructor(
     private authStateService: AuthStateService,
+    private authorizationPolicy: AuthorizationPolicyService,
     private router: Router
   ) {}
 
@@ -19,8 +21,7 @@ export class GuardAdminService {
           return this.router.parseUrl('/auth/signin');
         }
 
-        return this.authStateService.isAdmin() ||
-          this.authStateService.isSupervisor()
+        return this.authorizationPolicy.can('access-management')
           ? true
           : this.router.parseUrl('/403');
       })

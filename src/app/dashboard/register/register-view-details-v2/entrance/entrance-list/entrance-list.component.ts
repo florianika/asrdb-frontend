@@ -18,7 +18,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { EntranceDetailsService } from '../entrance-details.service';
 import { EntranceDetailsDialogService } from '../entrance-details-dialog.service';
 import { Entrance } from '../../../model/entrance';
-import { AuthStateService } from '../../../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../../../common/services/authorization-policy.service';
 import { RegisterViewDetailsService } from '../../register-view-details.service';
 import { merge, startWith, Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
@@ -66,7 +66,7 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
     .filter(column => !['ObjectID', 'EntBldGlobalID'].includes(column));
 
   private router = inject(Router);
-  private authStateService = inject(AuthStateService);
+  private authorizationPolicy = inject(AuthorizationPolicyService);
   private entranceDetailsService = inject(EntranceDetailsService);
   private entranceDetailsDialogService = inject(EntranceDetailsDialogService);
   private registerViewDetailsService = inject(RegisterViewDetailsService);
@@ -108,12 +108,12 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.viewData().isLoadingEntrances;
   }
 
-  get isAdmin() {
-    return this.authStateService.isAdmin();
+  get canManageEntities() {
+    return this.authorizationPolicy.can('manage-entities');
   }
 
-  get isSupervisor() {
-    return this.authStateService.isSupervisor();
+  get canDeleteEntities() {
+    return this.authorizationPolicy.can('delete-entities');
   }
 
   get selectedEntrance() {

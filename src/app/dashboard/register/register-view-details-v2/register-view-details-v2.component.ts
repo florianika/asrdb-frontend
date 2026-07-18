@@ -33,7 +33,7 @@ import { EntranceDetailsService } from './entrance/entrance-details.service';
 import { EntranceListComponent } from './entrance/entrance-list/entrance-list.component';
 import { DwellingListComponent } from './dwelling/dwelling-list/dwelling-list.component';
 import { BuildingDetailComponent } from './building-detail/building-detail.component';
-import { AuthStateService } from '../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../common/services/authorization-policy.service';
 
 @Component({
   selector: 'asrdb-register-view-details-v2',
@@ -73,7 +73,7 @@ export class RegisterViewDetailsV2Component implements OnInit, OnDestroy {
   private registerViewDetailsService = inject(RegisterViewDetailsService);
   private entranceDetailsService = inject(EntranceDetailsService);
   private matDialog = inject(MatDialog);
-  private authStateService = inject(AuthStateService);
+  private authorizationPolicy = inject(AuthorizationPolicyService);
 
   private dialog?: MatDialogRef<any>;
 
@@ -105,12 +105,8 @@ export class RegisterViewDetailsV2Component implements OnInit, OnDestroy {
     return this.viewData().building;
   }
 
-  get isAdmin() {
-    return this.authStateService.isAdmin();
-  }
-
-  get isSupervisor() {
-    return this.authStateService.isSupervisor();
+  get canManageEntities() {
+    return this.authorizationPolicy.can('manage-entities');
   }
 
   ngOnInit(): void {

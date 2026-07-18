@@ -13,7 +13,7 @@
                 <mat-icon>arrow_back</mat-icon>
               </button>
               <span class="flex-grow-1"></span>
-              @if (isAdmin || isSupervisor) {
+              @if (canManageEntities) {
                 <button
                   mat-icon-button
                   [matTooltip]="'Edit building'"

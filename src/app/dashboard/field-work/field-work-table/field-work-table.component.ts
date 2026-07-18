@@ -19,7 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { AuthStateService } from '../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../common/services/authorization-policy.service';
 
 @Component({
   selector: 'asrdb-field-work-table',
@@ -45,7 +45,7 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
   private fieldWorkService = inject(FieldWorkService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-  private authStateService = inject(AuthStateService);
+  private authorizationPolicy = inject(AuthorizationPolicyService);
   private destroyed$ = new Subject<void>();
   private lastCanBeClosedCheckFieldWorkId: number | null = null;
 
@@ -126,9 +126,7 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
   }
 
   get canCloseFieldWork(): boolean {
-    return (
-      this.authStateService.isAdmin() || this.authStateService.isSupervisor()
-    );
+    return this.authorizationPolicy.can('close-field-work');
   }
 
   canBeClosed(row: FieldWork): boolean {

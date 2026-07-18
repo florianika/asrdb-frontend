@@ -4,10 +4,10 @@ import {
   ChangeDetectorRef,
   Component,
 } from '@angular/core';
-import { AuthStateService } from '../../services/auth-state.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { FILTER_REGISTER } from '../../constants/storage-keys';
+import { AuthorizationPolicyService } from '../../services/authorization-policy.service';
 
 @Component({
     selector: 'asrdb-side-bar',
@@ -54,7 +54,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: this.isAdmin || this.isSupervisor,
+      visible: this.canAccessManagement,
     },
     {
       sectionTitle: $localize`Quality Rule Management`,
@@ -78,7 +78,7 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: this.isAdmin || this.isSupervisor,
+      visible: this.canAccessManagement,
     },
     {
       sectionTitle: $localize`Administration`,
@@ -114,12 +114,12 @@ export class SideBarComponent implements AfterViewInit {
           selected: false,
         },
       ],
-      visible: this.isAdmin || this.isSupervisor,
+      visible: this.canAccessManagement,
     },
   ];
 
   constructor(
-    private authStateService: AuthStateService,
+    private authorizationPolicy: AuthorizationPolicyService,
     private router: Router,
     private changeDetection: ChangeDetectorRef
   ) {}
@@ -137,12 +137,8 @@ export class SideBarComponent implements AfterViewInit {
       });
   }
 
-  get isAdmin(): boolean {
-    return this.authStateService.isAdmin();
-  }
-
-  get isSupervisor(): boolean {
-    return this.authStateService.isSupervisor();
+  get canAccessManagement(): boolean {
+    return this.authorizationPolicy.can('access-management');
   }
 
   handleClick(title: string) {

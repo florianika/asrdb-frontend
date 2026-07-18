@@ -57,6 +57,7 @@ import {
   EntityAttribute,
 } from '../../../common/service/common-entity-structure.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../../common/services/authorization-policy.service';
 import {
   getLocaleProperty,
   getLogMessage,
@@ -104,6 +105,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
     private mapService: EntityCreationMapService,
     private filterService: RegisterFilterService,
     private authStateService: AuthStateService,
+    private authorizationPolicy: AuthorizationPolicyService,
     private commonStructureService: CommonEntityStructureService,
     @Inject(LOCALE_ID) public locale: 'sq' | 'en'
   ) {
@@ -118,9 +120,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   get isNormalUser() {
-    return (
-      !this.authStateService.isAdmin() && !this.authStateService.isSupervisor()
-    );
+    return !this.authorizationPolicy.can('manage-municipality-scope');
   }
 
   ngOnInit() {

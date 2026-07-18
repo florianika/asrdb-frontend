@@ -21,7 +21,7 @@ import { merge, Subject, takeUntil } from 'rxjs';
 import { DwellingDetailsService } from '../dwelling-details.service';
 import { DwellingDetailsDialogService } from '../dwelling-details-dialog.service';
 import { Dwelling } from '../../../model/dwelling';
-import { AuthStateService } from '../../../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../../../common/services/authorization-policy.service';
 import { DWELLING_ENTITY } from '../../../../../common/constants/common-constants';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EntranceDetailsService } from '../../entrance/entrance-details.service';
@@ -67,7 +67,7 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
   private dwellingDetailsDialogService = inject(DwellingDetailsDialogService);
   private entranceDetailsService = inject(EntranceDetailsService);
   private registerViewDetailsService = inject(RegisterViewDetailsService);
-  private authStateService = inject(AuthStateService);
+  private authorizationPolicy = inject(AuthorizationPolicyService);
 
   private matDialog = inject(MatDialog);
   private parentDialogRef = inject(MatDialogRef, { optional: true });
@@ -104,12 +104,12 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.entranceViewData().selectedEntrance?.EntEntranceNumber || 0;
   }
 
-  get isAdmin() {
-    return this.authStateService.isAdmin();
+  get canManageEntities() {
+    return this.authorizationPolicy.can('manage-entities');
   }
 
-  get isSupervisor() {
-    return this.authStateService.isSupervisor();
+  get canDeleteEntities() {
+    return this.authorizationPolicy.can('delete-entities');
   }
 
   constructor() {

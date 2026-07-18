@@ -2,7 +2,7 @@ import { Chip } from 'src/app/dashboard/common/components/chip/chip.component';
 import { BuildingFilter } from '../model/building';
 import { Injectable } from '@angular/core';
 import { CommonRegisterHelperService } from '../service/common-helper.service';
-import { AuthStateService } from '../../../common/services/auth-state.service';
+import { AuthorizationPolicyService } from '../../../common/services/authorization-policy.service';
 
 type FilterValue = string | string[] | number;
 type BuildingFilterColumn = keyof BuildingFilter['filter'];
@@ -13,7 +13,7 @@ export class FilterHelper {
 
   constructor(
     private commonBuildingRegisterHelper: CommonRegisterHelperService,
-    private authState: AuthStateService
+    private authorizationPolicy: AuthorizationPolicyService
   ) {}
 
   init(fields: Record<string, unknown>[]) {
@@ -87,8 +87,7 @@ export class FilterHelper {
     } else {
       if (
         key === 'BldMunicipality' &&
-        !this.authState.isAdmin() &&
-        !this.authState.isSupervisor()
+        !this.authorizationPolicy.can('manage-municipality-scope')
       ) {
         return currentValue;
       }

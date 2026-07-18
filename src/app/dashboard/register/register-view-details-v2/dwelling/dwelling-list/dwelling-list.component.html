@@ -6,7 +6,7 @@
 
     <div class="spacer"></div>
 
-    @if (entranceId && (isAdmin || isSupervisor)) {
+    @if (entranceId && canManageEntities) {
       <button
         mat-icon-button
         aria-label="Add dwelling"
@@ -97,7 +97,7 @@
               <mat-icon>light</mat-icon>
               <span i18n>View dwelling details</span>
             </button>
-            @if (isAdmin || isSupervisor) {
+            @if (canManageEntities) {
               <button
                 mat-menu-item
                 (click)="editDwellingDetails(element.GlobalID)">
@@ -105,7 +105,7 @@
                 <span i18n>Edit dwelling details</span>
               </button>
             }
-            @if (isAdmin) {
+            @if (canDeleteEntities) {
               <mat-divider />
               <button
                 mat-menu-item
