@@ -10,7 +10,11 @@ import { FeatureSelectionService } from './custom-map-logic/feature-selection';
 import { WmtsCapabilitiesService } from './wmts-capabilities.service';
 import { LayerFilterService } from './layer-filter.service';
 import { MapInteractionService } from './map-interaction.service';
-import { createMapView, createWebMap } from './map-view-factory';
+import {
+  configureWmtsConstraints,
+  createMapSession,
+  destroyMapSession,
+} from './map-view-factory';
 import {
   BasemapInput,
   CleanupCallback,
@@ -19,9 +23,7 @@ import {
 } from './map-types';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
 import MapView from '@arcgis/core/views/MapView';
-import LOD from '@arcgis/core/layers/support/LOD';
 import {
   arcGisGlobalIdEquals,
   arcGisGlobalIdIn,
@@ -97,26 +99,18 @@ export class RegisterMapService {
     if (this.options.showBuildingLayer) layers.push(this.bldlayer);
     if (this.options.showEntranceLayer) layers.push(this.entlayer);
 
-    const webmap = createWebMap(basemap, layers);
-    this.view = createMapView(
-      this.nativeElement,
-      webmap,
-      this.options.enableLegend
-    );
+    const { webmap, view } = createMapSession(this.nativeElement, layers, {
+      basemap,
+      enableLegend: this.options.enableLegend,
+      initialZoom: 15,
+      dockPopup: true,
+    });
+    this.view = view;
 
-    // WMTS LODs
-    this.maxZoomHide = 15;
-    const wmts = this.view.map?.basemap?.baseLayers.find(
-      l => l instanceof WMTSLayer
-    ) as WMTSLayer;
-    if (wmts) {
-      const lods = await this.wmtsCapabilitiesService.getLODs(wmts.url);
-      if (lods.length) {
-        this.view.constraints = { lods: lods as LOD[] };
-        const maxZoom = lods[lods.length - 1].level + 1;
-        this.maxZoomHide = Math.floor(maxZoom / 2);
-      }
-    }
+    this.maxZoomHide = await configureWmtsConstraints(
+      this.view,
+      this.wmtsCapabilitiesService
+    );
 
     // Map interactions
     const zoomHandler = MapInteractionService.addZoomWatcher(
@@ -285,8 +279,6 @@ export class RegisterMapService {
 
   /** Clean up map resources */
   cleanup() {
-    this.eventsCleanupCallbacks.forEach(fn => fn());
-    this.eventsCleanupCallbacks = [];
     this.buildingHighlightRequestId++;
     this.entranceHighlightRequestId++;
     this.clearBuildingHighlight();
@@ -295,7 +287,7 @@ export class RegisterMapService {
       clearTimeout(this._goToDebounce);
       this._goToDebounce = null;
     }
-    this.view?.destroy();
+    destroyMapSession(this.view, this.eventsCleanupCallbacks);
     this.view = undefined;
   }
 
@@ -353,7 +345,8 @@ export class RegisterMapService {
       return;
     }
 
-    const size = this.getBuildingIdsSize(this.options?.bldWhereCase || '');
+    const size =
+      this.registerFilterService.getSelectedBuildingGlobalIds().length;
     switch (size) {
       case 1:
         void this.view.goTo(goTo);
@@ -384,13 +377,6 @@ export class RegisterMapService {
         this.alreadyFocused = true;
         break;
     }
-  }
-
-  private getBuildingIdsSize(whereCondition: string): number {
-    const split = whereCondition.split(' ');
-    const idx = split.indexOf('GlobalID');
-    if (idx === -1 || idx + 2 >= split.length) return 0;
-    return split[idx + 2].split(',').length;
   }
 
   private reload(basemap?: BasemapInput) {

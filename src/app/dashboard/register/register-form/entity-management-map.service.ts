@@ -1,6 +1,5 @@
 import { ElementRef, Injectable, OnDestroy } from '@angular/core';
 import { CommonEsriAuthService } from '../../common/service/common-esri-auth.service';
-import WebMap from '@arcgis/core/WebMap';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
@@ -19,7 +18,6 @@ import { CommonBuildingService } from '../../common/service/common-building.serv
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
-import { OSM_BASEMAP } from '../../common/components/register-map/custom-map-logic/BasemapTypes';
 import {
   AuthStateService,
   DEFAULT_MUNICIPALITY,
@@ -32,6 +30,12 @@ import SketchProperties = __esri.SketchProperties;
 import { CommonMunicipalityService } from '../../common/service/common-municipality.service';
 import { CleanupCallback } from '../../common/components/register-map/map-types';
 import { arcGisIntegerLiteral } from '../../common/helper/arcgis-query';
+import {
+  configureWmtsConstraints,
+  createMapSession,
+  destroyMapSession,
+} from '../../common/components/register-map/map-view-factory';
+import { WmtsCapabilitiesService } from '../../common/components/register-map/wmts-capabilities.service';
 
 export type EditableGeometry = {
   id?: number | string | null;
@@ -55,6 +59,7 @@ export class EntityCreationMapService implements OnDestroy {
   private createdGraphic: Graphic | null = null;
   private totalResults: number | null = null;
   private zoomVisibilityDebounce: ReturnType<typeof setTimeout> | null = null;
+  private maxZoomHide = 15;
 
   get valueChanged() {
     return this.valueUpdate.asObservable();
@@ -82,7 +87,8 @@ export class EntityCreationMapService implements OnDestroy {
     private basemapService: BaseMapChangeService,
     private buildingService: CommonBuildingService,
     private municipalityService: CommonMunicipalityService,
-    private authState: AuthStateService
+    private authState: AuthStateService,
+    private wmtsCapabilitiesService: WmtsCapabilitiesService
   ) {
     this.municipality = new BehaviorSubject<number | null>(
       this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY
@@ -116,15 +122,12 @@ export class EntityCreationMapService implements OnDestroy {
   }
 
   public cleanup() {
-    this.eventsCleanupCallbacks.forEach(cleanup => cleanup());
-    this.eventsCleanupCallbacks = [];
-
     if (this.zoomVisibilityDebounce) {
       clearTimeout(this.zoomVisibilityDebounce);
       this.zoomVisibilityDebounce = null;
     }
 
-    this.view?.destroy();
+    destroyMapSession(this.view, this.eventsCleanupCallbacks);
     this.view = undefined;
   }
 
@@ -199,23 +202,15 @@ export class EntityCreationMapService implements OnDestroy {
       layers.push(this.bldLayer);
       layers.push(this.municipalityLayer);
     }
-    const webmap = new WebMap({
-      basemap: basemap ?? OSM_BASEMAP,
-      layers: layers,
-      applicationProperties: {
-        viewing: {
-          search: {
-            enabled: true,
-          },
-        },
-      },
+    const { view } = createMapSession(this.nativeElement, layers, {
+      basemap,
     });
+    this.view = view;
 
-    this.view = new MapView({
-      container: this.nativeElement,
-      map: webmap,
-      spatialReference: { wkid: 3857 },
-    });
+    this.maxZoomHide = await configureWmtsConstraints(
+      this.view,
+      this.wmtsCapabilitiesService
+    );
 
     void this.view.when(() => {
       if (mainGraphic) {
@@ -232,7 +227,8 @@ export class EntityCreationMapService implements OnDestroy {
           return;
         }
         this.bldLayer.visible =
-          newZoom >= 15 || !!(this.totalResults && this.totalResults < 1000);
+          newZoom >= this.maxZoomHide ||
+          !!(this.totalResults && this.totalResults < 1000);
       }, 500);
     });
     this.eventsCleanupCallbacks.push(() => {

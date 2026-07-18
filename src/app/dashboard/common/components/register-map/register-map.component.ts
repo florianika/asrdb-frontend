@@ -15,7 +15,6 @@ import { RegisterMapService } from './register-map.service';
 import { RegisterFilterService } from '../../service/register-filter.service';
 import { BaseMapChangeService } from './custom-map-logic/basemap-change';
 import { FeatureSelectionService } from './custom-map-logic/feature-selection';
-import { WmtsCapabilitiesService } from './wmts-capabilities.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { LoggerService } from '../../../../common/services/logger.service';
 
@@ -26,7 +25,6 @@ import { LoggerService } from '../../../../common/services/logger.service';
     RegisterMapService,
     BaseMapChangeService,
     FeatureSelectionService,
-    WmtsCapabilitiesService,
   ],
   templateUrl: './register-map.component.html',
   styleUrls: ['./register-map.component.css'],
