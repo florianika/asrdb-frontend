@@ -14,7 +14,7 @@ import { FieldWorkStore } from './field-work.store';
 
 export * from './field-work.models';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FieldWorkService implements OnDestroy {
   private destroy$ = new Subject<void>();
   private activeFieldWorkStatusPollingStop$ = new Subject<void>();

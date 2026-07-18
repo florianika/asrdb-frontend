@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EmailTemplateManagementService } from './email-template-management/email-template-management.service';
+import { TestBuildingService } from './test-buildings/test-building.service';
 
 const routes: Routes = [
   {
@@ -20,6 +22,7 @@ const routes: Routes = [
       import('./email-template-management/email-template-management.module').then(
         m => m.EmailTemplateManagementModule
       ),
+    providers: [EmailTemplateManagementService],
   },
   {
     path: 'test-buildings',
@@ -27,6 +30,7 @@ const routes: Routes = [
       import('./test-buildings/test-buildings.component').then(
         m => m.TestBuildingsComponent
       ),
+    providers: [TestBuildingService],
   },
 ];
 

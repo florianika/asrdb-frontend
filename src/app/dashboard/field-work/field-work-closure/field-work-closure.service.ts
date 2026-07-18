@@ -30,9 +30,7 @@ export type FieldWorkClosureStatus = {
   status: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FieldWorkClosureService implements OnDestroy {
   private destroy$ = new Subject<void>();
   private closureStatusPollingStop$ = new Subject<void>();

@@ -16,9 +16,7 @@ export type TestBuildingInput = {
   startAt: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TestBuildingService implements OnDestroy {
   private destroy$ = new Subject<void>();
   private statusPollingStop$ = new Subject<void>();

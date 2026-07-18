@@ -80,9 +80,7 @@ export type RowUserDetails = {
   updateUserText: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class StatisticExportService implements OnDestroy {
   private destroy$ = new Subject<void>();
   private snapshotStatusPollingStop$ = new Subject<void>();

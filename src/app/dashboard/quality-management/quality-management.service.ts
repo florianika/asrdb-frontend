@@ -25,9 +25,7 @@ type QualityManagementState = {
   activeRulesLoading: boolean;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class QualityManagementService {
   private readonly state = signal<QualityManagementState>({
     qualityRules: [],

@@ -8,9 +8,7 @@ import {
   EmailTemplateForm,
 } from '../../../model/EmailTemplate.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class EmailTemplateManagementService {
   private emailTemplates = new BehaviorSubject<EmailTemplate[]>([]);
   private emailTemplate = new BehaviorSubject<EmailTemplate | null>(null);

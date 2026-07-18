@@ -2,6 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GuardService } from '../common/services/guard.service';
 import { GuardAdminService } from '../common/services/guard-admin.service';
+import { FieldWorkService } from './field-work/field-work.service';
+import { FieldWorkStore } from './field-work/field-work.store';
+import { FieldWorkClosureService } from './field-work/field-work-closure/field-work-closure.service';
+import { QualityManagementService } from './quality-management/quality-management.service';
+import { StatisticExportService } from './statistic-export/statistic-export.service';
+import { EmailTemplateManagementService } from './administration/email-template-management/email-template-management.service';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard/overview', pathMatch: 'full' },
@@ -10,6 +16,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./overview/overview.module').then(m => m.OverviewModule),
     canActivate: [GuardService],
+    providers: [FieldWorkService, FieldWorkStore],
   },
   {
     path: 'register',
@@ -32,6 +39,7 @@ const routes: Routes = [
         m => m.QualityManagementModule
       ),
     canActivate: [GuardAdminService],
+    providers: [QualityManagementService],
   },
   {
     path: 'administration',
@@ -46,6 +54,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./field-work/field-work.module').then(m => m.FieldWorkModule),
     canActivate: [GuardAdminService],
+    providers: [
+      FieldWorkService,
+      FieldWorkStore,
+      FieldWorkClosureService,
+      QualityManagementService,
+      EmailTemplateManagementService,
+    ],
   },
   {
     path: 'statistic-export',
@@ -54,6 +69,12 @@ const routes: Routes = [
         m => m.StatisticExportComponent
       ),
     canActivate: [GuardAdminService],
+    providers: [
+      StatisticExportService,
+      FieldWorkService,
+      FieldWorkStore,
+      FieldWorkClosureService,
+    ],
   },
 ];
 

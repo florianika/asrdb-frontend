@@ -29,7 +29,7 @@ const INITIAL_STATE: FieldWorkState = {
   canBeClosed: null,
 };
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FieldWorkStore {
   private readonly state = signal<FieldWorkState>(INITIAL_STATE);
 
