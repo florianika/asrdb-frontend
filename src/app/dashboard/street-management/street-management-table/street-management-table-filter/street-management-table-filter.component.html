@@ -13,7 +13,12 @@
             placeholder="Search..."
             [(ngModel)]="filterValue" />
           @if (filterValue) {
-            <button mat-icon-button matSuffix (click)="filterValue = ''">
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="filterValue = ''"
+              aria-label="Clear search"
+              i18n-aria-label>
               <mat-icon>close</mat-icon>
             </button>
           }
@@ -28,6 +33,8 @@
     @if (filterConfig.filter.StrMunicipality !== null) {
       <button
         mat-icon-button
+        aria-label="Clear municipality filter"
+        i18n-aria-label
         matSuffix
         (click)="cleanValue($event, 'StrMunicipality')">
         <mat-icon>close</mat-icon>
@@ -45,7 +52,12 @@
       }
     </mat-select>
     @if (filterConfig.filter.StrType.length > 0) {
-      <button mat-icon-button matSuffix (click)="cleanValue($event, 'StrType')">
+      <button
+        mat-icon-button
+        matSuffix
+        aria-label="Clear street type filter"
+        i18n-aria-label
+        (click)="cleanValue($event, 'StrType')">
         <mat-icon>close</mat-icon>
       </button>
     }

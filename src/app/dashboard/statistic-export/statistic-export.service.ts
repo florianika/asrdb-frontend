@@ -4,12 +4,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
 import {
   Observable,
-  Observer,
   Subject,
   catchError,
+  forkJoin,
+  map,
   of,
+  switchMap,
   takeUntil,
-  zip,
 } from 'rxjs';
 import { User } from '../../model/User.model';
 import { AsyncOrchestrationService } from '../common/service/async-orchestration.service';
@@ -108,12 +109,7 @@ export class StatisticExportService implements OnDestroy {
   public statisticsGenerationData = signal({
     step: 0,
     generationStatus: null as
-      | 'IN_PROGRESS'
-      | 'COMPLETED'
-      | 'FAILED'
-      | 'PENDING'
-      | 'RUNNING'
-      | null,
+      'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | 'PENDING' | 'RUNNING' | null,
     jobId: null as number | null,
   });
 
@@ -141,59 +137,45 @@ export class StatisticExportService implements OnDestroy {
       .get<{
         downloadJobsDTO: StatisticData[];
       }>(environment.base_url + '/qms/buildings/annual-snapshots')
-      .subscribe({
-        next: data => {
-          const rows = data.downloadJobsDTO;
+      .pipe(
+        switchMap(({ downloadJobsDTO: rows }) => {
           if (rows.length === 0) {
-            this.statisticsTableData.set({
-              data: [],
-              isLoading: false,
-              isDownloading: false,
-              downloadRowId: null,
-            });
-            return;
+            return of([] as StatisticData[]);
           }
-          const requests: Observable<RowUserDetails>[] = [];
-          rows.forEach(row => {
-            const request = this.getUserDetailsRequest(
-              row.createdBy,
-              row.lastUpdatedBy,
-              row.id
-            );
-            requests.push(request);
-          });
-          zip(...requests).subscribe({
-            next: (response: RowUserDetails[]) => {
-              const rowUserDetailsMap = new Map<number, RowUserDetails>();
-              response.forEach(rowDetails => {
-                rowUserDetailsMap.set(rowDetails.rowId, rowDetails);
-              });
-              const enrichedRows = rows.map(row => {
-                const userDetails = rowUserDetailsMap.get(row.id);
+
+          return forkJoin(
+            rows.map(row =>
+              this.getUserDetailsRequest(
+                row.createdBy,
+                row.lastUpdatedBy,
+                row.id
+              )
+            )
+          ).pipe(
+            map(userDetails => {
+              const detailsByRow = new Map(
+                userDetails.map(details => [details.rowId, details])
+              );
+              return rows.map(row => {
+                const details = detailsByRow.get(row.id);
                 return {
                   ...row,
-                  createdBy: userDetails ? userDetails.createUserText : '',
-                  lastUpdatedBy: userDetails ? userDetails.updateUserText : '',
+                  createdBy: details?.createUserText ?? '',
+                  lastUpdatedBy: details?.updateUserText ?? '',
                 };
               });
-              this.statisticsTableData.set({
-                data: enrichedRows,
-                isLoading: false,
-                isDownloading: false,
-                downloadRowId: null,
-              });
-            },
-            error: () => {
-              this.matSnackBar.open(
-                $localize`Error fetching user details for statistics`,
-                $localize`Close`,
-                { duration: 3000 }
-              );
-              this.statisticsTableData.update(state => ({
-                ...state,
-                isLoading: false,
-              }));
-            },
+            })
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: data => {
+          this.statisticsTableData.set({
+            data,
+            isLoading: false,
+            isDownloading: false,
+            downloadRowId: null,
           });
         },
         error: () => {
@@ -221,9 +203,7 @@ export class StatisticExportService implements OnDestroy {
       next: blob => {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download =
-          fileUrl.split('/').pop() ||
-          $localize`download`;
+        link.download = fileUrl.split('/').pop() || $localize`download`;
         link.click();
         window.URL.revokeObjectURL(link.href);
         this.statisticsTableData.update(state => ({
@@ -238,6 +218,11 @@ export class StatisticExportService implements OnDestroy {
           $localize`Ok`,
           { duration: 3000 }
         );
+        this.statisticsTableData.update(state => ({
+          ...state,
+          isDownloading: false,
+          downloadRowId: null,
+        }));
       },
     });
   }
@@ -352,15 +337,14 @@ export class StatisticExportService implements OnDestroy {
   private startSnapshotGenerationStatusPolling(jobId: number) {
     this.cancelSnapshotGenerationPolling();
     const url =
-      environment.base_url +
-      '/qms/buildings/annual-snapshot/' +
-      jobId;
+      environment.base_url + '/qms/buildings/annual-snapshot/' + jobId;
 
     this.asyncOrchestration
       .createPollingStream({
         destroy$: this.destroy$,
         stop$: this.snapshotStatusPollingStop$,
-        request: () => this.httpClient.get<StatisticsGenerationStatusResponse>(url),
+        request: () =>
+          this.httpClient.get<StatisticsGenerationStatusResponse>(url),
         onError: () => {
           this.matSnackBar.open(
             $localize`Error checking snapshot generation status`,
@@ -412,29 +396,16 @@ export class StatisticExportService implements OnDestroy {
     updateUser: string,
     rowId: number
   ) {
-    const requests: Observable<UserDetails>[] = [];
-    const createUserDetailsRequest = this.fetchUserDetails(createUser, rowId);
-    const updateUserDetailsRequest = this.fetchUserDetails(updateUser, rowId);
-    requests.push(createUserDetailsRequest);
-    requests.push(updateUserDetailsRequest);
-    return new Observable<RowUserDetails>(observer => {
-      zip(...requests).subscribe({
-        next: (response: UserDetails[]) => {
-          const createUserDetail = response[0];
-          const updateUserDetail = response[1];
-          observer.next({
-            rowId,
-            createUserText: createUserDetail.userText,
-            updateUserText: updateUserDetail.userText,
-          });
-          observer.complete();
-        },
-        error: err => {
-          console.error(err);
-          observer.error(err);
-        },
-      });
-    });
+    return forkJoin({
+      createUser: this.fetchUserDetails(createUser, rowId),
+      updateUser: this.fetchUserDetails(updateUser, rowId),
+    }).pipe(
+      map(({ createUser: createDetails, updateUser: updateDetails }) => ({
+        rowId,
+        createUserText: createDetails.userText,
+        updateUserText: updateDetails.userText,
+      }))
+    );
   }
 
   private fetchUserDetails(
@@ -442,24 +413,18 @@ export class StatisticExportService implements OnDestroy {
     rowId: number
   ): Observable<UserDetails> {
     if (!user) return of({ rowId, userText: '' });
-    return new Observable<UserDetails>((observer: Observer<any>) => {
-      this.httpClient
-        .get<UserDetailsResponse>(`${environment.base_url}/admin/users/${user}`)
-        .pipe(
-          catchError(error => {
-            console.error('Error fetching user details:', error);
-            return of(null);
-          })
-        )
-        .subscribe({
-          next: response => {
-            const userDetail = response?.userDTO;
-            const userText =
-              `${userDetail?.name ?? ''} ${userDetail?.lastName ?? ''}`.trim();
-            observer.next({ rowId, userText });
-            observer.complete();
-          },
-        });
-    });
+    return this.httpClient
+      .get<UserDetailsResponse>(`${environment.base_url}/admin/users/${user}`)
+      .pipe(
+        map(response => {
+          const userDetail = response.userDTO;
+          return {
+            rowId,
+            userText:
+              `${userDetail.name ?? ''} ${userDetail.lastName ?? ''}`.trim(),
+          };
+        }),
+        catchError(() => of({ rowId, userText: '' }))
+      );
   }
 }

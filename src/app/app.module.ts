@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -22,10 +22,12 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { AuthInterceptor } from './common/services/auth-interceptor';
+import { HttpErrorInterceptor } from './common/services/http-error-interceptor';
+import { GlobalErrorHandlerService } from './common/services/global-error-handler.service';
 import { CommonEsriAuthService } from './dashboard/common/service/common-esri-auth.service';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import {NgOptimizedImage} from "@angular/common";
+import { NgOptimizedImage } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -36,23 +38,25 @@ import {NgOptimizedImage} from "@angular/common";
     ToolbarComponent,
   ],
   bootstrap: [AppComponent],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatIconModule,
-        MatListModule,
-        MatDividerModule,
-        MatMenuModule,
-        MatSnackBarModule,
-        NgOptimizedImage,
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatSnackBarModule,
+    NgOptimizedImage,
+  ],
   providers: [
     CommonEsriAuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,

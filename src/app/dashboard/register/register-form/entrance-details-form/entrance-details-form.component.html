@@ -27,12 +27,14 @@
                   matInput
                   i18n-placeholder
                   placeholder="Search..."
-                  [value]="inputFilters[formItem.name] ?? ''"
+                  [value]="inputFilters[formItem.name]"
                   (input)="filterInputOptions($event, formItem.name)" />
                 @if (inputFilters[formItem.name]) {
                   <button
                     class="z-2"
                     mat-icon-button
+                    aria-label="Clear search"
+                    i18n-aria-label
                     matSuffix
                     (click)="clearInputFilter($event, formItem.name)">
                     <mat-icon>close</mat-icon>
@@ -58,7 +60,12 @@
           formGroup.controls[formItem.name].value &&
           (formItem.type === 'date' || formItem.type === 'select')
         ) {
-          <button mat-icon-button (click)="resetValue(formItem.name)" matSuffix>
+          <button
+            mat-icon-button
+            (click)="resetValue(formItem.name)"
+            matSuffix
+            aria-label="Clear field"
+            i18n-aria-label>
             <mat-icon>close</mat-icon>
           </button>
         }
@@ -72,7 +79,7 @@
             }}</span>
           </mat-hint>
         }
-        @if (formGroup.controls[formItem.name]?.invalid) {
+        @if (formGroup.controls[formItem.name].invalid) {
           <mat-error>{{
             getError(formGroup.controls[formItem.name])
           }}</mat-error>

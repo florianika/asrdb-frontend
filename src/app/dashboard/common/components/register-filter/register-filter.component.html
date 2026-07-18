@@ -19,6 +19,8 @@
             <button
               [disabled]="isNormalUser"
               mat-icon-button
+              aria-label="Clear municipality search"
+              i18n-aria-label
               matSuffix
               (click)="clearFilter()">
               <mat-icon>close</mat-icon>
@@ -38,6 +40,8 @@
       <button
         [disabled]="isNormalUser"
         mat-icon-button
+        aria-label="Clear municipality filter"
+        i18n-aria-label
         matSuffix
         (click)="cleanValue($event, 'BldMunicipality')">
         <mat-icon>close</mat-icon>
@@ -61,9 +65,11 @@
         }}</mat-option>
       }
     </mat-select>
-    @if (filterConfig.filter.BldStatus?.length) {
+    @if (filterConfig.filter.BldStatus.length) {
       <button
         mat-icon-button
+        aria-label="Clear status filter"
+        i18n-aria-label
         matSuffix
         (click)="cleanValue($event, 'BldStatus')">
         <mat-icon>close</mat-icon>
@@ -83,8 +89,13 @@
         }}</mat-option>
       }
     </mat-select>
-    @if (filterConfig.filter.BldType?.length) {
-      <button mat-icon-button matSuffix (click)="cleanValue($event, 'BldType')">
+    @if (filterConfig.filter.BldType.length) {
+      <button
+        mat-icon-button
+        matSuffix
+        aria-label="Clear building type filter"
+        i18n-aria-label
+        (click)="cleanValue($event, 'BldType')">
         <mat-icon>close</mat-icon>
       </button>
     }
@@ -102,9 +113,11 @@
         }}</mat-option>
       }
     </mat-select>
-    @if (filterConfig.filter.BldQuality?.length) {
+    @if (filterConfig.filter.BldQuality.length) {
       <button
         mat-icon-button
+        aria-label="Clear quality filter"
+        i18n-aria-label
         matSuffix
         (click)="cleanValue($event, 'BldQuality')">
         <mat-icon>close</mat-icon>
@@ -124,9 +137,11 @@
         }}</mat-option>
       }
     </mat-select>
-    @if (filterConfig.filter.BldReview?.length) {
+    @if (filterConfig.filter.BldReview.length) {
       <button
         mat-icon-button
+        aria-label="Clear review filter"
+        i18n-aria-label
         matSuffix
         (click)="cleanValue($event, 'BldReview')">
         <mat-icon>close</mat-icon>
@@ -148,9 +163,11 @@
         >
       }
     </mat-select>
-    @if (filterConfig.filter.BldCentroidStatus?.length) {
+    @if (filterConfig.filter.BldCentroidStatus.length) {
       <button
         mat-icon-button
+        aria-label="Clear coordinate status filter"
+        i18n-aria-label
         matSuffix
         (click)="cleanValue($event, 'BldCentroidStatus')">
         <mat-icon>close</mat-icon>

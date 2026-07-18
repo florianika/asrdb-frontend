@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FieldWorkClosureService } from '../../field-work-closure.service';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,23 +13,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-    selector: 'asrdb-step-2-field-work-closure-email',
-    imports: [
-        AsyncPipe,
-        FormsModule,
-        MatButton,
-        MatFormField,
-        MatLabel,
-        MatOption,
-        MatSelect,
-        NgxEditorModule,
-        ReactiveFormsModule,
-        MatIcon,
-    ],
-    templateUrl: './step-2-field-work-closure-email.component.html',
-    styleUrl: './step-2-field-work-closure-email.component.css'
+  selector: 'asrdb-step-2-field-work-closure-email',
+  imports: [
+    AsyncPipe,
+    FormsModule,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    NgxEditorModule,
+    ReactiveFormsModule,
+    MatIcon,
+  ],
+  templateUrl: './step-2-field-work-closure-email.component.html',
+  styleUrl: './step-2-field-work-closure-email.component.css',
 })
-export class Step2FieldWorkClosureEmailComponent {
+export class Step2FieldWorkClosureEmailComponent implements OnDestroy {
   private fieldWorkClosureService = inject(FieldWorkClosureService);
   private _emailTemplateService = inject(EmailTemplateManagementService);
   private router = inject(Router);
@@ -45,6 +45,10 @@ export class Step2FieldWorkClosureEmailComponent {
 
   constructor() {
     this._emailTemplateService.getEmailTemplates();
+  }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
   }
 
   public setSelectedEmailTemplate(emailTemplateId: number) {

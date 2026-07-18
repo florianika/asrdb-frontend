@@ -1,4 +1,4 @@
-import { Component, effect, inject, Input } from '@angular/core';
+import { Component, effect, inject, Input, OnDestroy } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,24 +12,23 @@ import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'asrdb-field-work-form-step2',
-    imports: [
-        MatButton,
-        MatFormField,
-        MatLabel,
-        ReactiveFormsModule,
-        MatSelect,
-        MatOption,
-        AsyncPipe,
-        NgxEditorModule,
-        FormsModule,
-        NgxEditorModule,
-        MatIcon,
-    ],
-    templateUrl: './field-work-form-step2.component.html',
-    styleUrl: './field-work-form-step2.component.css'
+  selector: 'asrdb-field-work-form-step2',
+  imports: [
+    MatButton,
+    MatFormField,
+    MatLabel,
+    ReactiveFormsModule,
+    MatSelect,
+    MatOption,
+    AsyncPipe,
+    NgxEditorModule,
+    FormsModule,
+    MatIcon,
+  ],
+  templateUrl: './field-work-form-step2.component.html',
+  styleUrl: './field-work-form-step2.component.css',
 })
-export class FieldWorkFormStep2Component {
+export class FieldWorkFormStep2Component implements OnDestroy {
   @Input() formGroup!: FormGroup;
 
   private _fieldWorkService = inject(FieldWorkService);
@@ -55,6 +54,10 @@ export class FieldWorkFormStep2Component {
           this._emailTemplateService.getEmailTemplateFromList(value);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
   }
 
   public handleEmailTemplatePage() {

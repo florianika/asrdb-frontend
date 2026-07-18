@@ -12,10 +12,10 @@ import { QueryFilter } from '../../../register/model/query-filter';
 import { BuildingFilter } from '../../../register/model/building';
 
 @Component({
-    selector: 'asrdb-building-quality-graph',
-    templateUrl: './pie-graph.component.html',
-    styleUrls: ['./pie-graph.component.css'],
-    standalone: false
+  selector: 'asrdb-building-quality-graph',
+  templateUrl: './pie-graph.component.html',
+  styleUrls: ['./pie-graph.component.css'],
+  standalone: false,
 })
 export class PieGraphComponent implements OnInit, OnDestroy {
   @Input() fields = [];
@@ -54,8 +54,7 @@ export class PieGraphComponent implements OnInit, OnDestroy {
       this.commonBuildingService.uniqueValueInfos
         .map(info => {
           const color = (info.symbol as any)?.outline?.color as
-            | string
-            | undefined;
+            string | undefined;
           if (info.value === undefined || !color) {
             return null;
           }
@@ -84,7 +83,7 @@ export class PieGraphComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy.next(true);
-    this.destroy.unsubscribe();
+    this.destroy.complete();
   }
 
   private reload() {
@@ -108,7 +107,9 @@ export class PieGraphComponent implements OnInit, OnDestroy {
       .subscribe((statsResults: __esri.FeatureSet) => {
         const points = statsResults.features.map(feature => {
           const code = feature.attributes[this.variable];
-          const mappedLabel = this.uniqueValueInfos.find(o => o['code'] === code);
+          const mappedLabel = this.uniqueValueInfos.find(
+            o => o['code'] === code
+          );
           return {
             value: feature.attributes.value,
             code,

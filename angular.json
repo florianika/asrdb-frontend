@@ -44,34 +44,41 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "localize": [
-              "en"
-            ],
+            "localize": ["en"],
             "outputPath": "dist/asrdb-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/@fontsource/roboto/latin-300.css",
+              "node_modules/@fontsource/roboto/latin-ext-300.css",
+              "node_modules/@fontsource/roboto/latin-400.css",
+              "node_modules/@fontsource/roboto/latin-ext-400.css",
+              "node_modules/@fontsource/roboto/latin-500.css",
+              "node_modules/@fontsource/roboto/latin-ext-500.css",
+              "node_modules/material-icons/iconfont/material-icons.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": [],
+            "allowedCommonJsDependencies": [
+              "brace",
+              "moment",
+              "plotly.js-basic-dist-min"
+            ],
             "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "production": {
+              "i18nMissingTranslation": "error",
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "2mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "2.25mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -122,16 +129,18 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/@fontsource/roboto/latin-300.css",
+              "node_modules/@fontsource/roboto/latin-ext-300.css",
+              "node_modules/@fontsource/roboto/latin-400.css",
+              "node_modules/@fontsource/roboto/latin-ext-400.css",
+              "node_modules/@fontsource/roboto/latin-500.css",
+              "node_modules/@fontsource/roboto/latin-ext-500.css",
+              "node_modules/material-icons/iconfont/material-icons.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
@@ -142,19 +151,14 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ]
+    "schematicCollections": ["@angular-eslint/schematics"]
   },
   "schematics": {
     "@schematics/angular:component": {

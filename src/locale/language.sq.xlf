@@ -4601,6 +4601,156 @@ Ky veprim nuk mund të anulohet.</source>
       <trans-unit id="3678587636556283620" datatype="html">
         <source> Nuk ka të dhëna që përputhen me filtrin &quot;<x id="INTERPOLATION" equiv-text="{{ selectedMunicipality }}"/>&quot; </source>
       </trans-unit>
+      <trans-unit id="5988602760085944767" datatype="html">
+        <source> <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION_2" equiv-text="{{ &apos;{/&apos; }}"/>SUCCESS<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni midis etiketave mesazhin që dëshironi t&apos;u dërgoni bashkive që kanë përfunduar të gjitha detyrat </source>
+      </trans-unit>
+      <trans-unit id="1297157146397100749" datatype="html">
+        <source> <x id="INTERPOLATION" equiv-text="{{ &apos;{&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> ... <x id="INTERPOLATION_2" equiv-text="{{ &apos;{/&apos; }}"/>FAILED<x id="INTERPOLATION_1" equiv-text="{{ &apos;}&apos; }}"/> - Vendosni midis etiketave mesazhin që dëshironi t&apos;u dërgoni bashkive që nuk i kanë përfunduar të gjitha detyrat </source>
+      </trans-unit>
+      <trans-unit id="2503078376480457140" datatype="html">
+        <source> Data e përfundimit </source>
+      </trans-unit>
+      <trans-unit id="8934399966089997167" datatype="html">
+        <source>Të anulohet krijimi i ndërtesës?</source>
+      </trans-unit>
+      <trans-unit id="5531212140553627459" datatype="html">
+        <source>Të anulohet krijimi i hyrjes?</source>
+      </trans-unit>
+      <trans-unit id="7365060066324522726" datatype="html">
+        <source>Të anulohet redaktimi i hyrjes?</source>
+      </trans-unit>
+      <trans-unit id="1732924480847100246" datatype="html">
+        <source>Testo të gjitha ndërtesat</source>
+      </trans-unit>
+      <trans-unit id="7758137614386392472" datatype="html">
+        <source>Kërkesa tejkaloi kohën e pritjes.</source>
+      </trans-unit>
+      <trans-unit id="2657043015926552641" datatype="html">
+        <source>Gabim i panjohur</source>
+      </trans-unit>
+      <trans-unit id="8756685732215033861" datatype="html">
+        <source>Serveri nuk mund të arrihej.</source>
+      </trans-unit>
+      <trans-unit id="5701667642851420598" datatype="html">
+        <source>Kërkesa dështoi.</source>
+      </trans-unit>
+      <trans-unit id="5034473762587110175" datatype="html">
+        <source>Hape navigimin</source>
+      </trans-unit>
+      <trans-unit id="2933701383386809047" datatype="html">
+        <source>Hape menunë e përdoruesit</source>
+      </trans-unit>
+      <trans-unit id="7908575216581340490" datatype="html">
+        <source>Përdor shqipen</source>
+      </trans-unit>
+      <trans-unit id="4062340148488019071" datatype="html">
+        <source>Përdor anglishten</source>
+      </trans-unit>
+      <trans-unit id="3643866539136239218" datatype="html">
+        <source>Pastro kërkimin</source>
+      </trans-unit>
+      <trans-unit id="3290578957187215084" datatype="html">
+        <source>Hape veprimet e shabllonit të emailit</source>
+      </trans-unit>
+      <trans-unit id="8619221455439632171" datatype="html">
+        <source>Rifresko përdoruesit</source>
+      </trans-unit>
+      <trans-unit id="5918723526444903137" datatype="html">
+        <source>Shto përdorues</source>
+      </trans-unit>
+      <trans-unit id="4169508446450443927" datatype="html">
+        <source>Hape veprimet e përdoruesit</source>
+      </trans-unit>
+      <trans-unit id="1304651858279538886" datatype="html">
+        <source>Pastro kërkimin e bashkisë</source>
+      </trans-unit>
+      <trans-unit id="5967858126456032917" datatype="html">
+        <source>Pastro filtrin e bashkisë</source>
+      </trans-unit>
+      <trans-unit id="4130378849599293286" datatype="html">
+        <source>Pastro filtrin e statusit</source>
+      </trans-unit>
+      <trans-unit id="7859888713661311210" datatype="html">
+        <source>Pastro filtrin e llojit të ndërtesës</source>
+      </trans-unit>
+      <trans-unit id="5634595549267232877" datatype="html">
+        <source>Pastro filtrin e cilësisë</source>
+      </trans-unit>
+      <trans-unit id="5247376289513430089" datatype="html">
+        <source>Pastro filtrin e rishikimit</source>
+      </trans-unit>
+      <trans-unit id="4980036515524384358" datatype="html">
+        <source>Pastro filtrin e statusit të koordinatave</source>
+      </trans-unit>
+      <trans-unit id="7353999170532666633" datatype="html">
+        <source>Hape veprimet e punës në terren</source>
+      </trans-unit>
+      <trans-unit id="8050324771936965777" datatype="html">
+        <source>Pastro filtrin e rregullave</source>
+      </trans-unit>
+      <trans-unit id="561609387295163652" datatype="html">
+        <source>Hiq rregullin</source>
+      </trans-unit>
+      <trans-unit id="3013902668407687253" datatype="html">
+        <source>Hape veprimet e rregullit të cilësisë</source>
+      </trans-unit>
+      <trans-unit id="1321716280236917806" datatype="html">
+        <source>Pastro fushën</source>
+      </trans-unit>
+      <trans-unit id="1565484244221263361" datatype="html">
+        <source>Pastro filtrin e veprimit të cilësisë</source>
+      </trans-unit>
+      <trans-unit id="6288311199009898520" datatype="html">
+        <source>Hape veprimet e regjistrit</source>
+      </trans-unit>
+      <trans-unit id="5287996402830993095" datatype="html">
+        <source>Shiko regjistrat për ndërtesat e zgjedhura</source>
+      </trans-unit>
+      <trans-unit id="6401195821511708333" datatype="html">
+        <source>Testo ndërtesat e zgjedhura</source>
+      </trans-unit>
+      <trans-unit id="4224233173151712876" datatype="html">
+        <source>Shfaq ndërtesat e zgjedhura në hartë</source>
+      </trans-unit>
+      <trans-unit id="7756730462993335090" datatype="html">
+        <source>Hape veprimet e ndërtesës</source>
+      </trans-unit>
+      <trans-unit id="2379956357411895517" datatype="html">
+        <source>Dërgo komentin</source>
+      </trans-unit>
+      <trans-unit id="8264036417708713344" datatype="html">
+        <source>Redakto banesën</source>
+      </trans-unit>
+      <trans-unit id="1049018220403622107" datatype="html">
+        <source>Shto banesë</source>
+      </trans-unit>
+      <trans-unit id="4947485227483926315" datatype="html">
+        <source>Rifresko banesat</source>
+      </trans-unit>
+      <trans-unit id="5827123430432832112" datatype="html">
+        <source>Hape veprimet e banesës</source>
+      </trans-unit>
+      <trans-unit id="3412468316546745889" datatype="html">
+        <source>Redakto hyrjen</source>
+      </trans-unit>
+      <trans-unit id="6849846194342199841" datatype="html">
+        <source>Hape veprimet e hyrjes</source>
+      </trans-unit>
+      <trans-unit id="5845617734165569371" datatype="html">
+        <source>Shkarko eksportin statistikor</source>
+      </trans-unit>
+      <trans-unit id="2159277643053842755" datatype="html">
+        <source>Pastro filtrin e llojit të rrugës</source>
+      </trans-unit>
+      <trans-unit id="545887540582961074" datatype="html">
+        <source>Hape veprimet e rrugës</source>
+      </trans-unit>
+      <trans-unit id="5548899014377876749" datatype="html">
+        <source>Hyni për të vazhduar</source>
+      </trans-unit>
+      <trans-unit id="3056255277240220193" datatype="html">
+        <source>Verifikoni tokenin 2FA</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -22,13 +22,14 @@ import { QueryFilter } from '../register/model/query-filter';
 import { FilterHelper } from '../common/helper/filter-helper';
 import { FieldWorkService } from '../field-work/field-work.service';
 import { Router } from '@angular/router';
+import { LoggerService } from '../../common/services/logger.service';
 
 @Component({
-    selector: 'asrdb-overview',
-    templateUrl: './overview.component.html',
-    styleUrls: ['./overview.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'asrdb-overview',
+  templateUrl: './overview.component.html',
+  styleUrls: ['./overview.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class OverviewComponent implements OnDestroy {
   private destroy = new Subject();
@@ -47,7 +48,8 @@ export class OverviewComponent implements OnDestroy {
     private filterHelper: FilterHelper,
     private changeDetectionRef: ChangeDetectorRef,
     private fieldWorkService: FieldWorkService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {
     this.commonBuildingService
       .getAttributesMetadata()
@@ -82,7 +84,7 @@ export class OverviewComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.destroy.next(true);
-    this.destroy.unsubscribe();
+    this.destroy.complete();
   }
 
   get user() {
@@ -168,7 +170,7 @@ export class OverviewComponent implements OnDestroy {
     } as Partial<QueryFilter>;
     return this.commonBuildingService.getBuildingData(filter).pipe(
       catchError(err => {
-        console.log(err);
+        this.logger.error('Could not load overview statistics', err);
         return of(null);
       })
     );
@@ -176,7 +178,7 @@ export class OverviewComponent implements OnDestroy {
 
   private handleResponse(res: any) {
     if (isDevMode()) {
-      console.log('Data', res);
+      this.logger.debug('Overview statistics loaded', { result: res });
     }
     if (!res) {
       return;

@@ -4,9 +4,8 @@ import { CommonModule } from '@angular/common';
 import { OverviewRoutingModule } from './overview-routing.module';
 import { OverviewComponent } from './overview.component';
 import { PlotlyModule } from 'angular-plotly.js';
-import * as PlotlyJS from 'plotly.js-dist-min';
+import * as PlotlyJS from 'plotly.js-basic-dist-min';
 import { MatCardModule } from '@angular/material/card';
-import { GoogleMapsModule } from '@angular/google-maps';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
@@ -29,7 +28,6 @@ import { FilterHelper } from '../common/helper/filter-helper';
     OverviewRoutingModule,
     PlotlyModule.forRoot(PlotlyJS),
     MatCardModule,
-    GoogleMapsModule,
     MatTableModule,
     MatPaginatorModule,
     MatMenuModule,

@@ -1,5 +1,3 @@
-@import 'https://js.arcgis.com/4.31/@arcgis/core/assets/esri/themes/light/main.css';
-
 .building-details-card {
   display: flex;
   flex-grow: 1;

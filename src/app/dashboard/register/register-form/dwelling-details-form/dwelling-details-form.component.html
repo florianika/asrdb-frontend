@@ -34,12 +34,14 @@
                     matInput
                     i18n-placeholder
                     placeholder="Search..."
-                    [value]="inputFilters[formItem.name] ?? ''"
+                    [value]="inputFilters[formItem.name]"
                     (input)="filterInputOptions($event, formItem.name)" />
                   @if (inputFilters[formItem.name]) {
                     <button
                       class="z-2"
                       mat-icon-button
+                      aria-label="Clear search"
+                      i18n-aria-label
                       matSuffix
                       (click)="clearInputFilter($event, formItem.name)">
                       <mat-icon>close</mat-icon>
@@ -69,6 +71,8 @@
           ) {
             <button
               mat-icon-button
+              aria-label="Clear field"
+              i18n-aria-label
               (click)="formGroup.controls[formItem.name].setValue(null)"
               matSuffix>
               <mat-icon>close</mat-icon>

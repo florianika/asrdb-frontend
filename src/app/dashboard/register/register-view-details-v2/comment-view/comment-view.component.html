@@ -8,7 +8,7 @@
     <mat-card-content>
       @if (!comments.loading) {
         <div class="comment-list">
-          @if (!comments.comments?.notesDTO?.length) {
+          @if (!comments.comments.notesDTO.length) {
             <p class="w-100 text-center" i18n>No comments found!</p>
           } @else {
             @for (comment of comments.comments.notesDTO; track comment.noteId) {
@@ -28,11 +28,14 @@
                     <span class="flex-grow-1"></span>
                     @if (isOwner(comment.userId)) {
                       <div class="comment-actions">
-                        <mat-icon
+                        <button
+                          mat-icon-button
                           color="warn"
                           (click)="deleteComment(comment.noteId)"
-                          >delete</mat-icon
-                        >
+                          aria-label="Delete comment"
+                          i18n-aria-label>
+                          <mat-icon>delete</mat-icon>
+                        </button>
                       </div>
                     }
                   </div>
@@ -63,6 +66,8 @@
           <button
             class="float-end rounded-1 shadow-none"
             mat-fab
+            aria-label="Send comment"
+            i18n-aria-label
             color="primary"
             (click)="saveComment()"
             [disabled]="savingCommentObservable$ | async">

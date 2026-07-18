@@ -1,33 +1,33 @@
-<div class="login-container">
+<main class="login-container">
   <mat-card class="login-card">
     <img
       class="login-card-logo"
       src="assets/images/logo_instat.png"
-      alt="logo" />
-    <mat-card-title class="login-card-title" i18n>
-      Sign in to continue
-    </mat-card-title>
+      alt="INSTAT" />
+    <h1 mat-card-title class="login-card-title" i18n>Sign in to continue</h1>
     <mat-card-content class="login-card-content">
       <mat-stepper linear>
         <mat-step [stepControl]="usernamePasswordFormGroup">
           <ng-template matStepLabel>
             <span i18n>Login with username and password</span>
-          </ng-template
-          >
+          </ng-template>
           <asrdb-username-password-form
             [form]="usernamePasswordFormGroup"
             (proceed)="onUsernamePasswordProceed()" />
         </mat-step>
         <mat-step [stepControl]="tokenVerifyFormGroup">
-          <ng-template matStepLabel>Verify 2fa token</ng-template>
+          <ng-template matStepLabel i18n>Verify 2FA token</ng-template>
           <asrdb-two-fa-token-verify
             [form]="tokenVerifyFormGroup"
             (proceed)="onTokenVerifyProceed()" />
         </mat-step>
       </mat-stepper>
     </mat-card-content>
-    <p class="login-card-create-account text-center" routerLink="/auth/forgot-password" i18n>
+    <a
+      class="login-card-create-account text-center"
+      routerLink="/auth/forgot-password"
+      i18n>
       First time login/Forgot password?
-    </p>
+    </a>
   </mat-card>
-</div>
+</main>

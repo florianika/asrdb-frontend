@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AsyncOrchestrationService } from '../common/service/async-orchestration.service';
+import { LoggerService } from '../../common/services/logger.service';
 
 export type FieldWork = {
   fieldWorkId: number;
@@ -70,6 +71,7 @@ export class FieldWorkService implements OnDestroy {
   private httpClient = inject(HttpClient);
   private router = inject(Router);
   private asyncOrchestration = inject(AsyncOrchestrationService);
+  private logger = inject(LoggerService);
 
   private readonly state = signal<FieldWorkStoreState>({
     fieldWorksLoading: false,
@@ -107,7 +109,9 @@ export class FieldWorkService implements OnDestroy {
   }
 
   public cancelActiveFieldWorkStatusPolling(resetLoading = true) {
-    this.asyncOrchestration.resetPolling(this.activeFieldWorkStatusPollingStop$);
+    this.asyncOrchestration.resetPolling(
+      this.activeFieldWorkStatusPollingStop$
+    );
     if (resetLoading) {
       this.patchState({ isLoading: false });
     }
@@ -131,7 +135,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not load field work', error);
           this.matSnackBar.open(
             $localize`Error loading selected rules`,
             $localize`Close`,
@@ -154,7 +158,7 @@ export class FieldWorkService implements OnDestroy {
       .get<FieldWorkListResponse>(`${environment.base_url}/qms/fieldwork`)
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not load active field work', error);
           this.matSnackBar.open(
             $localize`Error loading field works`,
             $localize`Close`,
@@ -179,7 +183,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not create field work', error);
           return of(null);
         })
       )
@@ -214,7 +218,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not update field work', error);
           this.matSnackBar.open(
             $localize`Error updating field work`,
             $localize`Close`,
@@ -247,7 +251,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not load field work statistics', error);
           this.matSnackBar.open(
             $localize`Error assigning email template`,
             $localize`Close`,
@@ -279,7 +283,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not check field work readiness', error);
           if (error.status === 403) {
             this.matSnackBar.open(
               $localize`Another active field work exists. Please continue with that one.`,
@@ -316,7 +320,7 @@ export class FieldWorkService implements OnDestroy {
       .post(`${environment.base_url}/qms/fieldwork/${fieldWorkId}/open`, {})
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not start field work', error);
           this.matSnackBar.open(
             $localize`Error opening field work`,
             $localize`Close`,
@@ -339,7 +343,7 @@ export class FieldWorkService implements OnDestroy {
     this.patchState({ selectedRulesLoading: true });
     const fieldWorkId = this.state().activeFieldWork?.fieldWorkId;
     if (!fieldWorkId) {
-      console.error('No active field work found');
+      this.logger.warn('No active field work found');
       this.patchState({ selectedRulesLoading: false });
       return;
     }
@@ -350,7 +354,10 @@ export class FieldWorkService implements OnDestroy {
       )
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error(
+            'Could not assign field work email template',
+            error
+          );
           this.matSnackBar.open(
             $localize`Error adding rule`,
             $localize`Close`,
@@ -372,7 +379,7 @@ export class FieldWorkService implements OnDestroy {
     this.patchState({ selectedRulesLoading: true });
     const id = this.state().activeFieldWork?.fieldWorkId;
     if (!id) {
-      console.error('No active field work found');
+      this.logger.warn('No active field work found');
       this.patchState({ selectedRulesLoading: false });
       return;
     }
@@ -382,7 +389,7 @@ export class FieldWorkService implements OnDestroy {
       )
       .pipe(
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not update field work step', error);
           this.matSnackBar.open(
             $localize`Error removing rule`,
             $localize`Close`,
@@ -420,7 +427,7 @@ export class FieldWorkService implements OnDestroy {
           }
         }),
         catchError(error => {
-          console.error(error);
+          this.logger.error('Could not close field work', error);
           this.matSnackBar.open(
             $localize`Error checking if field work can be closed`,
             $localize`Close`,
@@ -453,12 +460,11 @@ export class FieldWorkService implements OnDestroy {
         destroy$: this.destroy$,
         stop$: this.activeFieldWorkStatusPollingStop$,
         request: () =>
-          this.httpClient
-            .get<{
-              fieldWorkDTO: FieldWork;
-            }>(`${environment.base_url}/qms/fieldwork/${fieldWorkId}`),
+          this.httpClient.get<{
+            fieldWorkDTO: FieldWork;
+          }>(`${environment.base_url}/qms/fieldwork/${fieldWorkId}`),
         onError: error => {
-          console.error(error);
+          this.logger.error('Could not refresh field work status', error);
           this.matSnackBar.open(
             $localize`Error fetching field work status`,
             $localize`Close`,

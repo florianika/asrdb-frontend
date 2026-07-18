@@ -3,12 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthStateService } from '../../../common/services/auth-state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  Subject,
-  catchError,
-  takeUntil,
-} from 'rxjs';
+import { Subject, catchError, takeUntil } from 'rxjs';
 import { AsyncOrchestrationService } from '../../common/service/async-orchestration.service';
+import { LoggerService } from '../../../common/services/logger.service';
 
 export type FieldWorkClosureStatistic = {
   municipality: string;
@@ -43,6 +40,7 @@ export class FieldWorkClosureService implements OnDestroy {
   private auth = inject(AuthStateService);
   private matSnackBar = inject(MatSnackBar);
   private asyncOrchestration = inject(AsyncOrchestrationService);
+  private logger = inject(LoggerService);
 
   public fieldWorkStatistics = signal<FieldWorkClosureStatisticsResponse>({
     loading: false,
@@ -91,7 +89,7 @@ export class FieldWorkClosureService implements OnDestroy {
         next: ({ jobId }) =>
           this.startFieldWorkClosureStatusPolling(fieldWorkId, jobId),
         error: error => {
-          console.error(
+          this.logger.error(
             $localize`Error fetching field work closure statistics:`,
             error
           );
@@ -107,7 +105,10 @@ export class FieldWorkClosureService implements OnDestroy {
     this.startFieldWorkClosureStatusPolling(fieldWorkId, jobId);
   }
 
-  private startFieldWorkClosureStatusPolling(fieldWorkId: string, jobId: string) {
+  private startFieldWorkClosureStatusPolling(
+    fieldWorkId: string,
+    jobId: string
+  ) {
     this.cancelStatusPolling();
     this.fieldWorkStatistics.set({
       ...this.fieldWorkStatistics(),
@@ -125,7 +126,7 @@ export class FieldWorkClosureService implements OnDestroy {
             status: string;
           }>(`${environment.base_url}/qms/fieldwork/job/${jobId}/status`),
         onError: error => {
-          console.error(
+          this.logger.error(
             $localize`Error fetching field work closure status:`,
             error
           );
@@ -170,7 +171,7 @@ export class FieldWorkClosureService implements OnDestroy {
           }));
         },
         error: error => {
-          console.error(
+          this.logger.error(
             $localize`Error fetching field work closure statistics:`,
             error
           );
@@ -206,10 +207,7 @@ export class FieldWorkClosureService implements OnDestroy {
           }));
         },
         error: error => {
-          console.error(
-            $localize`Error assigning closure email:`,
-            error
-          );
+          this.logger.error($localize`Error assigning closure email:`, error);
           this.fieldWorkStatistics.update(prev => ({
             ...prev,
             loading: false,
@@ -236,13 +234,9 @@ export class FieldWorkClosureService implements OnDestroy {
       .subscribe({
         next: () => this.checkClosureStatus(fieldWorkId),
         error: error => {
-          console.error(
-            $localize`Error closing field work:`,
-            error
-          );
+          this.logger.error($localize`Error closing field work:`, error);
           this.matSnackBar.open(
-            error.error?.message ||
-              $localize`Error during field work closure`,
+            error.error?.message || $localize`Error during field work closure`,
             $localize`Close`,
             { duration: 5000 }
           );
@@ -276,13 +270,9 @@ export class FieldWorkClosureService implements OnDestroy {
           );
         },
         error: error => {
-          console.error(
-            $localize`Error checking closure status:`,
-            error
-          );
+          this.logger.error($localize`Error checking closure status:`, error);
           this.matSnackBar.open(
-            error.message ||
-              $localize`Error during field work closure`,
+            error.message || $localize`Error during field work closure`,
             $localize`Close`,
             { duration: 5000 }
           );

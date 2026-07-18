@@ -68,6 +68,8 @@
         <td mat-cell *matCellDef="let element">
           <button
             mat-icon-button
+            aria-label="Download statistic export"
+            i18n-aria-label
             [disabled]="statisticsTableData().isDownloading"
             (click)="download(element.fileUrl, element.id)">
             @if (

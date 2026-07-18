@@ -2,13 +2,19 @@
   <div class="header-container">
     <h1 i18n class="header-title">User Management</h1>
     <span class="spacer"></span>
-    <button mat-icon-button>
-      <mat-icon (click)="refreshTable()" i18n-title title="Refresh"
-        >refresh</mat-icon
-      >
+    <button
+      mat-icon-button
+      (click)="refreshTable()"
+      aria-label="Refresh users"
+      i18n-aria-label>
+      <mat-icon i18n-title title="Refresh">refresh</mat-icon>
     </button>
-    <button mat-icon-button>
-      <mat-icon (click)="addUser()" i18n-title title="Refresh">add</mat-icon>
+    <button
+      mat-icon-button
+      (click)="addUser()"
+      aria-label="Add user"
+      i18n-aria-label>
+      <mat-icon i18n-title title="Add user">add</mat-icon>
     </button>
   </div>
 
@@ -75,6 +81,8 @@
           <td mat-cell *matCellDef="let row">
             <button
               mat-icon-button
+              aria-label="Open user actions"
+              i18n-aria-label
               [matMenuTriggerFor]="menu"
               [disabled]="isLoadingResults | async">
               <mat-icon>more_vert</mat-icon>

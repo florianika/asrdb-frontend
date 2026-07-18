@@ -46,6 +46,8 @@
         ">
         <button
           mat-icon-button
+          aria-label="View logs for selected buildings"
+          i18n-aria-label
           [disabled]="!selectedBuildings.length || isLoadingResults"
           (click)="viewLogsForSelected()">
           <mat-icon style="cursor: pointer">rule</mat-icon>
@@ -61,6 +63,8 @@
         ">
         <button
           mat-icon-button
+          aria-label="Test selected buildings"
+          i18n-aria-label
           [disabled]="!selectedBuildings.length || isLoadingResults"
           (click)="startExecutionForSelected()">
           <mat-icon style="cursor: pointer">play_arrow</mat-icon>
@@ -76,6 +80,8 @@
         ">
         <button
           mat-icon-button
+          aria-label="Show selected buildings on map"
+          i18n-aria-label
           (click)="filterSelectedBuildings()"
           [disabled]="!selectedBuildings.length || isLoadingResults">
           <mat-icon style="cursor: pointer">map</mat-icon>
@@ -196,6 +202,8 @@
         <td mat-cell *matCellDef="let element">
           <button
             mat-icon-button
+            aria-label="Open building actions"
+            i18n-aria-label
             [matMenuTriggerFor]="menu"
             (click)="stopClickEventFiltering($event)">
             <mat-icon>more_vert</mat-icon>

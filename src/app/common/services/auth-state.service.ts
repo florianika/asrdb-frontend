@@ -1,4 +1,4 @@
-import { Injectable, isDevMode, Signal } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -26,6 +26,7 @@ import {
   AuthSessionSnapshot,
   AuthSessionStore,
 } from './auth-session.store';
+import { LoggerService } from './logger.service';
 
 export const DEFAULT_MUNICIPALITY = 53;
 export type RefreshState = 'idle' | 'refreshing' | 'failed';
@@ -34,7 +35,7 @@ export type RefreshReason = 'guard' | 'timer' | 'esri-auth-retry';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthStateService {
+export class AuthStateService implements OnDestroy {
   private readonly TOKEN_STORAGE_KEY = 'asrdb_jwt';
   private readonly SIGNIN_URL = '/auth/signin';
   private readonly SIGNOUT_URL = '/auth/signout';
@@ -43,7 +44,7 @@ export class AuthStateService {
   private tokens: SigninResponse | null;
   private isLoggedIn: BehaviorSubject<boolean>;
   private helper = new JwtHelperService();
-  private subscription = new Subject<boolean>();
+  private readonly destroy$ = new Subject<void>();
   private readonly refreshState = new BehaviorSubject<RefreshState>('idle');
 
   private webWorker!: Worker;
@@ -57,7 +58,8 @@ export class AuthStateService {
   constructor(
     private router: Router,
     private httpClient: HttpClient,
-    private authSessionStore: AuthSessionStore = new AuthSessionStore()
+    private authSessionStore: AuthSessionStore = new AuthSessionStore(),
+    private logger: LoggerService = new LoggerService()
   ) {
     const item = localStorage.getItem(this.TOKEN_STORAGE_KEY);
     this.tokens = item ? JSON.parse(item) : null;
@@ -82,7 +84,7 @@ export class AuthStateService {
       .post(environment.base_url + this.SIGNOUT_URL, {
         UserId: userId,
       })
-      .pipe(takeUntil(this.subscription))
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => this.logoutUser(),
         error: () => this.logoutUser(),
@@ -104,11 +106,9 @@ export class AuthStateService {
       })
       .pipe(
         timeout(10_000),
-        takeUntil(this.subscription),
+        takeUntil(this.destroy$),
         tap(newToken => {
-          if (isDevMode()) {
-            console.log(`Token refreshed. Reason: ${reason}`);
-          }
+          this.logger.debug('Token refreshed', { reason });
           this.setJWT({
             idToken: newToken.idToken,
             accessToken: newToken.accessToken,
@@ -120,11 +120,15 @@ export class AuthStateService {
           this.httpClient
             .get<EsriCredentials>(environment.base_url + '/auth/gis/login')
             .pipe(
-              takeUntil(this.subscription),
+              timeout(10_000),
+              takeUntil(this.destroy$),
               tap(credentials => this.initEsriConfig(credentials)),
               map(() => true),
               catchError(error => {
-                console.error(error);
+                this.logger.error(
+                  'GIS login failed after token refresh',
+                  error
+                );
                 this.setRefreshState('failed');
                 // JWT was refreshed successfully; map flows handle ESRI retry state.
                 return of(true);
@@ -137,7 +141,7 @@ export class AuthStateService {
           }
         }),
         catchError(error => {
-          console.error(error);
+          this.logger.error('Token refresh failed', error, { reason });
           this.setRefreshState('failed');
           this.logout();
           return of(false);
@@ -257,7 +261,7 @@ export class AuthStateService {
       }
       return DEFAULT_MUNICIPALITY;
     } catch (error) {
-      console.error(error);
+      this.logger.error('Could not read municipality from token', error);
       return DEFAULT_MUNICIPALITY;
     }
   }
@@ -302,7 +306,7 @@ export class AuthStateService {
       isTokenValid =
         !!this.tokens && !this.helper.isTokenExpired(this.tokens.idToken);
     } catch (error) {
-      console.error(error);
+      this.logger.error('Could not validate authentication token', error);
     }
     return isTokenValid;
   }
@@ -314,13 +318,11 @@ export class AuthStateService {
         this.tokens!.idToken
       );
       const seconds = ((expirationDate?.getTime() ?? 0) - Date.now()) / 1000;
-      if (isDevMode()) {
-        console.log(`Seconds left for auth token: ${seconds}`);
-      }
+      this.logger.debug('Authentication token lifetime', { seconds });
       isTokenNearlyExpired = seconds <= 1200;
     } catch (error) {
       if (!this.router.url.includes('/auth/')) {
-        console.error(error);
+        this.logger.error('Could not determine token expiry', error);
       }
       isTokenNearlyExpired = true;
     }
@@ -331,10 +333,9 @@ export class AuthStateService {
     const isAuthTokenNearlyExpired = this.isAuthTokenNearlyExpired();
     const isEsriTokenNearlyExpired = this.isEsriTokenNearlyExpiry();
 
-    if (isDevMode()) {
-      console.log(`Token is valid: ${this.isTokenValidInternal()}`);
-      console.log(`Subscription is: ${this.subscription.closed}`);
-    }
+    this.logger.debug('Authentication state checked', {
+      tokenValid: this.isTokenValidInternal(),
+    });
 
     const shouldRefreshToken =
       isAuthTokenNearlyExpired || isEsriTokenNearlyExpired;
@@ -343,9 +344,7 @@ export class AuthStateService {
       this.refreshState.value !== 'refreshing' &&
       !this.router.url.includes('/auth/')
     ) {
-      if (isDevMode()) {
-        console.log('Reloaded token');
-      }
+      this.logger.debug('Refreshing expiring credentials');
       this.refreshToken('timer').subscribe();
     } else if (this.router.url.includes('/auth/')) {
       this.webWorker?.postMessage(this.STOP_INTERVAL_MESSAGE);
@@ -356,9 +355,7 @@ export class AuthStateService {
     const credentials = this.getEsriCredentialsFromStorage();
     if (credentials) {
       const secondsLeft = (credentials.expires - Date.now()) / 1000;
-      if (isDevMode()) {
-        console.log('Time left for esri token: ', secondsLeft);
-      }
+      this.logger.debug('GIS token lifetime', { seconds: secondsLeft });
       return secondsLeft < 1200;
     }
     return true;
@@ -381,9 +378,15 @@ export class AuthStateService {
       }
       return parsed;
     } catch (error) {
-      console.error(error);
+      this.logger.error('Could not read GIS credentials', error);
       return null;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.webWorker?.terminate();
   }
 
   private syncSessionStore() {

@@ -105,24 +105,28 @@ export class FeatureSelectionService {
   }
 
   private createSelectionButton() {
-    const selection = document.createElement('div');
+    const selection = document.createElement('button');
     const span = document.createElement('span');
     selection.id = 'feature-selection';
     selection.className =
       'esri-widget esri-widget--button esri-widget esri-interactive';
     selection.title = $localize`Select buildings`;
+    selection.type = 'button';
+    selection.setAttribute('aria-label', $localize`Select buildings`);
     span.className = 'esri-icon-checkbox-unchecked';
     selection.appendChild(span);
     return selection;
   }
 
   private createEraseButton() {
-    const erase = document.createElement('div');
+    const erase = document.createElement('button');
     const span = document.createElement('span');
     erase.id = 'feature-selection-erase';
     erase.className =
       'esri-widget esri-widget--button esri-widget esri-interactive';
     erase.title = $localize`Erase selection`;
+    erase.type = 'button';
+    erase.setAttribute('aria-label', $localize`Erase selection`);
     span.className = 'esri-icon-erase';
     erase.appendChild(span);
     return erase;

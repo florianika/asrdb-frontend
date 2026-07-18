@@ -22,8 +22,10 @@
               <span class="ms-2" i18n>Testing buildings...</span>
             </span>
           } @else {
-            Test all buildings
             <mat-icon>play_arrow</mat-icon>
+          }
+          @if (!isLoadingStatistics) {
+            <span i18n>Test all buildings</span>
           }
         </button>
       </div>

@@ -17,6 +17,7 @@ import { BaseMapChangeService } from './custom-map-logic/basemap-change';
 import { FeatureSelectionService } from './custom-map-logic/feature-selection';
 import { WmtsCapabilitiesService } from './wmts-capabilities.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
+import { LoggerService } from '../../../../common/services/logger.service';
 
 @Component({
   selector: 'asrdb-register-map',
@@ -53,7 +54,8 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
     private registerMapService: RegisterMapService,
     private registerFilterService: RegisterFilterService,
     private esriAuthService: CommonEsriAuthService,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -211,7 +213,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private handleMapError(error: unknown) {
-    console.error(error);
+    this.logger.error('Map operation failed', error);
     if (this.isMapReady) {
       this.mapAuthError = null;
       return;

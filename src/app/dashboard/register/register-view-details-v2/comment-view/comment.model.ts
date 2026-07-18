@@ -5,8 +5,8 @@ export interface Comments {
     noteText: string;
     createdUser: string;
     createdTimestamp: string;
-    updatedUser: string;
-    updatedTimestamp: string;
+    updatedUser: string | null;
+    updatedTimestamp: string | null;
     userId: string;
   }[];
 }

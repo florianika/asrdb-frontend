@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import esriRequest from '@arcgis/core/request';
+import { LoggerService } from '../../../../common/services/logger.service';
 
 // Parsed LOD structure that ArcGIS MapView accepts
 export interface WMTSLOD {
@@ -12,7 +13,7 @@ export interface WMTSLOD {
 export class WmtsCapabilitiesService {
   private lodCache = new Map<string, WMTSLOD[]>();
 
-  constructor() {}
+  constructor(private logger: LoggerService) {}
 
   /**
    * Returns LODs for the WMTS service.
@@ -35,7 +36,7 @@ export class WmtsCapabilitiesService {
       this.lodCache.set(url, lods);
       return lods;
     } catch (error) {
-      console.error('WMTS capabilities fetch failed:', error);
+      this.logger.error('WMTS capabilities fetch failed', error);
       return [];
     }
   }

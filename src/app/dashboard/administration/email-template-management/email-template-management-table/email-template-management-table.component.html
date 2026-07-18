@@ -60,6 +60,8 @@
           <td mat-cell *matCellDef="let row">
             <button
               mat-icon-button
+              aria-label="Open email template actions"
+              i18n-aria-label
               [matMenuTriggerFor]="menu"
               [disabled]="isLoadingResults | async">
               <mat-icon>more_vert</mat-icon>

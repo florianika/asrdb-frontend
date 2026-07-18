@@ -6,6 +6,7 @@ import {
   RefreshReason,
 } from 'src/app/common/services/auth-state.service';
 import { EsriCredentials } from 'src/app/model/EsriCredentials.model';
+import { LoggerService } from '../../../common/services/logger.service';
 
 export const ESRI_AUTH_KEY = 'ESRI-AUTH';
 
@@ -13,7 +14,10 @@ export const ESRI_AUTH_KEY = 'ESRI-AUTH';
 export class CommonEsriAuthService implements OnDestroy {
   private subscription = new Subject<boolean>();
 
-  constructor(private authState: AuthStateService) {
+  constructor(
+    private authState: AuthStateService,
+    private logger: LoggerService
+  ) {
     this.authState
       .getLoginStateAsObservable()
       .pipe(takeUntil(this.subscription))
@@ -46,7 +50,7 @@ export class CommonEsriAuthService implements OnDestroy {
       }
       return parsedCredentials;
     } catch (error) {
-      console.error(error);
+      this.logger.error('GIS authentication failed', error);
       return null;
     }
   }

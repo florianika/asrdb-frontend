@@ -20,10 +20,10 @@ import { getLocaleProperty } from '../../../../common/helper/locale-property-hel
 type SelectOption = { text: string; value: string };
 
 @Component({
-    selector: 'asrdb-quality-management-variable-selection',
-    templateUrl: './quality-management-variable-selection.component.html',
-    styleUrls: ['./quality-management-variable-selection.component.css'],
-    standalone: false
+  selector: 'asrdb-quality-management-variable-selection',
+  templateUrl: './quality-management-variable-selection.component.html',
+  styleUrls: ['./quality-management-variable-selection.component.css'],
+  standalone: false,
 })
 export class QualityManagementVariableSelectionComponent
   implements OnInit, OnDestroy
@@ -69,7 +69,7 @@ export class QualityManagementVariableSelectionComponent
 
   ngOnDestroy() {
     this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   updateFilter($event: any) {

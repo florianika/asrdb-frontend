@@ -48,6 +48,8 @@
 
         @if (!(executionStatus | async | logExecution)) {
           <mat-icon style="vertical-align: middle">play_arrow</mat-icon>
+        }
+        @if (!(executionStatus | async | logExecution)) {
           <span i18n> Test data </span>
         }
       </button>
@@ -109,6 +111,8 @@
             @if (row.qualityAction === 'QUE') {
               <button
                 mat-icon-button
+                aria-label="Open log actions"
+                i18n-aria-label
                 [matMenuTriggerFor]="menu"
                 [disabled]="isResolvingLog | async">
                 <mat-icon>more_vert</mat-icon>

@@ -19,6 +19,8 @@
                 @if (filterValue()) {
                   <button
                     mat-icon-button
+                    aria-label="Clear rule filter"
+                    i18n-aria-label
                     matSuffix
                     (click)="resetFilterValue()">
                     <mat-icon>close</mat-icon>
@@ -51,6 +53,8 @@
                   <span>{{ rule.ruleNameEn }} | {{ rule.ruleLocalId }}</span>
                   <button
                     mat-icon-button
+                    aria-label="Remove rule"
+                    i18n-aria-label
                     color="warn"
                     (click)="removeRule(rule.ruleId)">
                     <mat-icon>delete</mat-icon>

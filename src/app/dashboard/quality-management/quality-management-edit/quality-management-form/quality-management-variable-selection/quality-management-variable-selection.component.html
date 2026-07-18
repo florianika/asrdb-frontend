@@ -11,7 +11,12 @@
             [value]="filterValue"
             (input)="updateFilter($event)" />
           @if (filterValue) {
-            <button mat-icon-button matSuffix (click)="clearFilter($event)">
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clearFilter($event)"
+              aria-label="Clear search"
+              i18n-aria-label>
               <mat-icon>close</mat-icon>
             </button>
           }
