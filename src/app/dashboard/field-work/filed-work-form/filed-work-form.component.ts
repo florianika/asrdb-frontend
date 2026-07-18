@@ -14,7 +14,7 @@ import {
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { MY_FORMATS } from '../../register/model/common-utils';
+import { MY_FORMATS } from 'src/app/dashboard/common/helper/common-utils';
 import { ActivatedRoute } from '@angular/router';
 import { FieldWorkFormStep1Component } from './field-work-form-step1/field-work-form-step1.component';
 import { FieldWorkFormStep2Component } from './field-work-form-step2/field-work-form-step2.component';

@@ -1,8 +1,6 @@
-import {
-  BUILDING_ENTITY,
-  DWELLING_ENTITY,
-  ENTRANCE_ENTITY,
-} from '../common/constants/common-constants';
+import { EntityType } from '../common/model/entity-type';
+
+export { EntityType } from '../common/model/entity-type';
 
 export type Role =
   | 'ADMIN'
@@ -11,10 +9,6 @@ export type Role =
   | 'CLIENT'
   | 'PUBLISHER'
   | 'USER';
-export type EntityType =
-  | typeof BUILDING_ENTITY
-  | typeof ENTRANCE_ENTITY
-  | typeof DWELLING_ENTITY;
 export type Permission = 'WRITE' | 'READ' | 'NONE';
 
 export type RolePermissions = {

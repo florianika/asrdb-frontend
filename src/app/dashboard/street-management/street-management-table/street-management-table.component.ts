@@ -18,7 +18,7 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { Chip } from '../../../common/standalone-components/chip/chip.component';
+import { Chip } from 'src/app/dashboard/common/components/chip/chip.component';
 import { CommonRegisterHelperService } from '../../common/service/common-helper.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';

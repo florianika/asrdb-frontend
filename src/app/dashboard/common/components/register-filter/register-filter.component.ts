@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { BuildingFilter } from '../../../register/model/building';
+import { BuildingFilter } from '../../model/building';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 

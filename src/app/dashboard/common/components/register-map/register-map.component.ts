@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { RegisterMapService } from './register-map.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { RegisterFilterService } from '../../service/register-filter.service';
 import { BaseMapChangeService } from './custom-map-logic/basemap-change';
 import { FeatureSelectionService } from './custom-map-logic/feature-selection';
 import { WmtsCapabilitiesService } from './wmts-capabilities.service';

@@ -17,7 +17,7 @@ import {
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { MY_FORMATS } from '../../register/model/common-utils';
+import { MY_FORMATS } from 'src/app/dashboard/common/helper/common-utils';
 import { MatButtonModule } from '@angular/material/button';
 import {
   TEST_JOB_ID,

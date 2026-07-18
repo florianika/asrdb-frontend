@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import MapView from '@arcgis/core/views/MapView';
 
 import { MapInteractionService } from './map-interaction.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { RegisterFilterService } from '../../service/register-filter.service';
 import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 

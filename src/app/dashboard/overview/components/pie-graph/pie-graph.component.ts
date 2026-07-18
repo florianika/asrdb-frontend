@@ -6,10 +6,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonBuildingService } from '../../../common/service/common-building.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { RegisterFilterService } from 'src/app/dashboard/common/service/register-filter.service';
 import { Subject, takeUntil } from 'rxjs';
-import { QueryFilter } from '../../../register/model/query-filter';
-import { BuildingFilter } from '../../../register/model/building';
+import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
+import { BuildingFilter } from 'src/app/dashboard/common/model/building';
 import { arcGisIdentifier } from '../../../common/helper/arcgis-query';
 
 @Component({

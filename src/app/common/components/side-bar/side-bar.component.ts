@@ -7,7 +7,7 @@ import {
 import { AuthStateService } from '../../services/auth-state.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
-import { FILTER_REGISTER } from '../../../dashboard/register/register-table-view/register-filter.service';
+import { FILTER_REGISTER } from '../../constants/storage-keys';
 
 @Component({
     selector: 'asrdb-side-bar',

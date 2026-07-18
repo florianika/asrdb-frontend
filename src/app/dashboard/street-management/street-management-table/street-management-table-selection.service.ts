@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, switchMap } from 'rxjs';
-import { QueryFilter } from '../../register/model/query-filter';
-import { RegisterFilterService } from '../../register/register-table-view/register-filter.service';
+import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
+import { RegisterFilterService } from 'src/app/dashboard/common/service/register-filter.service';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { CommonEntranceService } from '../../common/service/common-entrance.service';
 import { arcGisGlobalIdIn } from '../../common/helper/arcgis-query';

@@ -4,6 +4,9 @@ import {
   ENTRANCE_ENTITY,
 } from 'src/app/common/constants/common-constants';
 import { environment } from 'src/environments/environment';
+import { EntityType } from '../../common/model/entity-type';
+
+export { EntityType } from '../../common/model/entity-type';
 
 export type QualityConfig = {
   endpoint: string;
@@ -12,11 +15,6 @@ export type QualityTableColumn = {
   title: string;
   prop: string;
 };
-export type EntityType =
-  | typeof BUILDING_ENTITY
-  | typeof ENTRANCE_ENTITY
-  | typeof DWELLING_ENTITY;
-
 export type QualityAction = 'AUT' | 'MISS' | 'QUE' | 'ERR';
 
 export type RuleStatus = 'ACTIVE' | 'DISABLED';

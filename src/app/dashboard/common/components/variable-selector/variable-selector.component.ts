@@ -14,7 +14,7 @@ import {
   MatFormFieldModule,
 } from '@angular/material/form-field';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { EntityType } from 'src/app/model/RolePermissions.model';
+import { EntityType } from '../../../../common/model/entity-type';
 
 import { Subject, takeUntil } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,9 +24,9 @@ import {
   BUILDING_ENTITY,
   DWELLING_ENTITY,
   ENTRANCE_ENTITY,
-} from '../../constants/common-constants';
-import { CommonEntityStructureService } from '../../../dashboard/common/service/common-entity-structure.service';
-import { getLocaleProperty } from '../../../dashboard/common/helper/locale-property-helper';
+} from '../../../../common/constants/common-constants';
+import { CommonEntityStructureService } from '../../service/common-entity-structure.service';
+import { getLocaleProperty } from '../../helper/locale-property-helper';
 
 type SelectOption = { text: string; value: string };
 

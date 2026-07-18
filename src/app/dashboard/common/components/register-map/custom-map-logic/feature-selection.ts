@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { GeometryUnion } from '@arcgis/core/unionTypes';
 import { CommonBuildingService } from '../../../service/common-building.service';
 import { CommonEntranceService } from '../../../service/common-entrance.service';
-import { RegisterFilterService } from '../../../../register/register-table-view/register-filter.service';
+import { RegisterFilterService } from '../../../service/register-filter.service';
 import Map from '@arcgis/core/Map';
 import { CommonEsriAuthService } from '../../../service/common-esri-auth.service';
 import { CleanupCallback } from '../map-types';

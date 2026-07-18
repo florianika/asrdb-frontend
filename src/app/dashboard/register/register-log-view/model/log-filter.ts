@@ -1,4 +1,4 @@
-import { EntityType } from '../../../quality-management/quality-management-config';
+import { EntityType } from '../../../../common/model/entity-type';
 
 export type LogFilter = {
   entityType: EntityType | '';

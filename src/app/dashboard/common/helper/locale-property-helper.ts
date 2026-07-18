@@ -1,4 +1,4 @@
-import {Log} from "../../register/register-log-view/model/log";
+import { Log } from '../model/log';
 
 export function getLocaleProperty(object: any, locale: 'en' | 'sq'): string {
   if (!object || !locale) {

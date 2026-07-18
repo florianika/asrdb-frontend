@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
-import { ConcatenateMessagePipe } from '../../../dashboard/register/register-log-view/register-log-table/register-log-message.pipe';
+import { ConcatenateMessagePipe } from '../../../../common/pipes/concatenate-message.pipe';
 
 export type Chip = {
   column: string;

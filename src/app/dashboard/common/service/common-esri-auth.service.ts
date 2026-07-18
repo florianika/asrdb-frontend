@@ -8,7 +8,8 @@ import {
 import { EsriCredentials } from 'src/app/model/EsriCredentials.model';
 import { LoggerService } from '../../../common/services/logger.service';
 
-export const ESRI_AUTH_KEY = 'ESRI-AUTH';
+export { ESRI_AUTH_KEY } from '../../../common/constants/storage-keys';
+import { ESRI_AUTH_KEY } from '../../../common/constants/storage-keys';
 
 @Injectable()
 export class CommonEsriAuthService implements OnDestroy {

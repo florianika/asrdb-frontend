@@ -11,7 +11,7 @@ import {
   timer,
 } from 'rxjs';
 import { Log } from '../model/log';
-import { EntityType } from '../../../quality-management/quality-management-config';
+import { EntityType } from '../../../../common/model/entity-type';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonBuildingService } from '../../../common/service/common-building.service';

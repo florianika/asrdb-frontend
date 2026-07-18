@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { VariableSelectorComponent } from '../../../../../common/standalone-components/variable-selector/variable-selector.component';
+import { VariableSelectorComponent } from 'src/app/dashboard/common/components/variable-selector/variable-selector.component';
 import { EntityTypeSelectorComponent } from '../../../../../common/standalone-components/entity-type-selector/entity-type-selector.component';
 import { LogFilter } from '../../model/log-filter';
 import { FormsModule } from '@angular/forms';

@@ -1,5 +1,5 @@
 import { getLocaleProperty, getLogMessage } from './locale-property-helper';
-import { Log } from '../../register/register-log-view/model/log';
+import { Log } from '../model/log';
 import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
 
 describe('locale-property-helper (smoke)', () => {

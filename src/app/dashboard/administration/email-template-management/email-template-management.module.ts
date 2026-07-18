@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { RoleSelectorComponent } from '../../../common/standalone-components/role-selector/role-selector.component';
 import { EmailTemplateManagementFormComponent } from './email-template-management-form/email-template-management-form.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ConcatenateMessagePipe } from '../../register/register-log-view/register-log-table/register-log-message.pipe';
+import { ConcatenateMessagePipe } from 'src/app/common/pipes/concatenate-message.pipe';
 import { NgxEditorModule } from 'ngx-editor';
 import { UserManagementService } from '../user-management/user-management.service';
 

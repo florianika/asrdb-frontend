@@ -43,7 +43,7 @@ import { Street } from '../../register/model/street';
 import {
   EsriDomain,
   EsriQueryResponse,
-} from '../../register/model/esri-response';
+} from 'src/app/dashboard/common/model/esri-response';
 import { arcGisGlobalIdEquals } from '../../common/helper/arcgis-query';
 
 type StreetField = Record<string, unknown>;

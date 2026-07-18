@@ -7,18 +7,18 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { AuthStateService } from 'src/app/common/services/auth-state.service';
-import { Chip } from '../../common/standalone-components/chip/chip.component';
-import { BuildingFilter } from '../register/model/building';
+import { Chip } from 'src/app/dashboard/common/components/chip/chip.component';
+import { BuildingFilter } from 'src/app/dashboard/common/model/building';
 import {
   FILTER_REGISTER,
   RegisterFilterService,
-} from '../register/register-table-view/register-filter.service';
+} from 'src/app/dashboard/common/service/register-filter.service';
 import { CommonRegisterHelperService } from '../common/service/common-helper.service';
 import { CommonBuildingService } from '../common/service/common-building.service';
 import { catchError, of, Subject, takeUntil } from 'rxjs';
 import { RegisterFilterComponent } from '../common/components/register-filter/register-filter.component';
 import { MatDialog } from '@angular/material/dialog';
-import { QueryFilter } from '../register/model/query-filter';
+import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
 import { FilterHelper } from '../common/helper/filter-helper';
 import { FieldWorkService } from '../field-work/field-work.service';
 import { Router } from '@angular/router';

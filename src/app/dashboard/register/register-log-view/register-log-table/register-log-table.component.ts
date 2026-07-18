@@ -23,7 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { Log } from '../model/log';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ConcatenateMessagePipe as ConcatinateMessagePipe } from './register-log-message.pipe';
+import { ConcatenateMessagePipe as ConcatinateMessagePipe } from '../../../../common/pipes/concatenate-message.pipe';
 import { LogExecutionPipe } from './register-log-execution.pipe';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
@@ -34,7 +34,7 @@ import { LogFilter } from '../model/log-filter';
 import {
   Chip,
   ChipComponent,
-} from '../../../../common/standalone-components/chip/chip.component';
+} from 'src/app/dashboard/common/components/chip/chip.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 

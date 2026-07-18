@@ -19,7 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {
   Chip,
   ChipComponent,
-} from 'src/app/common/standalone-components/chip/chip.component';
+} from 'src/app/dashboard/common/components/chip/chip.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   catchError,

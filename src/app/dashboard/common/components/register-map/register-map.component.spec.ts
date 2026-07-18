@@ -5,7 +5,7 @@ import MapView from '@arcgis/core/views/MapView';
 
 import { RegisterMapComponent } from './register-map.component';
 import { RegisterMapService } from './register-map.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { RegisterFilterService } from '../../service/register-filter.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 

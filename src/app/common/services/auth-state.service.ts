@@ -17,7 +17,7 @@ import {
   timeout,
 } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ESRI_AUTH_KEY } from '../../dashboard/common/service/common-esri-auth.service';
+import { ESRI_AUTH_KEY } from '../constants/storage-keys';
 import { EsriCredentials } from '../../model/EsriCredentials.model';
 import { JWT, SigninResponse } from '../../model/JWT.model';
 import { Role } from '../../model/RolePermissions.model';

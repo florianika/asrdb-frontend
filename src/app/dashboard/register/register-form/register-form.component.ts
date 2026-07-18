@@ -23,7 +23,7 @@ import { Entrance } from '../model/entrance';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EntranceManagementService } from './entrance-creation.service';
-import { EntityType } from '../../quality-management/quality-management-config';
+import { EntityType } from '../../../common/model/entity-type';
 import { RegisterLogService } from '../register-log-view/register-log-table/register-log.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {

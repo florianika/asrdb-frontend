@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { Chip } from '../../../common/standalone-components/chip/chip.component';
-import { QueryFilter } from '../../register/model/query-filter';
+import { Chip } from 'src/app/dashboard/common/components/chip/chip.component';
+import { QueryFilter } from 'src/app/dashboard/common/model/query-filter';
 import {
   StreetFilterKey,
   StreetFilterValues,

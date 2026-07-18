@@ -12,7 +12,7 @@ import Point from '@arcgis/core/geometry/Point';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EntityType } from '../../quality-management/quality-management-config';
+import { EntityType } from '../../../common/model/entity-type';
 import { ActivatedRoute } from '@angular/router';
 import { BaseMapChangeService } from '../../common/components/register-map/custom-map-logic/basemap-change';
 import { CommonBuildingService } from '../../common/service/common-building.service';

@@ -4,7 +4,7 @@ import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { CommonMunicipalityService } from '../../service/common-municipality.service';
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
-import { RegisterFilterService } from '../../../register/register-table-view/register-filter.service';
+import { RegisterFilterService } from '../../service/register-filter.service';
 import { BaseMapChangeService } from './custom-map-logic/basemap-change';
 import { FeatureSelectionService } from './custom-map-logic/feature-selection';
 import { WmtsCapabilitiesService } from './wmts-capabilities.service';

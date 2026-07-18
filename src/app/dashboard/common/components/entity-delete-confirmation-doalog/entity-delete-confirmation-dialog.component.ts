@@ -10,8 +10,8 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { RegisterDeleteService } from '../../../register/register-table-view/register-delete.service';
-import { EntityType } from '../../../quality-management/quality-management-config';
+import { RegisterDeleteService } from '../../service/register-delete.service';
+import { EntityType } from '../../../../common/model/entity-type';
 import {
   BUILDING_ENTITY,
   DWELLING_ENTITY,

@@ -19,7 +19,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { BuildingPoly, Centroid, Point } from '../../model/map-data';
-import { EntityType } from '../../../quality-management/quality-management-config';
+import { EntityType } from '../../../../common/model/entity-type';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { CommonBuildingService } from '../../../common/service/common-building.service';

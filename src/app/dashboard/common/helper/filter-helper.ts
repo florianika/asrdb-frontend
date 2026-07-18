@@ -1,5 +1,5 @@
-import { Chip } from '../../../common/standalone-components/chip/chip.component';
-import { BuildingFilter } from '../../register/model/building';
+import { Chip } from 'src/app/dashboard/common/components/chip/chip.component';
+import { BuildingFilter } from '../model/building';
 import { Injectable } from '@angular/core';
 import { CommonRegisterHelperService } from '../service/common-helper.service';
 import { AuthStateService } from '../../../common/services/auth-state.service';

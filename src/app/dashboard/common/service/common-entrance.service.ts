@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import { catchError, defer, from, Observable, of } from 'rxjs';
-import { QueryFilter } from '../../register/model/query-filter';
+import { QueryFilter } from '../model/query-filter';
 import { CommonEsriAuthService } from './common-esri-auth.service';
 import { environment } from 'src/environments/environment';
-import { EntityManageResponse } from '../../register/model/entity-req-res';
+import { EntityManageResponse } from '../model/entity-req-res';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EsriFeatureApiClientService } from './esri-feature-api-client.service';
 import { arcGisGlobalIdEquals } from '../helper/arcgis-query';

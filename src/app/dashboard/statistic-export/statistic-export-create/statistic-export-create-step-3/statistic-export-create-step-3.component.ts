@@ -15,7 +15,7 @@ import {
 } from '@angular/material/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { MY_FORMATS } from '../../../register/model/common-utils';
+import { MY_FORMATS } from 'src/app/dashboard/common/helper/common-utils';
 import Moment from 'moment';
 
 @Component({

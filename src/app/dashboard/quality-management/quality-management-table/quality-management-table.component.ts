@@ -10,7 +10,7 @@ import {
 import { QualityManagementService } from '../quality-management.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Chip } from 'src/app/common/standalone-components/chip/chip.component';
+import { Chip } from 'src/app/dashboard/common/components/chip/chip.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';

@@ -9,7 +9,7 @@ import {
 import { Dwelling } from '../../model/dwelling';
 import { QueryFilter } from '../../model/query-filter';
 import { catchError, of as observableOf } from 'rxjs';
-import { Chip } from '../../../../common/standalone-components/chip/chip.component';
+import { Chip } from 'src/app/dashboard/common/components/chip/chip.component';
 import { MatSort } from '@angular/material/sort';
 import { CommonDwellingService } from '../../../common/service/common-dwellings.service';
 import {

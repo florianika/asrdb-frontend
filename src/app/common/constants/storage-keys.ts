@@ -1,0 +1,2 @@
+export const ESRI_AUTH_KEY = 'ESRI-AUTH';
+export const FILTER_REGISTER = 'FILTER_REGISTER';
