@@ -7,9 +7,10 @@ import { EntityType } from '../../quality-management-config';
 export const FILTER_CONFIG_PREFIX = 'filter-config-';
 
 @Component({
-  selector: 'asrdb-quality-management-table-filter',
-  templateUrl: './quality-management-table-filter.component.html',
-  styleUrls: ['./quality-management-table-filter.component.css'],
+    selector: 'asrdb-quality-management-table-filter',
+    templateUrl: './quality-management-table-filter.component.html',
+    styleUrls: ['./quality-management-table-filter.component.css'],
+    standalone: false
 })
 export class QualityManagementTableFilterComponent {
   filterConfig: QualityRuleFilter;

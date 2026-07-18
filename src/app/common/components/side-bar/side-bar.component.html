@@ -1,13 +1,22 @@
 <mat-selection-list [multiple]="false" hideSingleSelectionIndicator>
-  <ng-container *ngFor="let sideBarElement of sideBarElements; let i = index">
-    <ng-container *ngIf="sideBarElement.visible">
-      <mat-divider *ngIf="i !== 0"></mat-divider>
-      <div mat-subheader *ngIf="sideBarElement.sectionTitle">
-        {{ sideBarElement.sectionTitle }}
-      </div>
-
-      <ng-container
-        *ngFor="let sectionElement of sideBarElement.sectionElements">
+  @for (
+    sideBarElement of sideBarElements;
+    track sideBarElement;
+    let i = $index
+  ) {
+    @if (sideBarElement.visible) {
+      @if (i !== 0) {
+        <mat-divider></mat-divider>
+      }
+      @if (sideBarElement.sectionTitle) {
+        <div mat-subheader>
+          {{ sideBarElement.sectionTitle }}
+        </div>
+      }
+      @for (
+        sectionElement of sideBarElement.sectionElements;
+        track sectionElement
+      ) {
         <mat-list-option
           [routerLink]="sectionElement.path"
           (click)="handleClick(sectionElement.title)"
@@ -15,7 +24,7 @@
           <mat-icon matListItemIcon>{{ sectionElement.icon }}</mat-icon>
           {{ sectionElement.title }}
         </mat-list-option>
-      </ng-container>
-    </ng-container>
-  </ng-container>
+      }
+    }
+  }
 </mat-selection-list>

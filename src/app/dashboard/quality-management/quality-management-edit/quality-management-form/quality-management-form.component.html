@@ -1,6 +1,8 @@
-<div *ngIf="firstFormGroup.getRawValue()['localId']">
-  Reference: <span>{{ firstFormGroup.getRawValue()['localId'] }}</span>
-</div>
+@if (firstFormGroup.getRawValue()['localId']) {
+  <div>
+    Reference: <span>{{ firstFormGroup.getRawValue()['localId'] }}</span>
+  </div>
+}
 <mat-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">

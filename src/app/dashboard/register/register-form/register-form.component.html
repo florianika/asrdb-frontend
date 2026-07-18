@@ -1,69 +1,71 @@
-<section id="entity-management" *ngIf="!isLoadingData">
-  <div class="entity-management-section">
-    <asrdb-building-creation
-      [entityType]="entityType"
-      [formGroup]="mapDetails"
-      [existingBuildingGeometry]="existingBuildingGeometry"
-      [existingEntrancesGeometry]="existingEntrancesGeometry"
-      (centroidUpdated)="updateCentroid($event)">
-    </asrdb-building-creation>
-  </div>
-  <div class="entity-management-section entity-management-form">
-    @if (isEntrance) {
-      <h1 i18n>Please fill all the details for the entrance</h1>
-    }
-    @if (isBuilding) {
-      <h1 i18n>Please fill all the details for the building</h1>
-    }
-    <asrdb-building-details-form
-      *ngIf="isBuilding && structure"
-      [structure]="structure"
-      [formGroup]="buildingDetails"
-      [existingBuildingDetails]="existingBuildingDetails">
-    </asrdb-building-details-form>
-    <asrdb-entrance-details-form
-      *ngIf="isEntrance && structure"
-      [structure]="structure"
-      [buildingId]="buildingId"
-      [formGroup]="entranceDetails"
-      [existingEntrancesDetails]="existingEntrancesDetails">
-    </asrdb-entrance-details-form>
-    <button
-      mat-flat-button
-      color="primary"
-      style="float: right; margin-top: 20px"
-      [disabled]="isSaving | async"
-      (click)="save()"
-      >
-      <span i18n>Save changes</span>
-      <mat-icon iconPositionBefore>save</mat-icon>
-    </button>
-    <button
-      mat-flat-button
-      style="float: right; margin-top: 20px; margin-right: 10px"
-      [disabled]="isSaving | async"
-      (click)="cancel()"
-      >
-      <span i18n>Cancel</span>
-      <mat-icon iconPositionBefore>close</mat-icon>
-    </button>
-  </div>
-</section>
+@if (!isLoadingData) {
+  <section id="entity-management">
+    <div class="entity-management-section">
+      <asrdb-building-creation
+        [entityType]="entityType"
+        [formGroup]="mapDetails"
+        [existingBuildingGeometry]="existingBuildingGeometry"
+        [existingEntrancesGeometry]="existingEntrancesGeometry"
+        (centroidUpdated)="updateCentroid($event)">
+      </asrdb-building-creation>
+    </div>
+    <div class="entity-management-section entity-management-form">
+      @if (isEntrance) {
+        <h1 i18n>Please fill all the details for the entrance</h1>
+      }
+      @if (isBuilding) {
+        <h1 i18n>Please fill all the details for the building</h1>
+      }
+      @if (isBuilding && structure) {
+        <asrdb-building-details-form
+          [structure]="structure"
+          [formGroup]="buildingDetails"
+          [existingBuildingDetails]="existingBuildingDetails">
+        </asrdb-building-details-form>
+      }
+      @if (isEntrance && structure) {
+        <asrdb-entrance-details-form
+          [structure]="structure"
+          [buildingId]="buildingId"
+          [formGroup]="entranceDetails"
+          [existingEntrancesDetails]="existingEntrancesDetails">
+        </asrdb-entrance-details-form>
+      }
+      <button
+        mat-flat-button
+        color="primary"
+        style="float: right; margin-top: 20px"
+        [disabled]="isSaving | async"
+        (click)="save()">
+        <span i18n>Save changes</span>
+        <mat-icon iconPositionBefore>save</mat-icon>
+      </button>
+      <button
+        mat-flat-button
+        style="float: right; margin-top: 20px; margin-right: 10px"
+        [disabled]="isSaving | async"
+        (click)="cancel()">
+        <span i18n>Cancel</span>
+        <mat-icon iconPositionBefore>close</mat-icon>
+      </button>
+    </div>
+  </section>
+}
 
 <ng-template #cancelConfirmDialog>
-  <h1 mat-dialog-title i18n *ngIf="isBuilding && !buildingId">
-    Cancel creating building?
-  </h1>
-  <h1 mat-dialog-title i18n *ngIf="isBuilding && buildingId">
-    Cancel editing dwelling?
-  </h1>
+  @if (isBuilding && !buildingId) {
+    <h1 mat-dialog-title i18n>Cancel creating building?</h1>
+  }
+  @if (isBuilding && buildingId) {
+    <h1 mat-dialog-title i18n>Cancel editing dwelling?</h1>
+  }
 
-  <h1 mat-dialog-title i18n *ngIf="isEntrance && !entranceId">
-    Cancel creating entrance?
-  </h1>
-  <h1 mat-dialog-title i18n *ngIf="isEntrance && entranceId">
-    Cancel editing entrance?
-  </h1>
+  @if (isEntrance && !entranceId) {
+    <h1 mat-dialog-title i18n>Cancel creating entrance?</h1>
+  }
+  @if (isEntrance && entranceId) {
+    <h1 mat-dialog-title i18n>Cancel editing entrance?</h1>
+  }
   <mat-dialog-content class="mat-typography" i18n>
     Are you sure you want to close the dialog? All changes will be lost. This
     action cannot be undone!

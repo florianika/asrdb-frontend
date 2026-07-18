@@ -22,22 +22,21 @@ import { Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'asrdb-field-work-form-step1',
-  standalone: true,
-  imports: [
-    MatButton,
-    MatDatepicker,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatSuffix,
-    ReactiveFormsModule,
-    MatIcon,
-  ],
-  templateUrl: './field-work-form-step1.component.html',
-  styleUrl: './field-work-form-step1.component.css',
+    selector: 'asrdb-field-work-form-step1',
+    imports: [
+        MatButton,
+        MatDatepicker,
+        MatDatepickerInput,
+        MatDatepickerToggle,
+        MatFormField,
+        MatInput,
+        MatLabel,
+        MatSuffix,
+        ReactiveFormsModule,
+        MatIcon,
+    ],
+    templateUrl: './field-work-form-step1.component.html',
+    styleUrl: './field-work-form-step1.component.css'
 })
 export class FieldWorkFormStep1Component {
   @Input() formGroup!: FormGroup;

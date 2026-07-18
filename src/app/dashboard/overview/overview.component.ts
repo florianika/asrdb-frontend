@@ -24,10 +24,11 @@ import { FieldWorkService } from '../field-work/field-work.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'asrdb-overview',
-  templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'asrdb-overview',
+    templateUrl: './overview.component.html',
+    styleUrls: ['./overview.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class OverviewComponent implements OnDestroy {
   private destroy = new Subject();

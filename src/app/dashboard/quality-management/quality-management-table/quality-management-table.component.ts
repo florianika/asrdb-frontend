@@ -29,10 +29,11 @@ import {
 import { EntityType } from '../quality-management-config';
 
 @Component({
-  selector: 'asrdb-quality-management-table',
-  templateUrl: './quality-management-table.component.html',
-  styleUrls: ['./quality-management-table.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'asrdb-quality-management-table',
+    templateUrl: './quality-management-table.component.html',
+    styleUrls: ['./quality-management-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class QualityManagementTableComponent
   implements OnInit, AfterViewInit, OnDestroy

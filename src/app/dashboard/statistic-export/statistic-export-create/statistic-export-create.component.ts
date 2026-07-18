@@ -17,20 +17,19 @@ import { StatisticExportCreateStep3Component } from './statistic-export-create-s
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'asrdb-statistic-export-create',
-  standalone: true,
-  imports: [
-    MatDialogModule,
-    MatButtonModule,
-    MatStepperModule,
-    StatisticExportCreateStep1Component,
-    StatisticExportCreateStep2Component,
-    StatisticExportCreateStep0Component,
-    StatisticExportCreateStep3Component,
-    MatIcon,
-  ],
-  templateUrl: './statistic-export-create.component.html',
-  styleUrl: './statistic-export-create.component.css',
+    selector: 'asrdb-statistic-export-create',
+    imports: [
+        MatDialogModule,
+        MatButtonModule,
+        MatStepperModule,
+        StatisticExportCreateStep1Component,
+        StatisticExportCreateStep2Component,
+        StatisticExportCreateStep0Component,
+        StatisticExportCreateStep3Component,
+        MatIcon,
+    ],
+    templateUrl: './statistic-export-create.component.html',
+    styleUrl: './statistic-export-create.component.css'
 })
 export class StatisticExportCreateComponent implements OnInit, OnDestroy {
   @ViewChild(MatStepper) stepper!: MatStepper;

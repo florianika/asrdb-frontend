@@ -19,27 +19,26 @@ import { MY_FORMATS } from '../../../register/model/common-utils';
 import Moment from 'moment';
 
 @Component({
-  selector: 'asrdb-statistic-export-create-step-3',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatDatepickerModule,
-    FormsModule,
-    MatProgressSpinner,
-  ],
-  providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE],
-    },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
-  templateUrl: './statistic-export-create-step-3.component.html',
-  styleUrl: './statistic-export-create-step-3.component.css',
+    selector: 'asrdb-statistic-export-create-step-3',
+    imports: [
+        MatFormFieldModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        MatDatepickerModule,
+        FormsModule,
+        MatProgressSpinner,
+    ],
+    providers: [
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [MAT_DATE_LOCALE],
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    templateUrl: './statistic-export-create-step-3.component.html',
+    styleUrl: './statistic-export-create-step-3.component.css'
 })
 export class StatisticExportCreateStep3Component {
   private statisticExportService = inject(StatisticExportService);

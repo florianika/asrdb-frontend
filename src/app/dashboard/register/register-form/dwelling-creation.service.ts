@@ -52,7 +52,7 @@ export class DwellingManagementService {
   }
 
   private createDwelling(dwelling: Dwelling) {
-    dwelling.external_creator = `{${this.authState.getNameId()}}` ?? '';
+    dwelling.external_creator = `{${this.authState.getNameId()}}`;
     dwelling.external_creator_date = String(Date.now());
     const features = this.createFeatures(dwelling);
     this.dwellingService
@@ -61,7 +61,7 @@ export class DwellingManagementService {
   }
 
   private updateDwelling(dwelling: Dwelling) {
-    dwelling.external_editor = `{${this.authState.getNameId()}}` ?? '';
+    dwelling.external_editor = `{${this.authState.getNameId()}}`;
     dwelling.external_editor_date = String(Date.now());
     const features = this.createFeatures(dwelling);
     this.dwellingService

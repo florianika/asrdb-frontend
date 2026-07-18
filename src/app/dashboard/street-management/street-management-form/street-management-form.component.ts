@@ -48,9 +48,10 @@ import {
 type StreetField = Record<string, unknown>;
 
 @Component({
-  selector: 'asrdb-street-management-form',
-  templateUrl: './street-management-form.component.html',
-  styleUrls: ['./street-management-form.component.css'],
+    selector: 'asrdb-street-management-form',
+    templateUrl: './street-management-form.component.html',
+    styleUrls: ['./street-management-form.component.css'],
+    standalone: false
 })
 export class StreetManagementFormComponent implements OnDestroy {
   private onDestroy = new Subject<void>();

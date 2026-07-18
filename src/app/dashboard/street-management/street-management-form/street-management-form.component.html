@@ -1,74 +1,84 @@
-<h1 mat-dialog-title i18n *ngIf="!id">Create street</h1>
-<h1 mat-dialog-title i18n *ngIf="id">Update street</h1>
+@if (!id) {
+  <h1 mat-dialog-title i18n>Create street</h1>
+}
+@if (id) {
+  <h1 mat-dialog-title i18n>Update street</h1>
+}
 <mat-dialog-content class="mat-typography">
   <form [formGroup]="formGroup">
-    <ng-container *ngFor="let formItem of formStructure">
-      <mat-form-field class="full-width" *ngIf="!formItem.hidden">
-        <mat-label>{{ formItem.alias }}</mat-label>
-        <input
-          *ngIf="formItem.type !== 'select' && formItem.type !== 'date'"
-          matInput
-          [formControlName]="formItem.name"
-          [type]="formItem.type"
-          [maxlength]="formItem.maxLength ?? null" />
-        <span matTextSuffix *ngIf="formItem.maxLength"
-          >{{ formGroup.controls[formItem.name].value.length ?? 0 }}/{{
-            formItem.maxLength
-          }}</span
-        >
-
-        <mat-select
-          *ngIf="formItem.type === 'select'"
-          [formControlName]="formItem.name">
-          <div class="search-field-container">
-            <mat-form-field class="w-100" appearance="outline">
-              <input
-                matInput
-                i18n-placeholder
-                placeholder="Search..."
-                [value]="inputFilters[formItem.name] ?? ''"
-                (input)="filterInputOptions($event, formItem.name)" />
-              <button
-                class="z-2"
-                mat-icon-button
-                matSuffix
-                *ngIf="inputFilters[formItem.name]"
-                (click)="clearInputFilter($event, formItem.name)">
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-form-field>
-          </div>
-          <mat-option
-            *ngFor="let option of formItem.selectOptions"
-            [value]="option.value"
-            >{{ option.text }}</mat-option
-          >
-        </mat-select>
-
-        <ng-container *ngIf="formItem.type === 'date'">
-          <input
-            matInput
-            [matDatepicker]="picker"
-            (click)="picker.open()"
-            [formControlName]="formItem.name"
-            readonly />
-          <mat-datepicker #picker></mat-datepicker>
-        </ng-container>
-
-        <button
-          mat-icon-button
-          *ngIf="
+    @for (formItem of formStructure; track formItem) {
+      @if (!formItem.hidden) {
+        <mat-form-field class="full-width">
+          <mat-label>{{ formItem.alias }}</mat-label>
+          @if (formItem.type !== 'select' && formItem.type !== 'date') {
+            <input
+              matInput
+              [formControlName]="formItem.name"
+              [type]="formItem.type"
+              [maxlength]="formItem.maxLength ?? null" />
+          }
+          @if (formItem.maxLength) {
+            <span matTextSuffix
+              >{{ formGroup.controls[formItem.name].value.length ?? 0 }}/{{
+                formItem.maxLength
+              }}</span
+            >
+          }
+          @if (formItem.type === 'select') {
+            <mat-select [formControlName]="formItem.name">
+              <div class="search-field-container">
+                <mat-form-field class="w-100" appearance="outline">
+                  <input
+                    matInput
+                    i18n-placeholder
+                    placeholder="Search..."
+                    [value]="inputFilters[formItem.name] ?? ''"
+                    (input)="filterInputOptions($event, formItem.name)" />
+                  @if (inputFilters[formItem.name]) {
+                    <button
+                      class="z-2"
+                      mat-icon-button
+                      matSuffix
+                      (click)="clearInputFilter($event, formItem.name)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  }
+                </mat-form-field>
+              </div>
+              @for (option of formItem.selectOptions; track option) {
+                <mat-option [value]="option.value">{{
+                  option.text
+                }}</mat-option>
+              }
+            </mat-select>
+          }
+          @if (formItem.type === 'date') {
+            <input
+              matInput
+              [matDatepicker]="picker"
+              (click)="picker.open()"
+              [formControlName]="formItem.name"
+              readonly />
+            <mat-datepicker #picker></mat-datepicker>
+          }
+          @if (
             formGroup.controls[formItem.name].value && formItem.type === 'date'
-          "
-          (click)="formGroup.controls[formItem.name].setValue(null)"
-          matSuffix>
-          <mat-icon>close</mat-icon>
-        </button>
-        <mat-error *ngIf="formGroup.controls[formItem.name].invalid">{{
-          getError(formGroup.controls[formItem.name])
-        }}</mat-error>
-      </mat-form-field>
-    </ng-container>
+          ) {
+            <button
+              mat-icon-button
+              (click)="formGroup.controls[formItem.name].setValue(null)"
+              matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+          @if (formGroup.controls[formItem.name].invalid) {
+            <mat-error>{{
+              getError(formGroup.controls[formItem.name])
+            }}</mat-error>
+          }
+        </mat-form-field>
+      }
+    }
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
@@ -79,8 +89,12 @@
 </mat-dialog-actions>
 
 <ng-template #cancelConfirmDialog>
-  <h1 mat-dialog-title i18n *ngIf="!id">Cancel creating street?</h1>
-  <h1 mat-dialog-title i18n *ngIf="id">Cancel editing street?</h1>
+  @if (!id) {
+    <h1 mat-dialog-title i18n>Cancel creating street?</h1>
+  }
+  @if (id) {
+    <h1 mat-dialog-title i18n>Cancel editing street?</h1>
+  }
   <mat-dialog-content class="mat-typography" i18n>
     Are you sure you want to close the dialog? All changes will be lost. This
     action cannot be undone!

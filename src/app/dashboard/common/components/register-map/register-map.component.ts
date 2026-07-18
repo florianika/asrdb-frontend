@@ -20,7 +20,6 @@ import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 
 @Component({
   selector: 'asrdb-register-map',
-  standalone: true,
   imports: [CommonModule],
   providers: [
     RegisterMapService,
@@ -41,6 +40,8 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   @Input() small = false;
   @Input() showBuildingLayer = true;
   @Input() showEntranceLayer = true;
+  @Input() highlightSelectedBuildings = false;
+  @Input() highlightSelectedEntrance = false;
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   mapAuthError: string | null = null;
   isMapInitializing = false;
@@ -77,8 +78,9 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
         }
         try {
           await this.registerMapService.filterBuildingData(
-            this.registerFilterService.prepareWhereCase()
+            this.getBuildingWhereCase()
           );
+          await this.highlightSelectedBuildingPolygons();
           this.mapAuthError = null;
         } catch (error) {
           this.handleMapError(error);
@@ -92,11 +94,7 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
           return;
         }
         try {
-          await this.registerMapService.filterEntranceData(
-            this.registerFilterService.prepareWhereCaseForEntrance(
-              this.entranceGlobalId
-            )
-          );
+          await this.updateEntranceLayer();
           this.mapAuthError = null;
         } catch (error) {
           this.handleMapError(error);
@@ -105,16 +103,8 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes['entranceGlobalId'] &&
-      changes['entranceGlobalId'].currentValue
-    ) {
-      void this.registerMapService
-        .filterEntranceData(
-          this.registerFilterService.prepareWhereCaseForEntrance(
-            this.entranceGlobalId
-          )
-        )
+    if (changes['entranceGlobalId']) {
+      void this.updateEntranceLayer()
         .then(() => {
           this.mapAuthError = null;
         })
@@ -151,10 +141,8 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
         enableLegend: this.enableLegend,
         showBuildingLayer: this.showBuildingLayer,
         showEntranceLayer: this.showEntranceLayer,
-        bldWhereCase: this.registerFilterService.prepareWhereCase(),
-        entWhereCase: this.registerFilterService.prepareWhereCaseForEntrance(
-          this.entranceGlobalId
-        ),
+        bldWhereCase: this.getBuildingWhereCase(),
+        entWhereCase: this.getEntranceWhereCase(),
       });
 
       // The view is created synchronously at init start; clear the overlay as
@@ -164,6 +152,8 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
       }
 
       await mapInitPromise;
+      await this.highlightSelectedBuildingPolygons();
+      await this.highlightSelectedEntrancePoint();
       this.mapAuthError = null;
       this.isMapReady = true;
     } catch (error) {
@@ -182,6 +172,42 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
   retryMapAuth() {
     this.registerMapService.cleanup();
     void this.initializeMap();
+  }
+
+  private getBuildingWhereCase() {
+    return this.registerFilterService.prepareWhereCase({
+      includeGlobalId: !this.highlightSelectedBuildings,
+    });
+  }
+
+  private async highlightSelectedBuildingPolygons() {
+    if (!this.highlightSelectedBuildings) {
+      return;
+    }
+    await this.registerMapService.highlightBuildings(
+      this.registerFilterService.getSelectedBuildingGlobalIds()
+    );
+  }
+
+  private getEntranceWhereCase() {
+    return this.registerFilterService.prepareWhereCaseForEntrance(
+      this.entranceGlobalId,
+      { includeEntranceId: !this.highlightSelectedEntrance }
+    );
+  }
+
+  private async updateEntranceLayer() {
+    await this.registerMapService.filterEntranceData(
+      this.getEntranceWhereCase()
+    );
+    await this.highlightSelectedEntrancePoint();
+  }
+
+  private async highlightSelectedEntrancePoint() {
+    if (!this.highlightSelectedEntrance) {
+      return;
+    }
+    await this.registerMapService.highlightEntrance(this.entranceGlobalId);
   }
 
   private handleMapError(error: unknown) {

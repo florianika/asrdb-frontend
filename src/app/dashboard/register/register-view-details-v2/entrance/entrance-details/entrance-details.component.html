@@ -24,16 +24,19 @@
             </span>
           }
           <br />
-          <section *ngFor="let section of sections">
-            <h3>{{ section.title }}</h3>
-            <asrdb-building-detail
-              *ngFor="let entry of section.entries"
-              [title]="entry.title"
-              [value]="entry.value"
-              [log]="entry.log"
-              [logType]="entry.logType"></asrdb-building-detail>
-            <hr />
-          </section>
+          @for (section of sections; track section) {
+            <section>
+              <h3>{{ section.title }}</h3>
+              @for (entry of section.entries; track entry) {
+                <asrdb-building-detail
+                  [title]="entry.title"
+                  [value]="entry.value"
+                  [log]="entry.log"
+                  [logType]="entry.logType"></asrdb-building-detail>
+              }
+              <hr />
+            </section>
+          }
         </mat-card-content>
       </mat-card>
       <div class="col-12 col-md-7">
@@ -46,14 +49,15 @@
               entrance.external_editor_date
             "></asrdb-history-details>
         }
-        <asrdb-register-map
-          *ngIf="buildingGlobalId && id"
-          [enableFilter]="false"
-          [enableSelection]="false"
-          [buildingGlobalId]="buildingGlobalId"
-          [skipOtherFiltersApartFromGlobalId]="true"
-          [entranceGlobalId]="id"
-          [small]="true"></asrdb-register-map>
+        @if (buildingGlobalId && id) {
+          <asrdb-register-map
+            [enableFilter]="false"
+            [enableSelection]="false"
+            [buildingGlobalId]="buildingGlobalId"
+            [skipOtherFiltersApartFromGlobalId]="true"
+            [entranceGlobalId]="id"
+            [small]="true"></asrdb-register-map>
+        }
         <asrdb-dwelling-list />
       </div>
     </div>

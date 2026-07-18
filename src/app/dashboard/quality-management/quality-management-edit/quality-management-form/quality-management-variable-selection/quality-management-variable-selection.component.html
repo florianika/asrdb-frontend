@@ -10,20 +10,16 @@
             placeholder="Search..."
             [value]="filterValue"
             (input)="updateFilter($event)" />
-          <button
-            mat-icon-button
-            matSuffix
-            *ngIf="filterValue"
-            (click)="clearFilter($event)">
-            <mat-icon>close</mat-icon>
-          </button>
+          @if (filterValue) {
+            <button mat-icon-button matSuffix (click)="clearFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
         </mat-form-field>
       </div>
-      <mat-option
-        *ngFor="let variable of filteredVariables"
-        [value]="variable.value"
-        >{{ variable.value }}</mat-option
-      >
+      @for (variable of filteredVariables; track variable) {
+        <mat-option [value]="variable.value">{{ variable.value }}</mat-option>
+      }
     </mat-select>
   </mat-form-field>
 </div>

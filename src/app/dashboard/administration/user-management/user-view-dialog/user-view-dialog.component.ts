@@ -3,9 +3,10 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserManagementService } from '../user-management.service';
 
 @Component({
-  selector: 'asrdb-user-view-dialog',
-  templateUrl: './user-view-dialog.component.html',
-  styleUrls: ['./user-view-dialog.component.css'],
+    selector: 'asrdb-user-view-dialog',
+    templateUrl: './user-view-dialog.component.html',
+    styleUrls: ['./user-view-dialog.component.css'],
+    standalone: false
 })
 export class UserViewDialogComponent implements OnInit {
   user = this.userService.userAsObservable;

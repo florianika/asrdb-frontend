@@ -9,13 +9,12 @@
         <span style="font-weight: bold">{{ buildingQuality | async }}</span>
       </span>
       <br />
-      <span
-        class="details-subheader"
-        *ngIf="(buildingQuality | async) == 'Untested data'"
-        i18n>
-        Building is untested, error list below may not be valid anymore. Execute
-        the rules to see the latest errors.
-      </span>
+      @if ((buildingQuality | async) == 'Untested data') {
+        <span class="details-subheader" i18n>
+          Building is untested, error list below may not be valid anymore.
+          Execute the rules to see the latest errors.
+        </span>
+      }
     </div>
     <span class="spacer"></span>
     <button
@@ -40,17 +39,17 @@
         style="margin-right: 10px"
         (click)="startExecuting()"
         [disabled]="executionStatus | async | logExecution">
-        <ng-container *ngIf="executionStatus | async | logExecution">
+        @if (executionStatus | async | logExecution) {
           <mat-spinner
             diameter="20"
             style="display: inline-block; vertical-align: middle"></mat-spinner>
           <span> Execution in progress </span>
-        </ng-container>
+        }
 
-        <ng-container *ngIf="!(executionStatus | async | logExecution)">
+        @if (!(executionStatus | async | logExecution)) {
           <mat-icon style="vertical-align: middle">play_arrow</mat-icon>
           <span i18n> Test data </span>
-        </ng-container>
+        }
       </button>
     </ng-container>
   </div>
@@ -62,9 +61,11 @@
       [clearable]="true"></asrdb-chip>
   </div>
 
-  <div class="asrbd-loading-shade" *ngIf="isLoadingResults | async">
-    <mat-spinner></mat-spinner>
-  </div>
+  @if (isLoadingResults | async) {
+    <div class="asrbd-loading-shade">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
 
   <div class="asrbd-table-container">
     <table
@@ -104,31 +105,30 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef i18n>Actions</th>
         <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="!(isLoadingResults | async)">
-            <button
-              mat-icon-button
-              *ngIf="row.qualityAction === 'QUE'"
-              [matMenuTriggerFor]="menu"
-              [disabled]="isResolvingLog | async">
-              <mat-icon>more_vert</mat-icon>
-            </button>
+          @if (!(isLoadingResults | async)) {
+            @if (row.qualityAction === 'QUE') {
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                [disabled]="isResolvingLog | async">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            }
             <mat-menu #menu="matMenu">
-              <button
-                *ngIf="row.qualityStatus === 'PENDING'"
-                mat-menu-item
-                (click)="resolve(row.id)">
-                <mat-icon>check_circle</mat-icon>
-                <span i18n>Resolve</span>
-              </button>
-              <button
-                *ngIf="row.qualityStatus !== 'PENDING'"
-                mat-menu-item
-                (click)="unresolve(row.id)">
-                <mat-icon>check_circle</mat-icon>
-                <span i18n>Mark as pending</span>
-              </button>
+              @if (row.qualityStatus === 'PENDING') {
+                <button mat-menu-item (click)="resolve(row.id)">
+                  <mat-icon>check_circle</mat-icon>
+                  <span i18n>Resolve</span>
+                </button>
+              }
+              @if (row.qualityStatus !== 'PENDING') {
+                <button mat-menu-item (click)="unresolve(row.id)">
+                  <mat-icon>check_circle</mat-icon>
+                  <span i18n>Mark as pending</span>
+                </button>
+              }
             </mat-menu>
-          </ng-container>
+          }
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

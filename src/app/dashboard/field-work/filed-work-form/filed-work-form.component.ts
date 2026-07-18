@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FieldWorkService } from '../field-work.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -23,9 +23,7 @@ import { FieldWorkFormStep4Component } from './field-work-form-step4/field-work-
 
 @Component({
   selector: 'asrdb-filed-work-form',
-  standalone: true,
   imports: [
-    CommonModule,
     MatStepperModule,
     MatButtonModule,
     MatIconModule,

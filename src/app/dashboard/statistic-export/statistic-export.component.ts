@@ -22,21 +22,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { StatisticExportCreateComponent } from './statistic-export-create/statistic-export-create.component';
 
 @Component({
-  selector: 'asrdb-statistic-export',
-  standalone: true,
-  imports: [
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinner,
-    MatMenuModule,
-    DatePipe,
-    MatTooltipModule,
-  ],
-  templateUrl: './statistic-export.component.html',
-  styleUrl: './statistic-export.component.css',
+    selector: 'asrdb-statistic-export',
+    imports: [
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinner,
+        MatMenuModule,
+        DatePipe,
+        MatTooltipModule,
+    ],
+    templateUrl: './statistic-export.component.html',
+    styleUrl: './statistic-export.component.css'
 })
 export class StatisticExportComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;

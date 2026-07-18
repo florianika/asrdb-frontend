@@ -502,7 +502,7 @@ export class EntityCreationMapService implements OnDestroy {
       );
     } catch (e) {
       console.log(e);
-      void this.filterBuildingData(whereCondition, --retires);
+      void this.filterBuildingData(whereCondition, retires - 1);
     }
   }
 

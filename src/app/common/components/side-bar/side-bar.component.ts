@@ -10,10 +10,11 @@ import { filter } from 'rxjs';
 import { FILTER_REGISTER } from '../../../dashboard/register/register-table-view/register-filter.service';
 
 @Component({
-  selector: 'asrdb-side-bar',
-  templateUrl: './side-bar.component.html',
-  styleUrls: ['./side-bar.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'asrdb-side-bar',
+    templateUrl: './side-bar.component.html',
+    styleUrls: ['./side-bar.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SideBarComponent implements AfterViewInit {
   sideBarElements = [

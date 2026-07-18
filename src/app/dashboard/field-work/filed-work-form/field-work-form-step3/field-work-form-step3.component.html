@@ -16,13 +16,14 @@
                   i18n-placeholder
                   placeholder="Search..."
                   [(ngModel)]="filterValue" />
-                <button
-                  mat-icon-button
-                  matSuffix
-                  *ngIf="filterValue()"
-                  (click)="resetFilterValue()">
-                  <mat-icon>close</mat-icon>
-                </button>
+                @if (filterValue()) {
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="resetFilterValue()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
               </mat-form-field>
             </div>
             <mat-option value="">-- SELECT --</mat-option>

@@ -13,16 +13,15 @@ export type AggregatedStatistic = {
 };
 
 @Component({
-  selector: 'asrdb-field-work-closure-modal',
-  standalone: true,
-  imports: [
-    MatStepperModule,
-    Step1FieldWorkClosureStatisticsComponent,
-    Step2FieldWorkClosureEmailComponent,
-    Step3FieldWorkClosureSummaryComponent,
-  ],
-  templateUrl: './field-work-closure-modal.component.html',
-  styleUrl: './field-work-closure-modal.component.css',
+    selector: 'asrdb-field-work-closure-modal',
+    imports: [
+        MatStepperModule,
+        Step1FieldWorkClosureStatisticsComponent,
+        Step2FieldWorkClosureEmailComponent,
+        Step3FieldWorkClosureSummaryComponent,
+    ],
+    templateUrl: './field-work-closure-modal.component.html',
+    styleUrl: './field-work-closure-modal.component.css'
 })
 export class FieldWorkClosureModalComponent implements OnDestroy {
   private fieldWorkClosureService = inject(FieldWorkClosureService);

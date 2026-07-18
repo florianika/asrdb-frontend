@@ -6,11 +6,10 @@ import { Role } from 'src/app/model/RolePermissions.model';
 import {AuthStateService} from "../../services/auth-state.service";
 
 @Component({
-  standalone: true,
-  selector: 'asrdb-role-selector',
-  templateUrl: './role-selector.component.html',
-  styleUrls: ['./role-selector.component.css'],
-  imports: [MatSelectModule, MatFormFieldModule, FormsModule],
+    selector: 'asrdb-role-selector',
+    templateUrl: './role-selector.component.html',
+    styleUrls: ['./role-selector.component.css'],
+    imports: [MatSelectModule, MatFormFieldModule, FormsModule]
 })
 export class RoleSelectorComponent {
   @Input() required = false;

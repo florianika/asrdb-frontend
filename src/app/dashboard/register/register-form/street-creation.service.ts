@@ -119,7 +119,7 @@ export class StreetManagementService {
   }
 
   private createStreet(street: Street) {
-    street.external_creator = `{${this.authState.getNameId()}}` ?? '';
+    street.external_creator = `{${this.authState.getNameId()}}`;
     street.external_creator_date = String(Date.now());
     const features = this.createFeatures(street);
     this.commonStreetService
@@ -128,7 +128,7 @@ export class StreetManagementService {
   }
 
   private updateStreet(street: Street) {
-    street.external_editor = `{${this.authState.getNameId()}}` ?? '';
+    street.external_editor = `{${this.authState.getNameId()}}`;
     street.external_editor_date = String(Date.now());
     const features = this.createFeatures(street);
     this.commonStreetService

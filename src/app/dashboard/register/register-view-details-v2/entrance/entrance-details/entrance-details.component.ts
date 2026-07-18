@@ -8,7 +8,7 @@ import {
   MatDialogContent,
 } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { RegisterMapComponent } from '../../../../common/components/register-map/register-map.component';
 import { EntranceDetailsService } from '../entrance-details.service';
 import { Router } from '@angular/router';
@@ -18,7 +18,6 @@ import { HistoryDetailsComponent } from '../../history-details/history-details.c
 
 @Component({
   selector: 'asrdb-entrance-details',
-  standalone: true,
   imports: [
     BuildingDetailComponent,
     MatButton,
@@ -29,8 +28,6 @@ import { HistoryDetailsComponent } from '../../history-details/history-details.c
     MatDialogContent,
     MatIcon,
     MatIconButton,
-    NgForOf,
-    NgIf,
     RegisterMapComponent,
     DwellingListComponent,
     HistoryDetailsComponent,

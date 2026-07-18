@@ -13,22 +13,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'asrdb-step-2-field-work-closure-email',
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    FormsModule,
-    MatButton,
-    MatFormField,
-    MatLabel,
-    MatOption,
-    MatSelect,
-    NgxEditorModule,
-    ReactiveFormsModule,
-    MatIcon,
-  ],
-  templateUrl: './step-2-field-work-closure-email.component.html',
-  styleUrl: './step-2-field-work-closure-email.component.css',
+    selector: 'asrdb-step-2-field-work-closure-email',
+    imports: [
+        AsyncPipe,
+        FormsModule,
+        MatButton,
+        MatFormField,
+        MatLabel,
+        MatOption,
+        MatSelect,
+        NgxEditorModule,
+        ReactiveFormsModule,
+        MatIcon,
+    ],
+    templateUrl: './step-2-field-work-closure-email.component.html',
+    styleUrl: './step-2-field-work-closure-email.component.css'
 })
 export class Step2FieldWorkClosureEmailComponent {
   private fieldWorkClosureService = inject(FieldWorkClosureService);

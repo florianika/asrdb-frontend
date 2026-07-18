@@ -12,28 +12,27 @@
             i18n-placeholder
             placeholder="Search..."
             [(ngModel)]="filterValue" />
-          <button
-            mat-icon-button
-            matSuffix
-            *ngIf="filterValue"
-            (click)="filterValue = ''">
-            <mat-icon>close</mat-icon>
-          </button>
+          @if (filterValue) {
+            <button mat-icon-button matSuffix (click)="filterValue = ''">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
         </mat-form-field>
       </div>
-      <mat-option
-        *ngFor="let municipality of municipalities"
-        [value]="municipality.code"
-        >{{ municipality.name }}</mat-option
-      >
+      @for (municipality of municipalities; track municipality) {
+        <mat-option [value]="municipality.code">{{
+          municipality.name
+        }}</mat-option>
+      }
     </mat-select>
-    <button
-      mat-icon-button
-      matSuffix
-      (click)="cleanValue($event, 'StrMunicipality')"
-      *ngIf="filterConfig.filter.StrMunicipality !== null">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (filterConfig.filter.StrMunicipality !== null) {
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="cleanValue($event, 'StrMunicipality')">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Street type</mat-label>
@@ -41,19 +40,15 @@
       [value]="filterConfig.filter.StrType"
       [multiple]="true"
       (selectionChange)="changeValue($event, 'StrType')">
-      <mat-option
-        *ngFor="let status of filterConfig.options.StrType"
-        [value]="status.code"
-        >{{ status.name }}</mat-option
-      >
+      @for (status of filterConfig.options.StrType; track status) {
+        <mat-option [value]="status.code">{{ status.name }}</mat-option>
+      }
     </mat-select>
-    <button
-      mat-icon-button
-      matSuffix
-      (click)="cleanValue($event, 'StrType')"
-      *ngIf="filterConfig.filter.StrType.length > 0">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (filterConfig.filter.StrType.length > 0) {
+      <button mat-icon-button matSuffix (click)="cleanValue($event, 'StrType')">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label i18n>Street name core</mat-label>

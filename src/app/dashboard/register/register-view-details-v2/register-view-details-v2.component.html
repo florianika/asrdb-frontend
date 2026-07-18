@@ -1,134 +1,147 @@
-<div *ngIf="!isLoading; else loader" class="building-details-container">
-  <div class="row">
-    <div class="col-12 col-md-4 pe-0">
-      <mat-card class="building-details-card">
-        <mat-card-content>
-          <div class="d-flex">
-            <button
-              mat-icon-button
-              matTooltip="Go to listing view"
-              style="vertical-align: middle"
-              (click)="goBack()">
-              <mat-icon>arrow_back</mat-icon>
-            </button>
-            <span class="flex-grow-1"></span>
-
-            <button
-              mat-icon-button
-              *ngIf="isAdmin || isSupervisor"
-              [matTooltip]="'Edit building'"
-              (click)="editBuilding()">
-              <mat-icon>edit</mat-icon>
-            </button>
-            @if (isExecutingRules) {
-              <span class="align-content-center">
-                <mat-spinner diameter="20"></mat-spinner>
-              </span>
-            } @else {
+@if (!isLoading) {
+  <div class="building-details-container">
+    <div class="row">
+      <div class="col-12 col-md-4 pe-0">
+        <mat-card class="building-details-card">
+          <mat-card-content>
+            <div class="d-flex">
               <button
                 mat-icon-button
-                matTooltip="Test building data"
+                matTooltip="Go to listing view"
                 style="vertical-align: middle"
-                [disabled]="isExecutingRules"
-                (click)="startExecution()">
-                <mat-icon>play_arrow</mat-icon>
+                (click)="goBack()">
+                <mat-icon>arrow_back</mat-icon>
               </button>
-            }
-            <button
-              mat-icon-button
-              matTooltip="Quality report"
-              i18n-matTooltip
-              style="vertical-align: middle"
-              (click)="gotToLogs()">
-              <mat-icon>rule</mat-icon>
-            </button>
-
-            <button
-              mat-icon-button
-              *ngIf="building?.BldReview == '3'"
-              i18n-matTooltip
-              matTooltip="Approve or Reopen review"
-              [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="openApproveReview()">
-                <mat-icon>check</mat-icon>
-                <span i18n>Approve review</span>
+              <span class="flex-grow-1"></span>
+              @if (isAdmin || isSupervisor) {
+                <button
+                  mat-icon-button
+                  [matTooltip]="'Edit building'"
+                  (click)="editBuilding()">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
+              @if (isExecutingRules) {
+                <span class="align-content-center">
+                  <mat-spinner diameter="20"></mat-spinner>
+                </span>
+              } @else {
+                <button
+                  mat-icon-button
+                  matTooltip="Test building data"
+                  style="vertical-align: middle"
+                  [disabled]="isExecutingRules"
+                  (click)="startExecution()">
+                  <mat-icon>play_arrow</mat-icon>
+                </button>
+              }
+              <button
+                mat-icon-button
+                matTooltip="Quality report"
+                i18n-matTooltip
+                style="vertical-align: middle"
+                (click)="gotToLogs()">
+                <mat-icon>rule</mat-icon>
               </button>
-              <button mat-menu-item (click)="openRejectReview()">
-                <mat-icon>replay</mat-icon>
-                <span i18n>Reopen review</span>
-              </button>
-            </mat-menu>
-          </div>
-          <mat-divider class="mt-2 mb-3"></mat-divider>
-          <h2 class="details-header">
-            <span i18n>Details for building</span>
-          </h2>
-          @for (
-            titlePart of buildingStructure?.titleSection;
-            track titlePart.propName
-          ) {
-            <span class="details-subheader mb-1 d-block">
-              <span class="me-1">{{ titlePart.title }}:</span>
-              <span style="font-weight: bold">{{
-                getValueFromStatus(titlePart.propName)
-              }}</span>
-            </span>
-          }
-          <br />
-          <section *ngFor="let section of buildingStructure?.sections">
-            <h3>{{ section.title }}</h3>
-            <asrdb-building-detail
-              *ngFor="let entry of section.entries"
-              [title]="entry.title"
-              [value]="entry.value"
-              [log]="entry.log"
-              [logType]="entry.logType"></asrdb-building-detail>
-            <hr />
-          </section>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <div class="col-12 col-md-8">
-      <div class="building-last-modified-card">
-        <div class="row">
-          <div class="col-12 col-md-8 me-0">
-            @if (building && building.GlobalID) {
-              <asrdb-comment-view
-                [buildingId]="building.GlobalID"></asrdb-comment-view>
+              @if (building?.BldReview === '3') {
+                <button
+                  mat-icon-button
+                  i18n-matTooltip
+                  matTooltip="Approve or Reopen review"
+                  [matMenuTriggerFor]="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              }
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="openApproveReview()">
+                  <mat-icon>check</mat-icon>
+                  <span i18n>Approve review</span>
+                </button>
+                <button mat-menu-item (click)="openRejectReview()">
+                  <mat-icon>replay</mat-icon>
+                  <span i18n>Reopen review</span>
+                </button>
+              </mat-menu>
+            </div>
+            <mat-divider class="mt-2 mb-3"></mat-divider>
+            <h2 class="details-header">
+              <span i18n>Details for building</span>
+            </h2>
+            @for (
+              titlePart of buildingStructure?.titleSection;
+              track titlePart.propName
+            ) {
+              <span class="details-subheader mb-1 d-block">
+                <span class="me-1">{{ titlePart.title }}:</span>
+                <span style="font-weight: bold">{{
+                  getValueFromStatus(titlePart.propName)
+                }}</span>
+              </span>
             }
-          </div>
-          <div class="col-12 col-md-4 ms-0 ps-0">
-            @if (building) {
-              <asrdb-history-details
-                [externalCreator]="building.external_creator"
-                [externalCreationDate]="building.external_creator_date"
-                [externalUpdater]="building.external_editor"
-                [externalUpdateDate]="
-                  building.external_editor_date
-                "></asrdb-history-details>
+            <br />
+            @for (section of buildingStructure?.sections; track section) {
+              <section>
+                <h3>{{ section.title }}</h3>
+                @for (entry of section.entries; track entry) {
+                  <asrdb-building-detail
+                    [title]="entry.title"
+                    [value]="entry.value"
+                    [log]="entry.log"
+                    [logType]="entry.logType"></asrdb-building-detail>
+                }
+                <hr />
+              </section>
             }
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="building-last-modified-card">
+          <div class="row">
+            <div class="col-12 col-md-8 me-0">
+              @if (building && building.GlobalID) {
+                <asrdb-comment-view
+                  [buildingId]="building.GlobalID"></asrdb-comment-view>
+              }
+            </div>
+            <div class="col-12 col-md-4 ms-0 ps-0">
+              @if (building) {
+                <asrdb-history-details
+                  [externalCreator]="building.external_creator"
+                  [externalCreationDate]="building.external_creator_date"
+                  [externalUpdater]="building.external_editor"
+                  [externalUpdateDate]="
+                    building.external_editor_date
+                  "></asrdb-history-details>
+              }
+            </div>
           </div>
-        </div>
-        <asrdb-register-map
-          [enableFilter]="false"
-          [enableSelection]="false"
-          [small]="true"
-          [buildingGlobalId]="id"
-          [skipOtherFiltersApartFromGlobalId]="true"
-          [entranceGlobalId]="selectedEntrance?.GlobalID"></asrdb-register-map>
-        <div class="mt-3">
-          <asrdb-entrance-list />
-        </div>
-        <div class="mt-3">
-          <asrdb-dwelling-list />
+          <asrdb-register-map
+            [enableFilter]="false"
+            [enableSelection]="false"
+            [small]="true"
+            [buildingGlobalId]="id"
+            [skipOtherFiltersApartFromGlobalId]="true"
+            [highlightSelectedEntrance]="true"
+            [entranceGlobalId]="
+              selectedEntrance?.GlobalID
+            "></asrdb-register-map>
+          <div class="mt-3">
+            <asrdb-entrance-list />
+          </div>
+          <div class="mt-3">
+            <asrdb-dwelling-list />
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+} @else {
+  <div class="asrbd-loading-shade-full">
+    <mat-spinner diameter="40"></mat-spinner>
+    <div class="loading-text" i18n>Loading building details...</div>
+  </div>
+}
 
 @if (isExecutingRules) {
   <div class="asrbd-loading-shade-full">

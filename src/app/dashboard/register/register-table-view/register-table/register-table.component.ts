@@ -8,7 +8,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -65,9 +65,7 @@ type BuildingDataResponse = EsriQueryResponse<Building> & {
 
 @Component({
   selector: 'asrdb-register-table',
-  standalone: true,
   imports: [
-    CommonModule,
     MatProgressSpinnerModule,
     MatMenuModule,
     MatPaginatorModule,

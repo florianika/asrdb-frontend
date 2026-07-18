@@ -29,21 +29,20 @@ import { ENTRANCE_ENTITY } from '../../../../../common/constants/common-constant
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'asrdb-entrance-list',
-  standalone: true,
-  imports: [
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule,
-    MatDividerModule,
-  ],
-  templateUrl: './entrance-list.component.html',
-  styleUrl: './entrance-list.component.css',
+    selector: 'asrdb-entrance-list',
+    imports: [
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        MatTooltipModule,
+        MatProgressSpinnerModule,
+        MatDividerModule,
+    ],
+    templateUrl: './entrance-list.component.html',
+    styleUrl: './entrance-list.component.css'
 })
 export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;

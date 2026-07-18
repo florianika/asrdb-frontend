@@ -19,22 +19,21 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 
 @Component({
-  selector: 'asrdb-comment-view',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    CommonModule,
-    MatProgressSpinnerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-  ],
-  providers: [CommentService],
-  templateUrl: './comment-view.component.html',
-  styleUrl: './comment-view.component.css',
+    selector: 'asrdb-comment-view',
+    imports: [
+        MatCardModule,
+        CommonModule,
+        MatProgressSpinnerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+    ],
+    providers: [CommentService],
+    templateUrl: './comment-view.component.html',
+    styleUrl: './comment-view.component.css'
 })
 export class CommentViewComponent implements OnInit {
   @Input() buildingId: string | undefined;

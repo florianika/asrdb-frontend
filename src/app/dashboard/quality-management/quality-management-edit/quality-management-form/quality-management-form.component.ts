@@ -23,10 +23,11 @@ import 'brace/theme/github';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'asrdb-quality-management-form',
-  templateUrl: './quality-management-form.component.html',
-  styleUrls: ['./quality-management-form.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'asrdb-quality-management-form',
+    templateUrl: './quality-management-form.component.html',
+    styleUrls: ['./quality-management-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class QualityManagementFormComponent implements OnInit {
   @Input() rule?: QualityRule;

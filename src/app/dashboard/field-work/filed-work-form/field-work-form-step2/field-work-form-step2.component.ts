@@ -12,23 +12,22 @@ import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'asrdb-field-work-form-step2',
-  standalone: true,
-  imports: [
-    MatButton,
-    MatFormField,
-    MatLabel,
-    ReactiveFormsModule,
-    MatSelect,
-    MatOption,
-    AsyncPipe,
-    NgxEditorModule,
-    FormsModule,
-    NgxEditorModule,
-    MatIcon,
-  ],
-  templateUrl: './field-work-form-step2.component.html',
-  styleUrl: './field-work-form-step2.component.css',
+    selector: 'asrdb-field-work-form-step2',
+    imports: [
+        MatButton,
+        MatFormField,
+        MatLabel,
+        ReactiveFormsModule,
+        MatSelect,
+        MatOption,
+        AsyncPipe,
+        NgxEditorModule,
+        FormsModule,
+        NgxEditorModule,
+        MatIcon,
+    ],
+    templateUrl: './field-work-form-step2.component.html',
+    styleUrl: './field-work-form-step2.component.css'
 })
 export class FieldWorkFormStep2Component {
   @Input() formGroup!: FormGroup;

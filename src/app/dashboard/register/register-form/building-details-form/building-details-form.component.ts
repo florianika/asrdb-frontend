@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   AbstractControl,
   FormControl,
@@ -57,13 +57,14 @@ import {
   EntityAttribute,
 } from '../../../common/service/common-entity-structure.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
-import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
+import {
+  getLocaleProperty,
+  getLogMessage,
+} from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-building-details-form',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -117,7 +118,9 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   get isNormalUser() {
-    return !this.authStateService.isAdmin() && !this.authStateService.isSupervisor();
+    return (
+      !this.authStateService.isAdmin() && !this.authStateService.isSupervisor()
+    );
   }
 
   ngOnInit() {
@@ -254,7 +257,7 @@ export class BuildingDetailsFormComponent implements OnInit, OnDestroy {
       const municipalityValue =
         typeof value === 'number'
           ? value
-          : this.filterService.municipality ?? null;
+          : (this.filterService.municipality ?? null);
       if (municipalityValue) {
         control.setValue(municipalityValue);
       }

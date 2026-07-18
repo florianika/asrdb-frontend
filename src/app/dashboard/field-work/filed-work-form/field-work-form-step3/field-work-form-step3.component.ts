@@ -17,7 +17,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { ShortQualityRule } from '../../../quality-management/quality-management-config';
 import { MatInput } from '@angular/material/input';
-import { NgIf } from '@angular/common';
+
 import { FieldWorkFormStep3StatisticTableComponent } from './field-work-form-step3-statistic-table/field-work-form-step3-statistic-table.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -25,7 +25,6 @@ import { FieldWorkStatisticService } from '../../field-work-statistic.service';
 
 @Component({
   selector: 'asrdb-field-work-form-step3',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatFormField,
@@ -36,7 +35,6 @@ import { FieldWorkStatisticService } from '../../field-work-statistic.service';
     MatLabel,
     MatInput,
     MatSuffix,
-    NgIf,
     FormsModule,
     MatButton,
     FieldWorkFormStep3StatisticTableComponent,
@@ -53,10 +51,7 @@ export class FieldWorkFormStep3Component {
   private _fieldWorkStatisticService = inject(FieldWorkStatisticService);
   private idRef: null | number = null;
 
-  public selectControlByEntityType: Record<
-    string,
-    FormControl<number | ''>
-  > = {
+  public selectControlByEntityType: Record<string, FormControl<number | ''>> = {
     [BUILDING_ENTITY]: new FormControl<number | ''>('', {
       nonNullable: true,
     }),
@@ -157,15 +152,15 @@ export class FieldWorkFormStep3Component {
 
   getActiveRulesByEntityType(entityType: string): ShortQualityRule[] {
     return (
-      this.rulesToRender.find(group => group.entityType === entityType)?.rules ??
-      []
+      this.rulesToRender.find(group => group.entityType === entityType)
+        ?.rules ?? []
     );
   }
 
   getRuleGroupLabel(entityType: string): string {
     return (
-      this.rulesToRender.find(group => group.entityType === entityType)?.label ??
-      ''
+      this.rulesToRender.find(group => group.entityType === entityType)
+        ?.label ?? ''
     );
   }
 

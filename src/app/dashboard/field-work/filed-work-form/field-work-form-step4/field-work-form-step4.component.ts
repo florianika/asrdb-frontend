@@ -6,11 +6,10 @@ import { Router } from '@angular/router';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'asrdb-field-work-form-step4',
-  standalone: true,
-  imports: [MatButton, MatIcon, MatProgressSpinner],
-  templateUrl: './field-work-form-step4.component.html',
-  styleUrl: './field-work-form-step4.component.css',
+    selector: 'asrdb-field-work-form-step4',
+    imports: [MatButton, MatIcon, MatProgressSpinner],
+    templateUrl: './field-work-form-step4.component.html',
+    styleUrl: './field-work-form-step4.component.css'
 })
 export class FieldWorkFormStep4Component {
   private _fieldWorkService = inject(FieldWorkService);

@@ -21,26 +21,25 @@ import { ForgotPasswordService } from './forgot-password.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'asrdb-forgot-password',
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    MatButton,
-    MatCard,
-    MatCardContent,
-    MatCardTitle,
-    MatFormField,
-    MatIcon,
-    MatInput,
-    MatLabel,
-    MatPrefix,
-    ReactiveFormsModule,
-    RouterLink,
-    MatSuffix,
-  ],
-  providers: [ForgotPasswordService],
-  templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.css',
+    selector: 'asrdb-forgot-password',
+    imports: [
+        AsyncPipe,
+        MatButton,
+        MatCard,
+        MatCardContent,
+        MatCardTitle,
+        MatFormField,
+        MatIcon,
+        MatInput,
+        MatLabel,
+        MatPrefix,
+        ReactiveFormsModule,
+        RouterLink,
+        MatSuffix,
+    ],
+    providers: [ForgotPasswordService],
+    templateUrl: './forgot-password.component.html',
+    styleUrl: './forgot-password.component.css'
 })
 export class ForgotPasswordComponent implements OnInit {
   loading = this.forgotPasswordService.isLoading$;

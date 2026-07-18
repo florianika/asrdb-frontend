@@ -6,18 +6,17 @@ import { MatButton } from '@angular/material/button';
 import { SigninV2Service } from '../signin-v2.service';
 
 @Component({
-  selector: 'asrdb-two-fa-token-verify',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatInput,
-    MatFormField,
-    MatLabel,
-    MatIcon,
-    MatButton,
-  ],
-  templateUrl: './two-fa-token-verify.component.html',
-  styleUrl: './two-fa-token-verify.component.css',
+    selector: 'asrdb-two-fa-token-verify',
+    imports: [
+        ReactiveFormsModule,
+        MatInput,
+        MatFormField,
+        MatLabel,
+        MatIcon,
+        MatButton,
+    ],
+    templateUrl: './two-fa-token-verify.component.html',
+    styleUrl: './two-fa-token-verify.component.css'
 })
 export class TwoFaTokenVerifyComponent {
   @Input() form!: FormGroup;

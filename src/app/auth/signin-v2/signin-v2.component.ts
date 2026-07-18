@@ -16,24 +16,23 @@ import { SigninV2Service } from './signin-v2.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'asrdb-signin-v2',
-  standalone: true,
-  imports: [
-    MatStepperModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    UsernamePasswordFormComponent,
-    TwoFaTokenVerifyComponent,
-    MatCard,
-    MatCardContent,
-    MatCardTitle,
-    ReactiveFormsModule,
-    RouterLink,
-  ],
-  providers: [SigninV2Service],
-  templateUrl: './signin-v2.component.html',
-  styleUrl: './signin-v2.component.css',
+    selector: 'asrdb-signin-v2',
+    imports: [
+        MatStepperModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        UsernamePasswordFormComponent,
+        TwoFaTokenVerifyComponent,
+        MatCard,
+        MatCardContent,
+        MatCardTitle,
+        ReactiveFormsModule,
+        RouterLink,
+    ],
+    providers: [SigninV2Service],
+    templateUrl: './signin-v2.component.html',
+    styleUrl: './signin-v2.component.css'
 })
 export class SigninV2Component {
   @ViewChild(MatStepper) stepper!: MatStepper;

@@ -13,9 +13,7 @@
         mode="determinate"
         [value]="overallCompleteness.percent"></mat-progress-bar>
 
-      @if (
-        showAllMunicipalityProgressBars && municipalityCompleteness.length
-      ) {
+      @if (showAllMunicipalityProgressBars && municipalityCompleteness.length) {
         <div class="municipality-progress-list">
           @for (
             municipalityMetric of municipalityCompleteness;
@@ -53,7 +51,9 @@
             </div>
             <mat-progress-bar
               mode="determinate"
-              [value]="selectedMunicipalityCompleteness.percent"></mat-progress-bar>
+              [value]="
+                selectedMunicipalityCompleteness.percent
+              "></mat-progress-bar>
           </div>
         </div>
       }
@@ -70,23 +70,23 @@
                 i18n-placeholder
                 placeholder="Search..."
                 [(ngModel)]="municipalityFilterValue" />
-              <button
-                class="z-2"
-                mat-icon-button
-                matSuffix
-                *ngIf="municipalityFilterValue"
-                (click)="clearMunicipalityFilter($event)">
-                <mat-icon>close</mat-icon>
-              </button>
+              @if (municipalityFilterValue) {
+                <button
+                  class="z-2"
+                  mat-icon-button
+                  matSuffix
+                  (click)="clearMunicipalityFilter($event)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
             </mat-form-field>
           </div>
           <mat-option value="" i18n>All municipalities</mat-option>
-          <mat-option
-            *ngFor="let municipality of filteredMunicipalities"
-            [value]="municipality.name"
-            (click)="input.close()">
-            {{ municipality.name }}
-          </mat-option>
+          @for (municipality of filteredMunicipalities; track municipality) {
+            <mat-option [value]="municipality.name" (click)="input.close()">
+              {{ municipality.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
 

@@ -1,19 +1,23 @@
 <div #mapViewNode></div>
-<mat-error
-  *ngIf="isBuilding && formGroup.controls['buildingPoly']?.invalid"
-  class="custom-error-message"
-  ><mat-icon inline>error</mat-icon>
-  <span *ngIf="!intersectsBuilding" i18n>
-    Please draw the building to continue!</span
+@if (isBuilding && formGroup.controls['buildingPoly']?.invalid) {
+  <mat-error class="custom-error-message"
+    ><mat-icon inline>error</mat-icon>
+    @if (!intersectsBuilding) {
+      <span i18n> Please draw the building to continue!</span>
+    }
+    @if (intersectsBuilding) {
+      <span i18n>
+        Please update the building so that it does not intersect another
+        building!</span
+      >
+    }
+  </mat-error>
+}
+@if (isEntrance && formGroup.controls['entrancePoints']?.invalid) {
+  <mat-error class="custom-error-message"
+    ><mat-icon inline>error</mat-icon>
+    <span i18n
+      >Please draw at least one entrance point to continue!</span
+    ></mat-error
   >
-  <span *ngIf="intersectsBuilding" i18n>
-    Please update the building so that it does not intersect another
-    building!</span
-  >
-</mat-error>
-<mat-error
-  *ngIf="isEntrance && formGroup.controls['entrancePoints']?.invalid"
-  class="custom-error-message"
-  ><mat-icon inline>error</mat-icon>
-  <span i18n>Please draw at least one entrance point to continue!</span></mat-error
->
+}

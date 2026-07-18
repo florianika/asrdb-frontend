@@ -80,36 +80,37 @@
     </button>
   </div>
 
-  <div style="padding: 0 10px 20px" *ngIf="filterObservable | async as filters">
-    <asrdb-chip
-      (remove)="remove($event)"
-      [chips]="getFilterChips(filters)"
-      [clearable]="true"></asrdb-chip>
-  </div>
+  @if (filterObservable | async; as filters) {
+    <div style="padding: 0 10px 20px">
+      <asrdb-chip
+        (remove)="remove($event)"
+        [chips]="getFilterChips(filters)"
+        [clearable]="true"></asrdb-chip>
+    </div>
+  }
 
   <asrdb-register-map [enableLegend]="true"></asrdb-register-map>
-  <div
-    class="row"
-    style="margin-top: 20px; padding-bottom: 20px"
-    *ngIf="fields.length">
-    <h1 i18n>Statistics</h1>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-      <asrdb-building-quality-graph
-        [fields]="fields"
-        title="Building quality"
-        variable="BldQuality"></asrdb-building-quality-graph>
+  @if (fields.length) {
+    <div class="row" style="margin-top: 20px; padding-bottom: 20px">
+      <h1 i18n>Statistics</h1>
+      <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+        <asrdb-building-quality-graph
+          [fields]="fields"
+          title="Building quality"
+          variable="BldQuality"></asrdb-building-quality-graph>
+      </div>
+      <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+        <asrdb-building-quality-graph
+          [fields]="fields"
+          title="Building status"
+          variable="BldStatus"></asrdb-building-quality-graph>
+      </div>
+      <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+        <asrdb-building-quality-graph
+          [fields]="fields"
+          title="Building type"
+          variable="BldType"></asrdb-building-quality-graph>
+      </div>
     </div>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-      <asrdb-building-quality-graph
-        [fields]="fields"
-        title="Building status"
-        variable="BldStatus"></asrdb-building-quality-graph>
-    </div>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-      <asrdb-building-quality-graph
-        [fields]="fields"
-        title="Building type"
-        variable="BldType"></asrdb-building-quality-graph>
-    </div>
-  </div>
+  }
 </div>

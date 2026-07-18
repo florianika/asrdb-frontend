@@ -43,16 +43,20 @@
     </button>
   </div>
 
-  <div style="padding: 0 10px" *ngIf="!isLoadingResults()">
-    <asrdb-chip
-      (remove)="remove($event)"
-      [chips]="filterChips"
-      [clearable]="true"></asrdb-chip>
-  </div>
+  @if (!isLoadingResults()) {
+    <div style="padding: 0 10px">
+      <asrdb-chip
+        (remove)="remove($event)"
+        [chips]="filterChips"
+        [clearable]="true"></asrdb-chip>
+    </div>
+  }
 
-  <div class="asrbd-loading-shade" *ngIf="isLoadingResults()">
-    <mat-spinner></mat-spinner>
-  </div>
+  @if (isLoadingResults()) {
+    <div class="asrbd-loading-shade">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
 
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="datasource" class="asrbd-table" matSort>

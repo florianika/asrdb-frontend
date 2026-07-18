@@ -20,9 +20,10 @@ import { getLocaleProperty } from '../../../../common/helper/locale-property-hel
 type SelectOption = { text: string; value: string };
 
 @Component({
-  selector: 'asrdb-quality-management-variable-selection',
-  templateUrl: './quality-management-variable-selection.component.html',
-  styleUrls: ['./quality-management-variable-selection.component.css'],
+    selector: 'asrdb-quality-management-variable-selection',
+    templateUrl: './quality-management-variable-selection.component.html',
+    styleUrls: ['./quality-management-variable-selection.component.css'],
+    standalone: false
 })
 export class QualityManagementVariableSelectionComponent
   implements OnInit, OnDestroy

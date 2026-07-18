@@ -1,4 +1,4 @@
-<ng-container *ngIf="user | async as data">
+@if (user | async; as data) {
   <h1 mat-dialog-title i18n>
     Viewing user {{ data.name }} {{ data.lastName }}
   </h1>
@@ -27,4 +27,4 @@
   <div mat-dialog-actions>
     <button mat-button color="primary" [mat-dialog-close] i18n>Close</button>
   </div>
-</ng-container>
+}

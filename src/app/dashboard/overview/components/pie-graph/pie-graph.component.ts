@@ -12,9 +12,10 @@ import { QueryFilter } from '../../../register/model/query-filter';
 import { BuildingFilter } from '../../../register/model/building';
 
 @Component({
-  selector: 'asrdb-building-quality-graph',
-  templateUrl: './pie-graph.component.html',
-  styleUrls: ['./pie-graph.component.css'],
+    selector: 'asrdb-building-quality-graph',
+    templateUrl: './pie-graph.component.html',
+    styleUrls: ['./pie-graph.component.css'],
+    standalone: false
 })
 export class PieGraphComponent implements OnInit, OnDestroy {
   @Input() fields = [];

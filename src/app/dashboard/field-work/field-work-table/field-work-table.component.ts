@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FieldWork, FieldWorkService } from '../field-work.service';
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -19,12 +19,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { AuthStateService } from '../../../common/services/auth-state.service';
 
 @Component({
   selector: 'asrdb-field-work-table',
-  standalone: true,
   imports: [
-    NgIf,
     MatProgressSpinner,
     MatTableModule,
     MatPaginatorModule,
@@ -46,6 +45,7 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
   private fieldWorkService = inject(FieldWorkService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private authStateService = inject(AuthStateService);
   private destroyed$ = new Subject<void>();
   private lastCanBeClosedCheckFieldWorkId: number | null = null;
 
@@ -125,6 +125,12 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
     return row.fieldWorkStatus === 'NEW';
   }
 
+  get canCloseFieldWork(): boolean {
+    return (
+      this.authStateService.isAdmin() || this.authStateService.isSupervisor()
+    );
+  }
+
   canBeClosed(row: FieldWork): boolean {
     return (
       row.fieldWorkId == this.fieldWorkCanBeClosed()?.fieldWorkId &&
@@ -133,6 +139,9 @@ export class FieldWorkTableComponent implements AfterViewInit, OnDestroy {
   }
 
   openDeleteFieldWork(fieldWorkId: number) {
+    if (!this.canCloseFieldWork) {
+      return;
+    }
     void this.router.navigateByUrl('dashboard/field-work/close/' + fieldWorkId);
   }
 }

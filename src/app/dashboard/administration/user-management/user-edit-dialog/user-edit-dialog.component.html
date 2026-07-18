@@ -6,11 +6,11 @@
   <mat-form-field class="w-100">
     <mat-label i18n>Municipality</mat-label>
     <mat-select [(ngModel)]="newMunicipality" class="full-width">
-      <mat-option
-        *ngFor="let municipality of municipalities"
-        [value]="municipality.code">
-        {{ municipality.name }} | {{ municipality.code }}
-      </mat-option>
+      @for (municipality of municipalities; track municipality) {
+        <mat-option [value]="municipality.code">
+          {{ municipality.name }} | {{ municipality.code }}
+        </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 </div>

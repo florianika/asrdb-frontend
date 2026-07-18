@@ -6,11 +6,10 @@ import { EntityType } from 'src/app/model/RolePermissions.model';
 import { BUILDING_ENTITY } from '../../constants/common-constants';
 
 @Component({
-  standalone: true,
-  selector: 'asrdb-entity-type-selector',
-  templateUrl: './entity-type-selector.component.html',
-  styleUrls: ['./entity-type-selector.component.css'],
-  imports: [MatSelectModule, MatFormFieldModule, FormsModule],
+    selector: 'asrdb-entity-type-selector',
+    templateUrl: './entity-type-selector.component.html',
+    styleUrls: ['./entity-type-selector.component.css'],
+    imports: [MatSelectModule, MatFormFieldModule, FormsModule]
 })
 export class EntityTypeSelectorComponent {
   @Input() required = false;

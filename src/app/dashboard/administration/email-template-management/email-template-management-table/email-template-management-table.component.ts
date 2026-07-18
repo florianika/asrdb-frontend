@@ -14,9 +14,10 @@ import { EmailTemplate } from '../../../../model/EmailTemplate.model';
 import { UserManagementService } from '../../user-management/user-management.service';
 
 @Component({
-  selector: 'asrdb-email-template-management-table',
-  templateUrl: './email-template-management-table.component.html',
-  styleUrls: ['./email-template-management-table.component.css'],
+    selector: 'asrdb-email-template-management-table',
+    templateUrl: './email-template-management-table.component.html',
+    styleUrls: ['./email-template-management-table.component.css'],
+    standalone: false
 })
 export class EmailTemplateManagementTableComponent
   implements OnInit, AfterViewInit, OnDestroy

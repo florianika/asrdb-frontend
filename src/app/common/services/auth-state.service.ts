@@ -14,6 +14,7 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timeout,
 } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ESRI_AUTH_KEY } from '../../dashboard/common/service/common-esri-auth.service';
@@ -102,6 +103,7 @@ export class AuthStateService {
         RefreshToken: this.tokens?.refreshToken,
       })
       .pipe(
+        timeout(10_000),
         takeUntil(this.subscription),
         tap(newToken => {
           if (isDevMode()) {
@@ -169,7 +171,9 @@ export class AuthStateService {
   isUserLoggedIn(admin = false): Observable<boolean> {
     const authCheck$ = this.isTokenValid()
       ? of(true)
-      : this.refreshToken('guard');
+      : this.tokens
+        ? this.refreshToken('guard')
+        : of(false);
 
     return authCheck$.pipe(
       map(isAuthenticated => {

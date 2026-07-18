@@ -9,7 +9,7 @@ import {
   ViewChild,
   isDevMode,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import MapView from '@arcgis/core/views/MapView';
 import {
   EditableGeometry,
@@ -39,8 +39,7 @@ type ExistingEntranceGeometry = EditableGeometry & {
 
 @Component({
   selector: 'asrdb-building-creation',
-  standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatIconModule],
+  imports: [MatFormFieldModule, MatIconModule],
   templateUrl: './building-creation.component.html',
   styleUrls: ['./building-creation.component.css'],
 })
@@ -109,10 +108,9 @@ export class BuildingCreationComponent implements OnInit, OnDestroy {
     if (this.isBuilding) {
       this.formGroup.addControl(
         'buildingPoly',
-        new FormControl<BuildingPoly | null>(
-          existingBuildingPoly,
-          [Validators.required]
-        )
+        new FormControl<BuildingPoly | null>(existingBuildingPoly, [
+          Validators.required,
+        ])
       );
     }
     if (this.isEntrance) {

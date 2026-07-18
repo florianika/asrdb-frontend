@@ -19,19 +19,18 @@ import { RegisterViewDetailsService } from '../../register-view-details.service'
 import { EntranceDetailsService } from '../../entrance/entrance-details.service';
 
 @Component({
-  selector: 'asrdb-dwelling-details',
-  standalone: true,
-  imports: [
-    MatDialogModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    BuildingDetailComponent,
-    HistoryDetailsComponent,
-    MatProgressSpinner,
-  ],
-  templateUrl: './dwelling-details.component.html',
-  styleUrl: './dwelling-details.component.css',
+    selector: 'asrdb-dwelling-details',
+    imports: [
+        MatDialogModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        BuildingDetailComponent,
+        HistoryDetailsComponent,
+        MatProgressSpinner,
+    ],
+    templateUrl: './dwelling-details.component.html',
+    styleUrl: './dwelling-details.component.css'
 })
 export class DwellingDetailsComponent implements OnDestroy {
   private destroy$ = new Subject<boolean>();

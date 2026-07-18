@@ -43,21 +43,20 @@ const DWELLINGS_LIST_COLUMNS = [
 ];
 
 @Component({
-  selector: 'asrdb-dwelling-list',
-  standalone: true,
-  imports: [
-    MatDividerModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatProgressSpinner,
-    MatSortModule,
-    MatTableModule,
-    MatTooltipModule,
-  ],
-  templateUrl: './dwelling-list.component.html',
-  styleUrl: './dwelling-list.component.css',
+    selector: 'asrdb-dwelling-list',
+    imports: [
+        MatDividerModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatProgressSpinner,
+        MatSortModule,
+        MatTableModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './dwelling-list.component.html',
+    styleUrl: './dwelling-list.component.css'
 })
 export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;

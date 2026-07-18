@@ -5,12 +5,11 @@ import { getDate } from '../../model/common-utils';
 import { HistoryDetailsService } from './history-details.service';
 
 @Component({
-  selector: 'asrdb-history-details',
-  standalone: true,
-  imports: [CommonModule, MatCardModule],
-  providers: [HistoryDetailsService],
-  templateUrl: './history-details.component.html',
-  styleUrls: ['./history-details.component.css'],
+    selector: 'asrdb-history-details',
+    imports: [CommonModule, MatCardModule],
+    providers: [HistoryDetailsService],
+    templateUrl: './history-details.component.html',
+    styleUrls: ['./history-details.component.css']
 })
 export class HistoryDetailsComponent implements OnInit {
   @Input() externalCreator!: string;

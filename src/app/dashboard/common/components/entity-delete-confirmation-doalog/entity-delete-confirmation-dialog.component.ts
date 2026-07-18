@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -27,7 +27,6 @@ export type EntityDeleteDialogData = {
 
 @Component({
   selector: 'asrdb-entity-delete-confirmation-doalog',
-  standalone: true,
   imports: [
     AsyncPipe,
     MatButton,
@@ -36,7 +35,6 @@ export type EntityDeleteDialogData = {
     MatDialogContent,
     MatDialogTitle,
     MatProgressSpinner,
-    NgIf,
   ],
   providers: [RegisterDeleteService],
   templateUrl: './entity-delete-confirmation-dialog.component.html',
@@ -94,9 +92,7 @@ export class EntityDeleteConfirmationDialogComponent implements OnDestroy {
         takeUntil(this.destroy$),
         filter(
           deleted =>
-            deleted.buildingDone &&
-            deleted.entranceDone &&
-            deleted.dwellingDone
+            deleted.buildingDone && deleted.entranceDone && deleted.dwellingDone
         ),
         take(1)
       )

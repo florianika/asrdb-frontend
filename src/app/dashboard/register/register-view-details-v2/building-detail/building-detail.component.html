@@ -5,9 +5,9 @@
       {{ value | buildingDetailFormat }}
     </span>
     <span class="detail-error-icon">
-      <ng-container *ngIf="log">
+      @if (log) {
         <mat-icon [matTooltip]="log" [style.color]="color">info</mat-icon>
-      </ng-container>
+      }
     </span>
   </span>
 </div>

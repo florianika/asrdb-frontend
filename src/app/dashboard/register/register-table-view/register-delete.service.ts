@@ -377,7 +377,7 @@ export class RegisterDeleteService {
 
   private getAuditFields(): DeleteAuditFields {
     return {
-      external_editor: `{${this.authState.getNameId()}}` ?? '',
+      external_editor: `{${this.authState.getNameId()}}`,
       external_editor_date: String(Date.now()),
     };
   }

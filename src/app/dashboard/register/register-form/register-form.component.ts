@@ -35,29 +35,28 @@ import {
 } from '../../common/service/common-entity-structure.service';
 
 @Component({
-  selector: 'asrdb-register-form',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatStepperModule,
-    BuildingCreationComponent,
-    BuildingDetailsFormComponent,
-    EntranceDetailsFormComponent,
-    MatButtonModule,
-    MatIconModule,
-    MatSnackBarModule,
-    MatDialogModule,
-  ],
-  providers: [
-    BuildingManagementService,
-    EntranceManagementService,
-    RegisterLogService,
-    EntityCreationMapService,
-    BaseMapChangeService,
-  ],
-  templateUrl: './register-form.component.html',
-  styleUrls: ['./register-form.component.css'],
+    selector: 'asrdb-register-form',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatStepperModule,
+        BuildingCreationComponent,
+        BuildingDetailsFormComponent,
+        EntranceDetailsFormComponent,
+        MatButtonModule,
+        MatIconModule,
+        MatSnackBarModule,
+        MatDialogModule,
+    ],
+    providers: [
+        BuildingManagementService,
+        EntranceManagementService,
+        RegisterLogService,
+        EntityCreationMapService,
+        BaseMapChangeService,
+    ],
+    templateUrl: './register-form.component.html',
+    styleUrls: ['./register-form.component.css']
 })
 export class RegisterFormComponent implements OnInit, OnDestroy {
   @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;

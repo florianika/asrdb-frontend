@@ -15,7 +15,7 @@ import {
 } from '@angular/material/form-field';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { EntityType } from 'src/app/model/RolePermissions.model';
-import { CommonModule } from '@angular/common';
+
 import { Subject, takeUntil } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -31,7 +31,6 @@ import { getLocaleProperty } from '../../../dashboard/common/helper/locale-prope
 type SelectOption = { text: string; value: string };
 
 @Component({
-  standalone: true,
   selector: 'asrdb-variable-selector',
   templateUrl: './variable-selector.component.html',
   styleUrls: ['./variable-selector.component.css'],
@@ -39,7 +38,6 @@ type SelectOption = { text: string; value: string };
     MatSelectModule,
     MatFormFieldModule,
     FormsModule,
-    CommonModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule,

@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   AbstractControl,
   FormControl,
@@ -60,13 +60,14 @@ import {
 } from '../../../../common/services/auth-state.service';
 import { ENTRANCE_ENTITY } from '../../../../common/constants/common-constants';
 import { EntityAttribute } from '../../../common/service/common-entity-structure.service';
-import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
+import {
+  getLocaleProperty,
+  getLogMessage,
+} from '../../../common/helper/locale-property-helper';
 
 @Component({
   selector: 'asrdb-entrance-details-form',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -109,7 +110,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private authStateService: AuthStateService,
     private registerLogService: RegisterLogService,
-    @Inject(LOCALE_ID) public locale: "sq" | "en"
+    @Inject(LOCALE_ID) public locale: 'sq' | 'en'
   ) {
     this.entranceId =
       this.activatedRoute.snapshot.queryParamMap.get('entranceId');

@@ -1,55 +1,60 @@
 <h2 mat-dialog-title i18n>Delete {{ type }}?</h2>
-<mat-dialog-content *ngIf="toDeleteState | async as toDelete">
-  <p>Data found for the {{ type }}:</p>
-  <ul>
-    <li class="d-flex gap-1">
-      <span i18n>Dwellings:</span>
-      @if (
-        (loadingDeleteData | async) ||
-        (disableDialogButtons && toDelete.dwellingsToDelete.length)
-      ) {
-        <mat-spinner diameter="20"></mat-spinner>
-      } @else if (disableDialogButtons && toDelete.dwellingsToDelete.length) {
-        <b>Deleted!</b>
-      } @else {
-        {{ toDelete.dwellingsToDelete.length }}
-      }
-    </li>
-    @if (type !== DWELLING_ENTITY) {
+@if (toDeleteState | async; as toDelete) {
+  <mat-dialog-content>
+    <p>Data found for the {{ type }}:</p>
+    <ul>
       <li class="d-flex gap-1">
-        <span i18n>Entrances:</span>
+        <span i18n>Dwellings:</span>
         @if (
           (loadingDeleteData | async) ||
-          (disableDialogButtons && toDelete.entrancesToDelete.length)
+          (disableDialogButtons && toDelete.dwellingsToDelete.length)
         ) {
           <mat-spinner diameter="20"></mat-spinner>
-        } @else if (disableDialogButtons && toDelete.entrancesToDelete.length) {
+        } @else if (disableDialogButtons && toDelete.dwellingsToDelete.length) {
           <b>Deleted!</b>
         } @else {
-          {{ toDelete.entrancesToDelete.length }}
+          {{ toDelete.dwellingsToDelete.length }}
         }
       </li>
+      @if (type !== DWELLING_ENTITY) {
+        <li class="d-flex gap-1">
+          <span i18n>Entrances:</span>
+          @if (
+            (loadingDeleteData | async) ||
+            (disableDialogButtons && toDelete.entrancesToDelete.length)
+          ) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else if (
+            disableDialogButtons && toDelete.entrancesToDelete.length
+          ) {
+            <b>Deleted!</b>
+          } @else {
+            {{ toDelete.entrancesToDelete.length }}
+          }
+        </li>
+      }
+    </ul>
+    @if (type === BUILDING_ENTITY) {
+      <span i18n
+        >This will delete the building, all entrances and all dwellings
+        belonging to this building. This operation <b>cannot</b> be
+        undone.</span
+      >
     }
-  </ul>
-  @if (type === BUILDING_ENTITY) {
-    <span i18n
-      >This will delete the building, all entrances and all dwellings belonging
-      to this building. This operation <b>cannot</b> be undone.</span
-    >
-  }
-  @if (type === ENTRANCE_ENTITY) {
-    <span i18n
-      >This will delete the entrance and all dwellings belonging to this
-      entrance. This operation <b>cannot</b> be undone.</span
-    >
-  }
-  @if (type === DWELLING_ENTITY) {
-    <span i18n
-      >This will delete the dwellings. This operation <b>cannot</b> be
-      undone.</span
-    >
-  }
-</mat-dialog-content>
+    @if (type === ENTRANCE_ENTITY) {
+      <span i18n
+        >This will delete the entrance and all dwellings belonging to this
+        entrance. This operation <b>cannot</b> be undone.</span
+      >
+    }
+    @if (type === DWELLING_ENTITY) {
+      <span i18n
+        >This will delete the dwellings. This operation <b>cannot</b> be
+        undone.</span
+      >
+    }
+  </mat-dialog-content>
+}
 <mat-dialog-actions>
   <button
     mat-button
@@ -63,11 +68,13 @@
     [disabled]="disableDialogButtons || (loadingDeleteData | async)"
     (click)="handleDeleteConfirm()"
     color="warn">
-    <span i18n *ngIf="!disableDialogButtons && !(loadingDeleteData | async)"
-      >Delete</span
-    >
-    <span *ngIf="disableDialogButtons || (loadingDeleteData | async)">
-      <mat-spinner diameter="20"></mat-spinner>
-    </span>
+    @if (!disableDialogButtons && !(loadingDeleteData | async)) {
+      <span i18n>Delete</span>
+    }
+    @if (disableDialogButtons || (loadingDeleteData | async)) {
+      <span>
+        <mat-spinner diameter="20"></mat-spinner>
+      </span>
+    }
   </button>
 </mat-dialog-actions>

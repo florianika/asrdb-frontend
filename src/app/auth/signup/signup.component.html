@@ -30,9 +30,9 @@
             formControlName="firstName"
             (keyup.enter)="signup()" />
           <mat-icon matPrefix>account_circle</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls.firstName.invalid" i18n
-            >Please provide your first name</mat-error
-          >
+          @if (signupFormGroup.controls.firstName.invalid) {
+            <mat-error i18n>Please provide your first name</mat-error>
+          }
         </mat-form-field>
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>Last name</mat-label>
@@ -43,9 +43,9 @@
             formControlName="lastName"
             (keyup.enter)="signup()" />
           <mat-icon matPrefix>account_circle</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls.lastName.invalid" i18n
-            >Please provide your last name</mat-error
-          >
+          @if (signupFormGroup.controls.lastName.invalid) {
+            <mat-error i18n>Please provide your last name</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
@@ -58,24 +58,24 @@
             formControlName="email"
             (keyup.enter)="signup()" />
           <mat-icon matPrefix>email</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls.email.invalid" i18n
-            >Please provide a valid email</mat-error
-          >
+          @if (signupFormGroup.controls.email.invalid) {
+            <mat-error i18n>Please provide a valid email</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label i18n>Municipality</mat-label>
           <mat-icon matPrefix>person_pin_circle</mat-icon>
           <mat-select formControlName="municipality">
-            <mat-option
-              *ngFor="let municipality of municipalities"
-              [value]="municipality.code">
-              {{ municipality.name }}
-            </mat-option>
+            @for (municipality of municipalities; track municipality) {
+              <mat-option [value]="municipality.code">
+                {{ municipality.name }}
+              </mat-option>
+            }
           </mat-select>
-          <mat-error *ngIf="signupFormGroup.controls.municipality.invalid" i18n
-            >Please select a municipality</mat-error
-          >
+          @if (signupFormGroup.controls.municipality.invalid) {
+            <mat-error i18n>Please select a municipality</mat-error>
+          }
         </mat-form-field>
       </form>
       <button

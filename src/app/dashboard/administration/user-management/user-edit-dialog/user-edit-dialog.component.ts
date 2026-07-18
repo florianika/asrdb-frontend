@@ -5,9 +5,10 @@ import { User } from 'src/app/model/User.model';
 import { MUNICIPALITIES } from '../../../../common/data/municipalities';
 
 @Component({
-  selector: 'asrdb-user-edit-dialog',
-  templateUrl: './user-edit-dialog.component.html',
-  styleUrls: ['./user-edit-dialog.component.css'],
+    selector: 'asrdb-user-edit-dialog',
+    templateUrl: './user-edit-dialog.component.html',
+    styleUrls: ['./user-edit-dialog.component.css'],
+    standalone: false
 })
 export class UserEditDialogComponent {
   role: Role = 'ADMIN';

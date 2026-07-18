@@ -18,14 +18,13 @@ import {
   MatTable,
   MatTableDataSource,
 } from '@angular/material/table';
-import { NgForOf } from '@angular/common';
+
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'asrdb-statistic-export-create-step-2',
-  standalone: true,
   imports: [
     MatCell,
     MatCellDef,
@@ -38,7 +37,6 @@ import { MatIcon } from '@angular/material/icon';
     MatSort,
     MatSortHeader,
     MatTable,
-    NgForOf,
     MatProgressSpinner,
     MatNoDataRow,
     MatHeaderCellDef,

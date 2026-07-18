@@ -66,31 +66,30 @@ import { AuthStateService } from '../../../../common/services/auth-state.service
 import { getLocaleProperty, getLogMessage } from '../../../common/helper/locale-property-helper';
 
 @Component({
-  selector: 'asrdb-dwelling-details-form',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-  ],
-  providers: [
-    DwellingManagementService,
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE],
-    },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
-  templateUrl: './dwelling-details-form.component.html',
-  styleUrls: ['./dwelling-details-form.component.css'],
+    selector: 'asrdb-dwelling-details-form',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+    ],
+    providers: [
+        DwellingManagementService,
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [MAT_DATE_LOCALE],
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    templateUrl: './dwelling-details-form.component.html',
+    styleUrls: ['./dwelling-details-form.component.css']
 })
 export class DwellingDetailsFormComponent implements OnDestroy {
   private onDestroy = new Subject<void>();

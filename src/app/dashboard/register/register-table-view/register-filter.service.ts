@@ -118,7 +118,12 @@ export class RegisterFilterService {
     });
   }
 
-  prepareWhereCase() {
+  getSelectedBuildingGlobalIds(): string[] {
+    return this.getGlobalIdsFromFilterValue(this.filter.value.filter.GlobalID);
+  }
+
+  prepareWhereCase(options: { includeGlobalId?: boolean } = {}) {
+    const includeGlobalId = options.includeGlobalId ?? true;
     const conditions: string[] = ['BldQuality <> 0'];
     Object.entries(this.filter.value.filter)
       .filter(([, value]) => {
@@ -133,15 +138,10 @@ export class RegisterFilterService {
       })
       .forEach(filter => {
         if (filter.column === 'GlobalID') {
-          const globalIds = filter.value.split(',').map(id => {
-            if (!id.startsWith('{')) {
-              id = '{' + id;
-            }
-            if (!id.endsWith('}')) {
-              id = id + '}';
-            }
-            return id;
-          });
+          if (!includeGlobalId) {
+            return;
+          }
+          const globalIds = this.getGlobalIdsFromFilterValue(filter.value);
           const globalIdsCondition = globalIds
             .map(globalId => `'${globalId}'`)
             .join(',');
@@ -187,8 +187,12 @@ export class RegisterFilterService {
     return conditions.length ? conditions.join(' and ') : '1=1';
   }
 
-  prepareWhereCaseForEntrance(entranceId?: string) {
-    if (entranceId) {
+  prepareWhereCaseForEntrance(
+    entranceId?: string,
+    options: { includeEntranceId?: boolean } = {}
+  ) {
+    const includeEntranceId = options.includeEntranceId ?? true;
+    if (entranceId && includeEntranceId) {
       return `GlobalID='${entranceId}'`;
     }
     if (
@@ -264,6 +268,25 @@ export class RegisterFilterService {
     return typeof value == 'number' ? value : `'${value}'`;
   }
 
+  private getGlobalIdsFromFilterValue(value: string | null): string[] {
+    if (!value) {
+      return [];
+    }
+    return value
+      .split(',')
+      .map(id => id.trim())
+      .filter(id => !!id)
+      .map(id => {
+        if (!id.startsWith('{')) {
+          id = '{' + id;
+        }
+        if (!id.endsWith('}')) {
+          id = id + '}';
+        }
+        return id;
+      });
+  }
+
   private noFilterApplied() {
     return (
       // !this.filter.value.filter.BldMunicipality &&
@@ -288,7 +311,7 @@ export class RegisterFilterService {
         }
         filter.filter.GlobalID = null;
         this.filter.next(filter);
-      } catch (e) {
+      } catch {
         console.log('Filter could not be initialised');
       }
     } else {

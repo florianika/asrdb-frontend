@@ -12,20 +12,19 @@ import { MatButton } from '@angular/material/button';
 import { SigninV2Service } from '../signin-v2.service';
 
 @Component({
-  selector: 'asrdb-username-password-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatIcon,
-    MatSuffix,
-    MatPrefix,
-    MatButton,
-  ],
-  templateUrl: './username-password-form.component.html',
-  styleUrl: './username-password-form.component.css',
+    selector: 'asrdb-username-password-form',
+    imports: [
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatIcon,
+        MatSuffix,
+        MatPrefix,
+        MatButton,
+    ],
+    templateUrl: './username-password-form.component.html',
+    styleUrl: './username-password-form.component.css'
 })
 export class UsernamePasswordFormComponent {
   @Input() form!: FormGroup;

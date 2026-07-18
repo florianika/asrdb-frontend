@@ -49,6 +49,11 @@ describe('AuthStateService', () => {
   });
 
   it('returns true when token is expired but refresh succeeds', async () => {
+    service.setJWT({
+      idToken: 'eyJhbGciOiJub25lIn0.eyJyb2xlIjoiQURNSU4ifQ.',
+      accessToken: 'expired-access-token',
+      refreshToken: 'refresh-token',
+    });
     spyOn(service, 'isTokenValid').and.returnValue(false);
     spyOn(service, 'refreshToken').and.returnValue(of(true));
     const setLoginStateSpy = spyOn(service, 'setLoginState');
@@ -62,6 +67,11 @@ describe('AuthStateService', () => {
   });
 
   it('returns false when token is expired and refresh fails', async () => {
+    service.setJWT({
+      idToken: 'eyJhbGciOiJub25lIn0.eyJyb2xlIjoiQURNSU4ifQ.',
+      accessToken: 'expired-access-token',
+      refreshToken: 'refresh-token',
+    });
     spyOn(service, 'isTokenValid').and.returnValue(false);
     spyOn(service, 'refreshToken').and.returnValue(of(false));
     const setLoginStateSpy = spyOn(service, 'setLoginState');
@@ -75,6 +85,11 @@ describe('AuthStateService', () => {
   });
 
   it('returns false when token is expired and refresh throws', async () => {
+    service.setJWT({
+      idToken: 'eyJhbGciOiJub25lIn0.eyJyb2xlIjoiQURNSU4ifQ.',
+      accessToken: 'expired-access-token',
+      refreshToken: 'refresh-token',
+    });
     spyOn(service, 'isTokenValid').and.returnValue(false);
     spyOn(service, 'refreshToken').and.returnValue(
       throwError(() => new Error('refresh failed'))
@@ -94,6 +109,16 @@ describe('AuthStateService', () => {
 
     expect(role).toBeUndefined();
     expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
+  });
+
+  it('does not refresh when there is no stored session', async () => {
+    spyOn(service, 'isTokenValid').and.returnValue(false);
+    const refreshTokenSpy = spyOn(service, 'refreshToken');
+
+    const isLoggedIn = await firstValueFrom(service.isUserLoggedIn());
+
+    expect(isLoggedIn).toBeFalse();
+    expect(refreshTokenSpy).not.toHaveBeenCalled();
   });
 
   it('clears only scoped auth keys on logout', () => {

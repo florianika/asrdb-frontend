@@ -1,14 +1,24 @@
 import { Injectable } from '@angular/core';
+import { Router, UrlTree } from '@angular/router';
 import { AuthStateService } from './auth-state.service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GuardService {
-  constructor(private authStateService: AuthStateService) {}
+  constructor(
+    private authStateService: AuthStateService,
+    private router: Router
+  ) {}
 
-  public canActivate(): Observable<boolean> {
-    return this.authStateService.isUserLoggedIn();
+  public canActivate(): Observable<boolean | UrlTree> {
+    return this.authStateService
+      .isUserLoggedIn()
+      .pipe(
+        map(isLoggedIn =>
+          isLoggedIn ? true : this.router.parseUrl('/auth/signin')
+        )
+      );
   }
 }

@@ -1,33 +1,45 @@
-<h1 mat-dialog-title i18n *ngIf="!id">Create email template</h1>
-<h1 mat-dialog-title i18n *ngIf="id">Update email template</h1>
-<div mat-dialog-content class="pt-2" *ngIf="!!template">
-  <mat-form-field class="full-width" appearance="outline">
-    <mat-label i18n>Subject</mat-label>
-    <input
-      matInput
-      [(ngModel)]="template.subject"
-      [disabled]="!!(isLoadingResults | async)"
-      name="subject"
-      required />
-  </mat-form-field>
-
-  <div>
-    <p i18n>Keywords that can be used in the template:</p>
-    <ul>
-      <li i18n>{{ '{' }}NAME{{ '}' }} - Name of the user</li>
-      <li i18n>{{ '{' }}SURNAME{{ '}' }} - Surname of the user</li>
-      <li i18n>{{ '{' }}DESCRIPTION{{ '}' }} - Description</li>
-      <li i18n>{{ '{' }}STARTDATE{{ '}' }} - Strat date of the campaign</li>
-      <li i18n>{{ '{' }}SUCCESS{{ '}' }} ... {{ '{/' }}SUCCESS{{ '}' }} - Surround the message you want to send to municipalities which completed all tasks </li>
-      <li i18n>{{ '{' }}FAILED{{ '}' }} ... {{ '{/' }}FAILED{{ '}' }} - Surround the message you want to send to municipalities that have not completed all tasks </li>
-    </ul>
+@if (!id) {
+  <h1 mat-dialog-title i18n>Create email template</h1>
+}
+@if (id) {
+  <h1 mat-dialog-title i18n>Update email template</h1>
+}
+@if (!!template) {
+  <div mat-dialog-content class="pt-2">
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label i18n>Subject</mat-label>
+      <input
+        matInput
+        [(ngModel)]="template.subject"
+        [disabled]="!!(isLoadingResults | async)"
+        name="subject"
+        required />
+    </mat-form-field>
+    <div>
+      <p i18n>Keywords that can be used in the template:</p>
+      <ul>
+        <li i18n>{{ '{' }}NAME{{ '}' }} - Name of the user</li>
+        <li i18n>{{ '{' }}SURNAME{{ '}' }} - Surname of the user</li>
+        <li i18n>{{ '{' }}DESCRIPTION{{ '}' }} - Description</li>
+        <li i18n>{{ '{' }}STARTDATE{{ '}' }} - Strat date of the campaign</li>
+        <li i18n>
+          {{ '{' }}SUCCESS{{ '}' }} ... {{ '{/' }}SUCCESS{{ '}' }} - Surround
+          the message you want to send to municipalities which completed all
+          tasks
+        </li>
+        <li i18n>
+          {{ '{' }}FAILED{{ '}' }} ... {{ '{/' }}FAILED{{ '}' }} - Surround the
+          message you want to send to municipalities that have not completed all
+          tasks
+        </li>
+      </ul>
+    </div>
+    <div class="NgxEditor__Wrapper">
+      <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+      <ngx-editor [editor]="editor" [(ngModel)]="template.body"> </ngx-editor>
+    </div>
   </div>
-
-  <div class="NgxEditor__Wrapper">
-    <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
-    <ngx-editor [editor]="editor" [(ngModel)]="template.body"> </ngx-editor>
-  </div>
-</div>
+}
 
 <div mat-dialog-actions>
   <button
@@ -47,8 +59,12 @@
   </button>
 </div>
 <ng-template #cancelConfirmDialog>
-  <h1 mat-dialog-title i18n *ngIf="!id">Cancel creating email template?</h1>
-  <h1 mat-dialog-title i18n *ngIf="id">Cancel editing email template?</h1>
+  @if (!id) {
+    <h1 mat-dialog-title i18n>Cancel creating email template?</h1>
+  }
+  @if (id) {
+    <h1 mat-dialog-title i18n>Cancel editing email template?</h1>
+  }
   <mat-dialog-content class="mat-typography" i18n>
     Are you sure you want to close the dialog? All changes will be lost. This
     action cannot be undone!

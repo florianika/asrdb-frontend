@@ -15,13 +15,14 @@
       <mat-option value="QUE"> QUE </mat-option>
       <mat-option value="ERR"> ERR </mat-option>
     </mat-select>
-    <button
-      matSuffix
-      mat-icon-button
-      *ngIf="filter.qualityAction"
-      (click)="clearFormValue($event, 'qualityAction')">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (filter.qualityAction) {
+      <button
+        matSuffix
+        mat-icon-button
+        (click)="clearFormValue($event, 'qualityAction')">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </mat-form-field>
   <mat-form-field class="full-width">
     <mat-label i18n>Status</mat-label>
@@ -29,13 +30,14 @@
       <mat-option value="PENDING" i18n> PENDING </mat-option>
       <mat-option value="RESOLVED" i18n> RESOLVED </mat-option>
     </mat-select>
-    <button
-      matSuffix
-      mat-icon-button
-      *ngIf="filter.status"
-      (click)="clearFormValue($event, 'status')">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (filter.status) {
+      <button
+        matSuffix
+        mat-icon-button
+        (click)="clearFormValue($event, 'status')">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

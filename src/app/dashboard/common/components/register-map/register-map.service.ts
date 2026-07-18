@@ -50,6 +50,10 @@ export class RegisterMapService {
   private totalResults: number | null = null;
   private _goToDebounce: ReturnType<typeof setTimeout> | null = null;
   private maxZoomHide = 15;
+  private buildingHighlightHandle?: __esri.Handle;
+  private buildingHighlightRequestId = 0;
+  private entranceHighlightHandle?: __esri.Handle;
+  private entranceHighlightRequestId = 0;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -184,6 +188,66 @@ export class RegisterMapService {
     }
   }
 
+  async highlightBuildings(globalIds: string[]) {
+    if (!this.view || !this.bldlayer) return;
+
+    const requestId = ++this.buildingHighlightRequestId;
+    this.clearBuildingHighlight();
+
+    if (!globalIds.length) {
+      return;
+    }
+
+    try {
+      const objectIds = await this.queryBuildingObjectIds(globalIds);
+      if (requestId !== this.buildingHighlightRequestId || !objectIds.length) {
+        return;
+      }
+
+      const layerView = await this.view.whenLayerView(this.bldlayer);
+      if (requestId !== this.buildingHighlightRequestId) {
+        return;
+      }
+
+      this.buildingHighlightHandle = layerView.highlight(objectIds);
+    } catch (error) {
+      const handled = await this.handleEsriAuthFailure(error);
+      if (!handled) {
+        throw error;
+      }
+    }
+  }
+
+  async highlightEntrance(globalId?: string) {
+    if (!this.view || !this.entlayer) return;
+
+    const requestId = ++this.entranceHighlightRequestId;
+    this.clearEntranceHighlight();
+
+    if (!globalId) {
+      return;
+    }
+
+    try {
+      const objectIds = await this.queryEntranceObjectIds(globalId);
+      if (requestId !== this.entranceHighlightRequestId || !objectIds.length) {
+        return;
+      }
+
+      const layerView = await this.view.whenLayerView(this.entlayer);
+      if (requestId !== this.entranceHighlightRequestId) {
+        return;
+      }
+
+      this.entranceHighlightHandle = layerView.highlight(objectIds);
+    } catch (error) {
+      const handled = await this.handleEsriAuthFailure(error);
+      if (!handled) {
+        throw error;
+      }
+    }
+  }
+
   /** Filter entrance layer (server-side now) */
   async filterEntranceData(whereCondition: string) {
     if (!this.view || !this.entlayer) return;
@@ -219,6 +283,10 @@ export class RegisterMapService {
   cleanup() {
     this.eventsCleanupCallbacks.forEach(fn => fn());
     this.eventsCleanupCallbacks = [];
+    this.buildingHighlightRequestId++;
+    this.entranceHighlightRequestId++;
+    this.clearBuildingHighlight();
+    this.clearEntranceHighlight();
     if (this._goToDebounce) {
       clearTimeout(this._goToDebounce);
       this._goToDebounce = null;
@@ -232,6 +300,28 @@ export class RegisterMapService {
   }
 
   /** Private helpers */
+
+  private clearBuildingHighlight() {
+    this.buildingHighlightHandle?.remove();
+    this.buildingHighlightHandle = undefined;
+  }
+
+  private clearEntranceHighlight() {
+    this.entranceHighlightHandle?.remove();
+    this.entranceHighlightHandle = undefined;
+  }
+
+  private async queryBuildingObjectIds(globalIds: string[]) {
+    const query = this.bldlayer.createQuery();
+    query.where = `GlobalID in (${globalIds.map(id => `'${id}'`).join(',')})`;
+    return (await this.bldlayer.queryObjectIds(query)) ?? [];
+  }
+
+  private async queryEntranceObjectIds(globalId: string) {
+    const query = this.entlayer.createQuery();
+    query.where = `GlobalID='${globalId}'`;
+    return (await this.entlayer.queryObjectIds(query)) ?? [];
+  }
 
   private updateLayerVisibility() {
     if (!this.bldlayer || !this.entlayer) return;

@@ -9,11 +9,10 @@ import { StatisticExportService } from '../../statistic-export.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'asrdb-statistic-export-create-step-0',
-  standalone: true,
-  imports: [MatButton, MatIcon, MatProgressSpinner],
-  templateUrl: './statistic-export-create-step-0.component.html',
-  styleUrl: './statistic-export-create-step-0.component.css',
+    selector: 'asrdb-statistic-export-create-step-0',
+    imports: [MatButton, MatIcon, MatProgressSpinner],
+    templateUrl: './statistic-export-create-step-0.component.html',
+    styleUrl: './statistic-export-create-step-0.component.css'
 })
 export class StatisticExportCreateStep0Component implements OnInit, OnDestroy {
   private commonBuildingService = inject(CommonBuildingService);

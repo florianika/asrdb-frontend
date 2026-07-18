@@ -3,10 +3,10 @@ import { SignupForm, SignupFormValue, SignupService } from './signup.service';
 import { MUNICIPALITIES } from '../../common/data/municipalities';
 
 @Component({
-  selector: 'asrdb-signup',
-  templateUrl: './signup.component.html',
-  styles: [
-    `
+    selector: 'asrdb-signup',
+    templateUrl: './signup.component.html',
+    styles: [
+        `
       .signup-container {
         min-height: 100%;
         min-width: 100%;
@@ -53,7 +53,8 @@ import { MUNICIPALITIES } from '../../common/data/municipalities';
         padding-right: 0;
       }
     `,
-  ],
+    ],
+    standalone: false
 })
 export class SignupComponent {
   loading = this.signupService.signingUpAsObservable;

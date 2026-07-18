@@ -31,30 +31,29 @@ import { environment } from '../../../../environments/environment';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'asrdb-test-buildings',
-  standalone: true,
-  imports: [
-    MatCheckbox,
-    FormsModule,
-    MatRadioModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatProgressSpinner,
-  ],
-  providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE],
-    },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
-  templateUrl: './test-buildings.component.html',
-  styleUrl: './test-buildings.component.css',
+    selector: 'asrdb-test-buildings',
+    imports: [
+        MatCheckbox,
+        FormsModule,
+        MatRadioModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatInputModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatProgressSpinner,
+    ],
+    providers: [
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [MAT_DATE_LOCALE],
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    templateUrl: './test-buildings.component.html',
+    styleUrl: './test-buildings.component.css'
 })
 export class TestBuildingsComponent implements OnDestroy {
   private testBuildingService = inject(TestBuildingService);

@@ -1,7 +1,9 @@
 <asrdb-toolbar [drawer]="drawer"></asrdb-toolbar>
 <mat-drawer-container class="drawer-container">
   <mat-drawer #drawer mode="side" class="drawer" [opened]="isLoggedIn | async">
-    <asrdb-side-bar *ngIf="isLoggedIn | async"></asrdb-side-bar>
+    @if (isLoggedIn | async) {
+      <asrdb-side-bar></asrdb-side-bar>
+    }
   </mat-drawer>
   <mat-drawer-content>
     <router-outlet></router-outlet>

@@ -3,15 +3,16 @@
     <h1 i18n class="header-title">Building List</h1>
 
     <div class="spacer"></div>
-    <button
-      mat-icon-button
-      i18n-matTooltip
-      *ngIf="isAdmin || isSupervisor"
-      [matTooltip]="'Create a new building'"
-      (click)="addNewBuilding()"
-      [disabled]="isLoadingResults">
-      <mat-icon style="cursor: pointer">add</mat-icon>
-    </button>
+    @if (isAdmin || isSupervisor) {
+      <button
+        mat-icon-button
+        i18n-matTooltip
+        [matTooltip]="'Create a new building'"
+        (click)="addNewBuilding()"
+        [disabled]="isLoadingResults">
+        <mat-icon style="cursor: pointer">add</mat-icon>
+      </button>
+    }
     <button
       mat-icon-button
       i18n-matTooltip
@@ -90,9 +91,13 @@
       [clearable]="true"></asrdb-chip>
   </div>
 
-  <div class="asrbd-loading-shade" *ngIf="isLoadingResults">
-    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-  </div>
+  @if (isLoadingResults) {
+    <div class="asrbd-loading-shade">
+      @if (isLoadingResults) {
+        <mat-spinner></mat-spinner>
+      }
+    </div>
+  }
 
   <div class="asrbd-table-container">
     <table mat-table [dataSource]="data" class="asrbd-table" matSort>
@@ -202,13 +207,14 @@
               <mat-icon>apartment</mat-icon>
               <span i18n>View building details</span>
             </button>
-            <button
-              mat-menu-item
-              *ngIf="isAdmin || isSupervisor"
-              (click)="editBuildingDetails(element.GlobalID)">
-              <mat-icon>edit</mat-icon>
-              <span i18n>Edit building details</span>
-            </button>
+            @if (isAdmin || isSupervisor) {
+              <button
+                mat-menu-item
+                (click)="editBuildingDetails(element.GlobalID)">
+                <mat-icon>edit</mat-icon>
+                <span i18n>Edit building details</span>
+              </button>
+            }
             <button mat-menu-item (click)="viewLogs(element.GlobalID)">
               <mat-icon>rule</mat-icon>
               <span i18n>View quality report</span>

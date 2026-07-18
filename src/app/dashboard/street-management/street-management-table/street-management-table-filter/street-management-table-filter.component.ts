@@ -8,9 +8,10 @@ import {
 } from '../../../register/model/street';
 
 @Component({
-  selector: 'asrdb-street-management-table-filter',
-  templateUrl: './street-management-table-filter.component.html',
-  styleUrls: ['./street-management-table-filter.component.css'],
+    selector: 'asrdb-street-management-table-filter',
+    templateUrl: './street-management-table-filter.component.html',
+    styleUrls: ['./street-management-table-filter.component.css'],
+    standalone: false
 })
 export class StreetManagementTableFilterComponent {
   filterConfig: StreetFilter;

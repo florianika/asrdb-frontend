@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { logTypeColorMap } from '../../model/common-utils';
@@ -10,10 +10,8 @@ import { BuildingDetailFormatPipe } from './building-detail-format.pipe';
   selector: 'asrdb-building-detail',
   templateUrl: './building-detail.component.html',
   styleUrls: ['./building-detail.component.css'],
-  standalone: true,
   imports: [
     MatCardModule,
-    CommonModule,
     MatIconModule,
     MatTooltipModule,
     BuildingDetailFormatPipe,

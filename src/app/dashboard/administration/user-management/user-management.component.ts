@@ -17,9 +17,10 @@ import { SignupComponent } from '../../../auth/signup/signup.component';
 import { SignupService } from '../../../auth/signup/signup.service';
 
 @Component({
-  selector: 'asrdb-user-management',
-  templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.css'],
+    selector: 'asrdb-user-management',
+    templateUrl: './user-management.component.html',
+    styleUrls: ['./user-management.component.css'],
+    standalone: false
 })
 export class UserManagementComponent
   implements OnInit, AfterViewInit, OnDestroy
@@ -91,9 +92,11 @@ export class UserManagementComponent
   }
 
   toggleAccountStatus(user: User) {
-    user.accountStatus === 'ACTIVE'
-      ? this.userManagementService.terminateUser(user.id)
-      : this.userManagementService.activateUser(user.id);
+    if (user.accountStatus === 'ACTIVE') {
+      this.userManagementService.terminateUser(user.id);
+    } else {
+      this.userManagementService.activateUser(user.id);
+    }
   }
 
   mapMunicipality(municipalityCode: string) {

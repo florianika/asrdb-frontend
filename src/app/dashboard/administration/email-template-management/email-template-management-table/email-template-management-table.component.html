@@ -11,9 +11,11 @@
     </button>
   </div>
 
-  <div class="asrbd-loading-shade" *ngIf="isLoadingResults | async">
-    <mat-spinner></mat-spinner>
-  </div>
+  @if (isLoadingResults | async) {
+    <div class="asrbd-loading-shade">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
 
   <div class="asrbd-table-container">
     <table

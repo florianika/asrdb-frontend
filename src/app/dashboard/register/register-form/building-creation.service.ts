@@ -19,7 +19,7 @@ export class BuildingManagementService {
     next: (response: EntityManageResponse) => {
       const responseData =
         response['addResults']?.[0] ?? response['updateResults']?.[0];
-      const isCreate = !!response['addResults']?.[0] ?? false;
+      const isCreate = !!response['addResults']?.[0];
       if (responseData?.success) {
         if (isCreate) {
           this.startAutomaticRuleExecution(response, 'addResults', () => {
@@ -98,7 +98,7 @@ export class BuildingManagementService {
   }
 
   private createBuilding(mapFormData: BuildingPoly, buildingDetails: Building) {
-    buildingDetails.external_creator = `{${this.authState.getNameId()}}` ?? '';
+    buildingDetails.external_creator = `{${this.authState.getNameId()}}`;
     buildingDetails.external_creator_date = String(Date.now());
     const features = this.createFeatures(buildingDetails, mapFormData);
     this.buildingService
@@ -107,7 +107,7 @@ export class BuildingManagementService {
   }
 
   private updateBuilding(mapFormData: BuildingPoly, buildingDetails: Building) {
-    buildingDetails.external_editor = `{${this.authState.getNameId()}}` ?? '';
+    buildingDetails.external_editor = `{${this.authState.getNameId()}}`;
     buildingDetails.external_editor_date = String(Date.now());
     const features = this.createFeatures(buildingDetails, mapFormData);
     this.buildingService

@@ -19,9 +19,10 @@ import { AuthStateService } from '../../../../common/services/auth-state.service
 import { Editor, Toolbar } from 'ngx-editor';
 
 @Component({
-  selector: 'asrdb-email-template-management-form',
-  templateUrl: './email-template-management-form.component.html',
-  styleUrls: ['./email-template-management-form.component.css'],
+    selector: 'asrdb-email-template-management-form',
+    templateUrl: './email-template-management-form.component.html',
+    styleUrls: ['./email-template-management-form.component.css'],
+    standalone: false
 })
 export class EmailTemplateManagementFormComponent implements OnDestroy {
   private onDestroy = new Subject();

@@ -28,7 +28,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { NgForOf, NgIf } from '@angular/common';
+
 import {
   FieldWorkClosureService,
   FieldWorkClosureStatistic,
@@ -53,7 +53,6 @@ type MunicipalityCompleteness = {
 
 @Component({
   selector: 'asrdb-step-1-field-work-closure-statistics',
-  standalone: true,
   imports: [
     MatButton,
     MatCheckbox,
@@ -73,8 +72,6 @@ type MunicipalityCompleteness = {
     MatRowDef,
     MatSelect,
     MatTable,
-    NgForOf,
-    NgIf,
     MatTableModule,
     MatIcon,
     MatInput,
@@ -97,7 +94,8 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
     percent: 0,
   };
   public municipalityCompleteness: MunicipalityCompleteness[] = [];
-  public selectedMunicipalityCompleteness: MunicipalityCompleteness | null = null;
+  public selectedMunicipalityCompleteness: MunicipalityCompleteness | null =
+    null;
   public selectedMunicipality = '';
   public municipalityFilterValue = '';
   public showAllMunicipalityProgressBars = false;
@@ -131,7 +129,8 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
         return;
       }
 
-      const stats = this.fieldWorkStatistics().stats as FieldWorkClosureStatistic[];
+      const stats = this.fieldWorkStatistics()
+        .stats as FieldWorkClosureStatistic[];
       const filteredStats = stats.filter(
         stat => !this.isDisallowedQuality(stat.quality)
       );
@@ -148,12 +147,15 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
       let overallNumerator = 0;
       let overallDenominator = 0;
 
-      this.aggregatedStatisticsDatasource.data = filteredStats.reduce((acc, stat) => {
+      this.aggregatedStatisticsDatasource.data = filteredStats.reduce(
+        (acc, stat) => {
           const normalizedQuality = this.normalizeQuality(stat.quality);
           const qualityKey = normalizedQuality.toLowerCase();
           const reviewCode = this.getReviewCode(stat.review);
           if (reviewCode !== null) {
-            const municipalityMetric = municipalityMetrics.get(stat.municipality) ?? {
+            const municipalityMetric = municipalityMetrics.get(
+              stat.municipality
+            ) ?? {
               numerator: 0,
               denominator: 0,
               percent: 0,
@@ -194,7 +196,9 @@ export class Step1FieldWorkClosureStatisticsComponent implements AfterViewInit {
             acc.push(existing);
           }
           return acc;
-        }, [] as AggregatedStatistic[]);
+        },
+        [] as AggregatedStatistic[]
+      );
 
       this.overallCompleteness = {
         numerator: overallNumerator,

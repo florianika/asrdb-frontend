@@ -18,11 +18,10 @@ import { MUNICIPALITIES } from '../../../../../common/data/municipalities';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
-  selector: 'asrdb-step-3-field-work-closure-summary',
-  standalone: true,
-  imports: [MatButton, NgxEditorModule, MatDialogModule, MatProgressSpinner],
-  templateUrl: './step-3-field-work-closure-summary.component.html',
-  styleUrl: './step-3-field-work-closure-summary.component.css',
+    selector: 'asrdb-step-3-field-work-closure-summary',
+    imports: [MatButton, NgxEditorModule, MatDialogModule, MatProgressSpinner],
+    templateUrl: './step-3-field-work-closure-summary.component.html',
+    styleUrl: './step-3-field-work-closure-summary.component.css'
 })
 export class Step3FieldWorkClosureSummaryComponent {
   private fieldWorkClosureService = inject(FieldWorkClosureService);

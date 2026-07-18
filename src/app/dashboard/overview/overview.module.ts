@@ -22,14 +22,12 @@ import { PieGraphComponent } from './components/pie-graph/pie-graph.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FilterHelper } from '../common/helper/filter-helper';
 
-PlotlyModule.plotlyjs = PlotlyJS;
-
 @NgModule({
   declarations: [OverviewComponent, PieGraphComponent],
   imports: [
     CommonModule,
     OverviewRoutingModule,
-    PlotlyModule,
+    PlotlyModule.forRoot(PlotlyJS),
     MatCardModule,
     GoogleMapsModule,
     MatTableModule,

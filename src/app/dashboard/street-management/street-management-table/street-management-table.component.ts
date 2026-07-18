@@ -51,10 +51,11 @@ type StreetQueryResponse = {
 };
 
 @Component({
-  selector: 'asrdb-street-management-table',
-  templateUrl: './street-management-table.component.html',
-  styleUrls: ['./street-management-table.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'asrdb-street-management-table',
+    templateUrl: './street-management-table.component.html',
+    styleUrls: ['./street-management-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class StreetManagementTableComponent
   implements OnInit, OnDestroy, AfterViewInit

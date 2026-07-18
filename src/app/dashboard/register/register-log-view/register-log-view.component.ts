@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RegisterLogTableComponent } from './register-log-table/register-log-table.component';
 
 @Component({
   selector: 'asrdb-register-log-view',
-  standalone: true,
-  imports: [CommonModule, RegisterLogTableComponent],
+  imports: [RegisterLogTableComponent],
   templateUrl: './register-log-view.component.html',
   styleUrls: ['./register-log-view.component.css'],
 })

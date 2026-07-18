@@ -66,7 +66,7 @@ export class EntranceManagementService {
     );
 
     if (attributes?.GlobalID) {
-      attributes.external_editor = `{${this.authState.getNameId()}}` ?? '';
+      attributes.external_editor = `{${this.authState.getNameId()}}`;
       attributes.external_editor_date = String(Date.now());
       if (attributes.EntLatitude === null || attributes.EntLongitude === null) {
         delete attributes.EntLatitude;
@@ -89,7 +89,7 @@ export class EntranceManagementService {
       );
     } else {
       this.isSaving.next(true);
-      attributes.external_creator = `{${this.authState.getNameId()}}` ?? '';
+      attributes.external_creator = `{${this.authState.getNameId()}}`;
       attributes.external_creator_date = String(Date.now());
       this.createEntrance(
         [

@@ -10,10 +10,11 @@ import { EntityType } from '../quality-management-config';
 import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
 
 @Component({
-  selector: 'asrdb-quality-management-edit',
-  templateUrl: './quality-management-edit.component.html',
-  styleUrls: ['./quality-management-edit.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'asrdb-quality-management-edit',
+    templateUrl: './quality-management-edit.component.html',
+    styleUrls: ['./quality-management-edit.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class QualityManagementEditComponent implements OnInit, OnDestroy {
   public qualityRule = this.qualityManagementService.qualityRule;

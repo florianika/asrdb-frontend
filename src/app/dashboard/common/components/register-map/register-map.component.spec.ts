@@ -38,6 +38,7 @@ describe('RegisterMapComponent', () => {
     updateGlobalIds: jasmine.Spy;
     prepareWhereCase: jasmine.Spy;
     prepareWhereCaseForEntrance: jasmine.Spy;
+    getSelectedBuildingGlobalIds: jasmine.Spy;
     filterObservable: Subject<void>;
     globalIdsObservable: Subject<void>;
   };
@@ -45,11 +46,27 @@ describe('RegisterMapComponent', () => {
   beforeEach(async () => {
     registerMapServiceMock = jasmine.createSpyObj<RegisterMapService>(
       'RegisterMapService',
-      ['init', 'filterBuildingData', 'filterEntranceData', 'cleanup', 'hasActiveView']
+      [
+        'init',
+        'filterBuildingData',
+        'filterEntranceData',
+        'highlightBuildings',
+        'highlightEntrance',
+        'cleanup',
+        'hasActiveView',
+      ]
     );
     registerMapServiceMock.init.and.returnValue(Promise.resolve({} as MapView));
-    registerMapServiceMock.filterBuildingData.and.returnValue(Promise.resolve());
-    registerMapServiceMock.filterEntranceData.and.returnValue(Promise.resolve());
+    registerMapServiceMock.filterBuildingData.and.returnValue(
+      Promise.resolve()
+    );
+    registerMapServiceMock.filterEntranceData.and.returnValue(
+      Promise.resolve()
+    );
+    registerMapServiceMock.highlightBuildings.and.returnValue(
+      Promise.resolve()
+    );
+    registerMapServiceMock.highlightEntrance.and.returnValue(Promise.resolve());
     registerMapServiceMock.hasActiveView.and.returnValue(false);
 
     esriAuthServiceMock = jasmine.createSpyObj<CommonEsriAuthService>(
@@ -71,10 +88,15 @@ describe('RegisterMapComponent', () => {
       skipOtherFiltersApartFromGlobalId: false,
       setBuildingGlobalIdFilter: jasmine.createSpy('setBuildingGlobalIdFilter'),
       updateGlobalIds: jasmine.createSpy('updateGlobalIds'),
-      prepareWhereCase: jasmine.createSpy('prepareWhereCase').and.returnValue('1=1'),
+      prepareWhereCase: jasmine
+        .createSpy('prepareWhereCase')
+        .and.returnValue('1=1'),
       prepareWhereCaseForEntrance: jasmine
         .createSpy('prepareWhereCaseForEntrance')
         .and.returnValue('1=0'),
+      getSelectedBuildingGlobalIds: jasmine
+        .createSpy('getSelectedBuildingGlobalIds')
+        .and.returnValue(['{BLD-1}']),
       filterObservable: filterSubject,
       globalIdsObservable: globalIdsSubject,
     };
@@ -87,7 +109,10 @@ describe('RegisterMapComponent', () => {
       set: {
         providers: [
           { provide: RegisterMapService, useValue: registerMapServiceMock },
-          { provide: RegisterFilterService, useValue: registerFilterServiceMock },
+          {
+            provide: RegisterFilterService,
+            useValue: registerFilterServiceMock,
+          },
           { provide: CommonEsriAuthService, useValue: esriAuthServiceMock },
           { provide: AuthStateService, useValue: authStateServiceMock },
         ],
@@ -127,9 +152,8 @@ describe('RegisterMapComponent', () => {
   });
 
   it('marks map as ready before init promise resolves when view is already active', async () => {
-    (component as unknown as { mapViewEl: ElementRef }).mapViewEl = new ElementRef(
-      document.createElement('div')
-    );
+    (component as unknown as { mapViewEl: ElementRef }).mapViewEl =
+      new ElementRef(document.createElement('div'));
 
     const deferred = createDeferredPromise<MapView>();
     registerMapServiceMock.init.and.returnValue(deferred.promise);
@@ -146,5 +170,56 @@ describe('RegisterMapComponent', () => {
     await initPromise;
 
     expect(component.isMapInitializing).toBeFalse();
+  });
+
+  it('keeps selected buildings visible on the list map and highlights them', async () => {
+    component.highlightSelectedBuildings = true;
+    registerFilterServiceMock.prepareWhereCase.and.returnValue(
+      'BldQuality <> 0'
+    );
+    spyOn(component, 'initializeMap').and.returnValue(Promise.resolve());
+    fixture.detectChanges();
+
+    filterSubject.next();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(registerFilterServiceMock.prepareWhereCase).toHaveBeenCalledWith({
+      includeGlobalId: false,
+    });
+    expect(registerMapServiceMock.filterBuildingData).toHaveBeenCalledWith(
+      'BldQuality <> 0'
+    );
+    expect(registerMapServiceMock.highlightBuildings).toHaveBeenCalledWith([
+      '{BLD-1}',
+    ]);
+  });
+
+  it('keeps building entrances visible on the details map and highlights the selected entrance', async () => {
+    component.highlightSelectedEntrance = true;
+    component.entranceGlobalId = '{ENT-1}';
+    const quote = String.fromCharCode(39);
+    const entranceWhereCase = `EntBldGlobalID in (${quote}{BLD-1}${quote}) AND EntQuality <> 0`;
+    registerFilterServiceMock.prepareWhereCaseForEntrance.and.returnValue(
+      entranceWhereCase
+    );
+    spyOn(component, 'initializeMap').and.returnValue(Promise.resolve());
+    fixture.detectChanges();
+
+    globalIdsSubject.next();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(
+      registerFilterServiceMock.prepareWhereCaseForEntrance
+    ).toHaveBeenCalledWith('{ENT-1}', {
+      includeEntranceId: false,
+    });
+    expect(registerMapServiceMock.filterEntranceData).toHaveBeenCalledWith(
+      entranceWhereCase
+    );
+    expect(registerMapServiceMock.highlightEntrance).toHaveBeenCalledWith(
+      '{ENT-1}'
+    );
   });
 });

@@ -26,7 +26,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgForOf, NgIf } from '@angular/common';
+
 import { RegisterMapComponent } from '../../common/components/register-map/register-map.component';
 import { Building } from '../model/building';
 import { EntranceDetailsService } from './entrance/entrance-details.service';
@@ -54,8 +54,6 @@ import { AuthStateService } from '../../../common/services/auth-state.service';
     MatMenuItem,
     MatProgressSpinner,
     MatTooltip,
-    NgForOf,
-    NgIf,
     RegisterMapComponent,
     MatMenuTrigger,
     EntranceListComponent,
@@ -63,7 +61,6 @@ import { AuthStateService } from '../../../common/services/auth-state.service';
     BuildingDetailComponent,
   ],
   templateUrl: './register-view-details-v2.component.html',
-  standalone: true,
   styleUrl: './register-view-details-v2.component.css',
 })
 export class RegisterViewDetailsV2Component implements OnInit, OnDestroy {
