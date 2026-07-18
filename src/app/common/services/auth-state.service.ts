@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {
-  BehaviorSubject,
   Observable,
   Subject,
   catchError,
@@ -42,10 +41,8 @@ export class AuthStateService implements OnDestroy {
   private readonly STOP_INTERVAL_MESSAGE = 'stopInterval';
 
   private tokens: SigninResponse | null;
-  private isLoggedIn: BehaviorSubject<boolean>;
   private helper = new JwtHelperService();
   private readonly destroy$ = new Subject<void>();
-  private readonly refreshState = new BehaviorSubject<RefreshState>('idle');
 
   private webWorker!: Worker;
   private inFlightRefresh$?: Observable<boolean>;
@@ -58,18 +55,16 @@ export class AuthStateService implements OnDestroy {
   constructor(
     private router: Router,
     private httpClient: HttpClient,
-    private authSessionStore: AuthSessionStore = new AuthSessionStore(),
-    private logger: LoggerService = new LoggerService()
+    private authSessionStore: AuthSessionStore,
+    private logger: LoggerService
   ) {
     const item = localStorage.getItem(this.TOKEN_STORAGE_KEY);
     this.tokens = item ? JSON.parse(item) : null;
-    this.isLoggedIn = new BehaviorSubject(this.isTokenValid());
     this.session = this.authSessionStore.session;
     this.role = this.authSessionStore.role;
     this.refreshStateSignal = this.authSessionStore.refreshState;
     this.isRefreshingSignal = this.authSessionStore.isRefreshing;
-    this.syncSessionStore();
-    this.authSessionStore.setRefreshState(this.refreshState.value);
+    this.syncSessionStore(this.isTokenValid());
     this.createWebWorker();
   }
 
@@ -136,7 +131,7 @@ export class AuthStateService implements OnDestroy {
             )
         ),
         tap(success => {
-          if (success && this.refreshState.value !== 'failed') {
+          if (success && this.refreshStateSignal() !== 'failed') {
             this.setRefreshState('idle');
           }
         }),
@@ -156,20 +151,23 @@ export class AuthStateService implements OnDestroy {
   }
 
   setLoginState(loginState: boolean) {
-    this.isLoggedIn?.next(loginState);
-    this.syncSessionStore();
+    this.syncSessionStore(loginState);
   }
 
   getLoginStateAsObservable() {
-    return this.isLoggedIn.asObservable();
+    return this.authSessionStore.session$.pipe(
+      map(session => session.isLoggedIn)
+    );
   }
 
   getRefreshState$(): Observable<RefreshState> {
-    return this.refreshState.asObservable();
+    return this.authSessionStore.refreshState$;
   }
 
   isRefreshing$(): Observable<boolean> {
-    return this.refreshState.pipe(map(state => state === 'refreshing'));
+    return this.authSessionStore.refreshState$.pipe(
+      map(state => state === 'refreshing')
+    );
   }
 
   isUserLoggedIn(): Observable<boolean> {
@@ -332,7 +330,7 @@ export class AuthStateService implements OnDestroy {
       isAuthTokenNearlyExpired || isEsriTokenNearlyExpired;
     if (
       shouldRefreshToken &&
-      this.refreshState.value !== 'refreshing' &&
+      this.refreshStateSignal() !== 'refreshing' &&
       !this.router.url.includes('/auth/')
     ) {
       this.logger.debug('Refreshing expiring credentials');
@@ -380,9 +378,11 @@ export class AuthStateService implements OnDestroy {
     this.webWorker?.terminate();
   }
 
-  private syncSessionStore() {
+  private syncSessionStore(
+    isLoggedIn = this.authSessionStore.session().isLoggedIn
+  ) {
     this.authSessionStore.setSession({
-      isLoggedIn: this.isLoggedIn.value,
+      isLoggedIn,
       role: this.getRole() ?? null,
       municipality: this.getMunicipality(),
       nameId: this.getNameId() ?? null,
@@ -390,7 +390,6 @@ export class AuthStateService implements OnDestroy {
   }
 
   private setRefreshState(state: RefreshState) {
-    this.refreshState.next(state);
     this.authSessionStore.setRefreshState(state);
   }
 }

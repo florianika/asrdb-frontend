@@ -1,4 +1,5 @@
 import { computed, Injectable, Signal, signal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Role } from '../../model/RolePermissions.model';
 
 export type AuthRefreshState = 'idle' | 'refreshing' | 'failed';
@@ -14,13 +15,18 @@ export type AuthSessionSnapshot = {
   providedIn: 'root',
 })
 export class AuthSessionStore {
-  private readonly _session = signal<AuthSessionSnapshot>({
+  private readonly initialSession: AuthSessionSnapshot = {
     isLoggedIn: false,
     role: null,
     municipality: null,
     nameId: null,
-  });
+  };
+  private readonly _session = signal<AuthSessionSnapshot>(this.initialSession);
   private readonly _refreshState = signal<AuthRefreshState>('idle');
+  private readonly sessionChanges = new BehaviorSubject(this.initialSession);
+  private readonly refreshStateChanges = new BehaviorSubject<AuthRefreshState>(
+    'idle'
+  );
 
   readonly session: Signal<AuthSessionSnapshot> = computed(() =>
     this._session()
@@ -32,19 +38,25 @@ export class AuthSessionStore {
   readonly isRefreshing: Signal<boolean> = computed(
     () => this._refreshState() === 'refreshing'
   );
+  readonly session$ = this.sessionChanges.asObservable();
+  readonly refreshState$ = this.refreshStateChanges.asObservable();
 
   setSession(session: AuthSessionSnapshot): void {
     this._session.set(session);
+    this.sessionChanges.next(session);
   }
 
   patchSession(sessionPatch: Partial<AuthSessionSnapshot>): void {
-    this._session.update(current => ({
-      ...current,
+    const session = {
+      ...this._session(),
       ...sessionPatch,
-    }));
+    };
+    this._session.set(session);
+    this.sessionChanges.next(session);
   }
 
   setRefreshState(state: AuthRefreshState): void {
     this._refreshState.set(state);
+    this.refreshStateChanges.next(state);
   }
 }

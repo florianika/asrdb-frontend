@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { firstValueFrom, of, throwError } from 'rxjs';
 
 import { AuthStateService } from './auth-state.service';
+import { AuthSessionStore } from './auth-session.store';
+import { LoggerService } from './logger.service';
 
 describe('AuthStateService', () => {
   let service: AuthStateService;
@@ -29,7 +31,12 @@ describe('AuthStateService', () => {
       'post',
       'get',
     ]);
-    service = new AuthStateService(routerSpy, httpClientSpy);
+    service = new AuthStateService(
+      routerSpy,
+      httpClientSpy,
+      new AuthSessionStore(),
+      new LoggerService()
+    );
   });
 
   afterEach(() => {
