@@ -1,12 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/model/User.model';
 import { environment } from 'src/environments/environment';
-import { UserEditDialogComponent } from './user-edit-dialog/user-edit-dialog.component';
-import { UserViewDialogComponent } from './user-view-dialog/user-view-dialog.component';
 import { Role } from 'src/app/model/RolePermissions.model';
 
 @Injectable()
@@ -17,8 +14,7 @@ export class UserManagementService {
 
   constructor(
     private httpClient: HttpClient,
-    private snackbarService: MatSnackBar,
-    private dialog: MatDialog
+    private snackbarService: MatSnackBar
   ) {}
 
   get usersAsObservable() {
@@ -66,29 +62,6 @@ export class UserManagementService {
           );
         },
       });
-  }
-
-  openViewUserDialog(user: User) {
-    this.dialog.open(UserViewDialogComponent, {
-      data: { userId: user.id },
-      disableClose: true,
-    });
-  }
-
-  openEditUserDialog(user: User) {
-    const editDialog = this.dialog.open(UserEditDialogComponent, {
-      data: user,
-      disableClose: true,
-    });
-    const editDialogSubscription = editDialog.afterClosed().subscribe(data => {
-      if (data.role && data.role !== user.accountRole) {
-        this.editUserRole(user.id, data.role);
-      }
-      if (data.municipality && data.municipality !== user.municipality) {
-        this.editUserMunicipality(user.id, data.municipality);
-      }
-      editDialogSubscription.unsubscribe();
-    });
   }
 
   editUserRole(userId: string, role: Role) {

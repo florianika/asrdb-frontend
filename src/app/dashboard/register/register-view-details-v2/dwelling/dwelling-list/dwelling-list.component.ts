@@ -19,13 +19,13 @@ import { RegisterViewDetailsService } from '../../register-view-details.service'
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { merge, Subject, takeUntil } from 'rxjs';
 import { DwellingDetailsService } from '../dwelling-details.service';
+import { DwellingDetailsDialogService } from '../dwelling-details-dialog.service';
 import { Dwelling } from '../../../model/dwelling';
 import { AuthStateService } from '../../../../../common/services/auth-state.service';
 import { DWELLING_ENTITY } from '../../../../../common/constants/common-constants';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EntranceDetailsService } from '../../entrance/entrance-details.service';
 import { DwellingDetailsFormComponent } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
-import { Log } from '../../../register-log-view/model/log';
 import {
   EntityDeleteConfirmationDialogComponent,
   EntityDeleteDialogData,
@@ -64,11 +64,13 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject();
 
   private dwellingDetailsService = inject(DwellingDetailsService);
+  private dwellingDetailsDialogService = inject(DwellingDetailsDialogService);
   private entranceDetailsService = inject(EntranceDetailsService);
   private registerViewDetailsService = inject(RegisterViewDetailsService);
   private authStateService = inject(AuthStateService);
 
   private matDialog = inject(MatDialog);
+  private parentDialogRef = inject(MatDialogRef, { optional: true });
 
   private viewData = this.dwellingDetailsService.viewData;
   private entranceViewData = this.entranceDetailsService.viewData;
@@ -159,12 +161,14 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   viewDwellingDetails(id: string) {
     const logs = this.buildingViewData().logs;
-    this.dwellingDetailsService.viewDwellingDetails(
+    this.dwellingDetailsDialogService.open(
       id,
       logs,
       this.buildingNumber,
       this.entranceNumber,
-      this.entranceId
+      this.entranceId,
+      undefined,
+      () => this.parentDialogRef?.close()
     );
   }
 
@@ -185,7 +189,7 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.buildingViewData().building?.GlobalID || '',
           this.entranceId
         );
-        this.entranceDetailsService.dialogRef?.close();
+        this.parentDialogRef?.close();
       });
   }
 
@@ -210,7 +214,7 @@ export class DwellingListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.buildingViewData().building?.GlobalID || '',
           this.entranceId
         );
-        this.entranceDetailsService.dialogRef?.close();
+        this.parentDialogRef?.close();
       });
   }
 

@@ -16,6 +16,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { EntranceDetailsService } from '../entrance-details.service';
+import { EntranceDetailsDialogService } from '../entrance-details-dialog.service';
 import { Entrance } from '../../../model/entrance';
 import { AuthStateService } from '../../../../../common/services/auth-state.service';
 import { RegisterViewDetailsService } from '../../register-view-details.service';
@@ -67,6 +68,7 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
   private router = inject(Router);
   private authStateService = inject(AuthStateService);
   private entranceDetailsService = inject(EntranceDetailsService);
+  private entranceDetailsDialogService = inject(EntranceDetailsDialogService);
   private registerViewDetailsService = inject(RegisterViewDetailsService);
   private matDialog = inject(MatDialog);
 
@@ -150,7 +152,7 @@ export class EntranceListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   viewEntranceDetails(id: string) {
     const logs = this.buildingViewData().logs;
-    this.entranceDetailsService.viewEntranceDetails(id, logs);
+    this.entranceDetailsDialogService.open(id, logs);
   }
 
   editEntrance(id: string) {

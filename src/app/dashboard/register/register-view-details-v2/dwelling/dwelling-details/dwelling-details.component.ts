@@ -1,5 +1,6 @@
 import { Component, inject, OnDestroy } from '@angular/core';
 import {
+  MAT_DIALOG_DATA,
   MatDialog,
   MatDialogModule,
   MatDialogRef,
@@ -13,10 +14,13 @@ import { Dwelling } from '../../../model/dwelling';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { DwellingDetailsService } from '../dwelling-details.service';
 import { DwellingDetailsFormComponent } from '../../../register-form/dwelling-details-form/dwelling-details-form.component';
-import { Log } from '../../../register-log-view/model/log';
 import { Subject, takeUntil } from 'rxjs';
 import { RegisterViewDetailsService } from '../../register-view-details.service';
 import { EntranceDetailsService } from '../../entrance/entrance-details.service';
+
+type DwellingDetailsDialogData = {
+  closeParent?: () => void;
+};
 
 @Component({
     selector: 'asrdb-dwelling-details',
@@ -38,6 +42,7 @@ export class DwellingDetailsComponent implements OnDestroy {
   private matDialog = inject(MatDialog);
   private dwellingDetailsService = inject(DwellingDetailsService);
   private entranceDetailsService = inject(EntranceDetailsService);
+  private dialogData = inject<DwellingDetailsDialogData>(MAT_DIALOG_DATA);
   private registerViewDetailsService = inject(RegisterViewDetailsService);
   private viewData = this.dwellingDetailsService.viewData;
   private entranceViewData = this.entranceDetailsService.viewData;
@@ -90,7 +95,7 @@ export class DwellingDetailsComponent implements OnDestroy {
           this.buildingViewData().building?.GlobalID || '',
           this.entranceViewData().selectedEntrance?.GlobalID || ''
         );
-        this.entranceDetailsService.dialogRef?.close();
+        this.dialogData.closeParent?.();
         this.dialogRef.close();
       });
   }

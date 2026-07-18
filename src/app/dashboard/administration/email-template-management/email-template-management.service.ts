@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../../environments/environment';
 import {
   EmailTemplate,
   EmailTemplateForm,
 } from '../../../model/EmailTemplate.model';
-import { EmailTemplateManagementFormComponent } from './email-template-management-form/email-template-management-form.component';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +19,7 @@ export class EmailTemplateManagementService {
 
   constructor(
     private httpClient: HttpClient,
-    private snackbarService: MatSnackBar,
-    private dialog: MatDialog
+    private snackbarService: MatSnackBar
   ) {}
 
   get emailTemplatesAsObservable() {
@@ -93,22 +90,6 @@ export class EmailTemplateManagementService {
             $localize`Could not load the email template. Please reload the page to try again.`
           );
         },
-      });
-  }
-
-  openEditEmailTemplateDialog(id?: number) {
-    const editDialog = this.dialog.open(EmailTemplateManagementFormComponent, {
-      data: { templateId: id },
-      width: '900px',
-      disableClose: true,
-    });
-    const editDialogSubscription = editDialog
-      .afterClosed()
-      .subscribe((data: EmailTemplate) => {
-        if (data) {
-          this.editEmailTemplate(data);
-          editDialogSubscription.unsubscribe();
-        }
       });
   }
 

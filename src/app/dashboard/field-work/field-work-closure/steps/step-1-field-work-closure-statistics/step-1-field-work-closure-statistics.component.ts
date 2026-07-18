@@ -35,7 +35,7 @@ import {
 } from '../../field-work-closure.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MUNICIPALITIES } from '../../../../../common/data/municipalities';
-import { AggregatedStatistic } from '../../field-work-closure-modal.component';
+import { AggregatedStatistic } from '../../field-work-closure.model';
 import { MatIcon } from '@angular/material/icon';
 
 type CompletenessMetric = {

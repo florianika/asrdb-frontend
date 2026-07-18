@@ -10,11 +10,19 @@ import { MatSort } from '@angular/material/sort';
 import { UserManagementService } from './user-management.service';
 import { User } from 'src/app/model/User.model';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subject, map, Observable, takeUntil } from 'rxjs';
+import { Subject, map, Observable, take, takeUntil } from 'rxjs';
 import { MUNICIPALITIES } from '../../../common/data/municipalities';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SignupComponent } from '../../../auth/signup/signup.component';
 import { SignupService } from '../../../auth/signup/signup.service';
+import { UserViewDialogComponent } from './user-view-dialog/user-view-dialog.component';
+import { UserEditDialogComponent } from './user-edit-dialog/user-edit-dialog.component';
+import { Role } from '../../../model/RolePermissions.model';
+
+type UserEditDialogResult = {
+  role?: Role;
+  municipality?: number;
+};
 
 @Component({
     selector: 'asrdb-user-management',
@@ -84,11 +92,40 @@ export class UserManagementComponent
   }
 
   viewUser(user: User) {
-    this.userManagementService.openViewUserDialog(user);
+    this.matDialog.open(UserViewDialogComponent, {
+      data: { userId: user.id },
+      disableClose: true,
+    });
   }
 
   editUser(user: User) {
-    this.userManagementService.openEditUserDialog(user);
+    this.matDialog
+      .open<UserEditDialogComponent, User, UserEditDialogResult>(
+        UserEditDialogComponent,
+        {
+          data: user,
+          disableClose: true,
+        }
+      )
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(data => {
+        if (!data) {
+          return;
+        }
+        if (data.role && data.role !== user.accountRole) {
+          this.userManagementService.editUserRole(user.id, data.role);
+        }
+        if (
+          data.municipality &&
+          data.municipality.toString() !== user.municipality
+        ) {
+          this.userManagementService.editUserMunicipality(
+            user.id,
+            data.municipality.toString()
+          );
+        }
+      });
   }
 
   toggleAccountStatus(user: User) {

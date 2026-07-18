@@ -19,6 +19,8 @@ import { RegisterLogService } from './register-log-view/register-log-table/regis
 import { CommonEntityStructureService } from '../common/service/common-entity-structure.service';
 import { EntranceDetailsService } from './register-view-details-v2/entrance/entrance-details.service';
 import { DwellingDetailsService } from './register-view-details-v2/dwelling/dwelling-details.service';
+import { DwellingDetailsDialogService } from './register-view-details-v2/dwelling/dwelling-details-dialog.service';
+import { EntranceDetailsDialogService } from './register-view-details-v2/entrance/entrance-details-dialog.service';
 import { RegisterViewDetailsV2Component } from './register-view-details-v2/register-view-details-v2.component';
 import { RegisterViewDetailsService } from './register-view-details-v2/register-view-details.service';
 import { RegisterViewDetailsStore } from './register-view-details-v2/register-view-details.store';
@@ -51,6 +53,8 @@ import { RegisterViewDetailsApiAdapter } from './register-view-details-v2/regist
     CommonEntityStructureService,
     EntranceDetailsService,
     DwellingDetailsService,
+    DwellingDetailsDialogService,
+    EntranceDetailsDialogService,
     RegisterViewDetailsService,
     RegisterViewDetailsStore,
     RegisterViewDetailsMapper,

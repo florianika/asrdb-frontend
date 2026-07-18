@@ -18,12 +18,10 @@ import {
 } from '../../../common/service/common-entity-structure.service';
 import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
 import { Section } from '../types';
-import { MatDialog } from '@angular/material/dialog';
 import { Log } from '../../register-log-view/model/log';
 import { DWELLING_ENTITY } from '../../../../common/constants/common-constants';
 import { SectionField } from '../../constant/common-constants';
 import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
-import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
 import {
   getLocaleProperty,
   getLogMessage,
@@ -42,8 +40,6 @@ const ENTRANCE_NUMBER = 'Entrance number';
 export class DwellingDetailsService {
   private previousEntranceId = '';
   private previousDwellingId = '';
-
-  private matDialog = inject(MatDialog);
 
   private filterConfig = signal({
     filter: {
@@ -145,11 +141,11 @@ export class DwellingDetailsService {
 
   public viewDwellingDetails(
     id: string,
-    logs: Log[],
     buildingNumber?: number,
     entranceNumber?: number,
     entranceId?: string,
-    streetName?: string
+    streetName?: string,
+    onReady?: () => void
   ) {
     const dwelling =
       this.viewData().dwellingList.find(dwl => dwl.GlobalID === id) || null;
@@ -166,13 +162,13 @@ export class DwellingDetailsService {
         buildingNumber || 0,
         entranceNumber || 0,
         () => {
-          this.openDialog(logs, buildingNumber, entranceNumber, entranceId);
+          onReady?.();
         }
       );
     } else {
       // structure already loaded
       this.fillSections(id);
-      this.openDialog(logs, buildingNumber, entranceNumber, entranceId);
+      onReady?.();
     }
   }
 
@@ -196,26 +192,9 @@ export class DwellingDetailsService {
     return logs;
   }
 
-  private openDialog(
-    logs: Log[],
-    buildingNumber?: number,
-    entranceNumber?: number,
-    entranceId?: string
-  ) {
-    const dialogRef = this.matDialog.open(DwellingDetailsComponent, {
-      data: {
-        logs,
-        buildingNumber,
-        entranceNumber,
-        entranceId,
-      },
-      disableClose: true,
-    });
-    const sub = dialogRef.afterClosed().subscribe(() => {
-      this.viewData.update(data => ({ ...data, selectedDwelling: null }));
-      this.previousDwellingId = '';
-      sub.unsubscribe();
-    });
+  public clearSelection(): void {
+    this.viewData.update(data => ({ ...data, selectedDwelling: null }));
+    this.previousDwellingId = '';
   }
 
   private prepareStructure(

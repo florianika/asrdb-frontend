@@ -5,13 +5,6 @@ import { Step1FieldWorkClosureStatisticsComponent } from './steps/step-1-field-w
 import { Step2FieldWorkClosureEmailComponent } from './steps/step-2-field-work-closure-email/step-2-field-work-closure-email.component';
 import { Step3FieldWorkClosureSummaryComponent } from './steps/step-3-field-work-closure-summary/step-3-field-work-closure-summary.component';
 
-export type AggregatedStatistic = {
-  id: string;
-  municipality: string;
-  quality: string;
-  data: number[];
-};
-
 @Component({
     selector: 'asrdb-field-work-closure-modal',
     imports: [

@@ -12,6 +12,8 @@ import { MatSort } from '@angular/material/sort';
 import { EmailTemplateManagementService } from '../email-template-management.service';
 import { EmailTemplate } from '../../../../model/EmailTemplate.model';
 import { UserManagementService } from '../../user-management/user-management.service';
+import { MatDialog } from '@angular/material/dialog';
+import { EmailTemplateManagementFormComponent } from '../email-template-management-form/email-template-management-form.component';
 
 @Component({
     selector: 'asrdb-email-template-management-table',
@@ -44,7 +46,8 @@ export class EmailTemplateManagementTableComponent
 
   constructor(
     private emailTemplateManagementService: EmailTemplateManagementService,
-    private userManagementService: UserManagementService
+    private userManagementService: UserManagementService,
+    private dialog: MatDialog
   ) {
     this.emailTemplateManagementService.emailTemplatesAsObservable
       .pipe(
@@ -85,12 +88,18 @@ export class EmailTemplateManagementTableComponent
   }
 
   createEmailTemplate() {
-    this.emailTemplateManagementService.openEditEmailTemplateDialog();
+    this.openEmailTemplateDialog();
   }
 
   editEmailTemplate(emailTemplate: EmailTemplate) {
-    this.emailTemplateManagementService.openEditEmailTemplateDialog(
-      emailTemplate.emailTemplateId
-    );
+    this.openEmailTemplateDialog(emailTemplate.emailTemplateId);
+  }
+
+  private openEmailTemplateDialog(templateId?: number) {
+    this.dialog.open(EmailTemplateManagementFormComponent, {
+      data: { templateId },
+      width: '900px',
+      disableClose: true,
+    });
   }
 }

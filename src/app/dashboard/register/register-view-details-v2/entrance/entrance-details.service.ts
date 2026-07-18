@@ -6,7 +6,6 @@ import {
   LOCALE_ID,
   signal,
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   CommonEntityStructureService,
   EntityAttribute,
@@ -15,15 +14,13 @@ import { Section } from '../types';
 import { SectionField } from '../../constant/common-constants';
 import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
 import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
-import { Log } from '../../register-log-view/model/log';
 import { ENTRANCE_ENTITY } from '../../../../common/constants/common-constants';
 import { Entrance } from '../../model/entrance';
 import { QueryFilter } from '../../model/query-filter';
-import { catchError, of as observableOf, Subject, take, takeUntil } from 'rxjs';
+import { catchError, of as observableOf, Subject, takeUntil } from 'rxjs';
 import { CommonEntranceService } from '../../../common/service/common-entrance.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonStreetService } from '../../../common/service/common-street.service';
-import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
 import {
   getLocaleProperty,
   getLogMessage,
@@ -35,12 +32,10 @@ import {
 
 @Injectable()
 export class EntranceDetailsService {
-  private matDialog = inject(MatDialog);
   private matSnackBar = inject(MatSnackBar);
   private destroy$ = new Subject<boolean>();
   private previousEntranceId = '';
 
-  public dialogRef?: MatDialogRef<EntranceDetailsComponent>;
   private filterConfig = signal({
     filter: {
       EntBuildingNumber: 0,
@@ -119,7 +114,11 @@ export class EntranceDetailsService {
     return String(value ?? '');
   }
 
-  public viewEntranceDetails(id: string, logs: Log[], streetName?: string) {
+  public viewEntranceDetails(
+    id: string,
+    streetName?: string,
+    onReady?: () => void
+  ) {
     const entrance =
       this.viewData().entranceList.find(ent => ent.GlobalID === id) || null;
     this.viewData.update(data => ({ ...data, selectedEntrance: entrance }));
@@ -132,28 +131,17 @@ export class EntranceDetailsService {
       }));
 
       this.loadEntranceStructure(streetName || '', () => {
-        this.openDialog(logs);
+        onReady?.();
       });
     } else {
       this.fillSections(id);
-      this.openDialog(logs);
+      onReady?.();
     }
   }
 
-  private openDialog(logs: Log[]) {
-    this.dialogRef = this.matDialog.open(EntranceDetailsComponent, {
-      data: {
-        logs,
-      },
-      disableClose: true,
-    });
-    this.dialogRef
-      .afterClosed()
-      .pipe(take(1))
-      .subscribe(() => {
-        this.viewData.update(data => ({ ...data, selectedEntrance: null }));
-        this.previousEntranceId = '';
-      });
+  public clearSelection(): void {
+    this.viewData.update(data => ({ ...data, selectedEntrance: null }));
+    this.previousEntranceId = '';
   }
 
   private prepareStructure(
