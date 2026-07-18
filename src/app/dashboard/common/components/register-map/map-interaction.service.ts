@@ -5,6 +5,7 @@ import GraphicHit = __esri.GraphicHit;
 import { CommonBuildingService } from '../../service/common-building.service';
 import { CommonEntranceService } from '../../service/common-entrance.service';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { arcGisIntegerLiteral } from '../../helper/arcgis-query';
 
 type ArcGisFeatureAttributes = Record<string, unknown>;
 
@@ -47,8 +48,7 @@ export class MapInteractionService {
       const layerTitle = data?.layer?.title;
       const objectId = data?.graphic?.attributes['OBJECTID'];
       const attributes = data?.graphic?.attributes as
-        | ArcGisFeatureAttributes
-        | undefined;
+        ArcGisFeatureAttributes | undefined;
 
       if (layerTitle === 'ASRDB Buildings') {
         let buildingGlobalId = MapInteractionService.getAttributeValue(
@@ -106,7 +106,7 @@ export class MapInteractionService {
     const buildingData = await firstValueFrom(
       buildingLayerService
         .getBuildingData({
-          where: `OBJECTID=${objectId}`,
+          where: `OBJECTID=${arcGisIntegerLiteral(objectId, 'ArcGIS ObjectID')}`,
           outFields: ['GlobalID'],
           num: 1,
         })
@@ -131,7 +131,7 @@ export class MapInteractionService {
     const entranceData = await firstValueFrom(
       entranceLayerService
         .getEntranceData({
-          where: `OBJECTID=${objectId}`,
+          where: `OBJECTID=${arcGisIntegerLiteral(objectId, 'ArcGIS ObjectID')}`,
           outFields: ['EntBldGlobalID'],
           num: 1,
         })

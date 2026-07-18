@@ -10,6 +10,11 @@ import { QueryFilter } from '../model/query-filter';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import {
+  arcGisGlobalIdNotEquals,
+  arcGisIntegerLiteral,
+  arcGisStringEquals,
+} from '../../common/helper/arcgis-query';
 
 @Injectable()
 export class StreetManagementService {
@@ -76,9 +81,9 @@ export class StreetManagementService {
     mergeCallback?: (foundStreetIds: string) => void,
     globalId?: string
   ) {
-    let whereClause = `StrMunicipality=${municipality} AND StrNameCore='${name}'`;
+    let whereClause = `StrMunicipality=${arcGisIntegerLiteral(municipality)} AND ${arcGisStringEquals('StrNameCore', name)}`;
     if (globalId) {
-      whereClause += ` AND GlobalID<>'${globalId}'`;
+      whereClause += ` AND ${arcGisGlobalIdNotEquals('GlobalID', globalId)}`;
     }
     const filter = {
       where: whereClause,

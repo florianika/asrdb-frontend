@@ -64,6 +64,7 @@ import {
   getLocaleProperty,
   getLogMessage,
 } from '../../../common/helper/locale-property-helper';
+import { arcGisIntegerLiteral } from '../../../common/helper/arcgis-query';
 
 @Component({
   selector: 'asrdb-entrance-details-form',
@@ -170,7 +171,7 @@ export class EntranceDetailsFormComponent implements OnInit, OnDestroy {
 
   loadStreets(municipality: string) {
     const filter = {
-      where: `StrMunicipality = ${municipality}`,
+      where: `StrMunicipality=${arcGisIntegerLiteral(municipality, 'municipality')}`,
     } as Partial<QueryFilter>;
     this.streetService
       .getAllStreetsForMunicipality(filter)

@@ -58,6 +58,7 @@ import {
 import { BUILDING_ENTITY } from '../../../../common/constants/common-constants';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { EsriField, EsriQueryResponse } from '../../model/esri-response';
+import { arcGisOrderBy } from '../../../common/helper/arcgis-query';
 
 type BuildingDataResponse = EsriQueryResponse<Building> & {
   globalIds: string[];
@@ -379,7 +380,7 @@ export class RegisterTableComponent
     } as Partial<QueryFilter>;
     if (this.sort?.active) {
       filter.orderByFields = [
-        this.sort.active + ' ' + this.sort.direction.toUpperCase(),
+        arcGisOrderBy(this.sort.active, this.sort.direction || 'asc'),
       ];
     }
     return this.commonBuildingService.getBuildingData(filter).pipe(

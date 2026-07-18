@@ -1,20 +1,37 @@
-import {effect, Inject, inject, Injectable, LOCALE_ID, signal,} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {CommonEntityStructureService, EntityAttribute,} from '../../../common/service/common-entity-structure.service';
-import {Section} from '../types';
-import {SectionField} from '../../constant/common-constants';
-import {CommonRegisterHelperService} from '../../../common/service/common-helper.service';
-import {RegisterLogService} from '../../register-log-view/register-log-table/register-log.service';
-import {Log} from '../../register-log-view/model/log';
-import {ENTRANCE_ENTITY} from '../../../../common/constants/common-constants';
-import {Entrance} from '../../model/entrance';
-import {QueryFilter} from '../../model/query-filter';
-import {catchError, of as observableOf, Subject, take, takeUntil} from 'rxjs';
-import {CommonEntranceService} from '../../../common/service/common-entrance.service';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {CommonStreetService} from '../../../common/service/common-street.service';
-import {EntranceDetailsComponent} from './entrance-details/entrance-details.component';
-import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
+import {
+  effect,
+  Inject,
+  inject,
+  Injectable,
+  LOCALE_ID,
+  signal,
+} from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  CommonEntityStructureService,
+  EntityAttribute,
+} from '../../../common/service/common-entity-structure.service';
+import { Section } from '../types';
+import { SectionField } from '../../constant/common-constants';
+import { CommonRegisterHelperService } from '../../../common/service/common-helper.service';
+import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
+import { Log } from '../../register-log-view/model/log';
+import { ENTRANCE_ENTITY } from '../../../../common/constants/common-constants';
+import { Entrance } from '../../model/entrance';
+import { QueryFilter } from '../../model/query-filter';
+import { catchError, of as observableOf, Subject, take, takeUntil } from 'rxjs';
+import { CommonEntranceService } from '../../../common/service/common-entrance.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonStreetService } from '../../../common/service/common-street.service';
+import { EntranceDetailsComponent } from './entrance-details/entrance-details.component';
+import {
+  getLocaleProperty,
+  getLogMessage,
+} from '../../../common/helper/locale-property-helper';
+import {
+  arcGisGlobalIdEquals,
+  arcGisGlobalIdIn,
+} from '../../../common/helper/arcgis-query';
 
 @Injectable()
 export class EntranceDetailsService {
@@ -130,10 +147,13 @@ export class EntranceDetailsService {
       },
       disableClose: true,
     });
-    this.dialogRef.afterClosed().pipe(take(1)).subscribe(() => {
-      this.viewData.update(data => ({ ...data, selectedEntrance: null }));
-      this.previousEntranceId = '';
-    });
+    this.dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(() => {
+        this.viewData.update(data => ({ ...data, selectedEntrance: null }));
+        this.previousEntranceId = '';
+      });
   }
 
   private prepareStructure(
@@ -280,7 +300,7 @@ export class EntranceDetailsService {
     if (streetGlobalIds.length > 0) {
       this.commonStreetService
         .getStreets({
-          where: `GlobalID in (${streetGlobalIds.map((id: string) => `'${id}'`).join(',')})`,
+          where: arcGisGlobalIdIn('GlobalID', streetGlobalIds),
           outFields: ['GlobalID', 'StrNameCore'],
         })
         .pipe(takeUntil(this.destroy$))
@@ -367,7 +387,7 @@ export class EntranceDetailsService {
 
   private prepareWhereCase(buildingId: string) {
     const conditions: string[] = ['EntQuality <> 0'];
-    conditions.push(`EntBldGlobalID = '${buildingId}'`);
+    conditions.push(arcGisGlobalIdEquals('EntBldGlobalID', buildingId));
     return conditions.length ? conditions.join(' and ') : '1=1';
   }
 }

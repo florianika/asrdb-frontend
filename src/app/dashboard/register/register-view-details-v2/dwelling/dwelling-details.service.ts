@@ -24,7 +24,15 @@ import { DWELLING_ENTITY } from '../../../../common/constants/common-constants';
 import { SectionField } from '../../constant/common-constants';
 import { RegisterLogService } from '../../register-log-view/register-log-table/register-log.service';
 import { DwellingDetailsComponent } from './dwelling-details/dwelling-details.component';
-import {getLocaleProperty, getLogMessage} from '../../../common/helper/locale-property-helper';
+import {
+  getLocaleProperty,
+  getLogMessage,
+} from '../../../common/helper/locale-property-helper';
+import {
+  arcGisGlobalIdEquals,
+  arcGisIdentifier,
+  arcGisStringLiteral,
+} from '../../../common/helper/arcgis-query';
 
 const STREET_NAME = 'Street name';
 const BUILDING_NUMBER = 'Building number';
@@ -381,11 +389,13 @@ export class DwellingDetailsService {
   }
 
   private loadDwellingsForEntrances(entranceId: string) {
-    this.filterConfig().filter.DwlEntGlobalID = `('${entranceId}')`;
+    this.filterConfig().filter.DwlEntGlobalID = entranceId;
   }
 
   private getWhereConditionValue(value: string | number) {
-    return typeof value == 'number' ? value : `'${value}'`;
+    return typeof value === 'number'
+      ? value.toString()
+      : arcGisStringLiteral(value);
   }
 
   private prepareWhereCase() {
@@ -394,11 +404,14 @@ export class DwellingDetailsService {
       .filter(([, value]: any) => !!value)
       .map(([key, value]: any) => ({ column: key, value }) as Chip)
       .forEach((filter: any) => {
-        if (filter.column === 'DwlEntGlobalID') {
-          conditions.push(filter.column + ' in ' + filter.value);
+        if (
+          filter.column === 'DwlEntGlobalID' ||
+          filter.column === 'GlobalID'
+        ) {
+          conditions.push(arcGisGlobalIdEquals(filter.column, filter.value));
         } else {
           conditions.push(
-            filter.column + '=' + this.getWhereConditionValue(filter.value)
+            `${arcGisIdentifier(filter.column)}=${this.getWhereConditionValue(filter.value)}`
           );
         }
       });

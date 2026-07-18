@@ -6,6 +6,14 @@ import {
   StreetFilterKey,
   StreetFilterValues,
 } from '../../register/model/street';
+import {
+  arcGisGlobalIdIn,
+  arcGisIntegerIn,
+  arcGisIntegerLiteral,
+  arcGisOrderBy,
+  arcGisStringContains,
+  arcGisStringEquals,
+} from '../../common/helper/arcgis-query';
 
 export type StreetSortConfig = {
   active?: string;
@@ -65,7 +73,10 @@ export class StreetManagementTableFilterService {
       if (Number.isNaN(typeCode)) {
         return { ...filter, StrType: [] };
       }
-      return { ...filter, StrType: filter.StrType.filter(code => code !== typeCode) };
+      return {
+        ...filter,
+        StrType: filter.StrType.filter(code => code !== typeCode),
+      };
     }
 
     return { ...filter, [key]: '' };
@@ -138,7 +149,7 @@ export class StreetManagementTableFilterService {
       outFields,
       where: this.buildWhereCase(filterValues),
       orderByFields: sort?.active
-        ? [`${sort.active} ${(sort.direction || 'asc').toUpperCase()}`]
+        ? [arcGisOrderBy(sort.active, sort.direction || 'asc')]
         : ['OBJECTID'],
     };
   }
@@ -147,41 +158,44 @@ export class StreetManagementTableFilterService {
     const conditions: string[] = [];
 
     if (filterValues.GlobalID.trim()) {
-      const ids = filterValues.GlobalID
-        .split(',')
+      const ids = filterValues.GlobalID.split(',')
         .map(id => id.trim().replace(/^'+|'+$/g, ''))
         .filter(Boolean);
       if (ids.length) {
-        conditions.push(`GlobalID in (${ids.map(id => `'${id}'`).join(',')})`);
+        conditions.push(arcGisGlobalIdIn('GlobalID', ids));
       }
     }
 
     if (filterValues.StrMunicipality !== null) {
-      conditions.push(`StrMunicipality=${filterValues.StrMunicipality}`);
+      conditions.push(
+        `StrMunicipality=${arcGisIntegerLiteral(filterValues.StrMunicipality)}`
+      );
     }
 
     if (filterValues.StrType.length) {
-      conditions.push(`StrType in (${filterValues.StrType.join(',')})`);
+      conditions.push(arcGisIntegerIn('StrType', filterValues.StrType));
     }
 
     if (filterValues.StrNameCore.trim()) {
       conditions.push(
-        `StrNameCore like '%${this.escapeLikeValue(filterValues.StrNameCore)}%'`
+        arcGisStringContains('StrNameCore', filterValues.StrNameCore)
       );
     }
 
     if (filterValues.StrNameFull.trim()) {
       conditions.push(
-        `StrNameFull like '%${this.escapeLikeValue(filterValues.StrNameFull)}%'`
+        arcGisStringContains('StrNameFull', filterValues.StrNameFull)
       );
     }
 
     if (filterValues.StrAddressID.trim()) {
       const addressId = Number.parseInt(filterValues.StrAddressID, 10);
       if (Number.isNaN(addressId)) {
-        conditions.push(`StrAddressID='${filterValues.StrAddressID.trim()}'`);
+        conditions.push(
+          arcGisStringEquals('StrAddressID', filterValues.StrAddressID.trim())
+        );
       } else {
-        conditions.push(`StrAddressID=${addressId}`);
+        conditions.push(`StrAddressID=${arcGisIntegerLiteral(addressId)}`);
       }
     }
 
@@ -222,9 +236,5 @@ export class StreetManagementTableFilterService {
     }
 
     return [];
-  }
-
-  private escapeLikeValue(value: string): string {
-    return value.replace(/'/g, "''");
   }
 }

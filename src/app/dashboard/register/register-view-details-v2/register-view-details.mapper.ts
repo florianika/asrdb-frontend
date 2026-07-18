@@ -3,8 +3,12 @@ import { Building } from '../model/building';
 import { EntityAttribute } from '../../common/service/common-entity-structure.service';
 import { SectionField } from '../constant/common-constants';
 import { Section, ViewSection } from './types';
-import { getLocaleProperty, getLogMessage } from '../../common/helper/locale-property-helper';
+import {
+  getLocaleProperty,
+  getLogMessage,
+} from '../../common/helper/locale-property-helper';
 import { Log } from '../register-log-view/model/log';
+import { arcGisGlobalIdEquals } from '../../common/helper/arcgis-query';
 
 type BuildingDataResponse = {
   data?: {
@@ -16,12 +20,13 @@ type BuildingDataResponse = {
 @Injectable()
 export class RegisterViewDetailsMapper {
   prepareWhereCase(id: string): string {
-    return `GlobalID='${id}'`;
+    return arcGisGlobalIdEquals('GlobalID', id);
   }
 
-  mapBuildingDataResponse(
-    response: BuildingDataResponse | null
-  ): { building: Building | null; fields: EntityAttribute[] } {
+  mapBuildingDataResponse(response: BuildingDataResponse | null): {
+    building: Building | null;
+    fields: EntityAttribute[];
+  } {
     if (!response) {
       return { building: null, fields: [] };
     }

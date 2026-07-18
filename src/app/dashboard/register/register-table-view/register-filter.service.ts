@@ -9,6 +9,15 @@ import {
   DEFAULT_MUNICIPALITY,
 } from '../../../common/services/auth-state.service';
 import { EsriField } from '../model/esri-response';
+import {
+  arcGisGlobalIdEquals,
+  arcGisGlobalIdIn,
+  arcGisIdentifier,
+  arcGisIntegerIn,
+  arcGisStringLiteral,
+  EMPTY_ARCGIS_GLOBAL_ID,
+  normalizeArcGisGlobalId,
+} from '../../common/helper/arcgis-query';
 
 export const FILTER_REGISTER = 'FILTER_REGISTER';
 
@@ -142,34 +151,16 @@ export class RegisterFilterService {
             return;
           }
           const globalIds = this.getGlobalIdsFromFilterValue(filter.value);
-          const globalIdsCondition = globalIds
-            .map(globalId => `'${globalId}'`)
-            .join(',');
-          conditions.push(filter.column + ' in (' + globalIdsCondition + ')');
+          conditions.push(arcGisGlobalIdIn(filter.column, globalIds));
         } else if (filter.column === 'BldWithQuePendingIds') {
           if (filter.value === 'notFound') {
-            const quote = String.fromCharCode(39);
             conditions.push(
-              'GlobalID in (' +
-                quote +
-                '{00000000-0000-0000-0000-000000000000}' +
-                quote +
-                ')'
+              arcGisGlobalIdIn('GlobalID', [EMPTY_ARCGIS_GLOBAL_ID])
             );
           } else {
-            const pendingIds = filter.value.split(',').map((id: string) => {
-              if (!id.startsWith('{')) {
-                id = '{' + id;
-              }
-              if (!id.endsWith('}')) {
-                id = id + '}';
-              }
-              return id;
-            });
-            const pendingIdsCondition = pendingIds
-              .map((pendingId: string) => `'${pendingId}'`)
-              .join(',');
-            conditions.push('GlobalID in (' + pendingIdsCondition + ')');
+            conditions.push(
+              arcGisGlobalIdIn('GlobalID', filter.value.split(','))
+            );
           }
         } else if (
           ['BldStatus', 'BldType', 'BldQuality', 'BldReview'].includes(
@@ -177,10 +168,12 @@ export class RegisterFilterService {
           ) &&
           !this.skipOtherFiltersApartFromGlobalId
         ) {
-          conditions.push(filter.column + ' in (' + filter.value + ')');
+          conditions.push(
+            arcGisIntegerIn(filter.column, filter.value.split(','))
+          );
         } else if (!this.skipOtherFiltersApartFromGlobalId) {
           conditions.push(
-            filter.column + '=' + this.getWhereConditionValue(filter.value)
+            `${arcGisIdentifier(filter.column)}=${this.getWhereConditionValue(filter.value)}`
           );
         }
       });
@@ -193,7 +186,7 @@ export class RegisterFilterService {
   ) {
     const includeEntranceId = options.includeEntranceId ?? true;
     if (entranceId && includeEntranceId) {
-      return `GlobalID='${entranceId}'`;
+      return arcGisGlobalIdEquals('GlobalID', entranceId);
     }
     if (
       !this.globalIds.getValue()?.length ||
@@ -202,11 +195,7 @@ export class RegisterFilterService {
     ) {
       return '1=0';
     }
-    const globalIds = this.globalIds
-      .getValue()
-      .map(id => `'${id}'`)
-      .join(',');
-    return `EntBldGlobalID in (${globalIds}) AND EntQuality <> 0`;
+    return `${arcGisGlobalIdIn('EntBldGlobalID', this.globalIds.getValue())} AND EntQuality <> 0`;
   }
 
   getFilter() {
@@ -265,7 +254,9 @@ export class RegisterFilterService {
   }
 
   private getWhereConditionValue(value: string | number) {
-    return typeof value == 'number' ? value : `'${value}'`;
+    return typeof value === 'number'
+      ? value.toString()
+      : arcGisStringLiteral(value);
   }
 
   private getGlobalIdsFromFilterValue(value: string | null): string[] {
@@ -276,15 +267,7 @@ export class RegisterFilterService {
       .split(',')
       .map(id => id.trim())
       .filter(id => !!id)
-      .map(id => {
-        if (!id.startsWith('{')) {
-          id = '{' + id;
-        }
-        if (!id.endsWith('}')) {
-          id = id + '}';
-        }
-        return id;
-      });
+      .map(normalizeArcGisGlobalId);
   }
 
   private noFilterApplied() {

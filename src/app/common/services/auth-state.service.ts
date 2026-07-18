@@ -172,7 +172,7 @@ export class AuthStateService implements OnDestroy {
     return this.refreshState.pipe(map(state => state === 'refreshing'));
   }
 
-  isUserLoggedIn(admin = false): Observable<boolean> {
+  isUserLoggedIn(): Observable<boolean> {
     const authCheck$ = this.isTokenValid()
       ? of(true)
       : this.tokens
@@ -186,17 +186,8 @@ export class AuthStateService implements OnDestroy {
           return false;
         }
 
-        if (!admin) {
-          this.setLoginState(true);
-          return true;
-        }
-
-        const hasAdminAccess = this.isAdmin() || this.isSupervisor();
-        this.setLoginState(hasAdminAccess);
-        if (!hasAdminAccess) {
-          this.logout();
-        }
-        return hasAdminAccess;
+        this.setLoginState(true);
+        return true;
       }),
       catchError(() => {
         this.setLoginState(false);

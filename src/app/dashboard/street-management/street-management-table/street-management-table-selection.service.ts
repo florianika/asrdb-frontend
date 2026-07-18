@@ -4,6 +4,7 @@ import { QueryFilter } from '../../register/model/query-filter';
 import { RegisterFilterService } from '../../register/register-table-view/register-filter.service';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import { CommonEntranceService } from '../../common/service/common-entrance.service';
+import { arcGisGlobalIdIn } from '../../common/helper/arcgis-query';
 
 type ArcGisAttributes = Record<string, unknown>;
 type ArcGisFeature = { attributes: ArcGisAttributes };
@@ -17,7 +18,9 @@ export class StreetManagementTableSelectionService {
     private registerFilterService: RegisterFilterService
   ) {}
 
-  loadEntranceCountByStreet(streetIds: string[]): Observable<Map<string, number>> {
+  loadEntranceCountByStreet(
+    streetIds: string[]
+  ): Observable<Map<string, number>> {
     if (!streetIds.length) {
       return of(new Map<string, number>());
     }
@@ -103,13 +106,15 @@ export class StreetManagementTableSelectionService {
       new Set(
         features
           .map(feature => feature.attributes?.[key])
-          .filter((value): value is string => typeof value === 'string' && !!value)
+          .filter(
+            (value): value is string => typeof value === 'string' && !!value
+          )
       )
     );
   }
 
   private buildInClause(column: string, ids: string[]): string {
-    return `${column} in (${ids.map(id => `'${id}'`).join(',')})`;
+    return arcGisGlobalIdIn(column, ids);
   }
 
   private resetRegisterSelection() {

@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -33,30 +39,31 @@ import {
   CommonEntityStructureService,
   EntityAttribute,
 } from '../../common/service/common-entity-structure.service';
+import { arcGisGlobalIdEquals } from '../../common/helper/arcgis-query';
 
 @Component({
-    selector: 'asrdb-register-form',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatStepperModule,
-        BuildingCreationComponent,
-        BuildingDetailsFormComponent,
-        EntranceDetailsFormComponent,
-        MatButtonModule,
-        MatIconModule,
-        MatSnackBarModule,
-        MatDialogModule,
-    ],
-    providers: [
-        BuildingManagementService,
-        EntranceManagementService,
-        RegisterLogService,
-        EntityCreationMapService,
-        BaseMapChangeService,
-    ],
-    templateUrl: './register-form.component.html',
-    styleUrls: ['./register-form.component.css']
+  selector: 'asrdb-register-form',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatStepperModule,
+    BuildingCreationComponent,
+    BuildingDetailsFormComponent,
+    EntranceDetailsFormComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule,
+    MatDialogModule,
+  ],
+  providers: [
+    BuildingManagementService,
+    EntranceManagementService,
+    RegisterLogService,
+    EntityCreationMapService,
+    BaseMapChangeService,
+  ],
+  templateUrl: './register-form.component.html',
+  styleUrls: ['./register-form.component.css'],
 })
 export class RegisterFormComponent implements OnInit, OnDestroy {
   @ViewChild('cancelConfirmDialog') cancelConfirmDialog?: TemplateRef<any>;
@@ -119,11 +126,9 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
       undefined;
     if (!this.entityType) {
       this.router.navigateByUrl('dashboard/register');
-      this.matSnackBar.open(
-        $localize`No entity type provided`,
-        $localize`Ok`,
-        { duration: 3000 }
-      );
+      this.matSnackBar.open($localize`No entity type provided`, $localize`Ok`, {
+        duration: 3000,
+      });
       return;
     }
 
@@ -150,13 +155,13 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
       const getBuildingRequest = this.buildingService
         .getBuildingData({
           returnGeometry: true,
-          where: `globalID='${this.buildingId}' AND BldQuality <> 0`,
+          where: `${arcGisGlobalIdEquals('GlobalID', this.buildingId)} AND BldQuality <> 0`,
         })
         .pipe(takeUntil(this.subscriber));
       const getEntranceRequest = this.entranceService
         .getEntranceData({
           returnGeometry: true,
-          where: `EntBldGlobalID='${this.buildingId}' AND EntQuality <> 0`,
+          where: `${arcGisGlobalIdEquals('EntBldGlobalID', this.buildingId)} AND EntQuality <> 0`,
           num: 9999,
         })
         .pipe(takeUntil(this.subscriber));
@@ -313,9 +318,7 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
     const entrance = {} as any;
     const centroid = this.entranceCentroids.find(centroid => {
       if (!centroid.id) {
-        throw new Error(
-          $localize`Centroid must have an id for the entrance`
-        );
+        throw new Error($localize`Centroid must have an id for the entrance`);
       }
       if (this.entranceId) {
         return centroid.id === this.entranceId;

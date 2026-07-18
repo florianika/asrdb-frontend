@@ -9,6 +9,7 @@ import MapView from '@arcgis/core/views/MapView';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine.js';
 import Collection from '@arcgis/core/core/Collection';
 import Geometry from '@arcgis/core/geometry/Geometry';
+import { GeometryUnion } from '@arcgis/core/unionTypes';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthStateService } from '../../../common/services/auth-state.service';
 import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
@@ -16,6 +17,7 @@ import { EsriFeatureApiClientService } from './esri-feature-api-client.service';
 import { QmsApiClientService } from './qms-api-client.service';
 import UniqueValueInfoProperties = __esri.UniqueValueInfoProperties;
 import PopupTemplateProperties = __esri.PopupTemplateProperties;
+import { arcGisGlobalIdEquals } from '../helper/arcgis-query';
 
 type EntityDataResponse = { count: number; data: any; globalIds: string[] };
 
@@ -140,7 +142,7 @@ export class CommonBuildingService {
 
   getBuildingQuality(bldId: string): Observable<string | null> {
     const filter = {
-      where: `GlobalID = '${bldId}'`,
+      where: arcGisGlobalIdEquals('GlobalID', bldId),
       outFields: ['BldQuality'],
     } as Partial<QueryFilter>;
     return this.getBuildingData(filter).pipe(
@@ -163,7 +165,7 @@ export class CommonBuildingService {
 
   resetStatus(bldId: string, callback?: () => void) {
     const filter = {
-      where: `GlobalID = '${bldId}'`,
+      where: arcGisGlobalIdEquals('GlobalID', bldId),
       outFields: ['GlobalID', 'OBJECTID'],
     } as Partial<QueryFilter>;
     this.getBuildingData(filter)
@@ -231,7 +233,13 @@ export class CommonBuildingService {
     return this.esriAuthService.withEsriRetry(async () => {
       const layer = this.bldLayer;
       const query = layer.createQuery();
-      query.geometry = await geometryEngine.union(geometries.toArray());
+      const queryGeometry = await geometryEngine.union(
+        geometries.toArray() as GeometryUnion[]
+      );
+      if (!queryGeometry) {
+        return 0;
+      }
+      query.geometry = queryGeometry;
       query.outFields = ['GlobalID'];
       const response = await layer.queryFeatures(query);
       const JSONResponse = await response.toJSON();
@@ -312,7 +320,7 @@ export class CommonBuildingService {
         const dataQuery = layer.createQuery();
         dataQuery.start = 0;
         dataQuery.num = 1;
-        dataQuery.where = `GlobalID = '${buildingId}'`;
+        dataQuery.where = arcGisGlobalIdEquals('GlobalID', buildingId);
         dataQuery.outFields = ['BldMunicipality'];
         dataQuery.returnGeometry = false;
         const features = await (await layer.queryFeatures(dataQuery)).toJSON();

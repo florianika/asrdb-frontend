@@ -9,6 +9,8 @@ import { AuthStateService } from '../../../common/services/auth-state.service';
 import { Street } from '../model/street';
 
 describe('StreetManagementService (smoke)', () => {
+  const currentStreetId = '{BC69F251-2D94-44D3-809F-4DB27735C605}';
+  const existingStreetId = '{E74CA133-E3E5-4C38-B774-969FEC6A7CEF}';
   let service: StreetManagementService;
   let commonStreetService: jasmine.SpyObj<CommonStreetService>;
   let commonEntranceService: jasmine.SpyObj<CommonEntranceService>;
@@ -23,7 +25,7 @@ describe('StreetManagementService (smoke)', () => {
     StrNameCore: 'Sample Street',
     StrNameFull: 'Sample Street',
     StrAddressID: 100,
-    GlobalID: '{CURRENT-STREET}',
+    GlobalID: currentStreetId,
     created_user: 'user',
     created_date: 0,
     last_edited_user: 'user',
@@ -65,7 +67,7 @@ describe('StreetManagementService (smoke)', () => {
       of({
         count: 1,
         data: {
-          features: [{ attributes: { GlobalID: '{EXISTING-STREET}' } }],
+          features: [{ attributes: { GlobalID: existingStreetId } }],
         },
       } as never)
     );
@@ -82,8 +84,8 @@ describe('StreetManagementService (smoke)', () => {
     service.saveStreet({ ...baseStreet });
 
     expect(commonEntranceService.mergeEntrances).toHaveBeenCalledWith(
-      '{CURRENT-STREET}',
-      '{EXISTING-STREET}',
+      currentStreetId,
+      existingStreetId,
       jasmine.any(Function)
     );
     expect(commonStreetService.deleteFeature).toHaveBeenCalled();

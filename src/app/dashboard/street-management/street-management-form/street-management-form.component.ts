@@ -44,14 +44,15 @@ import {
   EsriDomain,
   EsriQueryResponse,
 } from '../../register/model/esri-response';
+import { arcGisGlobalIdEquals } from '../../common/helper/arcgis-query';
 
 type StreetField = Record<string, unknown>;
 
 @Component({
-    selector: 'asrdb-street-management-form',
-    templateUrl: './street-management-form.component.html',
-    styleUrls: ['./street-management-form.component.css'],
-    standalone: false
+  selector: 'asrdb-street-management-form',
+  templateUrl: './street-management-form.component.html',
+  styleUrls: ['./street-management-form.component.css'],
+  standalone: false,
 })
 export class StreetManagementFormComponent implements OnDestroy {
   private onDestroy = new Subject<void>();
@@ -155,7 +156,7 @@ export class StreetManagementFormComponent implements OnDestroy {
       this.isLoadingResults = true;
       this.streetService
         .getStreets({
-          where: `GlobalID = '${id}'`,
+          where: arcGisGlobalIdEquals('GlobalID', id),
           start: 0,
           num: 1,
         })

@@ -11,6 +11,7 @@ import { BUILDING_ENTITY } from '../../../common/constants/common-constants';
 import { QueryFilter } from '../model/query-filter';
 import { RegisterLogService } from '../register-log-view/register-log-table/register-log.service';
 import { EntityManageResponse } from '../model/entity-req-res';
+import { arcGisGlobalIdEquals } from '../../common/helper/arcgis-query';
 
 type BuildingDataResponse = {
   data?: {
@@ -30,7 +31,7 @@ export class RegisterViewDetailsApiAdapter {
 
   loadBuildingData(id: string): Observable<BuildingDataResponse | null> {
     const filter: Partial<QueryFilter> = {
-      where: `GlobalID='${id}'`,
+      where: arcGisGlobalIdEquals('GlobalID', id),
     };
     return this.commonBuildingService.getBuildingData(filter);
   }

@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { EntityManageResponse } from '../../register/model/entity-req-res';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EsriFeatureApiClientService } from './esri-feature-api-client.service';
+import { arcGisGlobalIdEquals } from '../helper/arcgis-query';
 
 @Injectable({
   providedIn: 'root',
@@ -79,7 +80,7 @@ export class CommonStreetService {
 
   resetStatus(streetId: string, callback?: () => void) {
     const filter = {
-      where: `GlobalID = '${streetId}'`,
+      where: arcGisGlobalIdEquals('GlobalID', streetId),
       outFields: ['GlobalID', 'OBJECTID'],
     } as Partial<QueryFilter>;
     this.getStreets(filter)

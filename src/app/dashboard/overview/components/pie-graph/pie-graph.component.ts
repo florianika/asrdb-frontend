@@ -10,6 +10,7 @@ import { RegisterFilterService } from '../../../register/register-table-view/reg
 import { Subject, takeUntil } from 'rxjs';
 import { QueryFilter } from '../../../register/model/query-filter';
 import { BuildingFilter } from '../../../register/model/building';
+import { arcGisIdentifier } from '../../../common/helper/arcgis-query';
 
 @Component({
   selector: 'asrdb-building-quality-graph',
@@ -88,11 +89,12 @@ export class PieGraphComponent implements OnInit, OnDestroy {
 
   private reload() {
     const whereCase = this.filterService.prepareWhereCase();
+    const variable = arcGisIdentifier(this.variable);
     const filter = {
       where: whereCase,
       returnGeometry: false,
-      groupByFieldsForStatistics: [this.variable],
-      orderByFields: [this.variable],
+      groupByFieldsForStatistics: [variable],
+      orderByFields: [variable],
       outStatistics: [
         {
           statisticType: 'count',

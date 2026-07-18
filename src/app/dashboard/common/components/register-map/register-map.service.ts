@@ -22,6 +22,10 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
 import MapView from '@arcgis/core/views/MapView';
 import LOD from '@arcgis/core/layers/support/LOD';
+import {
+  arcGisGlobalIdEquals,
+  arcGisGlobalIdIn,
+} from '../../helper/arcgis-query';
 
 export type MapInitOptions = {
   enableFilter: boolean;
@@ -102,7 +106,7 @@ export class RegisterMapService {
 
     // WMTS LODs
     this.maxZoomHide = 15;
-    const wmts = this.view.map.basemap.baseLayers.find(
+    const wmts = this.view.map?.basemap?.baseLayers.find(
       l => l instanceof WMTSLayer
     ) as WMTSLayer;
     if (wmts) {
@@ -313,13 +317,13 @@ export class RegisterMapService {
 
   private async queryBuildingObjectIds(globalIds: string[]) {
     const query = this.bldlayer.createQuery();
-    query.where = `GlobalID in (${globalIds.map(id => `'${id}'`).join(',')})`;
+    query.where = arcGisGlobalIdIn('GlobalID', globalIds);
     return (await this.bldlayer.queryObjectIds(query)) ?? [];
   }
 
   private async queryEntranceObjectIds(globalId: string) {
     const query = this.entlayer.createQuery();
-    query.where = `GlobalID='${globalId}'`;
+    query.where = arcGisGlobalIdEquals('GlobalID', globalId);
     return (await this.entlayer.queryObjectIds(query)) ?? [];
   }
 
@@ -404,7 +408,10 @@ export class RegisterMapService {
     );
 
     if (isReady) {
-      this.reload(this.view?.map.basemap);
+      const basemap = this.view?.map?.basemap;
+      if (basemap) {
+        this.reload(basemap);
+      }
       return true;
     }
     return false;

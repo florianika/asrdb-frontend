@@ -3,7 +3,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine.js';
 import { Injectable } from '@angular/core';
-import Geometry from '@arcgis/core/geometry/Geometry';
+import { GeometryUnion } from '@arcgis/core/unionTypes';
 import { CommonBuildingService } from '../../../service/common-building.service';
 import { CommonEntranceService } from '../../../service/common-entrance.service';
 import { RegisterFilterService } from '../../../../register/register-table-view/register-filter.service';
@@ -38,9 +38,9 @@ export class FeatureSelectionService {
 
     const unsubscribe = sketchViewModel.on('create', async event => {
       if (event.state === 'complete') {
-        const geometries = polygonGraphicsLayer.graphics.map(
-          graphic => graphic.geometry
-        );
+        const geometries = polygonGraphicsLayer.graphics
+          .map(graphic => graphic.geometry)
+          .filter((geometry): geometry is GeometryUnion => !!geometry);
         const queryGeometry = await geometryEngine.union(geometries.toArray());
         if (!queryGeometry) {
           polygonGraphicsLayer.removeAll();
@@ -82,7 +82,7 @@ export class FeatureSelectionService {
     });
   }
 
-  private async selectFeatures(view: MapView, geometry: Geometry) {
+  private async selectFeatures(view: MapView, geometry: GeometryUnion) {
     if (view) {
       const globalIds = await this.esriAuthService.withEsriRetry(async () => {
         const bldLayer = this.buildingService.bldLayer;

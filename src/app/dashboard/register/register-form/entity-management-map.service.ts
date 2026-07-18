@@ -31,6 +31,7 @@ import {
 import SketchProperties = __esri.SketchProperties;
 import { CommonMunicipalityService } from '../../common/service/common-municipality.service';
 import { CleanupCallback } from '../../common/components/register-map/map-types';
+import { arcGisIntegerLiteral } from '../../common/helper/arcgis-query';
 
 export type EditableGeometry = {
   id?: number | string | null;
@@ -104,7 +105,7 @@ export class EntityCreationMapService implements OnDestroy {
       .subscribe(municipality => {
         if (municipality && municipality !== 99 && this.view) {
           void this.filterBuildingData(
-            `BldMunicipality=${municipality.toString()}`
+            `BldMunicipality=${arcGisIntegerLiteral(municipality, 'municipality')}`
           );
         }
       });
@@ -240,7 +241,7 @@ export class EntityCreationMapService implements OnDestroy {
     this.createSketch();
     if (this.municipality.value && this.municipality.value !== 99) {
       void this.filterBuildingData(
-        `BldMunicipality=${this.municipality.value.toString()}`
+        `BldMunicipality=${arcGisIntegerLiteral(this.municipality.value, 'municipality')}`
       );
     }
 
@@ -376,10 +377,8 @@ export class EntityCreationMapService implements OnDestroy {
             this.editingGeometry![existingItemIndex!].spatialReference =
               geometry.toJSON().spatialReference;
           } else {
-            this.editingGeometry![existingItemIndex!].x =
-              geometry.toJSON().x;
-            this.editingGeometry![existingItemIndex!].y =
-              geometry.toJSON().y;
+            this.editingGeometry![existingItemIndex!].x = geometry.toJSON().x;
+            this.editingGeometry![existingItemIndex!].y = geometry.toJSON().y;
             this.editingGeometry![existingItemIndex!].spatialReference =
               geometry.toJSON().spatialReference;
           }

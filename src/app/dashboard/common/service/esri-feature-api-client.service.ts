@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {
+  arcGisGlobalIdIn,
+  EMPTY_ARCGIS_GLOBAL_ID,
+} from '../helper/arcgis-query';
 
 type EsriFeatureOperation = 'addFeatures' | 'updateFeatures';
 
@@ -35,10 +39,8 @@ export class EsriFeatureApiClientService {
     token: string,
     globalIds: string[]
   ): Observable<TResponse> {
-    const ids = globalIds.length
-      ? globalIds
-      : ['{00000000-0000-0000-0000-000000000000}'];
-    const where = `GlobalID in (${ids.map(id => `'${id}'`).join(',')})`;
+    const ids = globalIds.length ? globalIds : [EMPTY_ARCGIS_GLOBAL_ID];
+    const where = arcGisGlobalIdIn('GlobalID', ids);
     const body = this.encodeFormBody({ where, f: 'json' });
     const url = `${layerUrl}/deleteFeatures?token=${token}`;
     return this.httpClient.post<TResponse>(url, body, {

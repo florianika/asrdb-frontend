@@ -6,6 +6,10 @@ import { BehaviorSubject, catchError, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthStateService } from '../../../common/services/auth-state.service';
 import { EsriQueryResponse } from '../model/esri-response';
+import {
+  arcGisGlobalIdEquals,
+  arcGisGlobalIdIn,
+} from '../../common/helper/arcgis-query';
 
 type DeleteAuditFields = {
   external_editor: string;
@@ -111,7 +115,7 @@ export class RegisterDeleteService {
     this.deleteDataLoading.next(true);
     this.commonBuildingService
       .getBuildingData({
-        where: `GlobalID='${buildingId}'`,
+        where: arcGisGlobalIdEquals('GlobalID', buildingId),
         returnGeometry: false,
         outFields: ['GlobalID', 'ObjectID'],
       })
@@ -148,7 +152,7 @@ export class RegisterDeleteService {
     this.deleteDataLoading.next(true);
     this.commonEntranceService
       .getEntranceData({
-        where: `EntBldGlobalID='${buildingId}' AND EntQuality <> 0`,
+        where: `${arcGisGlobalIdEquals('EntBldGlobalID', buildingId)} AND EntQuality <> 0`,
         returnGeometry: false,
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
@@ -180,7 +184,7 @@ export class RegisterDeleteService {
   private loadEntranceToDelete(entranceId: string) {
     this.commonEntranceService
       .getEntranceData({
-        where: `GlobalID='${entranceId}'`,
+        where: arcGisGlobalIdEquals('GlobalID', entranceId),
         returnGeometry: false,
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
@@ -213,7 +217,7 @@ export class RegisterDeleteService {
     this.deleteDataLoading.next(true);
     this.commonDwellingService
       .getDwellings({
-        where: `GlobalID='${dwellingId}'`,
+        where: arcGisGlobalIdEquals('GlobalID', dwellingId),
         returnGeometry: false,
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,
@@ -235,7 +239,7 @@ export class RegisterDeleteService {
     this.deleteDataLoading.next(true);
     this.commonDwellingService
       .getDwellings({
-        where: `DwlEntGlobalID in (${globalIds.map(id => `'${id}'`).join(',')}) AND DwlQuality <> 0`,
+        where: `${arcGisGlobalIdIn('DwlEntGlobalID', globalIds)} AND DwlQuality <> 0`,
         returnGeometry: false,
         outFields: ['GlobalID', 'OBJECTID'],
         num: 9999,

@@ -63,33 +63,37 @@ import {
   EntityAttribute,
 } from '../../../common/service/common-entity-structure.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
-import { getLocaleProperty, getLogMessage } from '../../../common/helper/locale-property-helper';
+import {
+  getLocaleProperty,
+  getLogMessage,
+} from '../../../common/helper/locale-property-helper';
+import { arcGisGlobalIdEquals } from '../../../common/helper/arcgis-query';
 
 @Component({
-    selector: 'asrdb-dwelling-details-form',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-    ],
-    providers: [
-        DwellingManagementService,
-        {
-            provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [MAT_DATE_LOCALE],
-        },
-        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-    ],
-    templateUrl: './dwelling-details-form.component.html',
-    styleUrls: ['./dwelling-details-form.component.css']
+  selector: 'asrdb-dwelling-details-form',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
+  providers: [
+    DwellingManagementService,
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
+  templateUrl: './dwelling-details-form.component.html',
+  styleUrls: ['./dwelling-details-form.component.css'],
 })
 export class DwellingDetailsFormComponent implements OnDestroy {
   private onDestroy = new Subject<void>();
@@ -248,7 +252,7 @@ export class DwellingDetailsFormComponent implements OnDestroy {
       this.isLoadingResults = true;
       this.dwellingService
         .getDwellings({
-          where: `GlobalID = '${id}'`,
+          where: arcGisGlobalIdEquals('GlobalID', id),
           start: 0,
           num: 1,
         })
