@@ -6,6 +6,20 @@ export const OSM_BASEMAP = 'osm';
 
 export const HYBRID_BASEMAP = 'hybrid';
 
+export const MAP_2015_2017 = new Basemap({
+  title: 'Map 2015-2017',
+  baseLayers: [
+    new WMSLayer({
+      title: 'MAP_2015_2017',
+      url: 'https://geoportal.asig.gov.al/service/orthophoto_2015/wms',
+      version: '1.1.1',
+      imageFormat: 'image/jpeg',
+      spatialReferences: [3857],
+      sublayers: [{ name: 'OrthoImagery_20cm' }],
+    }),
+  ],
+});
+
 export const MAP_2025 = new Basemap({
   title: 'Map 2025',
   baseLayers: [

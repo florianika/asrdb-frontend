@@ -214,6 +214,7 @@ export class EntityCreationMapService implements OnDestroy {
     this.view = new MapView({
       container: this.nativeElement,
       map: webmap,
+      spatialReference: { wkid: 3857 },
     });
 
     void this.view.when(() => {

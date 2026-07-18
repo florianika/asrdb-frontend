@@ -5,6 +5,7 @@ import {
   MAP_2025,
   HYBRID_BASEMAP,
   OSM_BASEMAP,
+  MAP_2015_2017,
   MAP_2023,
   MAP_2024,
 } from './BasemapTypes';
@@ -87,6 +88,12 @@ export class BaseMapChangeService {
       popup,
       eventsCleanupCallbacks
     );
+    const customMap2015To2017 = await this.createCustomMapItem(
+      webmapCallback,
+      popup,
+      eventsCleanupCallbacks,
+      MAP_2015_2017
+    );
     const customMap2025 = await this.createCustomMapItem(
       webmapCallback,
       popup,
@@ -108,6 +115,7 @@ export class BaseMapChangeService {
 
     popupContent.appendChild(hybridMap);
     popupContent.appendChild(osmMap);
+    popupContent.appendChild(customMap2015To2017);
     popupContent.appendChild(customMap2023);
     popupContent.appendChild(customMap2024);
     popupContent.appendChild(customMap2025);

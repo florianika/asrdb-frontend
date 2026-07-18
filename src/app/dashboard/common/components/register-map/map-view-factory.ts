@@ -26,6 +26,7 @@ export function createMapView(
   const view = new MapView({
     container,
     map: webmap,
+    spatialReference: { wkid: 3857 },
     zoom: 15,
     popup: new Popup({
       dockEnabled: true,
