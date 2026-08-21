@@ -89,7 +89,9 @@ export class FeatureSelectionService {
         const query = bldLayer.createQuery();
         query.geometry = geometry;
         query.outFields = ['GlobalID'];
-        query.where = this.registerFilterService.prepareWhereCase();
+        query.where = this.registerFilterService.prepareWhereCase({
+          includeGlobalId: false,
+        });
         const featureSet = await bldLayer.queryFeatures(query);
         return featureSet.features
           .map(feature => {
@@ -109,7 +111,7 @@ export class FeatureSelectionService {
     const span = document.createElement('span');
     selection.id = 'feature-selection';
     selection.className =
-      'esri-widget esri-widget--button esri-widget esri-interactive';
+      'esri-widget esri-widget--button esri-interactive asrdb-map-tool-button';
     selection.title = $localize`Select buildings`;
     selection.type = 'button';
     selection.setAttribute('aria-label', $localize`Select buildings`);
@@ -123,7 +125,7 @@ export class FeatureSelectionService {
     const span = document.createElement('span');
     erase.id = 'feature-selection-erase';
     erase.className =
-      'esri-widget esri-widget--button esri-widget esri-interactive';
+      'esri-widget esri-widget--button esri-interactive asrdb-map-tool-button';
     erase.title = $localize`Erase selection`;
     erase.type = 'button';
     erase.setAttribute('aria-label', $localize`Erase selection`);

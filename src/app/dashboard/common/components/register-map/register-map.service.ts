@@ -6,11 +6,15 @@ import { CommonMunicipalityService } from '../../service/common-municipality.ser
 import { CommonEsriAuthService } from '../../service/common-esri-auth.service';
 import { RegisterFilterService } from '../../service/register-filter.service';
 import { BaseMapChangeService } from './custom-map-logic/basemap-change';
+import {
+  getBasemapSpatialReferenceWkid,
+  WEB_MERCATOR_WKID,
+} from './custom-map-logic/BasemapTypes';
 import { FeatureSelectionService } from './custom-map-logic/feature-selection';
-import { WmtsCapabilitiesService } from './wmts-capabilities.service';
 import { LayerFilterService } from './layer-filter.service';
 import { MapInteractionService } from './map-interaction.service';
 import {
+  DETAIL_LAYER_VISIBILITY_SCALE,
   configureWmtsConstraints,
   createMapSession,
   destroyMapSession,
@@ -39,6 +43,10 @@ export type MapInitOptions = {
   showEntranceLayer: boolean;
 };
 
+type BuildingFilterOptions = {
+  navigateToExtent?: boolean;
+};
+
 @Injectable()
 export class RegisterMapService {
   public isOnlyOneBuilding = false;
@@ -53,13 +61,15 @@ export class RegisterMapService {
   private eventsCleanupCallbacks: CleanupCallback[] = [];
   private customZoom: number | null = null;
   private alreadyFocused = false;
-  private totalResults: number | null = null;
+  private entranceHasResults = false;
   private _goToDebounce: ReturnType<typeof setTimeout> | null = null;
-  private maxZoomHide = 15;
   private buildingHighlightHandle?: __esri.Handle;
   private buildingHighlightRequestId = 0;
+  private buildingFilterRequestId = 0;
+  private highlightedBuildingGlobalIds: string[] = [];
   private entranceHighlightHandle?: __esri.Handle;
   private entranceHighlightRequestId = 0;
+  private highlightedEntranceGlobalId?: string;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -68,8 +78,7 @@ export class RegisterMapService {
     private municipalityService: CommonMunicipalityService,
     private registerFilterService: RegisterFilterService,
     private baseMapChangeService: BaseMapChangeService,
-    private featureSelectionService: FeatureSelectionService,
-    private wmtsCapabilitiesService: WmtsCapabilitiesService
+    private featureSelectionService: FeatureSelectionService
   ) {
     this.createLayerInstances();
   }
@@ -84,7 +93,8 @@ export class RegisterMapService {
   async init(
     containerEl?: ElementRef,
     options?: MapInitOptions,
-    basemap?: BasemapInput
+    basemap?: BasemapInput,
+    viewpoint?: __esri.Viewpoint
   ) {
     if (containerEl) this.nativeElement = containerEl.nativeElement;
     if (options) this.options = options;
@@ -93,6 +103,7 @@ export class RegisterMapService {
 
     this.cleanup();
     this.createLayerInstances();
+    this.entranceHasResults = false;
 
     this.graphicsLayer = new GraphicsLayer();
     const layers: MapLayer[] = [this.municipalityLayer, this.graphicsLayer];
@@ -107,20 +118,22 @@ export class RegisterMapService {
     });
     this.view = view;
 
-    this.maxZoomHide = await configureWmtsConstraints(
-      this.view,
-      this.wmtsCapabilitiesService
-    );
+    await configureWmtsConstraints(this.view);
 
     // Map interactions
-    const zoomHandler = MapInteractionService.addZoomWatcher(
+    const scaleHandler = MapInteractionService.addScaleWatcher(
       this.view,
-      this.bldlayer!,
-      this.entlayer!,
-      () => this.totalResults,
-      zoom => (this.customZoom = zoom),
-      this.maxZoomHide
+      scale => {
+        if (this.view!.zoom >= 0) {
+          this.customZoom = this.view!.zoom;
+        }
+        this.updateLayerVisibility(scale);
+      }
     );
+    if (this.view.zoom >= 0) {
+      this.customZoom = this.view.zoom;
+    }
+    this.updateLayerVisibility();
 
     const popupHandler = MapInteractionService.addPopupHandler(
       this.view,
@@ -130,13 +143,18 @@ export class RegisterMapService {
     );
 
     this.eventsCleanupCallbacks.push(
-      () => zoomHandler.remove(),
+      () => scaleHandler.remove(),
       () => popupHandler.remove()
     );
 
     // Initial filtering
     await this.filterBuildingData(this.options.bldWhereCase);
     await this.filterEntranceData(this.options.entWhereCase);
+
+    if (viewpoint) {
+      this.cancelPendingGoTo();
+      await this.restoreViewpoint(viewpoint);
+    }
 
     // Feature selection
     if (this.options.enableSelection) {
@@ -150,16 +168,31 @@ export class RegisterMapService {
     // Basemap change
     await this.baseMapChangeService.createBasemapChangeAction(
       this.view,
-      this.reload.bind(this),
+      this.changeBasemap.bind(this),
       this.eventsCleanupCallbacks
     );
+
+    if (viewpoint) {
+      await this.highlightBuildings(this.highlightedBuildingGlobalIds);
+      await this.highlightEntrance(this.highlightedEntranceGlobalId);
+    }
 
     return this.view;
   }
 
   /** Filter building layer (server-side) */
-  async filterBuildingData(whereCondition: string) {
+  async filterBuildingData(
+    whereCondition: string,
+    options: BuildingFilterOptions = {}
+  ) {
     if (!this.view || !this.bldlayer) return;
+    const requestId = ++this.buildingFilterRequestId;
+    const navigateToExtent = options.navigateToExtent ?? true;
+
+    if (!navigateToExtent) {
+      this.cancelPendingGoTo();
+    }
+
     try {
       this.options!.bldWhereCase = whereCondition;
       await LayerFilterService.filterFeatureLayer(
@@ -168,17 +201,31 @@ export class RegisterMapService {
         whereCondition
       );
 
+      if (requestId !== this.buildingFilterRequestId) {
+        return;
+      }
+
+      this.updateLayerVisibility();
+      if (!navigateToExtent) {
+        return;
+      }
+
       const extent = await LayerFilterService.queryExtent(
         this.bldlayer,
         whereCondition
       );
-      this.totalResults = extent.count;
 
-      this.updateLayerVisibility();
+      if (requestId !== this.buildingFilterRequestId) {
+        return;
+      }
+
       this.handleGoToDebounced(
         extent.extent ?? { center: [19.818, 41.3285], zoom: 18 }
       );
     } catch (error) {
+      if (requestId !== this.buildingFilterRequestId) {
+        return;
+      }
       const handled = await this.handleEsriAuthFailure(error);
       if (!handled) {
         throw error;
@@ -187,6 +234,7 @@ export class RegisterMapService {
   }
 
   async highlightBuildings(globalIds: string[]) {
+    this.highlightedBuildingGlobalIds = [...globalIds];
     if (!this.view || !this.bldlayer) return;
 
     const requestId = ++this.buildingHighlightRequestId;
@@ -217,6 +265,7 @@ export class RegisterMapService {
   }
 
   async highlightEntrance(globalId?: string) {
+    this.highlightedEntranceGlobalId = globalId;
     if (!this.view || !this.entlayer) return;
 
     const requestId = ++this.entranceHighlightRequestId;
@@ -264,11 +313,8 @@ export class RegisterMapService {
         this.entlayer,
         whereCondition
       );
-      if (extent.count === 0) {
-        this.entlayer.visible = false;
-      } else {
-        this.entlayer.visible = true;
-      }
+      this.entranceHasResults = extent.count > 0;
+      this.updateLayerVisibility();
     } catch (error) {
       const handled = await this.handleEsriAuthFailure(error);
       if (!handled) {
@@ -279,14 +325,12 @@ export class RegisterMapService {
 
   /** Clean up map resources */
   cleanup() {
+    this.buildingFilterRequestId++;
     this.buildingHighlightRequestId++;
     this.entranceHighlightRequestId++;
     this.clearBuildingHighlight();
     this.clearEntranceHighlight();
-    if (this._goToDebounce) {
-      clearTimeout(this._goToDebounce);
-      this._goToDebounce = null;
-    }
+    this.cancelPendingGoTo();
     destroyMapSession(this.view, this.eventsCleanupCallbacks);
     this.view = undefined;
   }
@@ -319,21 +363,14 @@ export class RegisterMapService {
     return (await this.entlayer.queryObjectIds(query)) ?? [];
   }
 
-  private updateLayerVisibility() {
+  private updateLayerVisibility(scale = this.view?.scale ?? Infinity) {
     if (!this.bldlayer || !this.entlayer) return;
 
-    const lessThan10000 = this.totalResults && this.totalResults < 10000;
-    if (
-      this.customZoom &&
-      this.customZoom < this.maxZoomHide &&
-      !lessThan10000
-    ) {
-      this.bldlayer.visible = false;
-      this.entlayer.visible = false;
+    const layersVisible = scale > 0 && scale <= DETAIL_LAYER_VISIBILITY_SCALE;
+    this.bldlayer.visible = layersVisible;
+    this.entlayer.visible = layersVisible && this.entranceHasResults;
+    if (!layersVisible) {
       this.alreadyFocused = false;
-    } else {
-      this.bldlayer.visible = true;
-      this.entlayer.visible = true;
     }
   }
 
@@ -379,9 +416,29 @@ export class RegisterMapService {
     }
   }
 
-  private reload(basemap?: BasemapInput) {
-    this.customZoom = 0;
-    void this.init(undefined, undefined, basemap);
+  private changeBasemap(basemap: BasemapInput) {
+    if (!this.view?.map) {
+      return;
+    }
+
+    const targetWkid = getBasemapSpatialReferenceWkid(basemap);
+    const sameSpatialReference =
+      this.view.spatialReference.wkid === targetWkid ||
+      (targetWkid === WEB_MERCATOR_WKID &&
+        this.view.spatialReference.isWebMercator);
+
+    if (sameSpatialReference) {
+      this.view.map.basemap = basemap;
+      void configureWmtsConstraints(this.view)
+        .then(() => this.updateLayerVisibility())
+        .catch(error => console.error('Failed to change basemap:', error));
+      return;
+    }
+
+    const viewpoint = this.view.viewpoint.clone();
+    void this.init(undefined, undefined, basemap, viewpoint).catch(error =>
+      console.error('Failed to change map spatial reference:', error)
+    );
   }
 
   private async handleEsriAuthFailure(error: unknown): Promise<boolean> {
@@ -396,7 +453,7 @@ export class RegisterMapService {
     if (isReady) {
       const basemap = this.view?.map?.basemap;
       if (basemap) {
-        this.reload(basemap);
+        this.changeBasemap(basemap);
       }
       return true;
     }
@@ -404,10 +461,31 @@ export class RegisterMapService {
   }
 
   private handleGoToDebounced(goTo: GoToTarget) {
-    if (this._goToDebounce) {
-      clearTimeout(this._goToDebounce);
-    }
+    this.cancelPendingGoTo();
     this._goToDebounce = setTimeout(() => this.handleGoTo(goTo), 500);
+  }
+
+  private cancelPendingGoTo() {
+    if (!this._goToDebounce) {
+      return;
+    }
+    clearTimeout(this._goToDebounce);
+    this._goToDebounce = null;
+  }
+
+  private async restoreViewpoint(viewpoint: __esri.Viewpoint) {
+    if (!this.view) {
+      return;
+    }
+
+    await this.view.when();
+    try {
+      await this.view.goTo(viewpoint, { animate: false });
+    } catch (error) {
+      if ((error as { name?: string })?.name !== 'AbortError') {
+        throw error;
+      }
+    }
   }
 
   private getTargetZoom(goTo: GoToTarget): number | undefined {

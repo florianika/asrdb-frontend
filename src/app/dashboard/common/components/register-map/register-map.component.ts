@@ -77,10 +77,18 @@ export class RegisterMapComponent implements OnInit, OnDestroy, OnChanges {
           return;
         }
         try {
-          await this.registerMapService.filterBuildingData(
-            this.getBuildingWhereCase()
-          );
-          await this.highlightSelectedBuildingPolygons();
+          const hasSelectedBuildings =
+            this.highlightSelectedBuildings &&
+            this.registerFilterService.getSelectedBuildingGlobalIds().length >
+              0;
+
+          await Promise.all([
+            this.highlightSelectedBuildingPolygons(),
+            this.registerMapService.filterBuildingData(
+              this.getBuildingWhereCase(),
+              { navigateToExtent: !hasSelectedBuildings }
+            ),
+          ]);
           this.mapAuthError = null;
         } catch (error) {
           this.handleMapError(error);

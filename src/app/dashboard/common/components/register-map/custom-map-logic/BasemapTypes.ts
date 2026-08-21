@@ -6,6 +6,9 @@ export const OSM_BASEMAP = 'osm';
 
 export const HYBRID_BASEMAP = 'hybrid';
 
+export const WEB_MERCATOR_WKID = 3857;
+export const ALBANIA_GRID_WKID = 6870;
+
 export const MAP_2007 = new Basemap({
   title: 'Map 2007',
   baseLayers: [
@@ -39,7 +42,7 @@ export const MAP_2025 = new Basemap({
   baseLayers: [
     new WMTSLayer({
       title: 'MAP_2025',
-      url: 'https://di-albania-satellite1.img.arcgis.com/arcgis/rest/services/rgb/Albania_2025_L1/MapServer/WMTS',
+      url: 'https://di-albania-satellite1.img.arcgis.com/arcgis/rest/services/rgb/Albania2025RGB/MapServer/WMTS',
       serviceMode: 'KVP',
     }),
   ],
@@ -50,7 +53,7 @@ export const MAP_2024 = new Basemap({
   baseLayers: [
     new WMTSLayer({
       title: 'MAP_2024',
-      url: 'https://di-albania-satellite1.img.arcgis.com/arcgis/rest/services/rgb/Albania_2024L3/MapServer/WMTS',
+      url: 'https://di-albania-satellite1.img.arcgis.com/arcgis/rest/services/rgb/Albania2024RGB/MapServer/WMTS',
       serviceMode: 'KVP',
     }),
   ],
@@ -66,3 +69,18 @@ export const MAP_2023 = new Basemap({
     }),
   ],
 });
+
+const ALBANIA_GRID_BASEMAP_TITLES = new Set([
+  MAP_2023.title,
+  MAP_2024.title,
+  MAP_2025.title,
+]);
+
+export function getBasemapSpatialReferenceWkid(
+  basemap?: Basemap | string
+): number {
+  return basemap instanceof Basemap &&
+    ALBANIA_GRID_BASEMAP_TITLES.has(basemap.title)
+    ? ALBANIA_GRID_WKID
+    : WEB_MERCATOR_WKID;
+}

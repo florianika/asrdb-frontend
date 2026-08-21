@@ -4,7 +4,6 @@ import {
   configureWmtsConstraints,
   destroyMapSession,
 } from './map-view-factory';
-import { WmtsCapabilitiesService } from './wmts-capabilities.service';
 
 describe('map view factory', () => {
   it('runs callbacks, clears them, and destroys the view', () => {
@@ -25,14 +24,8 @@ describe('map view factory', () => {
     const view = {
       map: { basemap: { baseLayers: [] } },
     } as unknown as MapView;
-    const capabilities = jasmine.createSpyObj<WmtsCapabilitiesService>(
-      'WmtsCapabilitiesService',
-      ['getLODs']
-    );
-
-    const maxZoomHide = await configureWmtsConstraints(view, capabilities, 12);
+    const maxZoomHide = await configureWmtsConstraints(view, 12);
 
     expect(maxZoomHide).toBe(12);
-    expect(capabilities.getLODs).not.toHaveBeenCalled();
   });
 });

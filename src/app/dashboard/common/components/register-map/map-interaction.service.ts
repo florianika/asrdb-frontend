@@ -1,5 +1,4 @@
 import MapView from '@arcgis/core/views/MapView';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import { RegisterFilterService } from '../../service/register-filter.service';
 import GraphicHit = __esri.GraphicHit;
 import { CommonBuildingService } from '../../service/common-building.service';
@@ -10,27 +9,12 @@ import { arcGisIntegerLiteral } from '../../helper/arcgis-query';
 type ArcGisFeatureAttributes = Record<string, unknown>;
 
 export class MapInteractionService {
-  static addZoomWatcher(
+  static addScaleWatcher(
     view: MapView,
-    buildingLayer: FeatureLayer,
-    entranceLayer: FeatureLayer,
-    getTotalResults: () => number | null,
-    onZoomChange?: (zoom: number) => void,
-    maxZoomHide?: number
+    onScaleChange: (scale: number) => void
   ) {
-    return view.watch('zoom', zoom => {
-      const totalResults = getTotalResults();
-      const lessThan10000 = totalResults && totalResults < 10000;
-      if (zoom < (maxZoomHide || 15) && !lessThan10000) {
-        buildingLayer.visible = false;
-        entranceLayer.visible = false;
-      } else {
-        buildingLayer.visible = true;
-        entranceLayer.visible = true;
-      }
-      if (onZoomChange) {
-        onZoomChange(zoom);
-      }
+    return view.watch('scale', scale => {
+      onScaleChange(scale);
     });
   }
 

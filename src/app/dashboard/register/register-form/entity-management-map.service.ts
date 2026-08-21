@@ -14,6 +14,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EntityType } from '../../../common/model/entity-type';
 import { ActivatedRoute } from '@angular/router';
 import { BaseMapChangeService } from '../../common/components/register-map/custom-map-logic/basemap-change';
+import {
+  getBasemapSpatialReferenceWkid,
+  WEB_MERCATOR_WKID,
+} from '../../common/components/register-map/custom-map-logic/BasemapTypes';
 import { CommonBuildingService } from '../../common/service/common-building.service';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
@@ -31,11 +35,11 @@ import { CommonMunicipalityService } from '../../common/service/common-municipal
 import { CleanupCallback } from '../../common/components/register-map/map-types';
 import { arcGisIntegerLiteral } from '../../common/helper/arcgis-query';
 import {
+  DETAIL_LAYER_VISIBILITY_SCALE,
   configureWmtsConstraints,
   createMapSession,
   destroyMapSession,
 } from '../../common/components/register-map/map-view-factory';
-import { WmtsCapabilitiesService } from '../../common/components/register-map/wmts-capabilities.service';
 
 export type EditableGeometry = {
   id?: number | string | null;
@@ -57,9 +61,7 @@ export class EntityCreationMapService implements OnDestroy {
   private municipality: BehaviorSubject<number | null>;
   private view: MapView | undefined = undefined;
   private createdGraphic: Graphic | null = null;
-  private totalResults: number | null = null;
-  private zoomVisibilityDebounce: ReturnType<typeof setTimeout> | null = null;
-  private maxZoomHide = 15;
+  private scaleVisibilityDebounce: ReturnType<typeof setTimeout> | null = null;
 
   get valueChanged() {
     return this.valueUpdate.asObservable();
@@ -87,8 +89,7 @@ export class EntityCreationMapService implements OnDestroy {
     private basemapService: BaseMapChangeService,
     private buildingService: CommonBuildingService,
     private municipalityService: CommonMunicipalityService,
-    private authState: AuthStateService,
-    private wmtsCapabilitiesService: WmtsCapabilitiesService
+    private authState: AuthStateService
   ) {
     this.municipality = new BehaviorSubject<number | null>(
       this.authState.getMunicipality() ?? DEFAULT_MUNICIPALITY
@@ -122,9 +123,9 @@ export class EntityCreationMapService implements OnDestroy {
   }
 
   public cleanup() {
-    if (this.zoomVisibilityDebounce) {
-      clearTimeout(this.zoomVisibilityDebounce);
-      this.zoomVisibilityDebounce = null;
+    if (this.scaleVisibilityDebounce) {
+      clearTimeout(this.scaleVisibilityDebounce);
+      this.scaleVisibilityDebounce = null;
     }
 
     destroyMapSession(this.view, this.eventsCleanupCallbacks);
@@ -174,7 +175,8 @@ export class EntityCreationMapService implements OnDestroy {
     mapViewEl?: ElementRef,
     availableTools?: string[],
     editingGeometry?: EditableGeometry[],
-    basemap?: __esri.Basemap | string
+    basemap?: __esri.Basemap | string,
+    viewpoint?: __esri.Viewpoint
   ): Promise<MapView> {
     if (mapViewEl) {
       this.nativeElement = mapViewEl.nativeElement;
@@ -207,44 +209,46 @@ export class EntityCreationMapService implements OnDestroy {
     });
     this.view = view;
 
-    this.maxZoomHide = await configureWmtsConstraints(
-      this.view,
-      this.wmtsCapabilitiesService
-    );
+    await configureWmtsConstraints(this.view);
+    this.updateBuildingLayerVisibility(this.view.scale);
 
     void this.view.when(() => {
-      if (mainGraphic) {
+      if (mainGraphic && !viewpoint) {
         this.view!.goTo(mainGraphic);
       }
     });
 
-    const zoomWatcher = this.view.watch('zoom', newZoom => {
-      if (this.zoomVisibilityDebounce) {
-        clearTimeout(this.zoomVisibilityDebounce);
+    const scaleWatcher = this.view.watch('scale', newScale => {
+      if (this.scaleVisibilityDebounce) {
+        clearTimeout(this.scaleVisibilityDebounce);
       }
-      this.zoomVisibilityDebounce = setTimeout(() => {
+      this.scaleVisibilityDebounce = setTimeout(() => {
         if (!this.view?.map) {
           return;
         }
-        this.bldLayer.visible =
-          newZoom >= this.maxZoomHide ||
-          !!(this.totalResults && this.totalResults < 1000);
+        this.updateBuildingLayerVisibility(newScale);
       }, 500);
     });
     this.eventsCleanupCallbacks.push(() => {
-      zoomWatcher.remove();
+      scaleWatcher.remove();
     });
 
     this.createSketch();
     if (this.municipality.value && this.municipality.value !== 99) {
-      void this.filterBuildingData(
-        `BldMunicipality=${arcGisIntegerLiteral(this.municipality.value, 'municipality')}`
+      await this.filterBuildingData(
+        `BldMunicipality=${arcGisIntegerLiteral(this.municipality.value, 'municipality')}`,
+        3,
+        !viewpoint
       );
+    }
+
+    if (viewpoint) {
+      await this.restoreViewpoint(viewpoint);
     }
 
     void this.basemapService.createBasemapChangeAction(
       this.view,
-      this.reload.bind(this),
+      this.changeBasemap.bind(this),
       this.eventsCleanupCallbacks
     );
     return this.view;
@@ -295,8 +299,29 @@ export class EntityCreationMapService implements OnDestroy {
     }
   }
 
-  private reload(basemap: __esri.Basemap | string) {
-    void this.init(undefined, undefined, undefined, basemap);
+  private changeBasemap(basemap: __esri.Basemap | string) {
+    if (!this.view?.map) {
+      return;
+    }
+
+    const targetWkid = getBasemapSpatialReferenceWkid(basemap);
+    const sameSpatialReference =
+      this.view.spatialReference.wkid === targetWkid ||
+      (targetWkid === WEB_MERCATOR_WKID &&
+        this.view.spatialReference.isWebMercator);
+
+    if (sameSpatialReference) {
+      this.view.map.basemap = basemap;
+      void configureWmtsConstraints(this.view)
+        .then(() => this.updateBuildingLayerVisibility(this.view!.scale))
+        .catch(error => console.error('Failed to change basemap:', error));
+      return;
+    }
+
+    const viewpoint = this.view.viewpoint.clone();
+    void this.init(undefined, undefined, undefined, basemap, viewpoint).catch(
+      error => console.error('Failed to change map spatial reference:', error)
+    );
   }
 
   private registerDeleteEvent(sketch: Sketch) {
@@ -475,8 +500,12 @@ export class EntityCreationMapService implements OnDestroy {
     return mainGraphic;
   }
 
-  async filterBuildingData(whereCondition: string, retires = 3) {
-    if (!this.view || retires === 0) {
+  async filterBuildingData(
+    whereCondition: string,
+    retries = 3,
+    navigateToResults = true
+  ) {
+    if (!this.view || retries === 0) {
       return;
     }
     (await this.view.whenLayerView(this.bldLayer))!.filter = new FeatureFilter({
@@ -486,19 +515,24 @@ export class EntityCreationMapService implements OnDestroy {
     query.where = whereCondition;
     try {
       const extend = await this.bldLayer.queryExtent(query);
-      this.totalResults = extend.count;
-      this.bldLayer.visible = extend.count < 1000;
-      void this.view.goTo(
-        extend.count !== 0
-          ? extend.extent
-          : {
-              center: [19.818, 41.3285],
-              zoom: 9,
-            }
-      );
+      this.updateBuildingLayerVisibility(this.view.scale);
+      if (navigateToResults) {
+        void this.view.goTo(
+          extend.count !== 0
+            ? extend.extent
+            : {
+                center: [19.818, 41.3285],
+                zoom: 9,
+              }
+        );
+      }
     } catch (e) {
       console.log(e);
-      void this.filterBuildingData(whereCondition, retires - 1);
+      await this.filterBuildingData(
+        whereCondition,
+        retries - 1,
+        navigateToResults
+      );
     }
   }
 
@@ -516,5 +550,24 @@ export class EntityCreationMapService implements OnDestroy {
     }
 
     return undefined;
+  }
+
+  private updateBuildingLayerVisibility(scale: number) {
+    this.bldLayer.visible = scale > 0 && scale <= DETAIL_LAYER_VISIBILITY_SCALE;
+  }
+
+  private async restoreViewpoint(viewpoint: __esri.Viewpoint) {
+    if (!this.view) {
+      return;
+    }
+
+    await this.view.when();
+    try {
+      await this.view.goTo(viewpoint, { animate: false });
+    } catch (error) {
+      if ((error as { name?: string })?.name !== 'AbortError') {
+        throw error;
+      }
+    }
   }
 }

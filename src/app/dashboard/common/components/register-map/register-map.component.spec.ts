@@ -188,7 +188,8 @@ describe('RegisterMapComponent', () => {
       includeGlobalId: false,
     });
     expect(registerMapServiceMock.filterBuildingData).toHaveBeenCalledWith(
-      'BldQuality <> 0'
+      'BldQuality <> 0',
+      { navigateToExtent: false }
     );
     expect(registerMapServiceMock.highlightBuildings).toHaveBeenCalledWith([
       '{BLD-1}',

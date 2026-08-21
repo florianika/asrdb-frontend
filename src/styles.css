@@ -60,6 +60,11 @@ body {
   background: #f1f1f1;
 }
 
+.asrdb-map-tool-button {
+  appearance: none;
+  border: 0;
+}
+
 .search-field-container {
   display: flex;
   position: sticky;

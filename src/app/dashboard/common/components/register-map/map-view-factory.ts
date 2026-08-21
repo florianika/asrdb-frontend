@@ -3,16 +3,21 @@ import WebMap from '@arcgis/core/WebMap';
 import Popup from '@arcgis/core/widgets/Popup';
 import Legend from '@arcgis/core/widgets/Legend';
 import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
-import LOD from '@arcgis/core/layers/support/LOD';
-import { OSM_BASEMAP } from './custom-map-logic/BasemapTypes';
+import {
+  getBasemapSpatialReferenceWkid,
+  OSM_BASEMAP,
+  WEB_MERCATOR_WKID,
+} from './custom-map-logic/BasemapTypes';
 import { BasemapInput, CleanupCallback, MapLayer } from './map-types';
-import { WmtsCapabilitiesService } from './wmts-capabilities.service';
+
+export const DETAIL_LAYER_VISIBILITY_SCALE = 20_000;
 
 export type MapSessionOptions = {
   basemap?: BasemapInput;
   enableLegend?: boolean;
   initialZoom?: number;
   dockPopup?: boolean;
+  spatialReference?: __esri.SpatialReferenceProperties;
 };
 
 export function createWebMap(
@@ -36,7 +41,9 @@ export function createMapView(
   const view = new MapView({
     container,
     map: webmap,
-    spatialReference: { wkid: 3857 },
+    spatialReference: options.spatialReference ?? {
+      wkid: WEB_MERCATOR_WKID,
+    },
     ...(options.initialZoom === undefined ? {} : { zoom: options.initialZoom }),
     ...(options.dockPopup
       ? {
@@ -67,15 +74,20 @@ export function createMapSession(
   options: MapSessionOptions = {}
 ): { webmap: WebMap; view: MapView } {
   const webmap = createWebMap(options.basemap, layers);
+  const spatialReference = options.spatialReference ?? {
+    wkid: getBasemapSpatialReferenceWkid(options.basemap),
+  };
   return {
     webmap,
-    view: createMapView(container, webmap, options),
+    view: createMapView(container, webmap, {
+      ...options,
+      spatialReference,
+    }),
   };
 }
 
 export async function configureWmtsConstraints(
   view: MapView,
-  wmtsCapabilitiesService: WmtsCapabilitiesService,
   defaultMaxZoomHide = 15
 ): Promise<number> {
   const wmtsLayer = view.map?.basemap?.baseLayers.find(
@@ -85,14 +97,14 @@ export async function configureWmtsConstraints(
     return defaultMaxZoomHide;
   }
 
-  const lods = await wmtsCapabilitiesService.getLODs(wmtsLayer.url);
-  if (!lods.length) {
+  await wmtsLayer.load();
+  const lods = wmtsLayer.activeLayer?.tileMatrixSet?.tileInfo?.lods;
+  if (!lods?.length) {
     return defaultMaxZoomHide;
   }
 
-  view.constraints = { lods: lods as LOD[] };
-  const maxZoom = lods[lods.length - 1].level + 1;
-  return Math.floor(maxZoom / 2);
+  view.constraints = { lods };
+  return defaultMaxZoomHide;
 }
 
 export function destroyMapSession(
