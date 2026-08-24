@@ -28,7 +28,8 @@ export const logTypeColorMap = new Map<string, string>([
   ['ERR', 'red'],
   ['MISS', 'blue'],
   ['QUE', 'orange'],
-  ['AUT', 'green'],
+  ['ADR', 'green'],
+  ['ESS', 'purple'],
 ]);
 
 export function getColor(logType: string) {

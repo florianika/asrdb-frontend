@@ -3,16 +3,18 @@ import { QualityRuleFilter } from '../model/quality-rule-filter';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { EntityType } from '../../quality-management-config';
+import { QUALITY_ACTIONS } from '../../../common/model/quality-action';
 
 export const FILTER_CONFIG_PREFIX = 'filter-config-';
 
 @Component({
-    selector: 'asrdb-quality-management-table-filter',
-    templateUrl: './quality-management-table-filter.component.html',
-    styleUrls: ['./quality-management-table-filter.component.css'],
-    standalone: false
+  selector: 'asrdb-quality-management-table-filter',
+  templateUrl: './quality-management-table-filter.component.html',
+  styleUrls: ['./quality-management-table-filter.component.css'],
+  standalone: false,
 })
 export class QualityManagementTableFilterComponent {
+  readonly qualityActions = QUALITY_ACTIONS;
   filterConfig: QualityRuleFilter;
   qualityType!: EntityType;
 

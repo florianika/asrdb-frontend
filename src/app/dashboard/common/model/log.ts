@@ -1,4 +1,5 @@
 import { EntityType } from '../../../common/model/entity-type';
+import { QualityAction } from './quality-action';
 
 export type Log = {
   id: string;
@@ -9,7 +10,7 @@ export type Log = {
   reference: string;
   entityType: EntityType;
   variable?: string;
-  qualityAction: string;
+  qualityAction: QualityAction;
   qualityStatus: string;
   qualityMessageAl?: string;
   qualityMessageEn?: string;

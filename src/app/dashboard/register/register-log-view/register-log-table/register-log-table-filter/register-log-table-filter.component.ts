@@ -10,6 +10,7 @@ import { EntityTypeSelectorComponent } from '../../../../../common/standalone-co
 import { LogFilter } from '../../model/log-filter';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { QUALITY_ACTIONS } from '../../../../common/model/quality-action';
 
 @Component({
   selector: 'asrdb-register-log-table-filter',
@@ -28,6 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./register-log-table-filter.component.css'],
 })
 export class RegisterLogTableFilterComponent {
+  readonly qualityActions = QUALITY_ACTIONS;
   public filter = {
     entityType: '',
     variable: '',

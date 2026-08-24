@@ -10,10 +10,9 @@
   <mat-form-field class="full-width">
     <mat-label i18n>Quality action</mat-label>
     <mat-select [(ngModel)]="filter.qualityAction">
-      <mat-option value="AUT"> AUT </mat-option>
-      <mat-option value="MISS"> MISS </mat-option>
-      <mat-option value="QUE"> QUE </mat-option>
-      <mat-option value="ERR"> ERR </mat-option>
+      @for (qualityAction of qualityActions; track qualityAction) {
+        <mat-option [value]="qualityAction">{{ qualityAction }}</mat-option>
+      }
     </mat-select>
     @if (filter.qualityAction) {
       <button

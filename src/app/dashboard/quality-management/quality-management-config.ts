@@ -5,6 +5,7 @@ import {
 } from 'src/app/common/constants/common-constants';
 import { environment } from 'src/environments/environment';
 import { EntityType } from '../../common/model/entity-type';
+import { QualityAction } from '../common/model/quality-action';
 
 export { EntityType } from '../../common/model/entity-type';
 
@@ -15,8 +16,6 @@ export type QualityTableColumn = {
   title: string;
   prop: string;
 };
-export type QualityAction = 'AUT' | 'MISS' | 'QUE' | 'ERR';
-
 export type RuleStatus = 'ACTIVE' | 'DISABLED';
 
 export type QualityRulesResponse = {
@@ -66,7 +65,6 @@ export type QualityRule = {
 export const BaseUrl = environment.base_url + '/qms/rules/entity/';
 
 export class QualityManagementConfig {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public static getUrlForType(_type: string | null) {
     return BaseUrl + this.getType(_type);
   }

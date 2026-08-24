@@ -43,10 +43,9 @@
     <mat-select
       [value]="filterConfig.qualityAction"
       (selectionChange)="changeStatusValue($event, 'qualityAction')">
-      <mat-option value="AUT" i18n>Automatic</mat-option>
-      <mat-option value="MISS" i18n>Miss</mat-option>
-      <mat-option value="QUE" i18n>Question</mat-option>
-      <mat-option value="ERR" i18n>Error</mat-option>
+      @for (qualityAction of qualityActions; track qualityAction) {
+        <mat-option [value]="qualityAction">{{ qualityAction }}</mat-option>
+      }
     </mat-select>
     @if (filterConfig.qualityAction) {
       <mat-icon

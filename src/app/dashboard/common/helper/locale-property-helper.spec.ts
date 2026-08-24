@@ -16,7 +16,7 @@ describe('locale-property-helper (smoke)', () => {
       ruleId: 1,
       reference: 'ref',
       entityType: BUILDING_ENTITY,
-      qualityAction: 'AUT',
+      qualityAction: 'ADR',
       qualityStatus: 'PENDING',
       qualityMessageAl: 'Mesazh',
       qualityMessageEn: 'Message',

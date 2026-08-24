@@ -9,10 +9,13 @@ import {
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {
   EntityType,
-  QualityAction,
   QualityRule,
   RuleStatus,
 } from '../../quality-management-config';
+import {
+  QUALITY_ACTIONS,
+  QualityAction,
+} from '../../../common/model/quality-action';
 import { QualityManagementService } from '../../quality-management.service';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,11 +26,11 @@ import 'brace/theme/github';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'asrdb-quality-management-form',
-    templateUrl: './quality-management-form.component.html',
-    styleUrls: ['./quality-management-form.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'asrdb-quality-management-form',
+  templateUrl: './quality-management-form.component.html',
+  styleUrls: ['./quality-management-form.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class QualityManagementFormComponent implements OnInit {
   @Input() rule?: QualityRule;
@@ -39,6 +42,7 @@ export class QualityManagementFormComponent implements OnInit {
   @ViewChild('stepper') stepper!: MatStepper;
 
   public isSaving = this.qualityManagementService.isSaving;
+  public readonly qualityActions = QUALITY_ACTIONS;
   public firstFormGroup!: FormGroup;
   public secondFormGroup!: FormGroup;
   public thirdFormGroup!: FormGroup;
@@ -77,8 +81,8 @@ export class QualityManagementFormComponent implements OnInit {
 
     this.secondFormGroup = new FormGroup(
       {
-        qualityAction: new FormControl<QualityAction>(
-          this.rule?.qualityAction ?? 'AUT',
+        qualityAction: new FormControl<QualityAction | null>(
+          this.rule?.qualityAction ?? null,
           [Validators.required]
         ),
         ruleStatus: new FormControl<RuleStatus>(
@@ -179,7 +183,7 @@ export class QualityManagementFormComponent implements OnInit {
             descriptionEn: this.rule?.descriptionEn ?? '',
           });
           this.secondFormGroup.setValue({
-            qualityAction: this.rule?.qualityAction ?? 'AUT',
+            qualityAction: this.rule?.qualityAction ?? null,
             ruleStatus: this.rule?.ruleStatus ?? 'ACTIVE',
             ruleRequirement: this.rule?.localId ?? '',
             remark: this.rule?.ruleRequirement ?? '',
