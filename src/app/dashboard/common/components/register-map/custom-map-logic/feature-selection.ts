@@ -25,6 +25,12 @@ export class FeatureSelectionService {
     webmap: Map,
     eventsCleanupCallbacks: CleanupCallback[]
   ) {
+    // Navigation can destroy a MapView while asynchronous map setup is still
+    // completing. Do not attach controls to a stale session.
+    if (!view?.ui || view.map !== webmap) {
+      return;
+    }
+
     const featureSelection = this.createSelectionButton();
     const eraseSelection = this.createEraseButton();
 
@@ -76,8 +82,8 @@ export class FeatureSelectionService {
 
     eventsCleanupCallbacks.push(() => {
       webmap.remove(polygonGraphicsLayer);
-      view.ui.remove(featureSelection);
-      view.ui.remove(eraseSelection);
+      view.ui?.remove(featureSelection);
+      view.ui?.remove(eraseSelection);
       sketchViewModel.destroy();
     });
   }

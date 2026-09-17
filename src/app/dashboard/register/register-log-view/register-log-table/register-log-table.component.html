@@ -20,6 +20,7 @@
     <button
       mat-icon-button
       matTooltip="View building details"
+      i18n-matTooltip
       style="vertical-align: middle"
       (click)="goToBuildingDetails()">
       <mat-icon>apartment</mat-icon>
@@ -28,6 +29,7 @@
       <button
         mat-icon-button
         matTooltip="Filter logs"
+        i18n-matTooltip
         (click)="filterData()"
         [disabled]="executionStatus | async | logExecution">
         <mat-icon>filter_alt</mat-icon>
@@ -50,7 +52,7 @@
           <mat-icon style="vertical-align: middle">play_arrow</mat-icon>
         }
         @if (!(executionStatus | async | logExecution)) {
-          <span i18n> Test data </span>
+          <span i18n>Test building data</span>
         }
       </button>
     </ng-container>

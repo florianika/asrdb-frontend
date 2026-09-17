@@ -394,21 +394,24 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2169147859487216499" datatype="html">
-        <source>Rregullat e Ndërtimit</source>
+        <source>Building Rules</source>
+        <target>Rregullat e Cilësisë për Ndërtesat</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/components/side-bar/side-bar.component.ts</context>
           <context context-type="linenumber">62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3155554979642638258" datatype="html">
-        <source>Rregullat e hyrjes</source>
+        <source>Entrance Rules</source>
+        <target>Rregullat e Cilësisë për Hyrjet</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/components/side-bar/side-bar.component.ts</context>
           <context context-type="linenumber">68</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4130614132361269270" datatype="html">
-        <source>Rregullat e banimit</source>
+        <source>Dwelling Rules</source>
+        <target>Rregullat e Cilësisë për Banesat</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/common/components/side-bar/side-bar.component.ts</context>
           <context context-type="linenumber">74</context>
@@ -3503,7 +3506,8 @@ Ky veprim nuk mund të anulohet.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="7278637339942511871" datatype="html">
-        <source>Regjistrat e filtrit</source>
+        <source>Filter logs</source>
+        <target>Filtro</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/dashboard/register/register-log-view/register-log-table/register-log-table-filter/register-log-table-filter.component.html</context>
           <context context-type="linenumber">1</context>
@@ -4527,13 +4531,15 @@ Ky veprim nuk mund të anulohet.</source>
         <source>Ju lutem plotësoni të gjitha detajet për ndërtesën</source>
       </trans-unit>
       <trans-unit id="8614288566122686781" datatype="html">
-        <source>Shiko detajet e ndërtesës</source>
+        <source>View building details</source>
+        <target>Shiko detajet e ndërtesës</target>
       </trans-unit>
       <trans-unit id="2883489715051839535" datatype="html">
         <source>Shiko raportin e cilësisë</source>
       </trans-unit>
       <trans-unit id="4450560170675061159" datatype="html">
-        <source>Testo të dhënat e ndërtesës</source>
+        <source>Test building data</source>
+        <target>Testo të dhënat e ndërtesës</target>
       </trans-unit>
       <trans-unit id="8792198732278457440" datatype="html">
         <source>Redakto detajet e ndërtesës</source>
@@ -4750,6 +4756,22 @@ Ky veprim nuk mund të anulohet.</source>
       </trans-unit>
       <trans-unit id="3056255277240220193" datatype="html">
         <source>Verifikoni tokenin 2FA</source>
+      </trans-unit>
+      <trans-unit id="1106445613919904098" datatype="html">
+        <source>Quality Rules for Buildings</source>
+        <target>Rregullat e Cilësisë për Ndërtesat</target>
+      </trans-unit>
+      <trans-unit id="748267473527631521" datatype="html">
+        <source>Quality Rules for Entrances</source>
+        <target>Rregullat e Cilësisë për Hyrjet</target>
+      </trans-unit>
+      <trans-unit id="2502376773338391049" datatype="html">
+        <source>Quality Rules for Dwellings</source>
+        <target>Rregullat e Cilësisë për Banesat</target>
+      </trans-unit>
+      <trans-unit id="425439740580361244" datatype="html">
+        <source>Edit building</source>
+        <target>Përditëso ndërtesën</target>
       </trans-unit>
     </body>
   </file>

@@ -70,6 +70,7 @@ export class RegisterMapService {
   private entranceHighlightHandle?: __esri.Handle;
   private entranceHighlightRequestId = 0;
   private highlightedEntranceGlobalId?: string;
+  private mapSessionId = 0;
 
   constructor(
     private buildingService: CommonBuildingService,
@@ -117,26 +118,31 @@ export class RegisterMapService {
       dockPopup: true,
     });
     this.view = view;
+    const mapSessionId = this.mapSessionId;
 
-    await configureWmtsConstraints(this.view);
+    await configureWmtsConstraints(view);
+    if (!this.isCurrentSession(view, mapSessionId)) return;
 
     // Map interactions
     const scaleHandler = MapInteractionService.addScaleWatcher(
-      this.view,
+      view,
       scale => {
-        if (this.view!.zoom >= 0) {
-          this.customZoom = this.view!.zoom;
+        if (!this.isCurrentSession(view, mapSessionId)) {
+          return;
+        }
+        if (view.zoom >= 0) {
+          this.customZoom = view.zoom;
         }
         this.updateLayerVisibility(scale);
       }
     );
-    if (this.view.zoom >= 0) {
-      this.customZoom = this.view.zoom;
+    if (view.zoom >= 0) {
+      this.customZoom = view.zoom;
     }
     this.updateLayerVisibility();
 
     const popupHandler = MapInteractionService.addPopupHandler(
-      this.view,
+      view,
       this.registerFilterService,
       this.buildingService,
       this.entranceService
@@ -149,35 +155,41 @@ export class RegisterMapService {
 
     // Initial filtering
     await this.filterBuildingData(this.options.bldWhereCase);
+    if (!this.isCurrentSession(view, mapSessionId)) return;
     await this.filterEntranceData(this.options.entWhereCase);
+    if (!this.isCurrentSession(view, mapSessionId)) return;
 
     if (viewpoint) {
       this.cancelPendingGoTo();
       await this.restoreViewpoint(viewpoint);
+      if (!this.isCurrentSession(view, mapSessionId)) return;
     }
 
     // Feature selection
     if (this.options.enableSelection) {
       this.featureSelectionService.createFeatureSelection(
-        this.view,
+        view,
         webmap,
         this.eventsCleanupCallbacks
       );
     }
+    if (!this.isCurrentSession(view, mapSessionId)) return;
 
     // Basemap change
     await this.baseMapChangeService.createBasemapChangeAction(
-      this.view,
+      view,
       this.changeBasemap.bind(this),
-      this.eventsCleanupCallbacks
+      this.eventsCleanupCallbacks,
+      () => this.isCurrentSession(view, mapSessionId)
     );
+    if (!this.isCurrentSession(view, mapSessionId)) return;
 
     if (viewpoint) {
       await this.highlightBuildings(this.highlightedBuildingGlobalIds);
       await this.highlightEntrance(this.highlightedEntranceGlobalId);
     }
 
-    return this.view;
+    return view;
   }
 
   /** Filter building layer (server-side) */
@@ -325,6 +337,7 @@ export class RegisterMapService {
 
   /** Clean up map resources */
   cleanup() {
+    this.mapSessionId++;
     this.buildingFilterRequestId++;
     this.buildingHighlightRequestId++;
     this.entranceHighlightRequestId++;
@@ -337,6 +350,10 @@ export class RegisterMapService {
 
   hasActiveView(): boolean {
     return !!this.view;
+  }
+
+  private isCurrentSession(view: MapView, mapSessionId: number): boolean {
+    return this.view === view && this.mapSessionId === mapSessionId;
   }
 
   /** Private helpers */

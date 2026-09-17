@@ -28,6 +28,12 @@ import {
 } from '../../../common/constants/common-constants';
 import { EntityType } from '../quality-management-config';
 
+const QUALITY_RULE_TITLES: Record<EntityType, string> = {
+  BUILDING: $localize`Quality Rules for Buildings`,
+  ENTRANCE: $localize`Quality Rules for Entrances`,
+  DWELLING: $localize`Quality Rules for Dwellings`,
+};
+
 @Component({
     selector: 'asrdb-quality-management-table',
     templateUrl: './quality-management-table.component.html',
@@ -113,9 +119,7 @@ export class QualityManagementTableComponent
   }
 
   get entityTitle() {
-    return (
-      this.qualityType.charAt(0) + this.qualityType.substring(1).toLowerCase()
-    );
+    return QUALITY_RULE_TITLES[this.qualityType];
   }
 
   openFilter() {

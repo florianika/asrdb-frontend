@@ -16,7 +16,8 @@
               @if (canManageEntities) {
                 <button
                   mat-icon-button
-                  [matTooltip]="'Edit building'"
+                  matTooltip="Edit building"
+                  i18n-matTooltip
                   (click)="editBuilding()">
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -29,6 +30,7 @@
                 <button
                   mat-icon-button
                   matTooltip="Test building data"
+                  i18n-matTooltip
                   style="vertical-align: middle"
                   [disabled]="isExecutingRules"
                   (click)="startExecution()">

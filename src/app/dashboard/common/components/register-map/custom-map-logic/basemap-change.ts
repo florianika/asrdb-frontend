@@ -20,13 +20,20 @@ export class BaseMapChangeService {
   async createBasemapChangeAction(
     view: MapView,
     webmapCallback: BasemapChangeCallback,
-    eventsCleanupCallbacks: CleanupCallback[]
+    eventsCleanupCallbacks: CleanupCallback[],
+    isActive: () => boolean = () => !!view?.ui
   ) {
+    if (!isActive()) {
+      return;
+    }
     const basemap = this.createBasemapButton();
     const popup = await this.createPopupForBasemapChange(
       webmapCallback,
       eventsCleanupCallbacks
     );
+    if (!isActive()) {
+      return;
+    }
     this.registerBasemapEventListener(popup, basemap, eventsCleanupCallbacks);
 
     view.ui.add(basemap, 'top-left');
