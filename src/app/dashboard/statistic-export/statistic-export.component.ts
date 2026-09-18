@@ -3,6 +3,7 @@ import {
   Component,
   effect,
   inject,
+  Injector,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -44,6 +45,7 @@ export class StatisticExportComponent implements OnInit, AfterViewInit {
   private fieldWorkService = inject(FieldWorkService);
   private matSnackBar = inject(MatSnackBar);
   private matDialog = inject(MatDialog);
+  private injector = inject(Injector);
 
   public statisticsTableData = this.statisticExportService.statisticsTableData;
   public fieldWork = this.fieldWorkService.fieldWorkState;
@@ -103,6 +105,7 @@ export class StatisticExportComponent implements OnInit, AfterViewInit {
         width: '1100px',
         height: '600px',
         disableClose: true,
+        injector: this.injector,
       })
       .afterClosed()
       .subscribe({
